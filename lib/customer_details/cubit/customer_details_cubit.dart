@@ -24,7 +24,7 @@ class CustomerDetailsCubit extends Cubit<CustomerDetailsState> {
         _setApiKey = setApiKey,
         _clearCustomerDetails = clearCustomerDetails,
         super(CustomerDetailsState.loading()) {
-    _init();
+    _loadCustomerDetails();
   }
 
   final GetCustomerDetails _getCustomerDetails;
@@ -36,7 +36,8 @@ class CustomerDetailsCubit extends Cubit<CustomerDetailsState> {
   ///
   /// Fetches the customer's API key and uses it to populate
   /// state with the [CustomerDetails].
-  Future<void> _init() async {
+  Future<void> _loadCustomerDetails() async {
+    emit(CustomerDetailsState.loading());
     final apiKey = await _getApiKey();
     if (apiKey != null && apiKey.isNotEmpty) {
       final customerDetails = await _getCustomerDetails(apiKey);
@@ -50,11 +51,11 @@ class CustomerDetailsCubit extends Cubit<CustomerDetailsState> {
 
   Future<void> updateApiKey(String apiKey) async {
     await _setApiKey(apiKey);
-    await _init();
+    await _loadCustomerDetails();
   }
 
   Future<void> logOut() async {
     await _clearCustomerDetails();
-    await _init();
+    await _loadCustomerDetails();
   }
 }
