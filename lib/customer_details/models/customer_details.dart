@@ -6,8 +6,8 @@ part 'customer_details.g.dart';
 @freezed
 class CustomerDetails with _$CustomerDetails {
   factory CustomerDetails({
-    required int controllerId,
-    required int customerId,
+    @JsonKey(name: 'controller_id') required int controllerId,
+    @JsonKey(name: 'customer_id') required int customerId,
   }) = _CustomerDetails;
 
   factory CustomerDetails.fromJson(

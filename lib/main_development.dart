@@ -25,19 +25,22 @@ Future<void> main() async {
     log(details.exceptionAsString(), stackTrace: details.stack);
   };
 
-  final getCustomerDetails = GetFakeCustomerDetails();
-  final dataStorage = InMemoryStorage();
-  final getApiKey = GetApiKeyFromStorage(dataStorage);
-  final setApiKey = SetApiKeyInStorage(dataStorage);
-  final clearCustomerDetails = ClearCustomerDetailsFromStorage(dataStorage);
+  await runZonedGuarded(
+    () async {
+      WidgetsFlutterBinding.ensureInitialized();
+      final dataStorage = InMemoryStorage();
+      final getCustomerDetails = GetFakeCustomerDetails();
+      final getApiKey = GetApiKeyFromStorage(dataStorage);
+      final setApiKey = SetApiKeyInStorage(dataStorage);
+      final clearCustomerDetails = ClearCustomerDetailsFromStorage(dataStorage);
 
-  runZonedGuarded(
-    () => runApp(App(
-      getCustomerDetails: getCustomerDetails,
-      getApiKey: getApiKey,
-      setApiKey: setApiKey,
-      clearCustomerDetails: clearCustomerDetails,
-    )),
+      runApp(App(
+        getCustomerDetails: getCustomerDetails,
+        getApiKey: getApiKey,
+        setApiKey: setApiKey,
+        clearCustomerDetails: clearCustomerDetails,
+      ));
+    },
     (error, stackTrace) => log(error.toString(), stackTrace: stackTrace),
   );
 }

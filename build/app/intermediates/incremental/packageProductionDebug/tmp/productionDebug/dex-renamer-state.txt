@@ -1,0 +1,4 @@
+#Fri Sep 10 14:52:07 EDT 2021
+base.0=/Users/brandontrautmann/Development/projects/hydrawise-companion/build/app/intermediates/dex/productionDebug/mergeDexProductionDebug/classes.dex
+renamed.0=classes.dex
+path.0=classes.dex

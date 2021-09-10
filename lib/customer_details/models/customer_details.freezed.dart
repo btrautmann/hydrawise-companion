@@ -20,7 +20,9 @@ CustomerDetails _$CustomerDetailsFromJson(Map<String, dynamic> json) {
 class _$CustomerDetailsTearOff {
   const _$CustomerDetailsTearOff();
 
-  _CustomerDetails call({required int controllerId, required int customerId}) {
+  _CustomerDetails call(
+      {@JsonKey(name: 'controller_id') required int controllerId,
+      @JsonKey(name: 'customer_id') required int customerId}) {
     return _CustomerDetails(
       controllerId: controllerId,
       customerId: customerId,
@@ -37,7 +39,9 @@ const $CustomerDetails = _$CustomerDetailsTearOff();
 
 /// @nodoc
 mixin _$CustomerDetails {
+  @JsonKey(name: 'controller_id')
   int get controllerId => throw _privateConstructorUsedError;
+  @JsonKey(name: 'customer_id')
   int get customerId => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -51,7 +55,9 @@ abstract class $CustomerDetailsCopyWith<$Res> {
   factory $CustomerDetailsCopyWith(
           CustomerDetails value, $Res Function(CustomerDetails) then) =
       _$CustomerDetailsCopyWithImpl<$Res>;
-  $Res call({int controllerId, int customerId});
+  $Res call(
+      {@JsonKey(name: 'controller_id') int controllerId,
+      @JsonKey(name: 'customer_id') int customerId});
 }
 
 /// @nodoc
@@ -88,7 +94,9 @@ abstract class _$CustomerDetailsCopyWith<$Res>
           _CustomerDetails value, $Res Function(_CustomerDetails) then) =
       __$CustomerDetailsCopyWithImpl<$Res>;
   @override
-  $Res call({int controllerId, int customerId});
+  $Res call(
+      {@JsonKey(name: 'controller_id') int controllerId,
+      @JsonKey(name: 'customer_id') int customerId});
 }
 
 /// @nodoc
@@ -123,14 +131,18 @@ class __$CustomerDetailsCopyWithImpl<$Res>
 /// @nodoc
 @JsonSerializable()
 class _$_CustomerDetails implements _CustomerDetails {
-  _$_CustomerDetails({required this.controllerId, required this.customerId});
+  _$_CustomerDetails(
+      {@JsonKey(name: 'controller_id') required this.controllerId,
+      @JsonKey(name: 'customer_id') required this.customerId});
 
   factory _$_CustomerDetails.fromJson(Map<String, dynamic> json) =>
       _$_$_CustomerDetailsFromJson(json);
 
   @override
+  @JsonKey(name: 'controller_id')
   final int controllerId;
   @override
+  @JsonKey(name: 'customer_id')
   final int customerId;
 
   @override
@@ -169,15 +181,18 @@ class _$_CustomerDetails implements _CustomerDetails {
 
 abstract class _CustomerDetails implements CustomerDetails {
   factory _CustomerDetails(
-      {required int controllerId,
-      required int customerId}) = _$_CustomerDetails;
+          {@JsonKey(name: 'controller_id') required int controllerId,
+          @JsonKey(name: 'customer_id') required int customerId}) =
+      _$_CustomerDetails;
 
   factory _CustomerDetails.fromJson(Map<String, dynamic> json) =
       _$_CustomerDetails.fromJson;
 
   @override
+  @JsonKey(name: 'controller_id')
   int get controllerId => throw _privateConstructorUsedError;
   @override
+  @JsonKey(name: 'customer_id')
   int get customerId => throw _privateConstructorUsedError;
   @override
   @JsonKey(ignore: true)
