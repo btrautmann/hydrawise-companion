@@ -10,15 +10,10 @@ import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
 import 'package:flutter/widgets.dart';
-import 'package:hydrawise/customer_details/api/get_api_key.dart';
-import 'package:hydrawise/customer_details/api/set_api_key.dart';
-
+import 'package:hydrawise/core/core.dart';
 import 'package:hydrawise/app/app.dart';
 import 'package:hydrawise/app/app_bloc_observer.dart';
-
-import 'package:hydrawise/core/data_storage.dart';
-import 'package:hydrawise/customer_details/domain/clear_customer_details.dart';
-import 'package:hydrawise/customer_details/domain/get_customer_details.dart';
+import 'package:hydrawise/customer_details/customer_details.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 Future<void> main() async {

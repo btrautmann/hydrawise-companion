@@ -1,4 +1,4 @@
-import 'package:hydrawise/core/data_storage.dart';
+import 'package:hydrawise/core/core.dart';
 
 typedef SetApiKey = Future<void> Function(String apiKey);
 

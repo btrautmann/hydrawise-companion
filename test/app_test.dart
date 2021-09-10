@@ -6,13 +6,9 @@
 // https://opensource.org/licenses/MIT.
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:hydrawise/customer_details/api/get_api_key.dart';
-import 'package:hydrawise/customer_details/api/set_api_key.dart';
+import 'package:hydrawise/core/core.dart';
 import 'package:hydrawise/app/app.dart';
-import 'package:hydrawise/core/data_storage.dart';
-import 'package:hydrawise/customer_details/domain/clear_customer_details.dart';
-import 'package:hydrawise/customer_details/view/customer_details_page.dart';
-import 'package:hydrawise/customer_details/domain/get_customer_details.dart';
+import 'package:hydrawise/customer_details/customer_details.dart';
 
 void main() {
   group('App', () {
