@@ -225,11 +225,22 @@ class _ActiveControllerView extends StatelessWidget {
             ),
             child: Padding(
               padding: const EdgeInsets.all(8),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
+              child: Row(
                 children: [
-                  Text(activeController.name),
-                  Text(activeController.status),
+                  Text('👍', style: Theme.of(context).textTheme.headline4),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          activeController.name,
+                          style: Theme.of(context).textTheme.headline6,
+                        ),
+                      ],
+                    ),
+                  ),
                 ],
               ),
             ),
