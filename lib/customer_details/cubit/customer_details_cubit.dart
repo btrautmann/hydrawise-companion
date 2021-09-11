@@ -9,6 +9,7 @@ import 'package:bloc/bloc.dart';
 import 'package:hydrawise/customer_details/api/get_api_key.dart';
 import 'package:hydrawise/customer_details/api/set_api_key.dart';
 import 'package:hydrawise/customer_details/cubit/customer_details_state.dart';
+import 'package:hydrawise/customer_details/customer_details.dart';
 import 'package:hydrawise/customer_details/domain/clear_customer_details.dart';
 import 'package:hydrawise/customer_details/domain/get_customer_details.dart';
 import 'package:hydrawise/customer_details/models/customer_details.dart';
@@ -16,10 +17,12 @@ import 'package:hydrawise/customer_details/models/customer_details.dart';
 class CustomerDetailsCubit extends Cubit<CustomerDetailsState> {
   CustomerDetailsCubit({
     required GetCustomerDetails getCustomerDetails,
+    required GetCustomerStatus getCustomerStatus,
     required GetApiKey getApiKey,
     required SetApiKey setApiKey,
     required ClearCustomerDetails clearCustomerDetails,
   })  : _getCustomerDetails = getCustomerDetails,
+        _getCustomerStatus = getCustomerStatus,
         _getApiKey = getApiKey,
         _setApiKey = setApiKey,
         _clearCustomerDetails = clearCustomerDetails,
@@ -28,6 +31,7 @@ class CustomerDetailsCubit extends Cubit<CustomerDetailsState> {
   }
 
   final GetCustomerDetails _getCustomerDetails;
+  final GetCustomerStatus _getCustomerStatus;
   final GetApiKey _getApiKey;
   final SetApiKey _setApiKey;
   final ClearCustomerDetails _clearCustomerDetails;
@@ -41,8 +45,13 @@ class CustomerDetailsCubit extends Cubit<CustomerDetailsState> {
     final apiKey = await _getApiKey();
     if (apiKey != null && apiKey.isNotEmpty) {
       final customerDetails = await _getCustomerDetails(apiKey);
+      final customerStatus = await _getCustomerStatus(
+        apiKey: apiKey,
+        activeControllerId: customerDetails.activeControllerId,
+      );
       emit(CustomerDetailsState.complete(
         customerDetails: customerDetails,
+        customerStatus: customerStatus,
       ));
     } else {
       emit(CustomerDetailsState.empty());

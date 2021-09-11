@@ -28,12 +28,14 @@ Future<void> main() async {
       final sharedPreferences = await SharedPreferences.getInstance();
       final dataStorage = SharedPreferencesStorage(sharedPreferences);
       final getCustomerDetails = GetRealCustomerDetails();
+      final getCustomerStatus = GetRealCustomerStatus();
       final getApiKey = GetApiKeyFromStorage(dataStorage);
       final setApiKey = SetApiKeyInStorage(dataStorage);
       final clearCustomerDetails = ClearCustomerDetailsFromStorage(dataStorage);
 
       runApp(App(
         getCustomerDetails: getCustomerDetails,
+        getCustomerStatus: getCustomerStatus,
         getApiKey: getApiKey,
         setApiKey: setApiKey,
         clearCustomerDetails: clearCustomerDetails,

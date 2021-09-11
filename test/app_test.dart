@@ -14,6 +14,7 @@ void main() {
   group('App', () {
     testWidgets('renders CustomerDetailsPage', (tester) async {
       final getCustomerDetails = GetFakeCustomerDetails();
+      final getCustomerStatus = GetFakeCustomerStatus();
       final dataStorage = InMemoryStorage();
       final getApiKey = GetApiKeyFromStorage(dataStorage);
       final setApiKey = SetApiKeyInStorage(dataStorage);
@@ -21,6 +22,7 @@ void main() {
 
       await tester.pumpWidget(App(
         getCustomerDetails: getCustomerDetails,
+        getCustomerStatus: getCustomerStatus,
         getApiKey: getApiKey,
         setApiKey: setApiKey,
         clearCustomerDetails: clearCustomerDetails,

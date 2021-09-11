@@ -27,12 +27,14 @@ Future<void> main() async {
       WidgetsFlutterBinding.ensureInitialized();
       final DataStorage dataStorage = InMemoryStorage();
       final getCustomerDetails = GetFakeCustomerDetails();
+      final getCustomerStatus = GetFakeCustomerStatus();
       final getApiKey = GetApiKeyFromStorage(dataStorage);
       final setApiKey = SetApiKeyInStorage(dataStorage);
       final clearCustomerDetails = ClearCustomerDetailsFromStorage(dataStorage);
 
       runApp(App(
         getCustomerDetails: getCustomerDetails,
+        getCustomerStatus: getCustomerStatus,
         getApiKey: getApiKey,
         setApiKey: setApiKey,
         clearCustomerDetails: clearCustomerDetails,

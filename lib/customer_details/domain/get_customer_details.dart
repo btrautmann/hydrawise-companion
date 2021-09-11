@@ -25,8 +25,9 @@ class GetRealCustomerDetails {
 class GetFakeCustomerDetails {
   Future<CustomerDetails> call(String apiKey) async {
     return CustomerDetails(
-      controllerId: 1234,
+      activeControllerId: 1234,
       customerId: 5678,
+      controllers: [],
     );
   }
 }

@@ -24,9 +24,12 @@ class _$CustomerDetailsStateTearOff {
     return _Empty();
   }
 
-  _Complete complete({required CustomerDetails customerDetails}) {
+  _Complete complete(
+      {required CustomerDetails customerDetails,
+      required CustomerStatus customerStatus}) {
     return _Complete(
       customerDetails: customerDetails,
+      customerStatus: customerStatus,
     );
   }
 }
@@ -40,14 +43,18 @@ mixin _$CustomerDetailsState {
   TResult when<TResult extends Object?>({
     required TResult Function() loading,
     required TResult Function() empty,
-    required TResult Function(CustomerDetails customerDetails) complete,
+    required TResult Function(
+            CustomerDetails customerDetails, CustomerStatus customerStatus)
+        complete,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? loading,
     TResult Function()? empty,
-    TResult Function(CustomerDetails customerDetails)? complete,
+    TResult Function(
+            CustomerDetails customerDetails, CustomerStatus customerStatus)?
+        complete,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -125,7 +132,9 @@ class _$_Loading implements _Loading {
   TResult when<TResult extends Object?>({
     required TResult Function() loading,
     required TResult Function() empty,
-    required TResult Function(CustomerDetails customerDetails) complete,
+    required TResult Function(
+            CustomerDetails customerDetails, CustomerStatus customerStatus)
+        complete,
   }) {
     return loading();
   }
@@ -135,7 +144,9 @@ class _$_Loading implements _Loading {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? loading,
     TResult Function()? empty,
-    TResult Function(CustomerDetails customerDetails)? complete,
+    TResult Function(
+            CustomerDetails customerDetails, CustomerStatus customerStatus)?
+        complete,
     required TResult orElse(),
   }) {
     if (loading != null) {
@@ -213,7 +224,9 @@ class _$_Empty implements _Empty {
   TResult when<TResult extends Object?>({
     required TResult Function() loading,
     required TResult Function() empty,
-    required TResult Function(CustomerDetails customerDetails) complete,
+    required TResult Function(
+            CustomerDetails customerDetails, CustomerStatus customerStatus)
+        complete,
   }) {
     return empty();
   }
@@ -223,7 +236,9 @@ class _$_Empty implements _Empty {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? loading,
     TResult Function()? empty,
-    TResult Function(CustomerDetails customerDetails)? complete,
+    TResult Function(
+            CustomerDetails customerDetails, CustomerStatus customerStatus)?
+        complete,
     required TResult orElse(),
   }) {
     if (empty != null) {
@@ -265,9 +280,10 @@ abstract class _Empty implements CustomerDetailsState {
 abstract class _$CompleteCopyWith<$Res> {
   factory _$CompleteCopyWith(_Complete value, $Res Function(_Complete) then) =
       __$CompleteCopyWithImpl<$Res>;
-  $Res call({CustomerDetails customerDetails});
+  $Res call({CustomerDetails customerDetails, CustomerStatus customerStatus});
 
   $CustomerDetailsCopyWith<$Res> get customerDetails;
+  $CustomerStatusCopyWith<$Res> get customerStatus;
 }
 
 /// @nodoc
@@ -283,12 +299,17 @@ class __$CompleteCopyWithImpl<$Res>
   @override
   $Res call({
     Object? customerDetails = freezed,
+    Object? customerStatus = freezed,
   }) {
     return _then(_Complete(
       customerDetails: customerDetails == freezed
           ? _value.customerDetails
           : customerDetails // ignore: cast_nullable_to_non_nullable
               as CustomerDetails,
+      customerStatus: customerStatus == freezed
+          ? _value.customerStatus
+          : customerStatus // ignore: cast_nullable_to_non_nullable
+              as CustomerStatus,
     ));
   }
 
@@ -298,19 +319,28 @@ class __$CompleteCopyWithImpl<$Res>
       return _then(_value.copyWith(customerDetails: value));
     });
   }
+
+  @override
+  $CustomerStatusCopyWith<$Res> get customerStatus {
+    return $CustomerStatusCopyWith<$Res>(_value.customerStatus, (value) {
+      return _then(_value.copyWith(customerStatus: value));
+    });
+  }
 }
 
 /// @nodoc
 
 class _$_Complete implements _Complete {
-  _$_Complete({required this.customerDetails});
+  _$_Complete({required this.customerDetails, required this.customerStatus});
 
   @override
   final CustomerDetails customerDetails;
+  @override
+  final CustomerStatus customerStatus;
 
   @override
   String toString() {
-    return 'CustomerDetailsState.complete(customerDetails: $customerDetails)';
+    return 'CustomerDetailsState.complete(customerDetails: $customerDetails, customerStatus: $customerStatus)';
   }
 
   @override
@@ -319,13 +349,17 @@ class _$_Complete implements _Complete {
         (other is _Complete &&
             (identical(other.customerDetails, customerDetails) ||
                 const DeepCollectionEquality()
-                    .equals(other.customerDetails, customerDetails)));
+                    .equals(other.customerDetails, customerDetails)) &&
+            (identical(other.customerStatus, customerStatus) ||
+                const DeepCollectionEquality()
+                    .equals(other.customerStatus, customerStatus)));
   }
 
   @override
   int get hashCode =>
       runtimeType.hashCode ^
-      const DeepCollectionEquality().hash(customerDetails);
+      const DeepCollectionEquality().hash(customerDetails) ^
+      const DeepCollectionEquality().hash(customerStatus);
 
   @JsonKey(ignore: true)
   @override
@@ -337,9 +371,11 @@ class _$_Complete implements _Complete {
   TResult when<TResult extends Object?>({
     required TResult Function() loading,
     required TResult Function() empty,
-    required TResult Function(CustomerDetails customerDetails) complete,
+    required TResult Function(
+            CustomerDetails customerDetails, CustomerStatus customerStatus)
+        complete,
   }) {
-    return complete(customerDetails);
+    return complete(customerDetails, customerStatus);
   }
 
   @override
@@ -347,11 +383,13 @@ class _$_Complete implements _Complete {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? loading,
     TResult Function()? empty,
-    TResult Function(CustomerDetails customerDetails)? complete,
+    TResult Function(
+            CustomerDetails customerDetails, CustomerStatus customerStatus)?
+        complete,
     required TResult orElse(),
   }) {
     if (complete != null) {
-      return complete(customerDetails);
+      return complete(customerDetails, customerStatus);
     }
     return orElse();
   }
@@ -382,9 +420,12 @@ class _$_Complete implements _Complete {
 }
 
 abstract class _Complete implements CustomerDetailsState {
-  factory _Complete({required CustomerDetails customerDetails}) = _$_Complete;
+  factory _Complete(
+      {required CustomerDetails customerDetails,
+      required CustomerStatus customerStatus}) = _$_Complete;
 
   CustomerDetails get customerDetails => throw _privateConstructorUsedError;
+  CustomerStatus get customerStatus => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
   _$CompleteCopyWith<_Complete> get copyWith =>
       throw _privateConstructorUsedError;

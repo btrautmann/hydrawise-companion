@@ -1,5 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hydrawise/customer_details/models/customer_details.dart';
+import 'package:hydrawise/customer_details/models/customer_status.dart';
 
 part 'customer_details_state.freezed.dart';
 
@@ -11,5 +12,6 @@ class CustomerDetailsState with _$CustomerDetailsState {
 
   factory CustomerDetailsState.complete({
     required CustomerDetails customerDetails,
+    required CustomerStatus customerStatus,
   }) = _Complete;
 }

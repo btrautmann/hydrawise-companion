@@ -4,11 +4,13 @@ import 'package:hydrawise/core/core.dart';
 import 'package:hydrawise/customer_details/cubit/customer_details_cubit.dart';
 import 'package:hydrawise/customer_details/cubit/customer_details_state.dart';
 import 'package:hydrawise/customer_details/customer_details.dart';
+import 'package:hydrawise/customer_details/models/customer_status.dart';
 
 void main() {
   group('CustomerDetailsCubit', () {
     final DataStorage dataStorage = InMemoryStorage();
     final GetCustomerDetails getCustomerDetails = GetFakeCustomerDetails();
+    final GetCustomerStatus getCustomerStatus = GetFakeCustomerStatus();
     final ClearCustomerDetails clearCustomerDetails =
         ClearCustomerDetailsFromStorage(dataStorage);
     final GetApiKey getApiKey = GetApiKeyFromStorage(dataStorage);
@@ -17,6 +19,7 @@ void main() {
     CustomerDetailsCubit _buildSubject() {
       return CustomerDetailsCubit(
         getCustomerDetails: getCustomerDetails,
+        getCustomerStatus: getCustomerStatus,
         getApiKey: getApiKey,
         setApiKey: setApiKey,
         clearCustomerDetails: clearCustomerDetails,
@@ -45,11 +48,17 @@ void main() {
         },
         expect: () => <CustomerDetailsState>[
           CustomerDetailsState.complete(
-            customerDetails: CustomerDetails(
-              controllerId: 1234,
-              customerId: 5678,
-            ),
-          ),
+              customerDetails: CustomerDetails(
+                activeControllerId: 1234,
+                customerId: 5678,
+                controllers: [],
+              ),
+              customerStatus: CustomerStatus(
+                statusMessage: 'All good!',
+                numberOfSecondsUntilNextRequest: 100,
+                timeOfLastStatusUnixEpoch: 1631330889,
+                zones: [],
+              )),
         ],
       );
     });
@@ -64,8 +73,15 @@ void main() {
           CustomerDetailsState.loading(),
           CustomerDetailsState.complete(
             customerDetails: CustomerDetails(
-              controllerId: 1234,
+              activeControllerId: 1234,
               customerId: 5678,
+              controllers: [],
+            ),
+            customerStatus: CustomerStatus(
+              statusMessage: 'All good!',
+              numberOfSecondsUntilNextRequest: 100,
+              timeOfLastStatusUnixEpoch: 1631330889,
+              zones: [],
             ),
           ),
         ],
