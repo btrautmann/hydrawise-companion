@@ -23,12 +23,14 @@ class _$ZoneTearOff {
   _Zone call(
       {@JsonKey(name: 'relay_id') required int id,
       @JsonKey(name: 'relay') required int physicalNumber,
+      @JsonKey(name: 'name') required String name,
       @JsonKey(name: 'timestr') required String nextTimeOfWaterFriendly,
       @JsonKey(name: 'time') required int nextTimeOfWaterSeconds,
       @JsonKey(name: 'run') required int lengthOfNextRunTimeOrTimeRemaining}) {
     return _Zone(
       id: id,
       physicalNumber: physicalNumber,
+      name: name,
       nextTimeOfWaterFriendly: nextTimeOfWaterFriendly,
       nextTimeOfWaterSeconds: nextTimeOfWaterSeconds,
       lengthOfNextRunTimeOrTimeRemaining: lengthOfNextRunTimeOrTimeRemaining,
@@ -49,6 +51,8 @@ mixin _$Zone {
   int get id => throw _privateConstructorUsedError;
   @JsonKey(name: 'relay')
   int get physicalNumber => throw _privateConstructorUsedError;
+  @JsonKey(name: 'name')
+  String get name => throw _privateConstructorUsedError;
   @JsonKey(name: 'timestr')
   String get nextTimeOfWaterFriendly =>
       throw _privateConstructorUsedError; // Value will be 1 if a watering is in progress
@@ -71,6 +75,7 @@ abstract class $ZoneCopyWith<$Res> {
   $Res call(
       {@JsonKey(name: 'relay_id') int id,
       @JsonKey(name: 'relay') int physicalNumber,
+      @JsonKey(name: 'name') String name,
       @JsonKey(name: 'timestr') String nextTimeOfWaterFriendly,
       @JsonKey(name: 'time') int nextTimeOfWaterSeconds,
       @JsonKey(name: 'run') int lengthOfNextRunTimeOrTimeRemaining});
@@ -88,6 +93,7 @@ class _$ZoneCopyWithImpl<$Res> implements $ZoneCopyWith<$Res> {
   $Res call({
     Object? id = freezed,
     Object? physicalNumber = freezed,
+    Object? name = freezed,
     Object? nextTimeOfWaterFriendly = freezed,
     Object? nextTimeOfWaterSeconds = freezed,
     Object? lengthOfNextRunTimeOrTimeRemaining = freezed,
@@ -101,6 +107,10 @@ class _$ZoneCopyWithImpl<$Res> implements $ZoneCopyWith<$Res> {
           ? _value.physicalNumber
           : physicalNumber // ignore: cast_nullable_to_non_nullable
               as int,
+      name: name == freezed
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
       nextTimeOfWaterFriendly: nextTimeOfWaterFriendly == freezed
           ? _value.nextTimeOfWaterFriendly
           : nextTimeOfWaterFriendly // ignore: cast_nullable_to_non_nullable
@@ -126,6 +136,7 @@ abstract class _$ZoneCopyWith<$Res> implements $ZoneCopyWith<$Res> {
   $Res call(
       {@JsonKey(name: 'relay_id') int id,
       @JsonKey(name: 'relay') int physicalNumber,
+      @JsonKey(name: 'name') String name,
       @JsonKey(name: 'timestr') String nextTimeOfWaterFriendly,
       @JsonKey(name: 'time') int nextTimeOfWaterSeconds,
       @JsonKey(name: 'run') int lengthOfNextRunTimeOrTimeRemaining});
@@ -144,6 +155,7 @@ class __$ZoneCopyWithImpl<$Res> extends _$ZoneCopyWithImpl<$Res>
   $Res call({
     Object? id = freezed,
     Object? physicalNumber = freezed,
+    Object? name = freezed,
     Object? nextTimeOfWaterFriendly = freezed,
     Object? nextTimeOfWaterSeconds = freezed,
     Object? lengthOfNextRunTimeOrTimeRemaining = freezed,
@@ -157,6 +169,10 @@ class __$ZoneCopyWithImpl<$Res> extends _$ZoneCopyWithImpl<$Res>
           ? _value.physicalNumber
           : physicalNumber // ignore: cast_nullable_to_non_nullable
               as int,
+      name: name == freezed
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
       nextTimeOfWaterFriendly: nextTimeOfWaterFriendly == freezed
           ? _value.nextTimeOfWaterFriendly
           : nextTimeOfWaterFriendly // ignore: cast_nullable_to_non_nullable
@@ -180,6 +196,7 @@ class _$_Zone implements _Zone {
   _$_Zone(
       {@JsonKey(name: 'relay_id') required this.id,
       @JsonKey(name: 'relay') required this.physicalNumber,
+      @JsonKey(name: 'name') required this.name,
       @JsonKey(name: 'timestr') required this.nextTimeOfWaterFriendly,
       @JsonKey(name: 'time') required this.nextTimeOfWaterSeconds,
       @JsonKey(name: 'run') required this.lengthOfNextRunTimeOrTimeRemaining});
@@ -194,6 +211,9 @@ class _$_Zone implements _Zone {
   @JsonKey(name: 'relay')
   final int physicalNumber;
   @override
+  @JsonKey(name: 'name')
+  final String name;
+  @override
   @JsonKey(name: 'timestr')
   final String nextTimeOfWaterFriendly;
   @override // Value will be 1 if a watering is in progress
@@ -205,7 +225,7 @@ class _$_Zone implements _Zone {
 
   @override
   String toString() {
-    return 'Zone(id: $id, physicalNumber: $physicalNumber, nextTimeOfWaterFriendly: $nextTimeOfWaterFriendly, nextTimeOfWaterSeconds: $nextTimeOfWaterSeconds, lengthOfNextRunTimeOrTimeRemaining: $lengthOfNextRunTimeOrTimeRemaining)';
+    return 'Zone(id: $id, physicalNumber: $physicalNumber, name: $name, nextTimeOfWaterFriendly: $nextTimeOfWaterFriendly, nextTimeOfWaterSeconds: $nextTimeOfWaterSeconds, lengthOfNextRunTimeOrTimeRemaining: $lengthOfNextRunTimeOrTimeRemaining)';
   }
 
   @override
@@ -217,6 +237,8 @@ class _$_Zone implements _Zone {
             (identical(other.physicalNumber, physicalNumber) ||
                 const DeepCollectionEquality()
                     .equals(other.physicalNumber, physicalNumber)) &&
+            (identical(other.name, name) ||
+                const DeepCollectionEquality().equals(other.name, name)) &&
             (identical(
                     other.nextTimeOfWaterFriendly, nextTimeOfWaterFriendly) ||
                 const DeepCollectionEquality().equals(
@@ -236,6 +258,7 @@ class _$_Zone implements _Zone {
       runtimeType.hashCode ^
       const DeepCollectionEquality().hash(id) ^
       const DeepCollectionEquality().hash(physicalNumber) ^
+      const DeepCollectionEquality().hash(name) ^
       const DeepCollectionEquality().hash(nextTimeOfWaterFriendly) ^
       const DeepCollectionEquality().hash(nextTimeOfWaterSeconds) ^
       const DeepCollectionEquality().hash(lengthOfNextRunTimeOrTimeRemaining);
@@ -257,6 +280,8 @@ abstract class _Zone implements Zone {
           required int id,
       @JsonKey(name: 'relay')
           required int physicalNumber,
+      @JsonKey(name: 'name')
+          required String name,
       @JsonKey(name: 'timestr')
           required String nextTimeOfWaterFriendly,
       @JsonKey(name: 'time')
@@ -272,6 +297,9 @@ abstract class _Zone implements Zone {
   @override
   @JsonKey(name: 'relay')
   int get physicalNumber => throw _privateConstructorUsedError;
+  @override
+  @JsonKey(name: 'name')
+  String get name => throw _privateConstructorUsedError;
   @override
   @JsonKey(name: 'timestr')
   String get nextTimeOfWaterFriendly => throw _privateConstructorUsedError;

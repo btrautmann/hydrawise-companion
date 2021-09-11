@@ -7,6 +7,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:hydrawise/customer_details/api/get_api_key.dart';
 import 'package:hydrawise/customer_details/api/set_api_key.dart';
 import 'package:hydrawise/customer_details/customer_details.dart';
@@ -49,6 +50,7 @@ class App extends StatelessWidget {
       ],
       child: MaterialApp(
         theme: ThemeData(
+          textTheme: GoogleFonts.notoSansTextTheme(Theme.of(context).textTheme),
           appBarTheme: const AppBarTheme(color: Color(0xFF13B9FF)),
           colorScheme: ColorScheme.fromSwatch(
             accentColor: const Color(0xFF13B9FF),

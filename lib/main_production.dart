@@ -41,6 +41,9 @@ Future<void> main() async {
         clearCustomerDetails: clearCustomerDetails,
       ));
     },
-    (error, stackTrace) => log(error.toString(), stackTrace: stackTrace),
+    (error, stackTrace) {
+      print(error.toString());
+      print(stackTrace.toString());
+    },
   );
 }

@@ -8,6 +8,7 @@ class Zone with _$Zone {
   factory Zone({
     @JsonKey(name: 'relay_id') required int id,
     @JsonKey(name: 'relay') required int physicalNumber,
+    @JsonKey(name: 'name') required String name,
     @JsonKey(name: 'timestr') required String nextTimeOfWaterFriendly,
     // Value will be 1 if a watering is in progress
     @JsonKey(name: 'time') required int nextTimeOfWaterSeconds,
