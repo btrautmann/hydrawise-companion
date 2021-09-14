@@ -12,7 +12,7 @@ _$_Zone _$_$_ZoneFromJson(Map json) {
     physicalNumber: json['relay'] as int,
     name: json['name'] as String,
     nextTimeOfWaterFriendly: json['timestr'] as String,
-    nextTimeOfWaterSeconds: json['time'] as int,
+    secondsUntilNextRun: json['time'] as int,
     lengthOfNextRunTimeOrTimeRemaining: json['run'] as int,
   );
 }
@@ -22,6 +22,6 @@ Map<String, dynamic> _$_$_ZoneToJson(_$_Zone instance) => <String, dynamic>{
       'relay': instance.physicalNumber,
       'name': instance.name,
       'timestr': instance.nextTimeOfWaterFriendly,
-      'time': instance.nextTimeOfWaterSeconds,
+      'time': instance.secondsUntilNextRun,
       'run': instance.lengthOfNextRunTimeOrTimeRemaining,
     };

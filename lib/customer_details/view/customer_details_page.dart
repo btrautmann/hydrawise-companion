@@ -18,7 +18,7 @@ import 'package:hydrawise/customer_details/models/controller.dart';
 import 'package:hydrawise/customer_details/models/customer_details.dart';
 import 'package:hydrawise/customer_details/models/customer_status.dart';
 import 'package:hydrawise/customer_details/models/zone.dart';
-import 'package:hydrawise/l10n/l10n.dart';
+import 'package:intl/intl.dart';
 
 class CustomerDetailsPage extends StatelessWidget {
   const CustomerDetailsPage({Key? key}) : super(key: key);
@@ -43,13 +43,25 @@ class CustomerDetailsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = context.l10n;
     return Scaffold(
-      appBar: AppBar(
-        title: Text(l10n.counterAppBarTitle),
-        actions: [_LogOutButton()],
+      body: const SafeArea(child: _CustomerDetailsStateView()),
+      // TODO(brandon): Bottom bar should only show when we have details
+      bottomNavigationBar: BottomNavigationBar(
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.play_arrow_outlined),
+            label: 'Programs',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home_outlined),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.settings_outlined),
+            label: 'Utilities',
+          ),
+        ],
       ),
-      body: const _CustomerDetailsStateView(),
     );
   }
 }
@@ -75,10 +87,12 @@ class _CustomerDetailsStateView extends StatelessWidget {
         context.select((CustomerDetailsCubit cubit) => cubit.state);
     return customerDetails.when(
       loading: () {
-        return const CircularProgressIndicator();
+        return const Center(
+          child: CircularProgressIndicator(),
+        );
       },
       empty: () {
-        return _ApiKeyInput();
+        return Center(child: _ApiKeyInput());
       },
       complete: (details, status) {
         return _AllCustomerContent(
@@ -147,13 +161,13 @@ class _AllCustomerContent extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(16),
       child: Column(
-        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _Greeting(
             unixEpochMilliseconds:
                 customerStatus.timeOfLastStatusUnixEpoch * 1000,
           ),
-          _ZoneGrid(zones: customerStatus.zones),
+          _ZoneList(zones: customerStatus.zones),
         ],
       ),
     );
@@ -247,21 +261,13 @@ class _ActiveControllerView extends StatelessWidget {
   }
 }
 
-class _ZoneGrid extends StatelessWidget {
-  const _ZoneGrid({Key? key, required this.zones}) : super(key: key);
+class _ZoneList extends StatelessWidget {
+  const _ZoneList({Key? key, required this.zones}) : super(key: key);
 
   final List<Zone> zones;
 
   @override
   Widget build(BuildContext context) {
-    // ignore: omit_local_variable_types
-    const double runSpacing = 12;
-    // ignore: omit_local_variable_types
-    const double spacing = 12;
-    const columns = 4;
-    // TODO(brandon): Play with this calculation
-    final zoneCellSize =
-        (MediaQuery.of(context).size.width - runSpacing * columns) / columns;
     return Card(
       clipBehavior: Clip.hardEdge,
       child: Column(
@@ -287,22 +293,18 @@ class _ZoneGrid extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.only(top: 16, bottom: 16),
-            child: SingleChildScrollView(
-              child: Wrap(
-                runSpacing: runSpacing,
-                spacing: spacing,
-                alignment: WrapAlignment.center,
-                children: List.generate(
-                  zones.length,
-                  (index) {
-                    return _ZoneCell(
-                      zone: zones[index],
-                      size: Size(zoneCellSize, zoneCellSize),
-                    );
-                  },
-                ),
-              ),
+            padding: const EdgeInsets.only(top: 8, bottom: 8),
+            child: ListView.builder(
+              primary: false,
+              physics: const NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              itemCount: zones.length,
+              itemBuilder: (_, index) {
+                return _ZoneCell(
+                  zone: zones[index],
+                  shouldShowDivider: index != zones.length - 1,
+                );
+              },
             ),
           ),
         ],
@@ -315,36 +317,58 @@ class _ZoneCell extends StatelessWidget {
   const _ZoneCell({
     Key? key,
     required this.zone,
-    required this.size,
+    required this.shouldShowDivider,
   }) : super(key: key);
 
   final Zone zone;
-  final Size size;
+  final bool shouldShowDivider;
+
+  String formattedTimeOfNextRun(Zone zone) {
+    // TODO(brandon): Show 12/24hr time based on device setting
+    final formatter = DateFormat('h:mm a');
+    return formatter.format(zone.dateTimeOfNextRun);
+  }
 
   @override
   Widget build(BuildContext context) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
       children: [
-        Container(
-          constraints: BoxConstraints.tight(size),
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                Colors.lightGreen,
-                Colors.green,
-              ],
-            ),
-            shape: BoxShape.circle,
-            color: Colors.green,
-          ),
-          child: Center(
-            child: Text(
-              zone.physicalNumber.toString(),
-              style: Theme.of(context).textTheme.headline6,
-            ),
+        Padding(
+          padding: const EdgeInsets.only(left: 16, right: 16),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(right: 8),
+                child: Container(
+                  decoration: const BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        Colors.green,
+                        Colors.lightGreen,
+                      ],
+                    ),
+                    shape: BoxShape.circle,
+                    color: Colors.green,
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Text(zone.physicalNumber.toString()),
+                  ),
+                ),
+              ),
+              Text(zone.name),
+              const Spacer(),
+              Text(formattedTimeOfNextRun(zone)),
+            ],
           ),
         ),
-        Text(zone.name),
+        if (shouldShowDivider)
+          const Divider(
+            indent: 16,
+          ),
       ],
     );
   }

@@ -11,7 +11,7 @@ class Zone with _$Zone {
     @JsonKey(name: 'name') required String name,
     @JsonKey(name: 'timestr') required String nextTimeOfWaterFriendly,
     // Value will be 1 if a watering is in progress
-    @JsonKey(name: 'time') required int nextTimeOfWaterSeconds,
+    @JsonKey(name: 'time') required int secondsUntilNextRun,
     // If run is in progress, indicates time remaining
     @JsonKey(name: 'run') required int lengthOfNextRunTimeOrTimeRemaining,
   }) = _Zone;
@@ -20,4 +20,16 @@ class Zone with _$Zone {
     Map<String, dynamic> json,
   ) =>
       _$ZoneFromJson(json);
+}
+
+extension ZoneX on Zone {
+  int get nextRunMillisecondsSinceEpoch {
+    final currentTimeEpochMillis = DateTime.now().millisecondsSinceEpoch;
+    final millisUntilNextRun = secondsUntilNextRun * 1000;
+    return currentTimeEpochMillis + millisUntilNextRun;
+  }
+
+  DateTime get dateTimeOfNextRun {
+    return DateTime.fromMillisecondsSinceEpoch(nextRunMillisecondsSinceEpoch);
+  }
 }
