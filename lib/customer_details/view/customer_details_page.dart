@@ -144,19 +144,18 @@ class _AllCustomerContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        _Greeting(
-          unixEpochMilliseconds:
-              customerStatus.timeOfLastStatusUnixEpoch * 1000,
-        ),
-        _ActiveControllerView(
-          controllers: customerDetails.controllers,
-          activeControllerId: customerDetails.activeControllerId,
-        ),
-        _ZoneGrid(zones: customerStatus.zones),
-      ],
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          _Greeting(
+            unixEpochMilliseconds:
+                customerStatus.timeOfLastStatusUnixEpoch * 1000,
+          ),
+          _ZoneGrid(zones: customerStatus.zones),
+        ],
+      ),
     );
   }
 }
@@ -181,11 +180,11 @@ class _Greeting extends StatelessWidget {
     } else {
       text = 'Good evening';
     }
-    return Align(
-      alignment: Alignment.centerLeft,
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Text(text, style: theme.textTheme.headline4),
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16),
+      child: Text(
+        text,
+        style: theme.textTheme.headline5,
       ),
     );
   }
@@ -205,44 +204,41 @@ class _ActiveControllerView extends StatelessWidget {
   Widget build(BuildContext context) {
     final activeController =
         controllers.singleWhere((element) => element.id == activeControllerId);
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: HStretch(
-        child: Card(
-          clipBehavior: Clip.hardEdge,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: Container(
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  Colors.green,
-                  Colors.lightGreen,
-                ],
-              ),
-              color: Colors.green,
+    return HStretch(
+      child: Card(
+        clipBehavior: Clip.hardEdge,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                Colors.green,
+                Colors.lightGreen,
+              ],
             ),
-            child: Padding(
-              padding: const EdgeInsets.all(8),
-              child: Row(
-                children: [
-                  Text('👍', style: Theme.of(context).textTheme.headline4),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          activeController.name,
-                          style: Theme.of(context).textTheme.headline6,
-                        ),
-                      ],
-                    ),
+            color: Colors.green,
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(8),
+            child: Row(
+              children: [
+                Text('👍', style: Theme.of(context).textTheme.headline4),
+                Padding(
+                  padding: const EdgeInsets.only(left: 16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        activeController.name,
+                        style: Theme.of(context).textTheme.headline6,
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ),
@@ -258,19 +254,59 @@ class _ZoneGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        GridView.count(
-          shrinkWrap: true,
-          primary: false,
-          mainAxisSpacing: 10,
-          crossAxisSpacing: 10,
-          padding: const EdgeInsets.all(16),
-          crossAxisCount: 3,
-          children: zones.map((e) => _ZoneCell(zone: e)).toList(),
-        )
-      ],
+    // ignore: omit_local_variable_types
+    const double runSpacing = 12;
+    // ignore: omit_local_variable_types
+    const double spacing = 12;
+    const columns = 4;
+    // TODO(brandon): Play with this calculation
+    final zoneCellSize =
+        (MediaQuery.of(context).size.width - runSpacing * columns) / columns;
+    return Card(
+      clipBehavior: Clip.hardEdge,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          HStretch(
+            child: Container(
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    Colors.lightBlue,
+                    Colors.blue,
+                  ],
+                ),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Text(
+                  'Watering Schedule',
+                  style: Theme.of(context).textTheme.headline6,
+                ),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top: 16, bottom: 16),
+            child: SingleChildScrollView(
+              child: Wrap(
+                runSpacing: runSpacing,
+                spacing: spacing,
+                alignment: WrapAlignment.center,
+                children: List.generate(
+                  zones.length,
+                  (index) {
+                    return _ZoneCell(
+                      zone: zones[index],
+                      size: Size(zoneCellSize, zoneCellSize),
+                    );
+                  },
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -279,29 +315,37 @@ class _ZoneCell extends StatelessWidget {
   const _ZoneCell({
     Key? key,
     required this.zone,
+    required this.size,
   }) : super(key: key);
 
   final Zone zone;
+  final Size size;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            Colors.lightGreen,
-            Colors.green,
-          ],
+    return Column(
+      children: [
+        Container(
+          constraints: BoxConstraints.tight(size),
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                Colors.lightGreen,
+                Colors.green,
+              ],
+            ),
+            shape: BoxShape.circle,
+            color: Colors.green,
+          ),
+          child: Center(
+            child: Text(
+              zone.physicalNumber.toString(),
+              style: Theme.of(context).textTheme.headline6,
+            ),
+          ),
         ),
-        shape: BoxShape.circle,
-        color: Colors.green,
-      ),
-      child: Center(
-        child: Text(
-          zone.physicalNumber.toString(),
-          style: Theme.of(context).textTheme.headline4,
-        ),
-      ),
+        Text(zone.name),
+      ],
     );
   }
 }

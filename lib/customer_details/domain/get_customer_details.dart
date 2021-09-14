@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:hydrawise/customer_details/models/controller.dart';
 import 'package:hydrawise/customer_details/models/customer_details.dart';
 
 typedef GetCustomerDetails = Future<CustomerDetails> Function(String apiKey);
@@ -27,7 +28,15 @@ class GetFakeCustomerDetails {
     return CustomerDetails(
       activeControllerId: 1234,
       customerId: 5678,
-      controllers: [],
+      controllers: [
+        Controller(
+          name: 'Fake Controller',
+          lastContact: 1631616496,
+          serialNumber: '123456789',
+          id: 1234,
+          status: 'All good!',
+        )
+      ],
     );
   }
 }
