@@ -48,7 +48,7 @@ class _NoLocationView extends StatelessWidget {
 }
 
 class _WeatherDetailsView extends StatelessWidget {
-  _WeatherDetailsView({
+  const _WeatherDetailsView({
     Key? key,
     required this.weatherForecast,
   }) : super(key: key);
