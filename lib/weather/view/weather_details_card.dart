@@ -35,7 +35,7 @@ class WeatherDetailsStateView extends StatelessWidget {
       loading: () => const Center(
         child: CircularProgressIndicator(),
       ),
-      complete: (weather) => _WeatherDetailsView(weather: weather),
+      complete: (weather) => _WeatherDetailsView(weatherForecast: weather),
     );
   }
 }
@@ -50,18 +50,17 @@ class _NoLocationView extends StatelessWidget {
 class _WeatherDetailsView extends StatelessWidget {
   _WeatherDetailsView({
     Key? key,
-    required this.weather,
-  }) : super(key: key) {
-    _currentWeather = weather
-        .firstWhere((element) => element.date?.day == DateTime.now().day);
-  }
+    required this.weatherForecast,
+  }) : super(key: key);
 
-  final List<Weather> weather;
-
-  late Weather _currentWeather;
+  final List<Weather> weatherForecast;
 
   @override
   Widget build(BuildContext context) {
+    final currentWeather = weatherForecast
+        .firstWhere((element) => element.date?.day == DateTime.now().day);
+    final tomorrowWeather = weatherForecast
+        .firstWhere((element) => element.date!.day > currentWeather.date!.day);
     return Card(
       clipBehavior: Clip.hardEdge,
       child: Column(
@@ -88,8 +87,15 @@ class _WeatherDetailsView extends StatelessWidget {
             ),
           ),
           _CurrentWeather(
-            currentWeather: _currentWeather,
-          )
+            currentWeather: currentWeather,
+          ),
+          const Divider(
+            indent: 16,
+          ),
+          _OtherWeatherRow(
+            weather: tomorrowWeather,
+            title: const Text('Tomorrow'),
+          ),
         ],
       ),
     );
@@ -144,4 +150,26 @@ class _CurrentWeather extends StatelessWidget {
   }
 
   final Weather currentWeather;
+}
+
+class _OtherWeatherRow extends StatelessWidget {
+  const _OtherWeatherRow({
+    Key? key,
+    required this.weather,
+    required this.title,
+  }) : super(key: key);
+
+  final Widget title;
+  final Weather weather;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      leading: Image.network(
+        'http://openweathermap.org/img/w/${weather.weatherIcon!}.png',
+      ),
+      title: title,
+      subtitle: Text(weather.weatherDescription!),
+    );
+  }
 }
