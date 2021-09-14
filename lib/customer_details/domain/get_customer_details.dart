@@ -16,6 +16,7 @@ class GetRealCustomerDetails {
       '/api/v1/customerdetails.php',
       queryParameters,
     );
+    // TODO(brandon): Handle error case
     final response = await http.get(uri);
     return CustomerDetails.fromJson(
       json.decode(response.body) as Map<String, dynamic>,

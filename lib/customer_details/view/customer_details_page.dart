@@ -8,8 +8,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hydrawise/core-ui/widgets/h_stretch.dart';
-import 'package:hydrawise/customer_details/api/get_api_key.dart';
-import 'package:hydrawise/customer_details/api/set_api_key.dart';
+import 'package:hydrawise/customer_details/api/domain/get_api_key.dart';
+import 'package:hydrawise/customer_details/api/domain/set_api_key.dart';
 import 'package:hydrawise/customer_details/cubit/customer_details_cubit.dart';
 import 'package:hydrawise/customer_details/customer_details.dart';
 import 'package:hydrawise/customer_details/domain/clear_customer_details.dart';
@@ -18,6 +18,7 @@ import 'package:hydrawise/customer_details/models/controller.dart';
 import 'package:hydrawise/customer_details/models/customer_details.dart';
 import 'package:hydrawise/customer_details/models/customer_status.dart';
 import 'package:hydrawise/customer_details/models/zone.dart';
+import 'package:hydrawise/weather/weather.dart';
 import 'package:intl/intl.dart';
 
 class CustomerDetailsPage extends StatelessWidget {
@@ -168,6 +169,7 @@ class _AllCustomerContent extends StatelessWidget {
                 customerStatus.timeOfLastStatusUnixEpoch * 1000,
           ),
           _ZoneList(zones: customerStatus.zones),
+          const WeatherDetailsCard(),
         ],
       ),
     );
@@ -268,46 +270,49 @@ class _ZoneList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      clipBehavior: Clip.hardEdge,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          HStretch(
-            child: Container(
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    Colors.lightBlue,
-                    Colors.blue,
-                  ],
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Card(
+        clipBehavior: Clip.hardEdge,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            HStretch(
+              child: Container(
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      Colors.lightBlue,
+                      Colors.blue,
+                    ],
+                  ),
                 ),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Text(
-                  'Watering Schedule',
-                  style: Theme.of(context).textTheme.headline6,
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Text(
+                    'Watering Schedule',
+                    style: Theme.of(context).textTheme.headline6,
+                  ),
                 ),
               ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 8, bottom: 8),
-            child: ListView.builder(
-              primary: false,
-              physics: const NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              itemCount: zones.length,
-              itemBuilder: (_, index) {
-                return _ZoneCell(
-                  zone: zones[index],
-                  shouldShowDivider: index != zones.length - 1,
-                );
-              },
+            Padding(
+              padding: const EdgeInsets.only(top: 8, bottom: 8),
+              child: ListView.builder(
+                primary: false,
+                physics: const NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                itemCount: zones.length,
+                itemBuilder: (_, index) {
+                  return _ZoneCell(
+                    zone: zones[index],
+                    shouldShowDivider: index != zones.length - 1,
+                  );
+                },
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

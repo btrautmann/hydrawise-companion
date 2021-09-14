@@ -6,8 +6,8 @@
 // https://opensource.org/licenses/MIT.
 
 import 'package:bloc/bloc.dart';
-import 'package:hydrawise/customer_details/api/get_api_key.dart';
-import 'package:hydrawise/customer_details/api/set_api_key.dart';
+import 'package:hydrawise/customer_details/api/domain/get_api_key.dart';
+import 'package:hydrawise/customer_details/api/domain/set_api_key.dart';
 import 'package:hydrawise/customer_details/cubit/customer_details_state.dart';
 import 'package:hydrawise/customer_details/customer_details.dart';
 import 'package:hydrawise/customer_details/domain/clear_customer_details.dart';

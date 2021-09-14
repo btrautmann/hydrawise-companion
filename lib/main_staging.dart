@@ -14,6 +14,7 @@ import 'package:hydrawise/core/core.dart';
 import 'package:hydrawise/app/app.dart';
 import 'package:hydrawise/app/app_bloc_observer.dart';
 import 'package:hydrawise/customer_details/customer_details.dart';
+import 'package:hydrawise/weather/weather.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 Future<void> main() async {
@@ -32,6 +33,9 @@ Future<void> main() async {
       final getApiKey = GetApiKeyFromStorage(dataStorage);
       final setApiKey = SetApiKeyInStorage(dataStorage);
       final clearCustomerDetails = ClearCustomerDetailsFromStorage(dataStorage);
+      final getWeather = GetWeatherFromNetwork();
+      final getLocation = GetLocationFromStorage(dataStorage);
+      final setLocation = SetLocationInStorage(dataStorage);
 
       runApp(App(
         getCustomerDetails: getCustomerDetails,
@@ -39,6 +43,9 @@ Future<void> main() async {
         getApiKey: getApiKey,
         setApiKey: setApiKey,
         clearCustomerDetails: clearCustomerDetails,
+        getLocation: getLocation,
+        setLocation: setLocation,
+        getWeather: getWeather,
       ));
     },
     (error, stackTrace) => log(error.toString(), stackTrace: stackTrace),

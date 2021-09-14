@@ -9,6 +9,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:hydrawise/core/core.dart';
 import 'package:hydrawise/app/app.dart';
 import 'package:hydrawise/customer_details/customer_details.dart';
+import 'package:hydrawise/weather/weather.dart';
 
 void main() {
   group('App', () {
@@ -19,6 +20,9 @@ void main() {
       final getApiKey = GetApiKeyFromStorage(dataStorage);
       final setApiKey = SetApiKeyInStorage(dataStorage);
       final clearCustomerDetails = ClearCustomerDetailsFromStorage(dataStorage);
+      final getWeather = GetWeatherFromNetwork();
+      final getLocation = GetLocationFromStorage(dataStorage);
+      final setLocation = SetLocationInStorage(dataStorage);
 
       await tester.pumpWidget(App(
         getCustomerDetails: getCustomerDetails,
@@ -26,6 +30,9 @@ void main() {
         getApiKey: getApiKey,
         setApiKey: setApiKey,
         clearCustomerDetails: clearCustomerDetails,
+        getLocation: getLocation,
+        setLocation: setLocation,
+        getWeather: getWeather,
       ));
       expect(find.byType(CustomerDetailsPage), findsOneWidget);
     });
