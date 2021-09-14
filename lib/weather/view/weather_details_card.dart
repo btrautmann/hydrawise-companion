@@ -102,18 +102,42 @@ class _CurrentWeather extends StatelessWidget {
     required this.currentWeather,
   }) : super(key: key);
 
+  String _currentTempString() {
+    final rawTemp = currentWeather.temperature!.fahrenheit!;
+    final roundedTemp = rawTemp.round();
+    return '${roundedTemp.toString()}\u00B0';
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(
-            'Right now',
-            style: Theme.of(context).textTheme.headline6,
-          )
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Text(
+              'Right now',
+              style: Theme.of(context).textTheme.headline6,
+            ),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              if (currentWeather.weatherIcon != null)
+                Image.network(
+                  'http://openweathermap.org/img/w/${currentWeather.weatherIcon!}.png',
+                ),
+              Text(
+                _currentTempString(),
+                style: Theme.of(context).textTheme.headline3,
+              ),
+            ],
+          ),
+          if (currentWeather.weatherDescription != null) ...[
+            Text(currentWeather.weatherDescription!)
+          ],
         ],
       ),
     );
