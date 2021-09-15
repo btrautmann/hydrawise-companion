@@ -18,6 +18,7 @@ import 'package:hydrawise/customer_details/models/controller.dart';
 import 'package:hydrawise/customer_details/models/customer_details.dart';
 import 'package:hydrawise/customer_details/models/customer_status.dart';
 import 'package:hydrawise/customer_details/models/zone.dart';
+import 'package:hydrawise/customer_details/view/run_zones_page.dart';
 import 'package:hydrawise/weather/weather.dart';
 import 'package:intl/intl.dart';
 
@@ -168,7 +169,16 @@ class _AllCustomerContent extends StatelessWidget {
             unixEpochMilliseconds:
                 customerStatus.timeOfLastStatusUnixEpoch * 1000,
           ),
-          _ZoneList(zones: customerStatus.zones),
+          _ZoneList(
+            zones: customerStatus.zones,
+            onZoneTapped: (zone) {
+              // TODO(brandon): Figure out navigation pattern
+              Navigator.push<void>(
+                context,
+                MaterialPageRoute(builder: (context) => const RunZonesPage()),
+              );
+            },
+          ),
           const WeatherDetailsCard(),
         ],
       ),
@@ -264,9 +274,14 @@ class _ActiveControllerView extends StatelessWidget {
 }
 
 class _ZoneList extends StatelessWidget {
-  const _ZoneList({Key? key, required this.zones}) : super(key: key);
+  const _ZoneList({
+    Key? key,
+    required this.zones,
+    required this.onZoneTapped,
+  }) : super(key: key);
 
   final List<Zone> zones;
+  final ValueSetter<Zone> onZoneTapped;
 
   @override
   Widget build(BuildContext context) {
@@ -307,6 +322,7 @@ class _ZoneList extends StatelessWidget {
                   return _ZoneCell(
                     zone: zones[index],
                     shouldShowDivider: index != zones.length - 1,
+                    onZoneTapped: onZoneTapped,
                   );
                 },
               ),
@@ -323,10 +339,12 @@ class _ZoneCell extends StatelessWidget {
     Key? key,
     required this.zone,
     required this.shouldShowDivider,
+    required this.onZoneTapped,
   }) : super(key: key);
 
   final Zone zone;
   final bool shouldShowDivider;
+  final ValueSetter<Zone> onZoneTapped;
 
   String formattedTimeOfNextRun(Zone zone) {
     // TODO(brandon): Show 12/24hr time based on device setting
@@ -340,34 +358,37 @@ class _ZoneCell extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
-        Padding(
-          padding: const EdgeInsets.only(left: 16, right: 16),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(right: 8),
-                child: Container(
-                  decoration: const BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [
-                        Colors.green,
-                        Colors.lightGreen,
-                      ],
+        InkWell(
+          onTap: () => onZoneTapped(zone),
+          child: Padding(
+            padding: const EdgeInsets.only(left: 16, right: 16),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(right: 8),
+                  child: Container(
+                    decoration: const BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          Colors.green,
+                          Colors.lightGreen,
+                        ],
+                      ),
+                      shape: BoxShape.circle,
+                      color: Colors.green,
                     ),
-                    shape: BoxShape.circle,
-                    color: Colors.green,
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Text(zone.physicalNumber.toString()),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Text(zone.physicalNumber.toString()),
+                    ),
                   ),
                 ),
-              ),
-              Text(zone.name),
-              const Spacer(),
-              Text(formattedTimeOfNextRun(zone)),
-            ],
+                Text(zone.name),
+                const Spacer(),
+                Text(formattedTimeOfNextRun(zone)),
+              ],
+            ),
           ),
         ),
         if (shouldShowDivider)
