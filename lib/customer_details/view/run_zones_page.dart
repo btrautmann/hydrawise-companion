@@ -117,7 +117,7 @@ class _NextWaterText extends StatelessWidget {
   Widget build(BuildContext context) {
     final secondsUntilNextRun = zone.secondsUntilNextRun;
     if (secondsUntilNextRun == 1) {
-      return Text('Running');
+      return const Text('Running');
     } else {
       final nextRun = zone.dateTimeOfNextRun;
       final difference = DateTime.now().difference(nextRun).abs();
@@ -125,8 +125,10 @@ class _NextWaterText extends StatelessWidget {
         return Text('Scheduled to water in ${difference.inDays} days');
       } else if (difference.inHours > 1) {
         return Text('Scheduled to water in ${difference.inHours} hours');
-      } else {
+      } else if (difference.inMinutes > 1) {
         return Text('Scheduled to water in ${difference.inMinutes} minutes');
+      } else {
+        return Text('Scheduled to water in ${difference.inSeconds} seconds');
       }
     }
   }

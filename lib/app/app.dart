@@ -8,6 +8,7 @@
 // ignore_for_file: avoid_redundant_argument_values
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hydrawise/app/app_colors.dart';
@@ -65,15 +66,24 @@ class App extends StatelessWidget {
         Provider<SetLocation>.value(value: _setLocation),
         Provider<GetWeather>.value(value: _getWeather),
       ],
-      child: MaterialApp(
-        theme: _buildLightTheme(context),
-        darkTheme: _buildDarkTheme(context),
-        localizationsDelegates: const [
-          AppLocalizations.delegate,
-          GlobalMaterialLocalizations.delegate,
-        ],
-        supportedLocales: AppLocalizations.supportedLocales,
-        home: const CustomerDetailsPage(),
+      child: BlocProvider(
+        create: (_) => CustomerDetailsCubit(
+          getCustomerDetails: _getCustomerDetails,
+          getCustomerStatus: _getCustomerStatus,
+          getApiKey: _getApiKey,
+          setApiKey: _setApiKey,
+          clearCustomerDetails: _clearCustomerDetails,
+        ),
+        child: MaterialApp(
+          theme: _buildLightTheme(context),
+          darkTheme: _buildDarkTheme(context),
+          localizationsDelegates: const [
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+          ],
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: const CustomerDetailsPage(),
+        ),
       ),
     );
   }

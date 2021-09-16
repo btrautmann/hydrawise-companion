@@ -27,16 +27,7 @@ class CustomerDetailsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => CustomerDetailsCubit(
-        getCustomerDetails: context.read<GetCustomerDetails>(),
-        getCustomerStatus: context.read<GetCustomerStatus>(),
-        getApiKey: context.read<GetApiKey>(),
-        setApiKey: context.read<SetApiKey>(),
-        clearCustomerDetails: context.read<ClearCustomerDetails>(),
-      ),
-      child: const CustomerDetailsView(),
-    );
+    return const CustomerDetailsView();
   }
 }
 
