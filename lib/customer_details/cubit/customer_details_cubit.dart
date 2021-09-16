@@ -5,6 +5,8 @@
 // license that can be found in the LICENSE file or at
 // https://opensource.org/licenses/MIT.
 
+import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:hydrawise/customer_details/api/domain/get_api_key.dart';
 import 'package:hydrawise/customer_details/api/domain/set_api_key.dart';
@@ -12,7 +14,6 @@ import 'package:hydrawise/customer_details/cubit/customer_details_state.dart';
 import 'package:hydrawise/customer_details/customer_details.dart';
 import 'package:hydrawise/customer_details/domain/clear_customer_details.dart';
 import 'package:hydrawise/customer_details/domain/get_customer_details.dart';
-import 'package:hydrawise/customer_details/models/customer_details.dart';
 
 class CustomerDetailsCubit extends Cubit<CustomerDetailsState> {
   CustomerDetailsCubit({
@@ -36,10 +37,6 @@ class CustomerDetailsCubit extends Cubit<CustomerDetailsState> {
   final SetApiKey _setApiKey;
   final ClearCustomerDetails _clearCustomerDetails;
 
-  /// Should be called when this Cubit is created
-  ///
-  /// Fetches the customer's API key and uses it to populate
-  /// state with the [CustomerDetails].
   Future<void> _loadCustomerDetails() async {
     emit(CustomerDetailsState.loading());
     final apiKey = await _getApiKey();
@@ -52,9 +49,27 @@ class CustomerDetailsCubit extends Cubit<CustomerDetailsState> {
         customerDetails: customerDetails,
         customerStatus: customerStatus,
       ));
+      _poll();
     } else {
       emit(CustomerDetailsState.empty());
     }
+  }
+
+  void _poll() {
+    Timer.periodic(const Duration(seconds: 5), (timer) {
+      state.when(
+          loading: () {},
+          empty: () {},
+          complete: (details, status) async {
+            final customerStatus = await _getCustomerStatus();
+            emit(
+              CustomerDetailsState.complete(
+                customerDetails: details,
+                customerStatus: customerStatus,
+              ),
+            );
+          });
+    });
   }
 
   Future<void> updateApiKey(String apiKey) async {
