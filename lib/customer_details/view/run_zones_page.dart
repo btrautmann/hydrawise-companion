@@ -52,10 +52,26 @@ class RunZonesPage extends StatelessWidget {
               ),
               Padding(
                 padding: const EdgeInsets.only(top: 16),
+                child: _NextWaterText(zone: zone),
+              ),
+              const Padding(
+                padding: EdgeInsets.only(top: 16),
+                child: Slider(
+                  min: 5,
+                  max: 100,
+                  value: 10,
+                  onChanged: print,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 16),
                 child: Row(
                   children: [
                     const Spacer(),
-                    Chip(
+                    ActionChip(
+                      onPressed: () {
+                        print('Suspend');
+                      },
                       label: SizedBox(
                         width: MediaQuery.of(context).size.width / 3,
                         child: const Padding(
@@ -65,7 +81,10 @@ class RunZonesPage extends StatelessWidget {
                       ),
                     ),
                     const Spacer(),
-                    Chip(
+                    ActionChip(
+                      onPressed: () {
+                        print('Run');
+                      },
                       label: SizedBox(
                         width: MediaQuery.of(context).size.width / 3,
                         child: const Padding(
@@ -77,11 +96,38 @@ class RunZonesPage extends StatelessWidget {
                     const Spacer(),
                   ],
                 ),
-              )
+              ),
             ],
           ),
         ),
       ),
     );
+  }
+}
+
+class _NextWaterText extends StatelessWidget {
+  const _NextWaterText({
+    Key? key,
+    required this.zone,
+  }) : super(key: key);
+
+  final Zone zone;
+
+  @override
+  Widget build(BuildContext context) {
+    final secondsUntilNextRun = zone.secondsUntilNextRun;
+    if (secondsUntilNextRun == 1) {
+      return Text('Running');
+    } else {
+      final nextRun = zone.dateTimeOfNextRun;
+      final difference = DateTime.now().difference(nextRun).abs();
+      if (difference.inDays > 1) {
+        return Text('Scheduled to water in ${difference.inDays} days');
+      } else if (difference.inHours > 1) {
+        return Text('Scheduled to water in ${difference.inHours} hours');
+      } else {
+        return Text('Scheduled to water in ${difference.inMinutes} minutes');
+      }
+    }
   }
 }
