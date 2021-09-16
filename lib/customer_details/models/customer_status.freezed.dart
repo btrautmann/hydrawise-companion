@@ -21,19 +21,13 @@ class _$CustomerStatusTearOff {
   const _$CustomerStatusTearOff();
 
   _CustomerStatus call(
-      {@JsonKey(name: 'message') required String statusMessage,
-      @JsonKey(name: 'nextpoll') required int numberOfSecondsUntilNextRequest,
+      {@JsonKey(name: 'nextpoll') required int numberOfSecondsUntilNextRequest,
       @JsonKey(name: 'time') required int timeOfLastStatusUnixEpoch,
-      @JsonKey(name: 'relays') required List<Zone> zones,
-      @JsonKey(name: 'master') int? masterZoneNumber,
-      @JsonKey(name: 'master_timer') int? zoneDelay}) {
+      @JsonKey(name: 'relays') required List<Zone> zones}) {
     return _CustomerStatus(
-      statusMessage: statusMessage,
       numberOfSecondsUntilNextRequest: numberOfSecondsUntilNextRequest,
       timeOfLastStatusUnixEpoch: timeOfLastStatusUnixEpoch,
       zones: zones,
-      masterZoneNumber: masterZoneNumber,
-      zoneDelay: zoneDelay,
     );
   }
 
@@ -47,18 +41,12 @@ const $CustomerStatus = _$CustomerStatusTearOff();
 
 /// @nodoc
 mixin _$CustomerStatus {
-  @JsonKey(name: 'message')
-  String get statusMessage => throw _privateConstructorUsedError;
   @JsonKey(name: 'nextpoll')
   int get numberOfSecondsUntilNextRequest => throw _privateConstructorUsedError;
   @JsonKey(name: 'time')
   int get timeOfLastStatusUnixEpoch => throw _privateConstructorUsedError;
   @JsonKey(name: 'relays')
   List<Zone> get zones => throw _privateConstructorUsedError;
-  @JsonKey(name: 'master')
-  int? get masterZoneNumber => throw _privateConstructorUsedError;
-  @JsonKey(name: 'master_timer')
-  int? get zoneDelay => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -72,12 +60,9 @@ abstract class $CustomerStatusCopyWith<$Res> {
           CustomerStatus value, $Res Function(CustomerStatus) then) =
       _$CustomerStatusCopyWithImpl<$Res>;
   $Res call(
-      {@JsonKey(name: 'message') String statusMessage,
-      @JsonKey(name: 'nextpoll') int numberOfSecondsUntilNextRequest,
+      {@JsonKey(name: 'nextpoll') int numberOfSecondsUntilNextRequest,
       @JsonKey(name: 'time') int timeOfLastStatusUnixEpoch,
-      @JsonKey(name: 'relays') List<Zone> zones,
-      @JsonKey(name: 'master') int? masterZoneNumber,
-      @JsonKey(name: 'master_timer') int? zoneDelay});
+      @JsonKey(name: 'relays') List<Zone> zones});
 }
 
 /// @nodoc
@@ -91,18 +76,11 @@ class _$CustomerStatusCopyWithImpl<$Res>
 
   @override
   $Res call({
-    Object? statusMessage = freezed,
     Object? numberOfSecondsUntilNextRequest = freezed,
     Object? timeOfLastStatusUnixEpoch = freezed,
     Object? zones = freezed,
-    Object? masterZoneNumber = freezed,
-    Object? zoneDelay = freezed,
   }) {
     return _then(_value.copyWith(
-      statusMessage: statusMessage == freezed
-          ? _value.statusMessage
-          : statusMessage // ignore: cast_nullable_to_non_nullable
-              as String,
       numberOfSecondsUntilNextRequest: numberOfSecondsUntilNextRequest ==
               freezed
           ? _value.numberOfSecondsUntilNextRequest
@@ -116,14 +94,6 @@ class _$CustomerStatusCopyWithImpl<$Res>
           ? _value.zones
           : zones // ignore: cast_nullable_to_non_nullable
               as List<Zone>,
-      masterZoneNumber: masterZoneNumber == freezed
-          ? _value.masterZoneNumber
-          : masterZoneNumber // ignore: cast_nullable_to_non_nullable
-              as int?,
-      zoneDelay: zoneDelay == freezed
-          ? _value.zoneDelay
-          : zoneDelay // ignore: cast_nullable_to_non_nullable
-              as int?,
     ));
   }
 }
@@ -136,12 +106,9 @@ abstract class _$CustomerStatusCopyWith<$Res>
       __$CustomerStatusCopyWithImpl<$Res>;
   @override
   $Res call(
-      {@JsonKey(name: 'message') String statusMessage,
-      @JsonKey(name: 'nextpoll') int numberOfSecondsUntilNextRequest,
+      {@JsonKey(name: 'nextpoll') int numberOfSecondsUntilNextRequest,
       @JsonKey(name: 'time') int timeOfLastStatusUnixEpoch,
-      @JsonKey(name: 'relays') List<Zone> zones,
-      @JsonKey(name: 'master') int? masterZoneNumber,
-      @JsonKey(name: 'master_timer') int? zoneDelay});
+      @JsonKey(name: 'relays') List<Zone> zones});
 }
 
 /// @nodoc
@@ -157,18 +124,11 @@ class __$CustomerStatusCopyWithImpl<$Res>
 
   @override
   $Res call({
-    Object? statusMessage = freezed,
     Object? numberOfSecondsUntilNextRequest = freezed,
     Object? timeOfLastStatusUnixEpoch = freezed,
     Object? zones = freezed,
-    Object? masterZoneNumber = freezed,
-    Object? zoneDelay = freezed,
   }) {
     return _then(_CustomerStatus(
-      statusMessage: statusMessage == freezed
-          ? _value.statusMessage
-          : statusMessage // ignore: cast_nullable_to_non_nullable
-              as String,
       numberOfSecondsUntilNextRequest: numberOfSecondsUntilNextRequest ==
               freezed
           ? _value.numberOfSecondsUntilNextRequest
@@ -182,14 +142,6 @@ class __$CustomerStatusCopyWithImpl<$Res>
           ? _value.zones
           : zones // ignore: cast_nullable_to_non_nullable
               as List<Zone>,
-      masterZoneNumber: masterZoneNumber == freezed
-          ? _value.masterZoneNumber
-          : masterZoneNumber // ignore: cast_nullable_to_non_nullable
-              as int?,
-      zoneDelay: zoneDelay == freezed
-          ? _value.zoneDelay
-          : zoneDelay // ignore: cast_nullable_to_non_nullable
-              as int?,
     ));
   }
 }
@@ -198,19 +150,13 @@ class __$CustomerStatusCopyWithImpl<$Res>
 @JsonSerializable()
 class _$_CustomerStatus implements _CustomerStatus {
   _$_CustomerStatus(
-      {@JsonKey(name: 'message') required this.statusMessage,
-      @JsonKey(name: 'nextpoll') required this.numberOfSecondsUntilNextRequest,
+      {@JsonKey(name: 'nextpoll') required this.numberOfSecondsUntilNextRequest,
       @JsonKey(name: 'time') required this.timeOfLastStatusUnixEpoch,
-      @JsonKey(name: 'relays') required this.zones,
-      @JsonKey(name: 'master') this.masterZoneNumber,
-      @JsonKey(name: 'master_timer') this.zoneDelay});
+      @JsonKey(name: 'relays') required this.zones});
 
   factory _$_CustomerStatus.fromJson(Map<String, dynamic> json) =>
       _$_$_CustomerStatusFromJson(json);
 
-  @override
-  @JsonKey(name: 'message')
-  final String statusMessage;
   @override
   @JsonKey(name: 'nextpoll')
   final int numberOfSecondsUntilNextRequest;
@@ -220,25 +166,16 @@ class _$_CustomerStatus implements _CustomerStatus {
   @override
   @JsonKey(name: 'relays')
   final List<Zone> zones;
-  @override
-  @JsonKey(name: 'master')
-  final int? masterZoneNumber;
-  @override
-  @JsonKey(name: 'master_timer')
-  final int? zoneDelay;
 
   @override
   String toString() {
-    return 'CustomerStatus(statusMessage: $statusMessage, numberOfSecondsUntilNextRequest: $numberOfSecondsUntilNextRequest, timeOfLastStatusUnixEpoch: $timeOfLastStatusUnixEpoch, zones: $zones, masterZoneNumber: $masterZoneNumber, zoneDelay: $zoneDelay)';
+    return 'CustomerStatus(numberOfSecondsUntilNextRequest: $numberOfSecondsUntilNextRequest, timeOfLastStatusUnixEpoch: $timeOfLastStatusUnixEpoch, zones: $zones)';
   }
 
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other is _CustomerStatus &&
-            (identical(other.statusMessage, statusMessage) ||
-                const DeepCollectionEquality()
-                    .equals(other.statusMessage, statusMessage)) &&
             (identical(other.numberOfSecondsUntilNextRequest,
                     numberOfSecondsUntilNextRequest) ||
                 const DeepCollectionEquality().equals(
@@ -250,24 +187,15 @@ class _$_CustomerStatus implements _CustomerStatus {
                     other.timeOfLastStatusUnixEpoch,
                     timeOfLastStatusUnixEpoch)) &&
             (identical(other.zones, zones) ||
-                const DeepCollectionEquality().equals(other.zones, zones)) &&
-            (identical(other.masterZoneNumber, masterZoneNumber) ||
-                const DeepCollectionEquality()
-                    .equals(other.masterZoneNumber, masterZoneNumber)) &&
-            (identical(other.zoneDelay, zoneDelay) ||
-                const DeepCollectionEquality()
-                    .equals(other.zoneDelay, zoneDelay)));
+                const DeepCollectionEquality().equals(other.zones, zones)));
   }
 
   @override
   int get hashCode =>
       runtimeType.hashCode ^
-      const DeepCollectionEquality().hash(statusMessage) ^
       const DeepCollectionEquality().hash(numberOfSecondsUntilNextRequest) ^
       const DeepCollectionEquality().hash(timeOfLastStatusUnixEpoch) ^
-      const DeepCollectionEquality().hash(zones) ^
-      const DeepCollectionEquality().hash(masterZoneNumber) ^
-      const DeepCollectionEquality().hash(zoneDelay);
+      const DeepCollectionEquality().hash(zones);
 
   @JsonKey(ignore: true)
   @override
@@ -282,19 +210,13 @@ class _$_CustomerStatus implements _CustomerStatus {
 
 abstract class _CustomerStatus implements CustomerStatus {
   factory _CustomerStatus(
-      {@JsonKey(name: 'message') required String statusMessage,
-      @JsonKey(name: 'nextpoll') required int numberOfSecondsUntilNextRequest,
+      {@JsonKey(name: 'nextpoll') required int numberOfSecondsUntilNextRequest,
       @JsonKey(name: 'time') required int timeOfLastStatusUnixEpoch,
-      @JsonKey(name: 'relays') required List<Zone> zones,
-      @JsonKey(name: 'master') int? masterZoneNumber,
-      @JsonKey(name: 'master_timer') int? zoneDelay}) = _$_CustomerStatus;
+      @JsonKey(name: 'relays') required List<Zone> zones}) = _$_CustomerStatus;
 
   factory _CustomerStatus.fromJson(Map<String, dynamic> json) =
       _$_CustomerStatus.fromJson;
 
-  @override
-  @JsonKey(name: 'message')
-  String get statusMessage => throw _privateConstructorUsedError;
   @override
   @JsonKey(name: 'nextpoll')
   int get numberOfSecondsUntilNextRequest => throw _privateConstructorUsedError;
@@ -304,12 +226,6 @@ abstract class _CustomerStatus implements CustomerStatus {
   @override
   @JsonKey(name: 'relays')
   List<Zone> get zones => throw _privateConstructorUsedError;
-  @override
-  @JsonKey(name: 'master')
-  int? get masterZoneNumber => throw _privateConstructorUsedError;
-  @override
-  @JsonKey(name: 'master_timer')
-  int? get zoneDelay => throw _privateConstructorUsedError;
   @override
   @JsonKey(ignore: true)
   _$CustomerStatusCopyWith<_CustomerStatus> get copyWith =>

@@ -11,7 +11,6 @@ import 'dart:developer';
 import 'package:bloc/bloc.dart';
 import 'package:flutter/widgets.dart';
 import 'package:hydrawise/core/core.dart';
-
 import 'package:hydrawise/app/app.dart';
 import 'package:hydrawise/app/app_bloc_observer.dart';
 import 'package:hydrawise/customer_details/customer_details.dart';
@@ -26,6 +25,7 @@ Future<void> main() async {
   await runZonedGuarded(
     () async {
       WidgetsFlutterBinding.ensureInitialized();
+
       final DataStorage dataStorage = InMemoryStorage();
       final getCustomerDetails = GetFakeCustomerDetails();
       final getCustomerStatus = GetFakeCustomerStatus();

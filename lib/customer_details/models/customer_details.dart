@@ -1,5 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hydrawise/customer_details/models/controller.dart';
+import 'package:hydrawise/customer_details/models/customer_identification.dart';
 
 part 'customer_details.freezed.dart';
 part 'customer_details.g.dart';
@@ -16,4 +17,15 @@ class CustomerDetails with _$CustomerDetails {
     Map<String, dynamic> json,
   ) =>
       _$CustomerDetailsFromJson(json);
+}
+
+extension CustomerDetailsX on CustomerDetails {
+  CustomerIdentification toCustomerIdentification(String apiKey) {
+    return CustomerIdentification(
+      activeControllerId: activeControllerId,
+      customerId: customerId,
+      apiKey: apiKey,
+      lastStatusUpdate: DateTime.now().millisecondsSinceEpoch,
+    );
+  }
 }

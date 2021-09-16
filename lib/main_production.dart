@@ -10,10 +10,13 @@ import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
 import 'package:flutter/widgets.dart';
+import 'package:hydrawise/app/domain/create_database.dart';
 import 'package:hydrawise/core/core.dart';
 import 'package:hydrawise/app/app.dart';
 import 'package:hydrawise/app/app_bloc_observer.dart';
 import 'package:hydrawise/customer_details/customer_details.dart';
+import 'package:hydrawise/customer_details/domain/get_next_poll_time.dart';
+import 'package:hydrawise/customer_details/domain/set_next_poll_time.dart';
 import 'package:hydrawise/weather/weather.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -26,15 +29,31 @@ Future<void> main() async {
   await runZonedGuarded(
     () async {
       WidgetsFlutterBinding.ensureInitialized();
+
+      final database = await CreateHydrawiseDatabase().call(
+        databaseName: 'hydrawise_companion_prod.db',
+        version: 2,
+      );
+
       final sharedPreferences = await SharedPreferences.getInstance();
       final dataStorage = SharedPreferencesStorage(sharedPreferences);
-      final getCustomerDetails = GetRealCustomerDetails();
-      final getCustomerStatus = GetRealCustomerStatus();
       final getApiKey = GetApiKeyFromStorage(dataStorage);
       final setApiKey = SetApiKeyInStorage(dataStorage);
       final getWeather = GetWeatherFromNetwork();
       final getLocation = GetLocationFromStorage(dataStorage);
       final setLocation = SetLocationInStorage(dataStorage);
+      final getNextPollTime = GetNextPollTimeFromStorage(dataStorage);
+      final setNextPollTime = SetNextPollTimeInStorage(dataStorage);
+      final getCustomerDetails = GetCustomerDetailsFromNetwork(
+        database: database,
+        getApiKey: getApiKey,
+      );
+      final getCustomerStatus = GetCustomerStatusFromNetwork(
+        database: database,
+        getApiKey: getApiKey,
+        getNextPollTime: getNextPollTime,
+        setNextPollTime: setNextPollTime,
+      );
 
       final clearCustomerDetails = ClearCustomerDetailsFromStorage(dataStorage);
 

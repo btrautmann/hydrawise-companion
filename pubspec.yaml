@@ -17,8 +17,10 @@ dependencies:
   google_fonts: ^2.1.0
   http: ^0.13.3
   intl: ^0.17.0
+  path: ^1.8.0
   provider: ^6.0.0
   shared_preferences: ^2.0.7
+  sqflite: ^2.0.0+4
   weather: ^2.0.1
 
 dev_dependencies:

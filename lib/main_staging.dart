@@ -10,6 +10,7 @@ import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
 import 'package:flutter/widgets.dart';
+import 'package:hydrawise/app/domain/create_database.dart';
 import 'package:hydrawise/core/core.dart';
 import 'package:hydrawise/app/app.dart';
 import 'package:hydrawise/app/app_bloc_observer.dart';
@@ -26,16 +27,32 @@ Future<void> main() async {
   await runZonedGuarded(
     () async {
       WidgetsFlutterBinding.ensureInitialized();
+
+      final database = await CreateHydrawiseDatabase().call(
+        databaseName: 'hydrawise_companion_stage.db',
+        version: 1,
+      );
+
       final sharedPreferences = await SharedPreferences.getInstance();
       final dataStorage = SharedPreferencesStorage(sharedPreferences);
-      final getCustomerDetails = GetRealCustomerDetails();
-      final getCustomerStatus = GetRealCustomerStatus();
       final getApiKey = GetApiKeyFromStorage(dataStorage);
       final setApiKey = SetApiKeyInStorage(dataStorage);
       final clearCustomerDetails = ClearCustomerDetailsFromStorage(dataStorage);
       final getWeather = GetWeatherFromNetwork();
       final getLocation = GetLocationFromStorage(dataStorage);
       final setLocation = SetLocationInStorage(dataStorage);
+      final getNextPollTime = GetNextPollTimeFromStorage(dataStorage);
+      final setNextPollTime = SetNextPollTimeInStorage(dataStorage);
+      final getCustomerDetails = GetCustomerDetailsFromNetwork(
+        database: database,
+        getApiKey: getApiKey,
+      );
+      final getCustomerStatus = GetCustomerStatusFromNetwork(
+        database: database,
+        getApiKey: getApiKey,
+        getNextPollTime: getNextPollTime,
+        setNextPollTime: setNextPollTime,
+      );
 
       runApp(App(
         getCustomerDetails: getCustomerDetails,

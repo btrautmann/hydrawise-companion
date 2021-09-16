@@ -4,6 +4,7 @@ import 'package:hydrawise/core/core.dart';
 import 'package:hydrawise/customer_details/cubit/customer_details_cubit.dart';
 import 'package:hydrawise/customer_details/cubit/customer_details_state.dart';
 import 'package:hydrawise/customer_details/customer_details.dart';
+import 'package:hydrawise/customer_details/models/controller.dart';
 import 'package:hydrawise/customer_details/models/customer_status.dart';
 
 void main() {
@@ -51,10 +52,17 @@ void main() {
               customerDetails: CustomerDetails(
                 activeControllerId: 1234,
                 customerId: 5678,
-                controllers: [],
+                controllers: [
+                  Controller(
+                    name: 'Fake Controller',
+                    lastContact: 1631616496,
+                    serialNumber: '123456789',
+                    id: 1234,
+                    status: 'All good!',
+                  )
+                ],
               ),
               customerStatus: CustomerStatus(
-                statusMessage: 'All good!',
                 numberOfSecondsUntilNextRequest: 100,
                 timeOfLastStatusUnixEpoch: 1631330889,
                 zones: [],
@@ -75,10 +83,17 @@ void main() {
             customerDetails: CustomerDetails(
               activeControllerId: 1234,
               customerId: 5678,
-              controllers: [],
+              controllers: [
+                Controller(
+                  name: 'Fake Controller',
+                  lastContact: 1631616496,
+                  serialNumber: '123456789',
+                  id: 1234,
+                  status: 'All good!',
+                )
+              ],
             ),
             customerStatus: CustomerStatus(
-              statusMessage: 'All good!',
               numberOfSecondsUntilNextRequest: 100,
               timeOfLastStatusUnixEpoch: 1631330889,
               zones: [],

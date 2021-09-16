@@ -44,9 +44,8 @@ class CustomerDetailsCubit extends Cubit<CustomerDetailsState> {
     emit(CustomerDetailsState.loading());
     final apiKey = await _getApiKey();
     if (apiKey != null && apiKey.isNotEmpty) {
-      final customerDetails = await _getCustomerDetails(apiKey);
+      final customerDetails = await _getCustomerDetails();
       final customerStatus = await _getCustomerStatus(
-        apiKey: apiKey,
         activeControllerId: customerDetails.activeControllerId,
       );
       emit(CustomerDetailsState.complete(
