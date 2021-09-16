@@ -175,7 +175,11 @@ class _AllCustomerContent extends StatelessWidget {
               // TODO(brandon): Figure out navigation pattern
               Navigator.push<void>(
                 context,
-                MaterialPageRoute(builder: (context) => const RunZonesPage()),
+                MaterialPageRoute(
+                  builder: (context) => RunZonesPage(
+                    zone: zone,
+                  ),
+                ),
               );
             },
           ),
@@ -367,20 +371,26 @@ class _ZoneCell extends StatelessWidget {
               children: [
                 Padding(
                   padding: const EdgeInsets.only(right: 8),
-                  child: Container(
-                    decoration: const BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          Colors.green,
-                          Colors.lightGreen,
-                        ],
+                  child: Hero(
+                    tag: zone,
+                    child: Material(
+                      type: MaterialType.transparency,
+                      child: Container(
+                        decoration: const BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [
+                              Colors.green,
+                              Colors.lightGreen,
+                            ],
+                          ),
+                          shape: BoxShape.circle,
+                          color: Colors.green,
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: Text(zone.physicalNumber.toString()),
+                        ),
                       ),
-                      shape: BoxShape.circle,
-                      color: Colors.green,
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: Text(zone.physicalNumber.toString()),
                     ),
                   ),
                 ),
