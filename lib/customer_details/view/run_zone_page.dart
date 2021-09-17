@@ -51,7 +51,7 @@ class _RunZonesView extends StatelessWidget {
             padding: const EdgeInsets.all(16),
             child: Column(
               children: [
-                _ZoneHeader(zone: zone),
+                _ZoneHeader(zone: selectedZone),
                 Padding(
                   padding: const EdgeInsets.only(top: 16),
                   child: _NextWaterText(zone: selectedZone),
@@ -106,7 +106,7 @@ class _ZoneButtons extends StatelessWidget {
           ActionChip(
             onPressed: () {
               // TODO(brandon): Get run length from Slider
-              context.read<RunZoneCubit>().runZone(runLengthInSeconds: 100);
+              context.read<RunZoneCubit>().runZone(runLengthInSeconds: 25);
             },
             label: SizedBox(
               width: MediaQuery.of(context).size.width / 3,
@@ -163,11 +163,12 @@ class _ZoneHeader extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(
-                width: 100,
-                height: 100,
-                child: CircularProgressIndicator(),
-              ),
+              if (zone.isRunning)
+                const SizedBox(
+                  width: 100,
+                  height: 100,
+                  child: CircularProgressIndicator(),
+                ),
             ],
           ),
         ),

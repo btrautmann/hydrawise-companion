@@ -129,7 +129,7 @@ class GetFakeCustomerStatus {
     }
 
     return CustomerStatus(
-      numberOfSecondsUntilNextRequest: 60,
+      numberOfSecondsUntilNextRequest: 5,
       timeOfLastStatusUnixEpoch: customer.lastStatusUpdate,
       zones: zones,
     );

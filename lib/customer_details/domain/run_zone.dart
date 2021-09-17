@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:hydrawise/customer_details/api/domain/get_api_key.dart';
 import 'package:hydrawise/customer_details/models/run_zone_response.dart';
 import 'package:hydrawise/customer_details/models/zone.dart';
+import 'package:pedantic/pedantic.dart';
 import 'package:sqflite/sqlite_api.dart';
 
 typedef RunZone = Future<RunZoneResponse> Function({
@@ -63,6 +64,22 @@ class RunZoneLocally {
       runningZone.toJson(),
       where: 'relay_id = ?',
       whereArgs: [zone.id],
+    );
+
+    // Turn the zone back off
+    unawaited(
+      Future.delayed(Duration(seconds: runLengthSeconds), () {
+        _database.update(
+          'zones',
+          zone
+              .copyWith(
+                  secondsUntilNextRun: 60,
+                  lengthOfNextRunTimeOrTimeRemaining: 60)
+              .toJson(),
+          where: 'relay_id = ?',
+          whereArgs: [zone.id],
+        );
+      }),
     );
 
     return RunZoneResponse(

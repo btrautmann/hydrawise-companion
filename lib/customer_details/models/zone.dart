@@ -32,4 +32,8 @@ extension ZoneX on Zone {
   DateTime get dateTimeOfNextRun {
     return DateTime.fromMillisecondsSinceEpoch(nextRunMillisecondsSinceEpoch);
   }
+
+  bool get isRunning {
+    return secondsUntilNextRun == 1;
+  }
 }
