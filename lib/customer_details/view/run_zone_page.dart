@@ -50,25 +50,35 @@ class _RunZonesView extends StatelessWidget {
                     tag: zone,
                     child: Material(
                       type: MaterialType.transparency,
-                      child: Container(
+                      child: Stack(
                         alignment: Alignment.center,
-                        decoration: const BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [
-                              Colors.green,
-                              Colors.lightGreen,
-                            ],
+                        children: [
+                          Container(
+                            alignment: Alignment.center,
+                            decoration: const BoxDecoration(
+                              gradient: LinearGradient(
+                                colors: [
+                                  Colors.green,
+                                  Colors.lightGreen,
+                                ],
+                              ),
+                              shape: BoxShape.circle,
+                              color: Colors.green,
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(16),
+                              child: Text(
+                                zone.physicalNumber.toString(),
+                                style: Theme.of(context).textTheme.headline3,
+                              ),
+                            ),
                           ),
-                          shape: BoxShape.circle,
-                          color: Colors.green,
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(16),
-                          child: Text(
-                            zone.physicalNumber.toString(),
-                            style: Theme.of(context).textTheme.headline3,
+                          const SizedBox(
+                            width: 100,
+                            height: 100,
+                            child: CircularProgressIndicator(),
                           ),
-                        ),
+                        ],
                       ),
                     ),
                   ),

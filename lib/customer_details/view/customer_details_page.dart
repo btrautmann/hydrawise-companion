@@ -14,7 +14,7 @@ import 'package:hydrawise/customer_details/models/controller.dart';
 import 'package:hydrawise/customer_details/models/customer_details.dart';
 import 'package:hydrawise/customer_details/models/customer_status.dart';
 import 'package:hydrawise/customer_details/models/zone.dart';
-import 'package:hydrawise/customer_details/view/run_zones_page.dart';
+import 'package:hydrawise/customer_details/view/run_zone_page.dart';
 import 'package:hydrawise/weather/weather.dart';
 import 'package:intl/intl.dart';
 

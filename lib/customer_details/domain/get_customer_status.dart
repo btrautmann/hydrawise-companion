@@ -63,16 +63,10 @@ class GetCustomerStatusFromNetwork {
         );
       });
 
-      await batch.commit();
-
-      final secondsUntilNextPoll =
-          customerStatus.numberOfSecondsUntilNextRequest;
-      await _setNextPollTime(secondsUntilNextPoll: secondsUntilNextPoll);
-
       final customers = await _database.query('customers');
       final customer = CustomerIdentification.fromJson(customers.first);
 
-      await _database.update(
+      batch.update(
         'customers',
         customer
             .copyWith(
@@ -82,6 +76,12 @@ class GetCustomerStatusFromNetwork {
         where: 'customer_id = ?',
         whereArgs: [customer.customerId],
       );
+
+      await batch.commit();
+
+      final secondsUntilNextPoll =
+          customerStatus.numberOfSecondsUntilNextRequest;
+      await _setNextPollTime(secondsUntilNextPoll: secondsUntilNextPoll);
 
       return customerStatus;
     }

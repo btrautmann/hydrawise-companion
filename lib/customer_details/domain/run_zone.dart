@@ -1,17 +1,26 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:hydrawise/customer_details/api/domain/get_api_key.dart';
 import 'package:hydrawise/customer_details/models/run_zone_response.dart';
 import 'package:hydrawise/customer_details/models/zone.dart';
 
-typedef RunZone = Future<RunZoneResponse> Function(
-    String apiKey, Zone zone, int runLengthSeconds);
+typedef RunZone = Future<RunZoneResponse> Function({
+  required Zone zone,
+  required int runLengthSeconds,
+});
 
 class RunZoneOverNetwork {
-  Future<RunZoneResponse> call(
-    String apiKey,
-    Zone zone,
-    int runLengthSeconds,
-  ) async {
+  RunZoneOverNetwork({
+    required GetApiKey getApiKey,
+  }) : _getApiKey = getApiKey;
+
+  final GetApiKey _getApiKey;
+
+  Future<RunZoneResponse> call({
+    required Zone zone,
+    required int runLengthSeconds,
+  }) async {
+    final apiKey = await _getApiKey();
     final queryParameters = {
       'api_key': apiKey,
       'action': 'run',
@@ -33,11 +42,10 @@ class RunZoneOverNetwork {
 }
 
 class RunZoneLocally {
-  Future<RunZoneResponse> call(
-    String apiKey,
-    Zone zone,
-    int runLengthSeconds,
-  ) async {
+  Future<RunZoneResponse> call({
+    required Zone zone,
+    required int runLengthSeconds,
+  }) async {
     return RunZoneResponse(
       message: 'Starting zones ${zone.name}. ${zone.name} to run now.',
       typeOfMessage: 'info',
