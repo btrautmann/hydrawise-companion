@@ -100,13 +100,38 @@ class GetCustomerStatusFromNetwork {
 }
 
 class GetFakeCustomerStatus {
+  GetFakeCustomerStatus({
+    required Database database,
+  }) : _database = database;
+
+  final Database _database;
+
   Future<CustomerStatus> call({
     int? activeControllerId,
   }) async {
+    final zones = <Zone>[];
+    final queriedZones = await _database.query('zones');
+    final customers = await _database.query('customers');
+    final customer = CustomerIdentification.fromJson(customers.first);
+    if (queriedZones.isEmpty) {
+      // Insert some dummy zones
+      final fakeZone = Zone(
+        id: 1,
+        physicalNumber: 1,
+        name: 'Fake Zone',
+        nextTimeOfWaterFriendly: '7:00',
+        secondsUntilNextRun: 60,
+        lengthOfNextRunTimeOrTimeRemaining: 60,
+      );
+      await _database.insert('zones', fakeZone.toJson());
+    } else {
+      zones.addAll(queriedZones.map((e) => Zone.fromJson(e)).toList());
+    }
+
     return CustomerStatus(
-      numberOfSecondsUntilNextRequest: 100,
-      timeOfLastStatusUnixEpoch: 1631330889,
-      zones: [],
+      numberOfSecondsUntilNextRequest: 60,
+      timeOfLastStatusUnixEpoch: customer.lastStatusUpdate,
+      zones: zones,
     );
   }
 }

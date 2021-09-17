@@ -1,23 +1,29 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:hydrawise/app/domain/create_database.dart';
 import 'package:hydrawise/core/core.dart';
 import 'package:hydrawise/customer_details/cubit/customer_details_cubit.dart';
 import 'package:hydrawise/customer_details/cubit/customer_details_state.dart';
 import 'package:hydrawise/customer_details/customer_details.dart';
 import 'package:hydrawise/customer_details/models/controller.dart';
 import 'package:hydrawise/customer_details/models/customer_status.dart';
+import 'package:sqflite/sqlite_api.dart';
 
 void main() {
   group('CustomerDetailsCubit', () {
+    late Database database;
+    late GetCustomerStatus getCustomerStatus;
+    late GetCustomerDetails getCustomerDetails;
     final DataStorage dataStorage = InMemoryStorage();
-    final GetCustomerDetails getCustomerDetails = GetFakeCustomerDetails();
-    final GetCustomerStatus getCustomerStatus = GetFakeCustomerStatus();
+
     final ClearCustomerDetails clearCustomerDetails =
         ClearCustomerDetailsFromStorage(dataStorage);
     final GetApiKey getApiKey = GetApiKeyFromStorage(dataStorage);
     final SetApiKey setApiKey = SetApiKeyInStorage(dataStorage);
 
     CustomerDetailsCubit _buildSubject() {
+      getCustomerStatus = GetFakeCustomerStatus(database: database);
+      getCustomerDetails = GetFakeCustomerDetails(database: database);
       return CustomerDetailsCubit(
         getCustomerDetails: getCustomerDetails,
         getCustomerStatus: getCustomerStatus,
@@ -29,6 +35,11 @@ void main() {
 
     setUp(() async {
       await dataStorage.clearAll();
+
+      database = await CreateHydrawiseDatabase().call(
+        databaseName: 'in_memory.db',
+        version: 1,
+      );
     });
 
     group('loadCustomerDetails', () {
@@ -102,5 +113,5 @@ void main() {
         ],
       );
     });
-  });
+  }, skip: 'Database requires real device.');
 }

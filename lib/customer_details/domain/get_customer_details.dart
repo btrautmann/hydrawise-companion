@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:hydrawise/customer_details/api/domain/get_api_key.dart';
-import 'package:hydrawise/customer_details/models/controller.dart';
 import 'package:hydrawise/customer_details/models/customer_details.dart';
+import 'package:hydrawise/customer_details/models/customer_identification.dart';
 import 'package:sqflite/sqlite_api.dart';
 
 typedef GetCustomerDetails = Future<CustomerDetails> Function();
@@ -50,19 +50,35 @@ class GetCustomerDetailsFromNetwork {
 }
 
 class GetFakeCustomerDetails {
+  GetFakeCustomerDetails({
+    required Database database,
+  }) : _database = database;
+
+  final Database _database;
+
   Future<CustomerDetails> call() async {
+    final customers = await _database.query('customers');
+
+    if (customers.isEmpty) {
+      // Insert a dummy customer
+      final fakeCustomer = CustomerIdentification(
+        activeControllerId: 1234,
+        customerId: 5678,
+        apiKey: '1212',
+        lastStatusUpdate: DateTime.now().millisecondsSinceEpoch,
+      );
+      await _database.insert('customers', fakeCustomer.toJson());
+    }
+
+    // Query again for simplicity
+    final finalCustomers = await _database.query('customers');
+
+    final customer = CustomerIdentification.fromJson(finalCustomers.first);
+
     return CustomerDetails(
-      activeControllerId: 1234,
-      customerId: 5678,
-      controllers: [
-        Controller(
-          name: 'Fake Controller',
-          lastContact: 1631616496,
-          serialNumber: '123456789',
-          id: 1234,
-          status: 'All good!',
-        )
-      ],
+      activeControllerId: customer.activeControllerId,
+      customerId: customer.customerId,
+      controllers: List.empty(),
     );
   }
 }

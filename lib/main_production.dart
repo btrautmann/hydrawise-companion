@@ -56,6 +56,7 @@ Future<void> main() async {
       );
 
       final clearCustomerDetails = ClearCustomerDetailsFromStorage(dataStorage);
+      final runZone = RunZoneOverNetwork(getApiKey: getApiKey);
 
       runApp(App(
         getCustomerDetails: getCustomerDetails,
@@ -63,6 +64,7 @@ Future<void> main() async {
         getApiKey: getApiKey,
         setApiKey: setApiKey,
         clearCustomerDetails: clearCustomerDetails,
+        runZone: runZone,
         getLocation: getLocation,
         setLocation: setLocation,
         getWeather: getWeather,
