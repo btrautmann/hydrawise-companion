@@ -8,12 +8,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hydrawise/core-ui/widgets/h_stretch.dart';
-import 'package:hydrawise/customer_details/api/domain/get_api_key.dart';
-import 'package:hydrawise/customer_details/api/domain/set_api_key.dart';
 import 'package:hydrawise/customer_details/cubit/customer_details_cubit.dart';
 import 'package:hydrawise/customer_details/customer_details.dart';
-import 'package:hydrawise/customer_details/domain/clear_customer_details.dart';
-import 'package:hydrawise/customer_details/domain/get_customer_details.dart';
 import 'package:hydrawise/customer_details/models/controller.dart';
 import 'package:hydrawise/customer_details/models/customer_details.dart';
 import 'package:hydrawise/customer_details/models/customer_status.dart';
@@ -280,6 +276,11 @@ class _ZoneList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    zones.sort(
+      (z1, z2) => z1.secondsUntilNextRun.compareTo(
+        z2.secondsUntilNextRun,
+      ),
+    );
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
       child: Card(

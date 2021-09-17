@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hydrawise/customer_details/cubit/customer_details_cubit.dart';
 import 'package:hydrawise/customer_details/models/zone.dart';
 
 class RunZonesPage extends StatelessWidget {
@@ -15,92 +17,117 @@ class RunZonesPage extends StatelessWidget {
       appBar: AppBar(
         title: Text(zone.name),
       ),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            children: [
-              SizedBox(
-                width: 100,
-                height: 100,
-                child: Hero(
-                  tag: zone,
-                  child: Material(
-                    type: MaterialType.transparency,
-                    child: Container(
-                      alignment: Alignment.center,
-                      decoration: const BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [
-                            Colors.green,
-                            Colors.lightGreen,
-                          ],
+      body: _RunZonesView(zone: zone),
+    );
+  }
+}
+
+class _RunZonesView extends StatelessWidget {
+  const _RunZonesView({
+    Key? key,
+    required this.zone,
+  }) : super(key: key);
+
+  final Zone zone;
+
+  @override
+  Widget build(BuildContext context) {
+    return context
+        .select((CustomerDetailsCubit cubit) => cubit.state)
+        .maybeWhen(
+      complete: (details, status) {
+        final selectedZone =
+            status.zones.singleWhere((element) => element.id == zone.id);
+        return Center(
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              children: [
+                SizedBox(
+                  width: 100,
+                  height: 100,
+                  child: Hero(
+                    tag: zone,
+                    child: Material(
+                      type: MaterialType.transparency,
+                      child: Container(
+                        alignment: Alignment.center,
+                        decoration: const BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [
+                              Colors.green,
+                              Colors.lightGreen,
+                            ],
+                          ),
+                          shape: BoxShape.circle,
+                          color: Colors.green,
                         ),
-                        shape: BoxShape.circle,
-                        color: Colors.green,
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: Text(
-                          zone.physicalNumber.toString(),
-                          style: Theme.of(context).textTheme.headline3,
+                        child: Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: Text(
+                            zone.physicalNumber.toString(),
+                            style: Theme.of(context).textTheme.headline3,
+                          ),
                         ),
                       ),
                     ),
                   ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 16),
-                child: _NextWaterText(zone: zone),
-              ),
-              const Padding(
-                padding: EdgeInsets.only(top: 16),
-                child: Slider(
-                  min: 5,
-                  max: 100,
-                  value: 10,
-                  onChanged: print,
+                Padding(
+                  padding: const EdgeInsets.only(top: 16),
+                  child: _NextWaterText(zone: selectedZone),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 16),
-                child: Row(
-                  children: [
-                    const Spacer(),
-                    ActionChip(
-                      onPressed: () {
-                        print('Suspend');
-                      },
-                      label: SizedBox(
-                        width: MediaQuery.of(context).size.width / 3,
-                        child: const Padding(
-                          padding: EdgeInsets.only(top: 8, bottom: 8),
-                          child: Center(child: Text('Suspend')),
+                const Padding(
+                  padding: EdgeInsets.only(top: 16),
+                  child: Slider(
+                    min: 5,
+                    max: 100,
+                    value: 10,
+                    onChanged: print,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 16),
+                  child: Row(
+                    children: [
+                      const Spacer(),
+                      ActionChip(
+                        onPressed: () {
+                          print('Suspend');
+                        },
+                        label: SizedBox(
+                          width: MediaQuery.of(context).size.width / 3,
+                          child: const Padding(
+                            padding: EdgeInsets.only(top: 8, bottom: 8),
+                            child: Center(child: Text('Suspend')),
+                          ),
                         ),
                       ),
-                    ),
-                    const Spacer(),
-                    ActionChip(
-                      onPressed: () {
-                        print('Run');
-                      },
-                      label: SizedBox(
-                        width: MediaQuery.of(context).size.width / 3,
-                        child: const Padding(
-                          padding: EdgeInsets.only(top: 8, bottom: 8),
-                          child: Center(child: Text('Run')),
+                      const Spacer(),
+                      ActionChip(
+                        onPressed: () {
+                          print('Run');
+                        },
+                        label: SizedBox(
+                          width: MediaQuery.of(context).size.width / 3,
+                          child: const Padding(
+                            padding: EdgeInsets.only(top: 8, bottom: 8),
+                            child: Center(child: Text('Run')),
+                          ),
                         ),
                       ),
-                    ),
-                    const Spacer(),
-                  ],
+                      const Spacer(),
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
-      ),
+        );
+      },
+      orElse: () {
+        return const SizedBox.shrink();
+      },
     );
   }
 }
@@ -117,7 +144,17 @@ class _NextWaterText extends StatelessWidget {
   Widget build(BuildContext context) {
     final secondsUntilNextRun = zone.secondsUntilNextRun;
     if (secondsUntilNextRun == 1) {
-      return const Text('Running');
+      final endOfRun = DateTime.now().add(
+        Duration(seconds: zone.lengthOfNextRunTimeOrTimeRemaining),
+      );
+      final difference = DateTime.now().difference(endOfRun).abs();
+      if (difference.inHours > 1) {
+        return Text('Running for ${difference.inHours} more hours');
+      } else if (difference.inMinutes >= 1) {
+        return Text('Running for ${difference.inMinutes} more minutes');
+      } else {
+        return Text('Running for ${difference.inSeconds} more seconds');
+      }
     } else {
       final nextRun = zone.dateTimeOfNextRun;
       final difference = DateTime.now().difference(nextRun).abs();
