@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hydrawise/customer_details/cubit/customer_details_cubit.dart';
 import 'package:hydrawise/customer_details/cubit/run_zone_cubit.dart';
+import 'package:hydrawise/customer_details/cubit/run_zone_state.dart';
 import 'package:hydrawise/customer_details/domain/run_zone.dart';
 import 'package:hydrawise/customer_details/domain/stop_zone.dart';
 import 'package:hydrawise/customer_details/models/zone.dart';
@@ -32,26 +33,29 @@ class RunZonesPage extends StatelessWidget {
   }
 }
 
-class _RunZonesView extends StatelessWidget {
+class _RunZonesView extends StatefulWidget {
   const _RunZonesView({
     Key? key,
     required this.zone,
   }) : super(key: key);
 
   final Zone zone;
+
+  @override
+  __RunZonesViewState createState() => __RunZonesViewState();
+}
+
+class __RunZonesViewState extends State<_RunZonesView> {
+  double selectedRunLengthInMinutes = 0;
+
   @override
   Widget build(BuildContext context) {
-    final isLoading = context.read<RunZoneCubit>().state.when(
-          resting: () => false,
-          loading: () => true,
-        );
-    print('isLoading? $isLoading');
-    return context
-        .select((CustomerDetailsCubit cubit) => cubit.state)
-        .maybeWhen(
+    final customerDetailsState =
+        context.select((CustomerDetailsCubit cubit) => cubit.state);
+    return customerDetailsState.maybeWhen(
       complete: (details, status) {
         final selectedZone =
-            status.zones.singleWhere((element) => element.id == zone.id);
+            status.zones.singleWhere((element) => element.id == widget.zone.id);
         return Center(
           child: Padding(
             padding: const EdgeInsets.all(16),
@@ -63,17 +67,22 @@ class _RunZonesView extends StatelessWidget {
                   child: _NextWaterText(zone: selectedZone),
                 ),
                 if (!selectedZone.isRunning)
-                  const Padding(
-                    padding: EdgeInsets.only(top: 16),
-                    child: _RunLengthSlider(),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 16),
+                    child: _RunLengthSlider(
+                      zone: selectedZone,
+                      onChanged: (value) {
+                        selectedRunLengthInMinutes = value;
+                      },
+                    ),
                   ),
                 _ZoneButtons(
                   zone: selectedZone,
-                  isLoading: isLoading,
                   onRunPressed: () {
                     // TODO(brandon): Figure out correct way to get time from
                     // slider
-                    context.read<RunZoneCubit>().runZone(runLengthMinutes: 1);
+                    context.read<RunZoneCubit>().runZone(
+                        runLengthMinutes: selectedRunLengthInMinutes.toInt());
                   },
                   onStopPressed: () {
                     context.read<RunZoneCubit>().stopZone();
@@ -85,7 +94,7 @@ class _RunZonesView extends StatelessWidget {
         );
       },
       orElse: () {
-        return const SizedBox.shrink();
+        return const Center(child: CircularProgressIndicator());
       },
     );
   }
@@ -94,21 +103,42 @@ class _RunZonesView extends StatelessWidget {
 class _RunLengthSlider extends StatefulWidget {
   const _RunLengthSlider({
     Key? key,
+    required this.zone,
+    required this.onChanged,
   }) : super(key: key);
+
+  final Zone zone;
+  final ValueSetter<double> onChanged;
 
   @override
   __RunLengthSliderState createState() => __RunLengthSliderState();
 }
 
 class __RunLengthSliderState extends State<_RunLengthSlider> {
+  late double _currentValue;
+
+  @override
+  void initState() {
+    _setCurrentValue(widget.zone.lengthOfNextRunTimeOrTimeRemaining / 60);
+    super.initState();
+  }
+
+  void _setCurrentValue(double value) {
+    setState(() {
+      _currentValue = value;
+    });
+    widget.onChanged(_currentValue);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Slider(
       min: 1,
       max: 90,
       divisions: 90,
-      value: 5,
-      onChanged: (value) {},
+      label: _currentValue.round().toString(),
+      value: _currentValue,
+      onChanged: _setCurrentValue,
     );
   }
 }
@@ -119,13 +149,11 @@ class _ZoneButtons extends StatelessWidget {
     required this.zone,
     required this.onRunPressed,
     required this.onStopPressed,
-    required this.isLoading,
   }) : super(key: key);
 
   final Zone zone;
   final VoidCallback onRunPressed;
   final VoidCallback onStopPressed;
-  final bool isLoading;
 
   List<Widget> _buildZoneButtons(BuildContext context) {
     if (zone.isRunning) {
@@ -134,7 +162,6 @@ class _ZoneButtons extends StatelessWidget {
         _ZoneButton(
           text: 'Stop',
           onPressed: onStopPressed,
-          isLoading: isLoading,
         ),
         const Spacer(),
       ];
@@ -144,13 +171,11 @@ class _ZoneButtons extends StatelessWidget {
         _ZoneButton(
           text: 'Suspend',
           onPressed: () {},
-          isLoading: isLoading,
         ),
         const Spacer(),
         _ZoneButton(
           text: 'Run',
           onPressed: onRunPressed,
-          isLoading: isLoading,
         ),
         const Spacer(),
       ];
@@ -173,33 +198,43 @@ class _ZoneButton extends StatelessWidget {
     Key? key,
     required this.text,
     required this.onPressed,
-    required this.isLoading,
   }) : super(key: key);
 
   final String text;
   final VoidCallback onPressed;
-  final bool isLoading;
 
   @override
   Widget build(BuildContext context) {
-    return ActionChip(
-      onPressed: onPressed,
-      label: SizedBox(
-        width: MediaQuery.of(context).size.width / 3,
-        child: Padding(
-          padding: const EdgeInsets.only(top: 8, bottom: 8),
-          child: Stack(
-            alignment: Alignment.center,
-            children: [
-              Text(text),
-              Visibility(
-                visible: isLoading,
-                child: const CircularProgressIndicator(),
+    return BlocBuilder<RunZoneCubit, RunZoneState>(
+      builder: (_, state) {
+        final isLoading = state.when(resting: () => false, loading: () => true);
+        return ActionChip(
+          onPressed: onPressed,
+          label: SizedBox(
+            width: MediaQuery.of(context).size.width / 3,
+            child: Padding(
+              padding: const EdgeInsets.only(top: 8, bottom: 8),
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  Visibility(
+                    visible: !isLoading,
+                    child: Text(text),
+                  ),
+                  Visibility(
+                    visible: isLoading,
+                    child: const SizedBox(
+                      width: 24,
+                      height: 24,
+                      child: CircularProgressIndicator(),
+                    ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }
