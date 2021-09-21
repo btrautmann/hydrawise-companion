@@ -21,23 +21,8 @@ jobs:
           flutter-version: '2.2.2'
           channel: stable
 
-      - name: Build Flutter Android
-        run: flutter build appbundle --flavor=production --target=lib/main_production.dart
+      - name: Decode keystore file
+        run: echo "$ANDROID_UPLOAD_KEYSTORE_FILE" | base64 --decode > ~/hc-upload-keystore.jks
 
-      - name: Sign Android
-        uses: r0adkll/sign-android-release@v1
-        with:
-          releaseDirectory: build/app/outputs/bundle/productionRelease/
-          signingKeyBase64: ${{ secrets.ANDROID_UPLOAD_KEYSTORE_FILE }}
-          alias: ${{ secrets.ANDROID_KEYSTORE_ALIAS }}
-          keyStorePassword: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
-          keyPassword: ${{ secrets.ANDROID_KEYSTORE_PRIVATE_KEY_PASSWORD }}
-
-      - name: Release Android
-        uses: r0adkll/upload-google-play@v1
-        with:
-          serviceAccountJsonPlainText: ${{ secrets.SERVICE_ACCOUNT_JSON }}
-          packageName: com.brandontrautmann.hydrawise_companion
-          releaseFiles: build/app/outputs/bundle/productionRelease/*.aab
-          track: beta
-          mappingFile: build/app/outputs/mapping/production/release/mapping.txt
+      - name: Deploy Android
+        run: cd android && fastlane exec deploy
