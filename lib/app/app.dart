@@ -13,6 +13,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hydrawise/app/app_colors.dart';
 import 'package:hydrawise/customer_details/customer_details.dart';
+import 'package:hydrawise/customer_details/domain/stop_zone.dart';
 import 'package:hydrawise/l10n/l10n.dart';
 import 'package:hydrawise/weather/domain/get_weather.dart';
 import 'package:hydrawise/weather/weather.dart';
@@ -27,6 +28,7 @@ class App extends StatelessWidget {
     required SetApiKey setApiKey,
     required ClearCustomerDetails clearCustomerDetails,
     required RunZone runZone,
+    required StopZone stopZone,
     required GetLocation getLocation,
     required SetLocation setLocation,
     required GetWeather getWeather,
@@ -36,6 +38,7 @@ class App extends StatelessWidget {
         _setApiKey = setApiKey,
         _clearCustomerDetails = clearCustomerDetails,
         _runZone = runZone,
+        _stopZone = stopZone,
         _getLocation = getLocation,
         _setLocation = setLocation,
         _getWeather = getWeather,
@@ -47,6 +50,7 @@ class App extends StatelessWidget {
   final SetApiKey _setApiKey;
   final ClearCustomerDetails _clearCustomerDetails;
   final RunZone _runZone;
+  final StopZone _stopZone;
   final GetLocation _getLocation;
   final SetLocation _setLocation;
   final GetWeather _getWeather;
@@ -61,6 +65,7 @@ class App extends StatelessWidget {
         Provider<SetApiKey>.value(value: _setApiKey),
         Provider<ClearCustomerDetails>.value(value: _clearCustomerDetails),
         Provider<RunZone>.value(value: _runZone),
+        Provider<StopZone>.value(value: _stopZone),
         Provider<GetLocation>.value(value: _getLocation),
         Provider<SetLocation>.value(value: _setLocation),
         Provider<GetWeather>.value(value: _getWeather),

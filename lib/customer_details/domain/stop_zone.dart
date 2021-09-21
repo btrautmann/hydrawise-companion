@@ -4,15 +4,13 @@ import 'package:hydrawise/customer_details/api/domain/get_api_key.dart';
 import 'package:hydrawise/customer_details/models/run_zone_response.dart';
 import 'package:hydrawise/customer_details/models/zone.dart';
 import 'package:hydrawise/customer_details/repository/customer_details_repository.dart';
-import 'package:pedantic/pedantic.dart';
 
-typedef RunZone = Future<RunZoneResponse> Function({
+typedef StopZone = Future<RunZoneResponse> Function({
   required Zone zone,
-  required int runLengthSeconds,
 });
 
-class RunZoneOverNetwork {
-  RunZoneOverNetwork({
+class StopZoneOverNetwork {
+  StopZoneOverNetwork({
     required GetApiKey getApiKey,
   }) : _getApiKey = getApiKey;
 
@@ -20,14 +18,11 @@ class RunZoneOverNetwork {
 
   Future<RunZoneResponse> call({
     required Zone zone,
-    required int runLengthSeconds,
   }) async {
     final apiKey = await _getApiKey();
     final queryParameters = {
       'api_key': apiKey,
-      'action': 'run',
-      'period_id': 999,
-      'custom': runLengthSeconds,
+      'action': 'stop',
       'relay_id': zone.id
     };
     final uri = Uri.https(
@@ -43,8 +38,8 @@ class RunZoneOverNetwork {
   }
 }
 
-class RunZoneLocally {
-  RunZoneLocally({
+class StopZoneLocally {
+  StopZoneLocally({
     required CustomerDetailsRepository repository,
   }) : _repository = repository;
 
@@ -52,31 +47,18 @@ class RunZoneLocally {
 
   Future<RunZoneResponse> call({
     required Zone zone,
-    required int runLengthSeconds,
   }) async {
-    final runningZone = zone.copyWith(
-      lengthOfNextRunTimeOrTimeRemaining: runLengthSeconds,
-      secondsUntilNextRun: 1,
+    final stoppedZone = zone.copyWith(
+      lengthOfNextRunTimeOrTimeRemaining: 60,
+      secondsUntilNextRun: 100,
     );
 
     await Future<void>.delayed(const Duration(seconds: 3));
 
-    await _repository.updateZone(runningZone);
-
-    // Turn the zone back off
-    unawaited(
-      Future.delayed(Duration(seconds: runLengthSeconds), () {
-        _repository.updateZone(
-          zone.copyWith(
-            secondsUntilNextRun: 60,
-            lengthOfNextRunTimeOrTimeRemaining: 60,
-          ),
-        );
-      }),
-    );
+    await _repository.updateZone(stoppedZone);
 
     return RunZoneResponse(
-      message: 'Starting zones ${zone.name}. ${zone.name} to run now.',
+      message: 'Stopping zones ${zone.name}. ${zone.name} to stop now.',
       typeOfMessage: 'info',
     );
   }

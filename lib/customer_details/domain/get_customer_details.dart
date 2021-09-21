@@ -1,21 +1,22 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:hydrawise/customer_details/api/domain/get_api_key.dart';
+import 'package:hydrawise/customer_details/models/controller.dart';
 import 'package:hydrawise/customer_details/models/customer_details.dart';
 import 'package:hydrawise/customer_details/models/customer_identification.dart';
-import 'package:sqflite/sqlite_api.dart';
+import 'package:hydrawise/customer_details/repository/customer_details_repository.dart';
 
 typedef GetCustomerDetails = Future<CustomerDetails> Function();
 
 class GetCustomerDetailsFromNetwork {
   GetCustomerDetailsFromNetwork({
     required GetApiKey getApiKey,
-    required Database database,
+    required CustomerDetailsRepository repository,
   })  : _getApiKey = getApiKey,
-        _database = database;
+        _repository = repository;
 
   final GetApiKey _getApiKey;
-  final Database _database;
+  final CustomerDetailsRepository _repository;
 
   Future<CustomerDetails> call() async {
     final apiKey = await _getApiKey();
@@ -39,11 +40,7 @@ class GetCustomerDetailsFromNetwork {
     final customerIdentification =
         customerDetails.toCustomerIdentification(apiKey!);
 
-    await _database.insert(
-      'customers',
-      customerIdentification.toJson(),
-      conflictAlgorithm: ConflictAlgorithm.replace,
-    );
+    await _repository.insertCustomer(customerIdentification);
 
     return customerDetails;
   }
@@ -51,13 +48,13 @@ class GetCustomerDetailsFromNetwork {
 
 class GetFakeCustomerDetails {
   GetFakeCustomerDetails({
-    required Database database,
-  }) : _database = database;
+    required CustomerDetailsRepository repository,
+  }) : _repository = repository;
 
-  final Database _database;
+  final CustomerDetailsRepository _repository;
 
   Future<CustomerDetails> call() async {
-    final customers = await _database.query('customers');
+    final customers = await _repository.getCustomers();
 
     if (customers.isEmpty) {
       // Insert a dummy customer
@@ -65,20 +62,28 @@ class GetFakeCustomerDetails {
         activeControllerId: 1234,
         customerId: 5678,
         apiKey: '1212',
-        lastStatusUpdate: DateTime.now().millisecondsSinceEpoch,
+        lastStatusUpdate: 1631330889,
       );
-      await _database.insert('customers', fakeCustomer.toJson());
+      await _repository.insertCustomer(fakeCustomer);
     }
 
     // Query again for simplicity
-    final finalCustomers = await _database.query('customers');
+    final customer = await _repository.getCustomer();
 
-    final customer = CustomerIdentification.fromJson(finalCustomers.first);
+    await Future<void>.delayed(const Duration(seconds: 1));
 
     return CustomerDetails(
       activeControllerId: customer.activeControllerId,
       customerId: customer.customerId,
-      controllers: List.empty(),
+      controllers: [
+        Controller(
+          name: 'Fake Controller',
+          lastContact: 1631616496,
+          serialNumber: '123456789',
+          id: 1234,
+          status: 'All good!',
+        ),
+      ],
     );
   }
 }

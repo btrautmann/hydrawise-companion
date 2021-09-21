@@ -7,5 +7,6 @@ export 'domain/get_customer_status.dart';
 export 'domain/get_next_poll_time.dart';
 export 'domain/run_zone.dart';
 export 'domain/set_next_poll_time.dart';
+export 'domain/stop_zone.dart';
 export 'models/customer_details.dart';
 export 'view/customer_details_page.dart';

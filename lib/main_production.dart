@@ -17,6 +17,7 @@ import 'package:hydrawise/app/app_bloc_observer.dart';
 import 'package:hydrawise/customer_details/customer_details.dart';
 import 'package:hydrawise/customer_details/domain/get_next_poll_time.dart';
 import 'package:hydrawise/customer_details/domain/set_next_poll_time.dart';
+import 'package:hydrawise/customer_details/repository/customer_details_repository.dart';
 import 'package:hydrawise/weather/weather.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -34,6 +35,7 @@ Future<void> main() async {
         databaseName: 'hydrawise_companion_prod.db',
         version: 2,
       );
+      final repository = DatabaseBackedCustomerDetailsRepository(database);
 
       final sharedPreferences = await SharedPreferences.getInstance();
       final dataStorage = SharedPreferencesStorage(sharedPreferences);
@@ -45,11 +47,11 @@ Future<void> main() async {
       final getNextPollTime = GetNextPollTimeFromStorage(dataStorage);
       final setNextPollTime = SetNextPollTimeInStorage(dataStorage);
       final getCustomerDetails = GetCustomerDetailsFromNetwork(
-        database: database,
+        repository: repository,
         getApiKey: getApiKey,
       );
       final getCustomerStatus = GetCustomerStatusFromNetwork(
-        database: database,
+        repository: repository,
         getApiKey: getApiKey,
         getNextPollTime: getNextPollTime,
         setNextPollTime: setNextPollTime,
@@ -57,6 +59,7 @@ Future<void> main() async {
 
       final clearCustomerDetails = ClearCustomerDetailsFromStorage(dataStorage);
       final runZone = RunZoneOverNetwork(getApiKey: getApiKey);
+      final stopZone = StopZoneOverNetwork(getApiKey: getApiKey);
 
       runApp(App(
         getCustomerDetails: getCustomerDetails,
@@ -65,6 +68,7 @@ Future<void> main() async {
         setApiKey: setApiKey,
         clearCustomerDetails: clearCustomerDetails,
         runZone: runZone,
+        stopZone: stopZone,
         getLocation: getLocation,
         setLocation: setLocation,
         getWeather: getWeather,

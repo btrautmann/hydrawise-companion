@@ -3,10 +3,9 @@ import 'package:http/http.dart' as http;
 import 'package:hydrawise/customer_details/api/domain/get_api_key.dart';
 import 'package:hydrawise/customer_details/domain/get_next_poll_time.dart';
 import 'package:hydrawise/customer_details/domain/set_next_poll_time.dart';
-import 'package:hydrawise/customer_details/models/customer_identification.dart';
 import 'package:hydrawise/customer_details/models/customer_status.dart';
 import 'package:hydrawise/customer_details/models/zone.dart';
-import 'package:sqflite/sqlite_api.dart';
+import 'package:hydrawise/customer_details/repository/customer_details_repository.dart';
 
 typedef GetCustomerStatus = Future<CustomerStatus> Function({
   int? activeControllerId,
@@ -14,16 +13,16 @@ typedef GetCustomerStatus = Future<CustomerStatus> Function({
 
 class GetCustomerStatusFromNetwork {
   GetCustomerStatusFromNetwork({
-    required Database database,
+    required CustomerDetailsRepository repository,
     required GetApiKey getApiKey,
     required SetNextPollTime setNextPollTime,
     required GetNextPollTime getNextPollTime,
-  })  : _database = database,
+  })  : _repository = repository,
         _getApiKey = getApiKey,
         _setNextPollTime = setNextPollTime,
         _getNextPollTime = getNextPollTime;
 
-  final Database _database;
+  final CustomerDetailsRepository _repository;
   final GetApiKey _getApiKey;
   final SetNextPollTime _setNextPollTime;
   final GetNextPollTime _getNextPollTime;
@@ -53,31 +52,7 @@ class GetCustomerStatusFromNetwork {
 
       final customerStatus = CustomerStatus.fromJson(decodedCustomerStatus);
 
-      final batch = _database.batch();
-
-      customerStatus.zones.map((z) => z.toJson()).forEach((zone) {
-        batch.insert(
-          'zones',
-          zone,
-          conflictAlgorithm: ConflictAlgorithm.replace,
-        );
-      });
-
-      final customers = await _database.query('customers');
-      final customer = CustomerIdentification.fromJson(customers.first);
-
-      batch.update(
-        'customers',
-        customer
-            .copyWith(
-              lastStatusUpdate: customerStatus.timeOfLastStatusUnixEpoch,
-            )
-            .toJson(),
-        where: 'customer_id = ?',
-        whereArgs: [customer.customerId],
-      );
-
-      await batch.commit();
+      await _repository.updateCustomer(customerStatus);
 
       final secondsUntilNextPoll =
           customerStatus.numberOfSecondsUntilNextRequest;
@@ -86,33 +61,31 @@ class GetCustomerStatusFromNetwork {
       return customerStatus;
     }
 
-    final zones = await _database.query('zones');
-    final customers = await _database.query('customers');
-    final customer = CustomerIdentification.fromJson(customers.first);
+    final zones = await _repository.getZones();
+    final customer = await _repository.getCustomer();
 
     return CustomerStatus(
       numberOfSecondsUntilNextRequest:
           DateTime.now().difference(nextPollTime).inSeconds.abs(),
       timeOfLastStatusUnixEpoch: customer.lastStatusUpdate,
-      zones: zones.map((e) => Zone.fromJson(e)).toList(),
+      zones: zones,
     );
   }
 }
 
 class GetFakeCustomerStatus {
   GetFakeCustomerStatus({
-    required Database database,
-  }) : _database = database;
+    required CustomerDetailsRepository repository,
+  }) : _repository = repository;
 
-  final Database _database;
+  final CustomerDetailsRepository _repository;
 
   Future<CustomerStatus> call({
     int? activeControllerId,
   }) async {
     final zones = <Zone>[];
-    final queriedZones = await _database.query('zones');
-    final customers = await _database.query('customers');
-    final customer = CustomerIdentification.fromJson(customers.first);
+    final queriedZones = await _repository.getZones();
+    final customer = await _repository.getCustomer();
     if (queriedZones.isEmpty) {
       // Insert some dummy zones
       final fakeZone = Zone(
@@ -123,10 +96,12 @@ class GetFakeCustomerStatus {
         secondsUntilNextRun: 60,
         lengthOfNextRunTimeOrTimeRemaining: 60,
       );
-      await _database.insert('zones', fakeZone.toJson());
+      await _repository.insertZone(fakeZone);
     } else {
-      zones.addAll(queriedZones.map((e) => Zone.fromJson(e)).toList());
+      zones.addAll(queriedZones);
     }
+
+    await Future<void>.delayed(const Duration(seconds: 1));
 
     return CustomerStatus(
       numberOfSecondsUntilNextRequest: 5,

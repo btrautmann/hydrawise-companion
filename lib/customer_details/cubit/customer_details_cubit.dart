@@ -56,7 +56,7 @@ class CustomerDetailsCubit extends Cubit<CustomerDetailsState> {
   }
 
   void _poll() {
-    Timer.periodic(const Duration(seconds: 5), (timer) {
+    Timer.periodic(const Duration(seconds: 1), (timer) {
       state.when(
           loading: () {},
           empty: () {},
