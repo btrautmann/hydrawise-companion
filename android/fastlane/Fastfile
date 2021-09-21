@@ -21,7 +21,7 @@ platform :android do
     Dir.chdir "android" do
       sh("flutter", "clean")
       sh("flutter", "packages", "get")
-      sh("flutter", "build", "appbundle", "-dart-define=OPEN_WEATHER_MAP_API_KEY=ENV["OPEN_WEATHER_MAP_API_KEY"]" "--flavor=production", "--target=lib/main_production.dart")
+      sh("flutter", "build", "appbundle", "-dart-define=OPEN_WEATHER_MAP_API_KEY=ENV["OPEN_WEATHER_MAP_API_KEY"]", "--flavor=production", "--target=lib/main_production.dart")
     end
     
     upload_to_play_store(
