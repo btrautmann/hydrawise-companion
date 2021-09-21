@@ -15,7 +15,8 @@
 
 default_platform(:android)
 
-open_weather_map_api_key = ENV['OPEN_WEATHER_MAP_API_KEY']
+open_weather_map_api_key = ENV["OPEN_WEATHER_MAP_API_KEY"]
+json_key_data = ENV["ANDROID_SECRET_JSON_FILE"]
 
 
 platform :android do
@@ -28,11 +29,11 @@ platform :android do
     end
     
     upload_to_play_store(
-      track: 'beta',
-      aab: 'build/app/outputs/bundle/productionRelease/app-production-release.aab',
+      track: "beta",
+      aab: "build/app/outputs/bundle/productionRelease/app-production-release.aab",
       skip_upload_screenshots: true,
       skip_upload_images: true
-      json_key_data: ENV["ANDROID_SECRET_JSON_FILE"]
+      json_key_data: "#{json_key_data}"
     )
 
   end
