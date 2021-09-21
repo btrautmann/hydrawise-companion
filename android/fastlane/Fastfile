@@ -15,13 +15,16 @@
 
 default_platform(:android)
 
+open_weather_map_api_key = ENV['OPEN_WEATHER_MAP_API_KEY']
+
+
 platform :android do
   desc "Deploy a new version to the Google Play"
   lane :deploy do
     Dir.chdir "android" do
       sh("flutter", "clean")
       sh("flutter", "packages", "get")
-      sh("flutter", "build", "appbundle", "-dart-define=OPEN_WEATHER_MAP_API_KEY=ENV["OPEN_WEATHER_MAP_API_KEY"]", "--flavor=production", "--target=lib/main_production.dart")
+      sh("flutter", "build", "appbundle", "-dart-define=#{open_weather_map_api_key}", "--flavor=production", "--target=lib/main_production.dart")
     end
     
     upload_to_play_store(
