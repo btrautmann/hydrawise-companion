@@ -32,24 +32,9 @@ class CustomerDetailsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: const SafeArea(child: _CustomerDetailsStateView()),
-      // TODO(brandon): Bottom bar should only show when we have details
-      bottomNavigationBar: BottomNavigationBar(
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.play_arrow_outlined),
-            label: 'Programs',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home_outlined),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.settings_outlined),
-            label: 'Utilities',
-          ),
-        ],
+    return const Scaffold(
+      body: SafeArea(
+        child: _CustomerDetailsStateView(),
       ),
     );
   }
