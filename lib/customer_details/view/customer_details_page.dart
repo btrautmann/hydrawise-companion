@@ -34,7 +34,9 @@ class CustomerDetailsView extends StatelessWidget {
   Widget build(BuildContext context) {
     return const Scaffold(
       body: SafeArea(
-        child: _CustomerDetailsStateView(),
+        child: SingleChildScrollView(
+          child: _CustomerDetailsStateView(),
+        ),
       ),
     );
   }
