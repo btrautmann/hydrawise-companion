@@ -9,27 +9,23 @@ on:
 
 jobs:
   deploy-mobile:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     steps:
       - uses: actions/checkout@v2
       - uses: subosito/flutter-action@v1
         with:
           flutter-version: '2.2.2'
           channel: stable
-      - uses: ruby/setup-ruby@v1.81.0
-        with:
-          ruby-version: '2.7.2'
-          bundler-cache: true
+      
+      - name: Bundle install
+        run: bundle install
 
       - name: Decode keystore file
         run: echo "${{secrets.ANDROID_UPLOAD_KEYSTORE_FILE}}" | base64 --decode > ${{secrets.ANDROID_KEYSTORE_PATH}}
         working-directory: android/app  
 
-      - name: Deploy Android
+      - name: Deploy Android to Beta
         env:
           ANDROID_KEYSTORE_PATH: ${{secrets.ANDROID_KEYSTORE_PATH}}
           ANDROID_SECRET_JSON_FILE: ${{secrets.ANDROID_SECRET_JSON_FILE}}
-        uses: maierj/fastlane-action@v2.0.1
-        with:
-          lane: 'deploy'
-          subdirectory: 'android'
+        run: cd android && bundle exec fastlane beta

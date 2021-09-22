@@ -20,11 +20,11 @@ json_key_data = ENV["ANDROID_SECRET_JSON_FILE"]
 
 
 platform :android do
-  desc "Deploy a new version to the Google Play"
+  desc "Deploy a new version to Google Play Beta track"
   lane :deploy do
     sh("flutter", "clean")
     sh("flutter", "packages", "get")
-    sh("flutter", "build", "appbundle", "-dart-define=OPEN_WEATHER_MAP_API_KEY=#{open_weather_map_api_key}", "--flavor=production", "--target=../lib/main_production.dart")
+    sh("flutter", "build", "appbundle", "-dart-define=OPEN_WEATHER_MAP_API_KEY=#{open_weather_map_api_key}", "--flavor=production", "--target=lib/main_production.dart")
     
     upload_to_play_store(
       track: "beta",
