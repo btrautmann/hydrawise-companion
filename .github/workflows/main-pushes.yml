@@ -16,10 +16,6 @@ jobs:
         with:
           flutter-version: '2.2.2'
           channel: stable
-      - uses: ruby/setup-ruby@v1.81.0
-        with:
-          ruby-version: '2.6.5'
-          bundler-cache: true
 
       - name: Decode keystore file
         run: echo "${{secrets.ANDROID_UPLOAD_KEYSTORE_FILE}}" | base64 --decode > ${{secrets.ANDROID_KEYSTORE_PATH}}
