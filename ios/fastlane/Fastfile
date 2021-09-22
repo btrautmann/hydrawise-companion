@@ -16,8 +16,18 @@
 default_platform(:ios)
 
 platform :ios do
-  desc "Description of what the lane does"
-  lane :custom_lane do
-    # add actions here: https://docs.fastlane.tools/actions
+  desc "Deploy a new version to Test Flight"
+  lane :deploy do
+    cocoapods(
+      clean_install: true,
+      podfile: "./Podfile"
+    )
+    sh("flutter", "build", "ios", "-dart-define=OPEN_WEATHER_MAP_API_KEY=#{open_weather_map_api_key}", "--flavor=production", "--target=lib/main_production.dart", "--no-codesign", "-v")
+    match(
+      type: "appstore",
+      git_basic_authorization: ENV["BASIC_AUTH_HEADER"]
+      keychain_password: ENV["MATCH_PASSWORD"]
+      readonly: true)
+    upload_to_testflight
   end
 end
