@@ -33,8 +33,6 @@ platform :android do
       aab: "build/app/outputs/bundle/productionRelease/app-production-release.aab",
       skip_upload_screenshots: true,
       skip_upload_images: true
-      json_key_data: "#{json_key_data}"
-    )
-
-  end
+      json_key_data: "#{json_key_data}")
+    end
 end
