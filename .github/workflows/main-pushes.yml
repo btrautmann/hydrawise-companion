@@ -27,7 +27,7 @@ jobs:
       - name: Setup Ruby
         uses: actions/setup-ruby@v1
         with:
-          ruby-version: '2.7.2'
+          ruby-version: '2.6.6'
 
       - name: Deploy Android
         uses: maierj/fastlane-action@v2.0.1
