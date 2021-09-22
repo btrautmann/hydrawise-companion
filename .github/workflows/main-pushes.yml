@@ -27,5 +27,8 @@ jobs:
       - name: Deploy Android to Beta
         env:
           ANDROID_KEYSTORE_PATH: ${{secrets.ANDROID_KEYSTORE_PATH}}
+          ANDROID_KEYSTORE_ALIAS: ${{secrets.ANDROID_KEYSTORE_ALIAS}}
+          ANDROID_KEYSTORE_PRIVATE_KEY_PASSWORD: ${{secrets.ANDROID_KEYSTORE_PRIVATE_KEY_PASSWORD}}
+          ANDROID_KEYSTORE_PASSWORD: ${{secrets.ANDROID_KEYSTORE_PASSWORD}}
           ANDROID_SECRET_JSON_FILE: ${{secrets.ANDROID_SECRET_JSON_FILE}}
         run: cd android && bundle exec fastlane deploy
