@@ -28,4 +28,4 @@ jobs:
         env:
           ANDROID_KEYSTORE_PATH: ${{secrets.ANDROID_KEYSTORE_PATH}}
           ANDROID_SECRET_JSON_FILE: ${{secrets.ANDROID_SECRET_JSON_FILE}}
-        run: cd android && bundle exec fastlane beta
+        run: cd android && bundle exec fastlane deploy
