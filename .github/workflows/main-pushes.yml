@@ -27,10 +27,12 @@ jobs:
       - name: Decode keystore file
         run: echo "$ANDROID_UPLOAD_KEYSTORE_FILE" | base64 --decode > ~/hc-upload-keystore.jks
 
-      - name: Deploy Android
+      - name: Setup Ruby
       - uses: actions/setup-ruby@v1
         with:
           ruby-version: '2.7.2'
+
+      - name: Deploy Android
       - uses: maierj/fastlane-action@v2.0.1
         with:
           lane: 'deploy'
