@@ -22,7 +22,10 @@ jobs:
           channel: stable
           
       - name: Decode keystore file
-        run: echo "$ANDROID_UPLOAD_KEYSTORE_FILE" | base64 --decode > ~/hc-upload-keystore.jks
+        run: echo "${{secrets.ANDROID_UPLOAD_KEYSTORE_FILE}}" | base64 --decode > ~/hc-upload-keystore.jks
+
+      - name: Check file exists
+        run: ls ~/
 
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
