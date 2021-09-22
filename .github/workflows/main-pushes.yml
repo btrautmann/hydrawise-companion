@@ -18,7 +18,7 @@ jobs:
           channel: stable
       - uses: ruby/setup-ruby@v1.81.0
         with:
-          ruby-version: '3.0.0'
+          ruby-version: '2.6.5'
       
       - name: Ruby version
         run: ruby --version
@@ -33,6 +33,7 @@ jobs:
       - name: Deploy Android
         env:
           ANDROID_KEYSTORE_PATH: ${{secrets.ANDROID_KEYSTORE_PATH}}
+          ANDROID_SECRET_JSON_FILE: ${{secrets.ANDROID_SECRET_JSON_FILE}}
         uses: maierj/fastlane-action@v2.0.1
         with:
           lane: 'deploy'
