@@ -18,7 +18,7 @@ jobs:
           channel: stable
       - uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '2.6'
+          ruby-version: '2.6.x'
           
       - name: Decode keystore file
         run: echo "${{secrets.ANDROID_UPLOAD_KEYSTORE_FILE}}" | base64 --decode > ${{secrets.ANDROID_KEYSTORE_PATH}}
