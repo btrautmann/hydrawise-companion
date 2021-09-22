@@ -19,6 +19,12 @@ jobs:
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: '2.7.2'
+
+      - name: Install Bundler
+        run: gem install bundler
+      
+      - name: Run bundle insta
+        run: bundle install
           
       - name: Decode keystore file
         run: echo "${{secrets.ANDROID_UPLOAD_KEYSTORE_FILE}}" | base64 --decode > ${{secrets.ANDROID_KEYSTORE_PATH}}
