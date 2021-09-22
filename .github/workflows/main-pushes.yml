@@ -19,6 +19,7 @@ jobs:
       - uses: ruby/setup-ruby@v1.81.0
         with:
           ruby-version: '2.6.5'
+          bundler-cache: true
       
       - name: Ruby version
         run: ruby --version
