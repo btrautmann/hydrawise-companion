@@ -1,4 +1,4 @@
-git_url("git@github.com:btrautmann/hydrawise-companion.git")
+git_url("git@github.com:btrautmann/hydrawise-companion-signing.git")
 git_branch("main")
 
 storage_mode("git")
