@@ -31,10 +31,12 @@ jobs:
       #     ANDROID_KEYSTORE_PRIVATE_KEY_PASSWORD: ${{secrets.ANDROID_KEYSTORE_PRIVATE_KEY_PASSWORD}}
       #     ANDROID_KEYSTORE_PASSWORD: ${{secrets.ANDROID_KEYSTORE_PASSWORD}}
       #     ANDROID_SECRET_JSON_FILE: ${{secrets.ANDROID_SECRET_JSON_FILE}}
+      #     OPEN_WEATHER_MAP_API_KEY: ${{secrets.OPEN_WEATHER_MAP_API_KEY}}
       #   run: cd android && bundle exec fastlane deploy
 
       - name: Deploy iOS to TestFlight
         env:
           MATCH_PASSWORD: ${{secrets.MATCH_PASSWORD}}
           BASIC_AUTH_HEADER: ${{secrets.BASIC_AUTH_HEADER}}
+          OPEN_WEATHER_MAP_API_KEY: ${{secrets.OPEN_WEATHER_MAP_API_KEY}}
         run: cd ios && bundle exec fastlane deploy

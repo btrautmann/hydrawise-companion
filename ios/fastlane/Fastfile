@@ -11,9 +11,11 @@
 #
 
 # Uncomment the line if you want fastlane to automatically update itself
-# update_fastlane
+update_fastlane
 
 default_platform(:ios)
+
+open_weather_map_api_key = ENV["OPEN_WEATHER_MAP_API_KEY"]
 
 platform :ios do
   desc "Deploy a new version to Test Flight"
