@@ -55,6 +55,7 @@ android {
 
     signingConfigs {
         if (System.getenv("ANDROID_KEYSTORE_PATH")) {
+            print('Found path variable')
             release {
                 storeFile file(System.getenv("ANDROID_KEYSTORE_PATH"))
                 keyAlias System.getenv("ANDROID_KEYSTORE_ALIAS")
@@ -62,6 +63,7 @@ android {
                 storePassword System.getenv("ANDROID_KEYSTORE_PASSWORD")
             }
         } else {
+            print('Did NOT find path variable')
             release {
                 keyAlias keystoreProperties['keyAlias']
                 keyPassword keystoreProperties['keyPassword']
