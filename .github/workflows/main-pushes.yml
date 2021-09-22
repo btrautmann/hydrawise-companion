@@ -25,4 +25,4 @@ jobs:
         run: echo "$ANDROID_UPLOAD_KEYSTORE_FILE" | base64 --decode > ~/hc-upload-keystore.jks
 
       - name: Deploy Android
-        run: cd android && fastlane exec deploy
+        run: cd android && bundle exec fastlane deploy
