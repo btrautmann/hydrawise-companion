@@ -11,8 +11,8 @@ jobs:
   deploy-mobile:
     runs-on: macos-latest
     steps:
-      name: Java version
-      run: java --version
+      - name: Java version
+        run: java --version
       # - uses: actions/checkout@v2
       # - uses: subosito/flutter-action@v1
       #   with:
