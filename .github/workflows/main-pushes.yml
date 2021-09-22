@@ -19,7 +19,6 @@ jobs:
       - uses: ruby/setup-ruby@v1.81.0
         with:
           ruby-version: '2.6.5'
-          bundler-cache: true
       
       - name: Ruby version
         run: ruby --version
@@ -33,9 +32,9 @@ jobs:
       - name: Fastlane version again
         run: fastlane --version
 
-      - name: Export fastlane
-        run: export PATH=$PATH:/opt/hostedtoolcache/Ruby/2.6.5/x64/lib/ruby/gems/2.6.0/gems/fastlane-2.194.0/bin/
-          
+      - name: Run bundle install
+        run: bundle install
+
       - name: Decode keystore file
         run: echo "${{secrets.ANDROID_UPLOAD_KEYSTORE_FILE}}" | base64 --decode > ${{secrets.ANDROID_KEYSTORE_PATH}}
         working-directory: android/app  
