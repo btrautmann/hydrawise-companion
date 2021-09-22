@@ -25,6 +25,12 @@ jobs:
 
       - name: Fastlane version
         run: fastlane --version
+
+      - name: Update fastlane
+        run: gem install fastlane
+
+      - name: Fastlane version again
+        run: fastlane --version
           
       - name: Decode keystore file
         run: echo "${{secrets.ANDROID_UPLOAD_KEYSTORE_FILE}}" | base64 --decode > ${{secrets.ANDROID_KEYSTORE_PATH}}
