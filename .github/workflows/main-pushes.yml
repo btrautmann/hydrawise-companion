@@ -21,7 +21,7 @@ jobs:
           ruby-version: '2.6'
           
       - name: Decode keystore file
-        run: echo "${{secrets.ANDROID_UPLOAD_KEYSTORE_FILE}}" | base64 --decode > "${{secrets.ANDROID_KEYSTORE_PATH}}"
+        run: echo "${{secrets.ANDROID_UPLOAD_KEYSTORE_FILE}}" | base64 --decode > ${{secrets.ANDROID_KEYSTORE_PATH}}
 
       - name: Deploy Android
         env:
