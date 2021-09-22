@@ -29,7 +29,6 @@ platform :ios do
     sh("flutter", "build", "ios", "-dart-define=OPEN_WEATHER_MAP_API_KEY=#{open_weather_map_api_key}", "--flavor=production", "--target=lib/main_production.dart", "--no-codesign", "-v")
     match(
       type: "appstore",
-      git_basic_authorization: ENV["BASIC_AUTH_HEADER"],
       keychain_password: ENV["MATCH_PASSWORD"],
       readonly: true)
     upload_to_testflight

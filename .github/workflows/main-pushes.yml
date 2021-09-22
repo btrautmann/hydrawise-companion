@@ -40,6 +40,6 @@ jobs:
       - name: Deploy iOS to TestFlight
         env:
           MATCH_PASSWORD: ${{secrets.MATCH_PASSWORD}}
-          BASIC_AUTH_HEADER: ${{secrets.BASIC_AUTH_HEADER}}
+          MATCH_GIT_BASIC_AUTHORIZATION: ${{secrets.BASIC_AUTH_HEADER}}
           OPEN_WEATHER_MAP_API_KEY: ${{secrets.OPEN_WEATHER_MAP_API_KEY}}
         run: cd ios && bundle exec fastlane deploy
