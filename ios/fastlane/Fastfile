@@ -23,6 +23,7 @@ open_weather_map_api_key = ENV["OPEN_WEATHER_MAP_API_KEY"]
 platform :ios do
   desc "Deploy a new version to Test Flight"
   lane :deploy do
+    setup_ci
     app_store_connect_api_key(
       is_key_content_base64: true,
       duration: 1200, # optional (maximum 1200)
