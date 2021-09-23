@@ -6,7 +6,9 @@
     <string>app-store</string>
     <key>teamID</key>
     <string>RBWS9CUVG4</string>
-    <key>com.brandontrautmann.hydrawisecompanion</key>	
-    <string>match AppStore com.brandontrautmann.hydrawisecompanion</string>
+    <dict>
+		<key>com.brandontrautmann.hydrawisecompanion</key>	
+    	<string>match AppStore com.brandontrautmann.hydrawisecompanion</string>
+    </dict>
 </dict>
 </plist>
