@@ -23,7 +23,13 @@ open_weather_map_api_key = ENV["OPEN_WEATHER_MAP_API_KEY"]
 platform :ios do
   desc "Deploy a new version to Test Flight"
   lane :deploy do
-    setup_ci
+    create_keychain(
+      name: "TempKeychain",
+      default_keychain: true,
+      unlock: true,
+      timeout: 3600,
+      lock_when_sleeps: true
+    )
     app_store_connect_api_key(
       is_key_content_base64: true,
       duration: 1200, # optional (maximum 1200)
@@ -31,7 +37,7 @@ platform :ios do
     )
     match(
       type: "appstore",
-      keychain_password: ENV["MATCH_PASSWORD"],
+      keychain_name: "TempKeychain"
       readonly: true)
     sh("flutter", "clean")
     sh("flutter", "packages", "get")
