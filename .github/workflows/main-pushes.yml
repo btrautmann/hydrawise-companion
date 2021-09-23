@@ -49,6 +49,6 @@ jobs:
           MATCH_GIT_BASIC_AUTHORIZATION: ${{secrets.BASIC_AUTH_HEADER}}
           OPEN_WEATHER_MAP_API_KEY: ${{secrets.OPEN_WEATHER_MAP_API_KEY}}
           APP_STORE_CONNECT_API_KEY_KEY: ${{secrets.APP_STORE_CONNECT_API_KEY}}
-          APP_STORE_CONNECT_API_KEY_ID: ${{secrets.APP_STORE_CONNECT_API_KEY_ID}}
+          APP_STORE_CONNECT_API_KEY_KEY_ID: ${{secrets.APP_STORE_CONNECT_API_KEY_ID}}
           APP_STORE_CONNECT_API_KEY_ISSUER_ID: ${{secrets.APP_STORE_CONNECT_API_KEY_ISSUER}}
         run: cd ios && bundle exec fastlane deploy
