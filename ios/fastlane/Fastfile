@@ -47,7 +47,7 @@ platform :ios do
       clean_install: true,
       podfile: "./Podfile"
     )
-    sh("flutter", "build", "ipa", "-dart-define=OPEN_WEATHER_MAP_API_KEY=#{open_weather_map_api_key}", "--flavor=production", "--target=lib/main_production.dart", "-v")
+    sh("flutter", "build", "ipa", "-dart-define=OPEN_WEATHER_MAP_API_KEY=#{open_weather_map_api_key}", "--flavor=production", "--target=lib/main_production.dart", "--export-options-plist=export_options.plist", "-v")
     upload_to_testflight(
       ipa: "../build/ios/archive/Runner.xcarchive",
     )
