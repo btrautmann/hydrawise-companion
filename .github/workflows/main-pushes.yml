@@ -50,5 +50,5 @@ jobs:
           OPEN_WEATHER_MAP_API_KEY: ${{secrets.OPEN_WEATHER_MAP_API_KEY}}
           APP_STORE_CONNECT_API_KEY_ID: ${{secrets.APP_STORE_CONNECT_API_KEY_ID}}
           APP_STORE_CONNECT_API_KEY_ISSUER: ${{secrets.APP_STORE_CONNECT_API_KEY_ISSUER}}
-          APP_STORE_CONNECT_API_KEY_FILE: app_store_api_key.p8
+          APP_STORE_CONNECT_API_KEY_FILE: "./app_store_api_key.p8"
         run: cd ios && bundle exec fastlane deploy
