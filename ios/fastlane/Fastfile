@@ -25,6 +25,7 @@ platform :ios do
   lane :deploy do
     create_keychain(
       name: "TempKeychain",
+      password: "TempPassword",
       default_keychain: true,
       unlock: true,
       timeout: 3600,
@@ -38,6 +39,7 @@ platform :ios do
     match(
       type: "appstore",
       keychain_name: "TempKeychain",
+      keychain_password: "TempPassword",
       readonly: true)
     sh("flutter", "clean")
     sh("flutter", "packages", "get")
