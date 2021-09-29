@@ -11,14 +11,11 @@
 #
 
 # Uncomment the line if you want fastlane to automatically update itself
-update_fastlane
+# update_fastlane
 
 default_platform(:ios)
 
 open_weather_map_api_key = ENV["OPEN_WEATHER_MAP_API_KEY"]
-# app_store_connect_api_key_id = ENV["APP_STORE_CONNECT_API_KEY_ID"]
-# app_store_connect_api_key_issuer = ENV["APP_STORE_CONNECT_API_KEY_ISSUER"]
-# app_store_connect_api_key_file = ENV["APP_STORE_CONNECT_API_KEY_FILE"]
 
 platform :ios do
   desc "Deploy a new version to Test Flight"
@@ -47,7 +44,7 @@ platform :ios do
       clean_install: true,
       podfile: "./Podfile"
     )
-    sh("flutter", "build", "ipa", "-dart-define=OPEN_WEATHER_MAP_API_KEY=#{open_weather_map_api_key}", "--flavor=production", "--target=lib/main_production.dart", "--export-options-plist=ios/export_options.plist", "-v")
+    sh("flutter", "build", "ipa", "--dart-define=OPEN_WEATHER_MAP_API_KEY=#{open_weather_map_api_key}", "--flavor=production", "--target=lib/main_production.dart", "--export-options-plist=ios/export_options.plist", "-v")
     upload_to_testflight(
       ipa: "../build/ios/ipa/Hydrawise.ipa",
       skip_waiting_for_build_processing: true
