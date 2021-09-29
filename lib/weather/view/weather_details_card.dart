@@ -48,6 +48,10 @@ class _NoLocationView extends StatefulWidget {
     this.message,
   }) : super(key: key);
 
+  // This is sort of a hack right now to avoid defining another
+  // view for the error state. In theory the API may just be down,
+  // and we would be acting as if they need to re-enter location.
+  // TODO(brandon): Define a real error view
   final String? message;
 
   @override
