@@ -9,6 +9,8 @@ class WeatherDetailsState with _$WeatherDetailsState {
 
   factory WeatherDetailsState.loading() = _Loading;
 
+  factory WeatherDetailsState.error(String message) = _Error;
+
   factory WeatherDetailsState.complete({
     required List<Weather> fiveDayForecast,
   }) = _Complete;

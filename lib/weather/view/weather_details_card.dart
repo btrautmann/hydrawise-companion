@@ -31,19 +31,96 @@ class WeatherDetailsStateView extends StatelessWidget {
     final weatherState =
         context.select((WeatherDetailsCubit cubit) => cubit.state);
     return weatherState.when(
-      noLocationInformation: () => _NoLocationView(),
-      loading: () => const Center(
-        child: CircularProgressIndicator(),
-      ),
-      complete: (weather) => _WeatherDetailsView(weatherForecast: weather),
-    );
+        noLocationInformation: () => const _NoLocationView(),
+        loading: () => const Center(
+              child: CircularProgressIndicator(),
+            ),
+        complete: (weather) => _WeatherDetailsView(weatherForecast: weather),
+        error: (message) => _NoLocationView(
+              message: message,
+            ));
   }
 }
 
-class _NoLocationView extends StatelessWidget {
+class _NoLocationView extends StatefulWidget {
+  const _NoLocationView({
+    Key? key,
+    this.message,
+  }) : super(key: key);
+
+  final String? message;
+
+  @override
+  __NoLocationViewState createState() => __NoLocationViewState();
+}
+
+class __NoLocationViewState extends State<_NoLocationView> {
+  late TextEditingController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return const Text('No location');
+    return Card(
+      clipBehavior: Clip.hardEdge,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          HStretch(
+            child: Container(
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    Colors.lightBlue,
+                    Colors.blue,
+                  ],
+                ),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Text(
+                  'Weather',
+                  style: Theme.of(context).textTheme.headline6,
+                ),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: TextField(
+              controller: _controller,
+              onChanged: (value) {
+                setState(() {});
+              },
+              decoration: InputDecoration(
+                suffixIcon: Visibility(
+                  visible: _controller.text.isNotEmpty,
+                  child: IconButton(
+                    onPressed: () {
+                      context
+                          .read<WeatherDetailsCubit>()
+                          .setLocation(_controller.text);
+                    },
+                    icon: const Icon(Icons.check_circle_outline),
+                  ),
+                ),
+                border: const OutlineInputBorder(),
+                hintText: 'City, State',
+              ),
+            ),
+          ),
+          if (widget.message != null)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+              child: Text(widget.message!),
+            )
+        ],
+      ),
+    );
   }
 }
 

@@ -24,6 +24,12 @@ class _$WeatherDetailsStateTearOff {
     return _Loading();
   }
 
+  _Error error(String message) {
+    return _Error(
+      message,
+    );
+  }
+
   _Complete complete({required List<Weather> fiveDayForecast}) {
     return _Complete(
       fiveDayForecast: fiveDayForecast,
@@ -40,6 +46,7 @@ mixin _$WeatherDetailsState {
   TResult when<TResult extends Object?>({
     required TResult Function() noLocationInformation,
     required TResult Function() loading,
+    required TResult Function(String message) error,
     required TResult Function(List<Weather> fiveDayForecast) complete,
   }) =>
       throw _privateConstructorUsedError;
@@ -47,6 +54,7 @@ mixin _$WeatherDetailsState {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? noLocationInformation,
     TResult Function()? loading,
+    TResult Function(String message)? error,
     TResult Function(List<Weather> fiveDayForecast)? complete,
     required TResult orElse(),
   }) =>
@@ -56,6 +64,7 @@ mixin _$WeatherDetailsState {
     required TResult Function(_NoLocationInformation value)
         noLocationInformation,
     required TResult Function(_Loading value) loading,
+    required TResult Function(_Error value) error,
     required TResult Function(_Complete value) complete,
   }) =>
       throw _privateConstructorUsedError;
@@ -63,6 +72,7 @@ mixin _$WeatherDetailsState {
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_NoLocationInformation value)? noLocationInformation,
     TResult Function(_Loading value)? loading,
+    TResult Function(_Error value)? error,
     TResult Function(_Complete value)? complete,
     required TResult orElse(),
   }) =>
@@ -128,6 +138,7 @@ class _$_NoLocationInformation implements _NoLocationInformation {
   TResult when<TResult extends Object?>({
     required TResult Function() noLocationInformation,
     required TResult Function() loading,
+    required TResult Function(String message) error,
     required TResult Function(List<Weather> fiveDayForecast) complete,
   }) {
     return noLocationInformation();
@@ -138,6 +149,7 @@ class _$_NoLocationInformation implements _NoLocationInformation {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? noLocationInformation,
     TResult Function()? loading,
+    TResult Function(String message)? error,
     TResult Function(List<Weather> fiveDayForecast)? complete,
     required TResult orElse(),
   }) {
@@ -153,6 +165,7 @@ class _$_NoLocationInformation implements _NoLocationInformation {
     required TResult Function(_NoLocationInformation value)
         noLocationInformation,
     required TResult Function(_Loading value) loading,
+    required TResult Function(_Error value) error,
     required TResult Function(_Complete value) complete,
   }) {
     return noLocationInformation(this);
@@ -163,6 +176,7 @@ class _$_NoLocationInformation implements _NoLocationInformation {
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_NoLocationInformation value)? noLocationInformation,
     TResult Function(_Loading value)? loading,
+    TResult Function(_Error value)? error,
     TResult Function(_Complete value)? complete,
     required TResult orElse(),
   }) {
@@ -217,6 +231,7 @@ class _$_Loading implements _Loading {
   TResult when<TResult extends Object?>({
     required TResult Function() noLocationInformation,
     required TResult Function() loading,
+    required TResult Function(String message) error,
     required TResult Function(List<Weather> fiveDayForecast) complete,
   }) {
     return loading();
@@ -227,6 +242,7 @@ class _$_Loading implements _Loading {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? noLocationInformation,
     TResult Function()? loading,
+    TResult Function(String message)? error,
     TResult Function(List<Weather> fiveDayForecast)? complete,
     required TResult orElse(),
   }) {
@@ -242,6 +258,7 @@ class _$_Loading implements _Loading {
     required TResult Function(_NoLocationInformation value)
         noLocationInformation,
     required TResult Function(_Loading value) loading,
+    required TResult Function(_Error value) error,
     required TResult Function(_Complete value) complete,
   }) {
     return loading(this);
@@ -252,6 +269,7 @@ class _$_Loading implements _Loading {
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_NoLocationInformation value)? noLocationInformation,
     TResult Function(_Loading value)? loading,
+    TResult Function(_Error value)? error,
     TResult Function(_Complete value)? complete,
     required TResult orElse(),
   }) {
@@ -264,6 +282,127 @@ class _$_Loading implements _Loading {
 
 abstract class _Loading implements WeatherDetailsState {
   factory _Loading() = _$_Loading;
+}
+
+/// @nodoc
+abstract class _$ErrorCopyWith<$Res> {
+  factory _$ErrorCopyWith(_Error value, $Res Function(_Error) then) =
+      __$ErrorCopyWithImpl<$Res>;
+  $Res call({String message});
+}
+
+/// @nodoc
+class __$ErrorCopyWithImpl<$Res> extends _$WeatherDetailsStateCopyWithImpl<$Res>
+    implements _$ErrorCopyWith<$Res> {
+  __$ErrorCopyWithImpl(_Error _value, $Res Function(_Error) _then)
+      : super(_value, (v) => _then(v as _Error));
+
+  @override
+  _Error get _value => super._value as _Error;
+
+  @override
+  $Res call({
+    Object? message = freezed,
+  }) {
+    return _then(_Error(
+      message == freezed
+          ? _value.message
+          : message // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$_Error implements _Error {
+  _$_Error(this.message);
+
+  @override
+  final String message;
+
+  @override
+  String toString() {
+    return 'WeatherDetailsState.error(message: $message)';
+  }
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other is _Error &&
+            (identical(other.message, message) ||
+                const DeepCollectionEquality().equals(other.message, message)));
+  }
+
+  @override
+  int get hashCode =>
+      runtimeType.hashCode ^ const DeepCollectionEquality().hash(message);
+
+  @JsonKey(ignore: true)
+  @override
+  _$ErrorCopyWith<_Error> get copyWith =>
+      __$ErrorCopyWithImpl<_Error>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() noLocationInformation,
+    required TResult Function() loading,
+    required TResult Function(String message) error,
+    required TResult Function(List<Weather> fiveDayForecast) complete,
+  }) {
+    return error(message);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? noLocationInformation,
+    TResult Function()? loading,
+    TResult Function(String message)? error,
+    TResult Function(List<Weather> fiveDayForecast)? complete,
+    required TResult orElse(),
+  }) {
+    if (error != null) {
+      return error(message);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(_NoLocationInformation value)
+        noLocationInformation,
+    required TResult Function(_Loading value) loading,
+    required TResult Function(_Error value) error,
+    required TResult Function(_Complete value) complete,
+  }) {
+    return error(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(_NoLocationInformation value)? noLocationInformation,
+    TResult Function(_Loading value)? loading,
+    TResult Function(_Error value)? error,
+    TResult Function(_Complete value)? complete,
+    required TResult orElse(),
+  }) {
+    if (error != null) {
+      return error(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class _Error implements WeatherDetailsState {
+  factory _Error(String message) = _$_Error;
+
+  String get message => throw _privateConstructorUsedError;
+  @JsonKey(ignore: true)
+  _$ErrorCopyWith<_Error> get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
@@ -333,6 +472,7 @@ class _$_Complete implements _Complete {
   TResult when<TResult extends Object?>({
     required TResult Function() noLocationInformation,
     required TResult Function() loading,
+    required TResult Function(String message) error,
     required TResult Function(List<Weather> fiveDayForecast) complete,
   }) {
     return complete(fiveDayForecast);
@@ -343,6 +483,7 @@ class _$_Complete implements _Complete {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? noLocationInformation,
     TResult Function()? loading,
+    TResult Function(String message)? error,
     TResult Function(List<Weather> fiveDayForecast)? complete,
     required TResult orElse(),
   }) {
@@ -358,6 +499,7 @@ class _$_Complete implements _Complete {
     required TResult Function(_NoLocationInformation value)
         noLocationInformation,
     required TResult Function(_Loading value) loading,
+    required TResult Function(_Error value) error,
     required TResult Function(_Complete value) complete,
   }) {
     return complete(this);
@@ -368,6 +510,7 @@ class _$_Complete implements _Complete {
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_NoLocationInformation value)? noLocationInformation,
     TResult Function(_Loading value)? loading,
+    TResult Function(_Error value)? error,
     TResult Function(_Complete value)? complete,
     required TResult orElse(),
   }) {
