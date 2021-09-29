@@ -21,9 +21,18 @@ class WeatherDetailsCubit extends Cubit<WeatherDetailsState> {
   final SetLocation _setLocation;
 
   Future<void> _fetchWeather() async {
-    // TODO(brandon): Fetch location from preferences
-    final weather = await _getWeather('Newark, Delaware');
-    emit(WeatherDetailsState.complete(fiveDayForecast: weather));
+    final location = await _getLocation();
+    if (location != null && location.isNotEmpty) {
+      emit(WeatherDetailsState.loading());
+      final weather = await _getWeather(location);
+      if (weather.isSuccess) {
+        emit(WeatherDetailsState.complete(fiveDayForecast: weather.success));
+      } else {
+        emit(WeatherDetailsState.error(weather.failure));
+      }
+    } else {
+      emit(WeatherDetailsState.noLocationInformation());
+    }
   }
 
   Future<void> setLocation(String cityName) async {
