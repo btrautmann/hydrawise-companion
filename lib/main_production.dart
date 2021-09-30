@@ -9,11 +9,13 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/widgets.dart';
 import 'package:hydrawise/app/domain/create_database.dart';
 import 'package:hydrawise/core/core.dart';
 import 'package:hydrawise/app/app.dart';
 import 'package:hydrawise/app/app_bloc_observer.dart';
+import 'package:hydrawise/core/networking/http_client.dart';
 import 'package:hydrawise/customer_details/customer_details.dart';
 import 'package:hydrawise/customer_details/domain/get_next_poll_time.dart';
 import 'package:hydrawise/customer_details/domain/set_next_poll_time.dart';
@@ -36,6 +38,10 @@ Future<void> main() async {
         version: 2,
       );
       final repository = DatabaseBackedCustomerDetailsRepository(database);
+      final httpClient = HttpClient(
+        dio: Dio(),
+        baseUrl: 'http://api.hydrawise.com/api/v1',
+      );
 
       final sharedPreferences = await SharedPreferences.getInstance();
       final dataStorage = SharedPreferencesStorage(sharedPreferences);
@@ -47,6 +53,7 @@ Future<void> main() async {
       final getNextPollTime = GetNextPollTimeFromStorage(dataStorage);
       final setNextPollTime = SetNextPollTimeInStorage(dataStorage);
       final getCustomerDetails = GetCustomerDetailsFromNetwork(
+        httpClient: httpClient,
         repository: repository,
         getApiKey: getApiKey,
       );

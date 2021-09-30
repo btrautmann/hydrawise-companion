@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:hydrawise/core/networking/http_client.dart';
 import 'package:hydrawise/customer_details/api/domain/get_api_key.dart';
 import 'package:hydrawise/customer_details/models/controller.dart';
 import 'package:hydrawise/customer_details/models/customer_details.dart';
@@ -10,11 +11,14 @@ typedef GetCustomerDetails = Future<CustomerDetails> Function();
 
 class GetCustomerDetailsFromNetwork {
   GetCustomerDetailsFromNetwork({
+    required HttpClient httpClient,
     required GetApiKey getApiKey,
     required CustomerDetailsRepository repository,
-  })  : _getApiKey = getApiKey,
+  })  : _httpClient = httpClient,
+        _getApiKey = getApiKey,
         _repository = repository;
 
+  final HttpClient _httpClient;
   final GetApiKey _getApiKey;
   final CustomerDetailsRepository _repository;
 
@@ -22,20 +26,16 @@ class GetCustomerDetailsFromNetwork {
     final apiKey = await _getApiKey();
 
     final queryParameters = {
-      'api_key': apiKey,
+      'api_key': apiKey!,
       'type': 'controllers',
     };
-    final uri = Uri.https(
-      'api.hydrawise.com',
-      '/api/v1/customerdetails.php',
-      queryParameters,
-    );
-    // TODO(brandon): Handle error case
-    final response = await http.get(uri);
 
-    final customerDetails = CustomerDetails.fromJson(
-      json.decode(response.body) as Map<String, dynamic>,
+    final response = await _httpClient.get<Map<String, dynamic>>(
+      'customerdetails.php',
+      queryParameters: queryParameters,
     );
+
+    final customerDetails = CustomerDetails.fromJson(response.data!);
 
     final customerIdentification =
         customerDetails.toCustomerIdentification(apiKey!);
