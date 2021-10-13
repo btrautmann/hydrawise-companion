@@ -1,5 +1,3 @@
-import 'dart:convert';
-import 'package:http/http.dart' as http;
 import 'package:hydrawise/core/networking/http_client.dart';
 import 'package:hydrawise/customer_details/api/domain/get_api_key.dart';
 import 'package:hydrawise/customer_details/models/controller.dart';
@@ -38,7 +36,7 @@ class GetCustomerDetailsFromNetwork {
     final customerDetails = CustomerDetails.fromJson(response.data!);
 
     final customerIdentification =
-        customerDetails.toCustomerIdentification(apiKey!);
+        customerDetails.toCustomerIdentification(apiKey);
 
     await _repository.insertCustomer(customerIdentification);
 

@@ -15,7 +15,6 @@ import 'package:hydrawise/app/domain/create_database.dart';
 import 'package:hydrawise/core/core.dart';
 import 'package:hydrawise/app/app.dart';
 import 'package:hydrawise/app/app_bloc_observer.dart';
-import 'package:hydrawise/core/networking/http_client.dart';
 import 'package:hydrawise/customer_details/customer_details.dart';
 import 'package:hydrawise/customer_details/domain/get_next_poll_time.dart';
 import 'package:hydrawise/customer_details/domain/set_next_poll_time.dart';
@@ -58,6 +57,7 @@ Future<void> main() async {
         getApiKey: getApiKey,
       );
       final getCustomerStatus = GetCustomerStatusFromNetwork(
+        httpClient: httpClient,
         repository: repository,
         getApiKey: getApiKey,
         getNextPollTime: getNextPollTime,

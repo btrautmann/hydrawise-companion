@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:result_type/result_type.dart';
 import 'package:weather/weather.dart';
 

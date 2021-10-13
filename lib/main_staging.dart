@@ -9,6 +9,7 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/widgets.dart';
 import 'package:hydrawise/app/domain/create_database.dart';
 import 'package:hydrawise/core/core.dart';
@@ -34,6 +35,10 @@ Future<void> main() async {
         version: 1,
       );
       final repository = DatabaseBackedCustomerDetailsRepository(database);
+      final httpClient = HttpClient(
+        dio: Dio(),
+        baseUrl: 'http://api.hydrawise.com/api/v1',
+      );
 
       final sharedPreferences = await SharedPreferences.getInstance();
       final dataStorage = SharedPreferencesStorage(sharedPreferences);
@@ -48,8 +53,10 @@ Future<void> main() async {
       final getCustomerDetails = GetCustomerDetailsFromNetwork(
         repository: repository,
         getApiKey: getApiKey,
+        httpClient: httpClient,
       );
       final getCustomerStatus = GetCustomerStatusFromNetwork(
+        httpClient: httpClient,
         repository: repository,
         getApiKey: getApiKey,
         getNextPollTime: getNextPollTime,

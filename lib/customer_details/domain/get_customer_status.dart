@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:hydrawise/core/core.dart';
 import 'package:hydrawise/customer_details/api/domain/get_api_key.dart';
 import 'package:hydrawise/customer_details/domain/get_next_poll_time.dart';
 import 'package:hydrawise/customer_details/domain/set_next_poll_time.dart';
@@ -13,15 +14,18 @@ typedef GetCustomerStatus = Future<CustomerStatus> Function({
 
 class GetCustomerStatusFromNetwork {
   GetCustomerStatusFromNetwork({
+    required HttpClient httpClient,
     required CustomerDetailsRepository repository,
     required GetApiKey getApiKey,
     required SetNextPollTime setNextPollTime,
     required GetNextPollTime getNextPollTime,
-  })  : _repository = repository,
+  })  : _httpClient = httpClient,
+        _repository = repository,
         _getApiKey = getApiKey,
         _setNextPollTime = setNextPollTime,
         _getNextPollTime = getNextPollTime;
 
+  final HttpClient _httpClient;
   final CustomerDetailsRepository _repository;
   final GetApiKey _getApiKey;
   final SetNextPollTime _setNextPollTime;
@@ -35,22 +39,18 @@ class GetCustomerStatusFromNetwork {
     if (DateTime.now().isAfter(nextPollTime)) {
       final apiKey = await _getApiKey();
       final queryParameters = {
-        'api_key': apiKey,
+        'api_key': apiKey!,
       };
       if (activeControllerId != null) {
         queryParameters['controller_id'] = activeControllerId.toString();
       }
-      final uri = Uri.https(
-        'api.hydrawise.com',
-        '/api/v1/statusschedule.php',
-        queryParameters,
+
+      final response = await _httpClient.get<Map<String, dynamic>>(
+        'statusschedule.php',
+        queryParameters: queryParameters,
       );
-      final response = await http.get(uri);
 
-      final decodedCustomerStatus =
-          json.decode(response.body) as Map<String, dynamic>;
-
-      final customerStatus = CustomerStatus.fromJson(decodedCustomerStatus);
+      final customerStatus = CustomerStatus.fromJson(response.data!);
 
       await _repository.updateCustomer(customerStatus);
 
