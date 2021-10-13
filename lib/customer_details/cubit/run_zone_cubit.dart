@@ -20,10 +20,13 @@ class RunZoneCubit extends Cubit<RunZoneState> {
 
   Future<void> runZone({required int runLengthMinutes}) async {
     emit(RunZoneState.loading());
-    await _runZone(
+    final result = await _runZone(
       zone: _zone,
       runLengthSeconds: runLengthMinutes * 60,
     );
+    if (result.isFailure) {
+      print('FAILED');
+    }
     emit(RunZoneState.resting());
   }
 

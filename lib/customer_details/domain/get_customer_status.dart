@@ -5,8 +5,10 @@ import 'package:hydrawise/customer_details/domain/set_next_poll_time.dart';
 import 'package:hydrawise/customer_details/models/customer_status.dart';
 import 'package:hydrawise/customer_details/models/zone.dart';
 import 'package:hydrawise/customer_details/repository/customer_details_repository.dart';
+import 'package:result_type/result_type.dart';
 
-typedef GetCustomerStatus = Future<CustomerStatus> Function({
+typedef GetCustomerStatus = Future<UseCaseResult<CustomerStatus, String>>
+    Function({
   int? activeControllerId,
 });
 
@@ -29,7 +31,7 @@ class GetCustomerStatusFromNetwork {
   final SetNextPollTime _setNextPollTime;
   final GetNextPollTime _getNextPollTime;
 
-  Future<CustomerStatus> call({
+  Future<UseCaseResult<CustomerStatus, String>> call({
     int? activeControllerId,
   }) async {
     final nextPollTime = await _getNextPollTime();
@@ -48,26 +50,30 @@ class GetCustomerStatusFromNetwork {
         queryParameters: queryParameters,
       );
 
-      final customerStatus = CustomerStatus.fromJson(response.data!);
+      if (response.isSuccess) {
+        final customerStatus = CustomerStatus.fromJson(response.success!);
 
-      await _repository.updateCustomer(customerStatus);
+        await _repository.updateCustomer(customerStatus);
 
-      final secondsUntilNextPoll =
-          customerStatus.numberOfSecondsUntilNextRequest;
-      await _setNextPollTime(secondsUntilNextPoll: secondsUntilNextPoll);
+        final secondsUntilNextPoll =
+            customerStatus.numberOfSecondsUntilNextRequest;
+        await _setNextPollTime(secondsUntilNextPoll: secondsUntilNextPoll);
 
-      return customerStatus;
+        return Success(customerStatus);
+      }
+
+      return Failure("Can't fetch customer status");
     }
 
     final zones = await _repository.getZones();
     final customer = await _repository.getCustomer();
 
-    return CustomerStatus(
+    return Success(CustomerStatus(
       numberOfSecondsUntilNextRequest:
           DateTime.now().difference(nextPollTime).inSeconds.abs(),
       timeOfLastStatusUnixEpoch: customer.lastStatusUpdate,
       zones: zones,
-    );
+    ));
   }
 }
 
@@ -78,7 +84,7 @@ class GetFakeCustomerStatus {
 
   final CustomerDetailsRepository _repository;
 
-  Future<CustomerStatus> call({
+  Future<UseCaseResult<CustomerStatus, String>> call({
     int? activeControllerId,
   }) async {
     final zones = <Zone>[];
@@ -101,10 +107,10 @@ class GetFakeCustomerStatus {
 
     await Future<void>.delayed(const Duration(seconds: 1));
 
-    return CustomerStatus(
+    return Success(CustomerStatus(
       numberOfSecondsUntilNextRequest: 5,
       timeOfLastStatusUnixEpoch: customer.lastStatusUpdate,
       zones: zones,
-    );
+    ));
   }
 }

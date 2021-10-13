@@ -1,11 +1,14 @@
+import 'package:hydrawise/core/core.dart';
 import 'package:hydrawise/core/networking/http_client.dart';
 import 'package:hydrawise/customer_details/api/domain/get_api_key.dart';
 import 'package:hydrawise/customer_details/models/controller.dart';
 import 'package:hydrawise/customer_details/models/customer_details.dart';
 import 'package:hydrawise/customer_details/models/customer_identification.dart';
 import 'package:hydrawise/customer_details/repository/customer_details_repository.dart';
+import 'package:result_type/result_type.dart';
 
-typedef GetCustomerDetails = Future<CustomerDetails> Function();
+typedef GetCustomerDetails = Future<UseCaseResult<CustomerDetails, String>>
+    Function();
 
 class GetCustomerDetailsFromNetwork {
   GetCustomerDetailsFromNetwork({
@@ -20,7 +23,7 @@ class GetCustomerDetailsFromNetwork {
   final GetApiKey _getApiKey;
   final CustomerDetailsRepository _repository;
 
-  Future<CustomerDetails> call() async {
+  Future<UseCaseResult<CustomerDetails, String>> call() async {
     final apiKey = await _getApiKey();
 
     final queryParameters = {
@@ -33,14 +36,18 @@ class GetCustomerDetailsFromNetwork {
       queryParameters: queryParameters,
     );
 
-    final customerDetails = CustomerDetails.fromJson(response.data!);
+    if (response.isSuccess) {
+      final customerDetails = CustomerDetails.fromJson(response.success!);
 
-    final customerIdentification =
-        customerDetails.toCustomerIdentification(apiKey);
+      final customerIdentification =
+          customerDetails.toCustomerIdentification(apiKey);
 
-    await _repository.insertCustomer(customerIdentification);
+      await _repository.insertCustomer(customerIdentification);
 
-    return customerDetails;
+      return Success(customerDetails);
+    }
+
+    return Failure("Can't fetch customer details");
   }
 }
 
@@ -51,7 +58,7 @@ class GetFakeCustomerDetails {
 
   final CustomerDetailsRepository _repository;
 
-  Future<CustomerDetails> call() async {
+Future<UseCaseResult<CustomerDetails, String>> call() async {
     final customers = await _repository.getCustomers();
 
     if (customers.isEmpty) {
@@ -70,7 +77,7 @@ class GetFakeCustomerDetails {
 
     await Future<void>.delayed(const Duration(seconds: 1));
 
-    return CustomerDetails(
+    return Success(CustomerDetails(
       activeControllerId: customer.activeControllerId,
       customerId: customer.customerId,
       controllers: [
@@ -82,6 +89,6 @@ class GetFakeCustomerDetails {
           status: 'All good!',
         ),
       ],
-    );
+    ));
   }
 }

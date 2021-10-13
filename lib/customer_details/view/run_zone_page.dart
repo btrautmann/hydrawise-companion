@@ -119,7 +119,11 @@ class __RunLengthSliderState extends State<_RunLengthSlider> {
 
   @override
   void initState() {
-    _setCurrentValue(widget.zone.lengthOfNextRunTimeOrTimeRemaining / 60);
+    // TODO(brandon): Fix this hack
+    final maxValue = widget.zone.lengthOfNextRunTimeOrTimeRemaining == 0
+        ? 90
+        : widget.zone.lengthOfNextRunTimeOrTimeRemaining / 60;
+    _setCurrentValue(maxValue.toDouble());
     super.initState();
   }
 

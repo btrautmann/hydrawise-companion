@@ -1,10 +1,12 @@
+import 'package:dio/dio.dart';
 import 'package:hydrawise/core/core.dart';
 import 'package:hydrawise/customer_details/api/domain/get_api_key.dart';
 import 'package:hydrawise/customer_details/models/run_zone_response.dart';
 import 'package:hydrawise/customer_details/models/zone.dart';
 import 'package:hydrawise/customer_details/repository/customer_details_repository.dart';
+import 'package:result_type/result_type.dart';
 
-typedef StopZone = Future<RunZoneResponse> Function({
+typedef StopZone = Future<UseCaseResult<RunZoneResponse, String>> Function({
   required Zone zone,
 });
 
@@ -18,7 +20,7 @@ class StopZoneOverNetwork {
   final GetApiKey _getApiKey;
   final HttpClient _httpClient;
 
-  Future<RunZoneResponse> call({
+  Future<UseCaseResult<RunZoneResponse, String>> call({
     required Zone zone,
   }) async {
     final apiKey = await _getApiKey();
@@ -31,8 +33,10 @@ class StopZoneOverNetwork {
       'setzone.php',
       queryParameters: queryParameters,
     );
-    // TODO(brandon): Handle error case
-    return RunZoneResponse.fromJson(response.data!);
+    return response
+        .map<RunZoneResponse, DioError>(
+            (result) => RunZoneResponse.fromJson(result!))
+        .mapError<RunZoneResponse, String>((error) => "Can't run ${zone.name}");
   }
 }
 
@@ -43,7 +47,7 @@ class StopZoneLocally {
 
   final CustomerDetailsRepository _repository;
 
-  Future<RunZoneResponse> call({
+  Future<UseCaseResult<RunZoneResponse, String>> call({
     required Zone zone,
   }) async {
     final stoppedZone = zone.copyWith(
@@ -55,9 +59,9 @@ class StopZoneLocally {
 
     await _repository.updateZone(stoppedZone);
 
-    return RunZoneResponse(
+    return Success(RunZoneResponse(
       message: 'Stopping zones ${zone.name}. ${zone.name} to stop now.',
       typeOfMessage: 'info',
-    );
+    ));
   }
 }

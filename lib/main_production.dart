@@ -39,7 +39,7 @@ Future<void> main() async {
       final repository = DatabaseBackedCustomerDetailsRepository(database);
       final httpClient = HttpClient(
         dio: Dio(),
-        baseUrl: 'http://api.hydrawise.com/api/v1',
+        baseUrl: 'http://api.hydrawise.com/api/v1/',
       );
 
       final sharedPreferences = await SharedPreferences.getInstance();

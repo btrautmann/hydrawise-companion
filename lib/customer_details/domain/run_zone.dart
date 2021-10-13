@@ -1,11 +1,13 @@
+import 'package:dio/dio.dart';
 import 'package:hydrawise/core/core.dart';
 import 'package:hydrawise/customer_details/api/domain/get_api_key.dart';
 import 'package:hydrawise/customer_details/models/run_zone_response.dart';
 import 'package:hydrawise/customer_details/models/zone.dart';
 import 'package:hydrawise/customer_details/repository/customer_details_repository.dart';
 import 'package:pedantic/pedantic.dart';
+import 'package:result_type/result_type.dart';
 
-typedef RunZone = Future<RunZoneResponse> Function({
+typedef RunZone = Future<UseCaseResult<RunZoneResponse, String>> Function({
   required Zone zone,
   required int runLengthSeconds,
 });
@@ -20,13 +22,12 @@ class RunZoneOverNetwork {
   final GetApiKey _getApiKey;
   final HttpClient _httpClient;
 
-  Future<RunZoneResponse> call({
+  Future<UseCaseResult<RunZoneResponse, String>> call({
     required Zone zone,
     required int runLengthSeconds,
   }) async {
     final apiKey = await _getApiKey();
     final queryParameters = {
-      'api_key': apiKey!,
       'action': 'run',
       'period_id': 999,
       'custom': runLengthSeconds,
@@ -36,8 +37,10 @@ class RunZoneOverNetwork {
       'setzone.php',
       queryParameters: queryParameters,
     );
-    // TODO(brandon): Handle error case
-    return RunZoneResponse.fromJson(response.data!);
+    return response
+        .map<RunZoneResponse, DioError>(
+            (result) => RunZoneResponse.fromJson(result!))
+        .mapError<RunZoneResponse, String>((error) => "Can't run ${zone.name}");
   }
 }
 
@@ -48,7 +51,7 @@ class RunZoneLocally {
 
   final CustomerDetailsRepository _repository;
 
-  Future<RunZoneResponse> call({
+  Future<Result<RunZoneResponse, String>> call({
     required Zone zone,
     required int runLengthSeconds,
   }) async {
@@ -73,9 +76,9 @@ class RunZoneLocally {
       }),
     );
 
-    return RunZoneResponse(
+    return Success(RunZoneResponse(
       message: 'Starting zones ${zone.name}. ${zone.name} to run now.',
       typeOfMessage: 'info',
-    );
+    ));
   }
 }
