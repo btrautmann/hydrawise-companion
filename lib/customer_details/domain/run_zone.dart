@@ -1,5 +1,4 @@
-import 'dart:convert';
-import 'package:http/http.dart' as http;
+import 'package:hydrawise/core/core.dart';
 import 'package:hydrawise/customer_details/api/domain/get_api_key.dart';
 import 'package:hydrawise/customer_details/models/run_zone_response.dart';
 import 'package:hydrawise/customer_details/models/zone.dart';
@@ -13,10 +12,13 @@ typedef RunZone = Future<RunZoneResponse> Function({
 
 class RunZoneOverNetwork {
   RunZoneOverNetwork({
+    required HttpClient httpClient,
     required GetApiKey getApiKey,
-  }) : _getApiKey = getApiKey;
+  })  : _httpClient = httpClient,
+        _getApiKey = getApiKey;
 
   final GetApiKey _getApiKey;
+  final HttpClient _httpClient;
 
   Future<RunZoneResponse> call({
     required Zone zone,
@@ -24,22 +26,18 @@ class RunZoneOverNetwork {
   }) async {
     final apiKey = await _getApiKey();
     final queryParameters = {
-      'api_key': apiKey,
+      'api_key': apiKey!,
       'action': 'run',
       'period_id': 999,
       'custom': runLengthSeconds,
       'relay_id': zone.id
     };
-    final uri = Uri.https(
-      'api.hydrawise.com',
-      '/api/v1/setzone.php',
-      queryParameters,
+    final response = await _httpClient.get<Map<String, dynamic>>(
+      'setzone.php',
+      queryParameters: queryParameters,
     );
     // TODO(brandon): Handle error case
-    final response = await http.get(uri);
-    return RunZoneResponse.fromJson(
-      json.decode(response.body) as Map<String, dynamic>,
-    );
+    return RunZoneResponse.fromJson(response.data!);
   }
 }
 

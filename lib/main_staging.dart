@@ -62,8 +62,14 @@ Future<void> main() async {
         getNextPollTime: getNextPollTime,
         setNextPollTime: setNextPollTime,
       );
-      final runZone = RunZoneOverNetwork(getApiKey: getApiKey);
-      final stopZone = StopZoneOverNetwork(getApiKey: getApiKey);
+      final runZone = RunZoneOverNetwork(
+        httpClient: httpClient,
+        getApiKey: getApiKey,
+      );
+      final stopZone = StopZoneOverNetwork(
+        httpClient: httpClient,
+        getApiKey: getApiKey,
+      );
 
       runApp(App(
         getCustomerDetails: getCustomerDetails,

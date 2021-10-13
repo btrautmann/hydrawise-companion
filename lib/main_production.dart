@@ -65,8 +65,14 @@ Future<void> main() async {
       );
 
       final clearCustomerDetails = ClearCustomerDetailsFromStorage(dataStorage);
-      final runZone = RunZoneOverNetwork(getApiKey: getApiKey);
-      final stopZone = StopZoneOverNetwork(getApiKey: getApiKey);
+      final runZone = RunZoneOverNetwork(
+        httpClient: httpClient,
+        getApiKey: getApiKey,
+      );
+      final stopZone = StopZoneOverNetwork(
+        httpClient: httpClient,
+        getApiKey: getApiKey,
+      );
 
       runApp(App(
         getCustomerDetails: getCustomerDetails,
