@@ -1,6 +1,9 @@
-include: package:very_good_analysis/analysis_options.2.3.0.yaml
+include: package:flutter_lints/flutter.yaml
 analyzer:
   exclude: ['**.freezed.dart', '**.g.dart']
+  errors:
+    # Don't flag TODOs - comment this out when wanting to address
+    todo: ignore
 linter:
   rules:
     public_member_api_docs: false
