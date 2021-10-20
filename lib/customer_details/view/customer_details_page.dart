@@ -10,7 +10,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hydrawise/core-ui/widgets/h_stretch.dart';
 import 'package:hydrawise/customer_details/cubit/customer_details_cubit.dart';
 import 'package:hydrawise/customer_details/customer_details.dart';
-import 'package:hydrawise/customer_details/models/controller.dart';
 import 'package:hydrawise/customer_details/models/customer_details.dart';
 import 'package:hydrawise/customer_details/models/customer_status.dart';
 import 'package:hydrawise/customer_details/models/zone.dart';
@@ -42,6 +41,8 @@ class CustomerDetailsView extends StatelessWidget {
   }
 }
 
+/*
+ * TODO(brandon): Add ability to log out at some point
 class _LogOutButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -53,6 +54,7 @@ class _LogOutButton extends StatelessWidget {
     );
   }
 }
+*/
 
 class _CustomerDetailsStateView extends StatelessWidget {
   const _CustomerDetailsStateView({Key? key}) : super(key: key);
@@ -189,63 +191,6 @@ class _Greeting extends StatelessWidget {
       child: Text(
         text,
         style: theme.textTheme.headline5,
-      ),
-    );
-  }
-}
-
-class _ActiveControllerView extends StatelessWidget {
-  const _ActiveControllerView({
-    Key? key,
-    required this.controllers,
-    required this.activeControllerId,
-  }) : super(key: key);
-
-  final List<Controller> controllers;
-  final int activeControllerId;
-
-  @override
-  Widget build(BuildContext context) {
-    final activeController =
-        controllers.singleWhere((element) => element.id == activeControllerId);
-    return HStretch(
-      child: Card(
-        clipBehavior: Clip.hardEdge,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                Colors.green,
-                Colors.lightGreen,
-              ],
-            ),
-            color: Colors.green,
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(8),
-            child: Row(
-              children: [
-                Text('👍', style: Theme.of(context).textTheme.headline4),
-                Padding(
-                  padding: const EdgeInsets.only(left: 16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        activeController.name,
-                        style: Theme.of(context).textTheme.headline6,
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
       ),
     );
   }
