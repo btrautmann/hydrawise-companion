@@ -4,6 +4,9 @@ analyzer:
   errors:
     # Don't flag TODOs - comment this out when wanting to address
     todo: ignore
+    sized_box_for_whitespace: error
+    avoid_print: error
 linter:
   rules:
     public_member_api_docs: false
+    
