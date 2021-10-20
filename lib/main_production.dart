@@ -87,9 +87,6 @@ Future<void> main() async {
         getWeather: getWeather,
       ));
     },
-    (error, stackTrace) {
-      print(error.toString());
-      print(stackTrace.toString());
-    },
+    (error, stackTrace) => log(error.toString(), stackTrace: stackTrace),
   );
 }

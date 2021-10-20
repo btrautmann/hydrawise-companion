@@ -25,7 +25,7 @@ class RunZoneCubit extends Cubit<RunZoneState> {
       runLengthSeconds: runLengthMinutes * 60,
     );
     if (result.isFailure) {
-      print('FAILED');
+      // print('FAILED');
     }
     emit(RunZoneState.resting());
   }
