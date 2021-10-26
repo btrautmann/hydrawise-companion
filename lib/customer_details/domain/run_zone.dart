@@ -1,4 +1,3 @@
-// ignore_for_file: unused_local_variable
 import 'package:dio/dio.dart';
 import 'package:hydrawise/core/core.dart';
 import 'package:hydrawise/customer_details/api/domain/get_api_key.dart';
@@ -27,11 +26,9 @@ class RunZoneOverNetwork {
     required Zone zone,
     required int runLengthSeconds,
   }) async {
-
-    // TODO(brandon): Add this back, just testing failure case
-    // Also, remove ignore from top-of-file
     final apiKey = await _getApiKey();
     final queryParameters = {
+      'api_key': apiKey!,
       'action': 'run',
       'period_id': 999,
       'custom': runLengthSeconds,
@@ -44,7 +41,9 @@ class RunZoneOverNetwork {
     return response
         .map<RunZoneResponse, DioError>(
             (result) => RunZoneResponse.fromJson(result!))
-        .mapError<RunZoneResponse, String>((error) => "Can't run ${zone.name}");
+        .mapError<RunZoneResponse, String>(
+          (error) => "Can't run ${zone.name}. ${error.message}",
+        );
   }
 }
 

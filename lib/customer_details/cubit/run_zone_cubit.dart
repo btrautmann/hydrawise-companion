@@ -24,17 +24,17 @@ class RunZoneCubit extends Cubit<RunZoneState> {
       zone: _zone,
       runLengthSeconds: runLengthMinutes * 60,
     );
-    if (result.isFailure) {
-      // print('FAILED');
-    }
-    emit(RunZoneState.resting());
+
+    final message = result.isFailure ? result.failure : result.success.message;
+    emit(RunZoneState.resting(message: message));
   }
 
   Future<void> stopZone() async {
     emit(RunZoneState.loading());
-    await _stopZone(
+    final result = await _stopZone(
       zone: _zone,
     );
-    emit(RunZoneState.resting());
+    final message = result.isFailure ? result.failure : result.success.message;
+    emit(RunZoneState.resting(message: message));
   }
 }

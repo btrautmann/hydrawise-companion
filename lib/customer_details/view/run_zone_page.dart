@@ -88,6 +88,7 @@ class __RunZonesViewState extends State<_RunZonesView> {
                     context.read<RunZoneCubit>().stopZone();
                   },
                 ),
+                _MessageSnackbarListener(),
               ],
             ),
           ),
@@ -96,6 +97,27 @@ class __RunZonesViewState extends State<_RunZonesView> {
       orElse: () {
         return const Center(child: CircularProgressIndicator());
       },
+    );
+  }
+}
+
+class _MessageSnackbarListener extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return BlocListener<RunZoneCubit, RunZoneState>(
+      listener: (context, state) {
+        state.maybeWhen(
+          resting: (error) {
+            if (error != null) {
+              ScaffoldMessenger.of(context)
+                ..removeCurrentSnackBar()
+                ..showSnackBar(SnackBar(content: Text(error)));
+            }
+          },
+          orElse: () {},
+        );
+      },
+      child: const SizedBox.shrink(),
     );
   }
 }
@@ -211,7 +233,8 @@ class _ZoneButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<RunZoneCubit, RunZoneState>(
       builder: (_, state) {
-        final isLoading = state.when(resting: () => false, loading: () => true);
+        final isLoading =
+            state.when(resting: (_) => false, loading: () => true);
         return ActionChip(
           onPressed: onPressed,
           label: SizedBox(

@@ -58,7 +58,7 @@ class GetFakeCustomerDetails {
 
   final CustomerDetailsRepository _repository;
 
-Future<UseCaseResult<CustomerDetails, String>> call() async {
+  Future<UseCaseResult<CustomerDetails, String>> call() async {
     final customers = await _repository.getCustomers();
 
     if (customers.isEmpty) {

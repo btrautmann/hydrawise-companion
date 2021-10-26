@@ -36,7 +36,7 @@ class StopZoneOverNetwork {
     return response
         .map<RunZoneResponse, DioError>(
             (result) => RunZoneResponse.fromJson(result!))
-        .mapError<RunZoneResponse, String>((error) => "Can't run ${zone.name}");
+        .mapError<RunZoneResponse, String>((error) => "Can't stop ${zone.name}");
   }
 }
 
