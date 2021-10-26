@@ -9,6 +9,9 @@ environment:
 dependencies:
   bloc: ^7.1.0
   dio: ^4.0.0
+  firebase_analytics: ^8.3.4
+  firebase_core: ^1.8.0
+  firebase_crashlytics: ^2.2.4
   flutter:
     sdk: flutter
   flutter_bloc: ^7.2.0
