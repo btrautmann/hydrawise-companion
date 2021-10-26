@@ -16,8 +16,10 @@ final _privateConstructorUsedError = UnsupportedError(
 class _$RunZoneStateTearOff {
   const _$RunZoneStateTearOff();
 
-  _Resting resting() {
-    return _Resting();
+  _Resting resting({String? message}) {
+    return _Resting(
+      message: message,
+    );
   }
 
   _Loading loading() {
@@ -32,13 +34,13 @@ const $RunZoneState = _$RunZoneStateTearOff();
 mixin _$RunZoneState {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function() resting,
+    required TResult Function(String? message) resting,
     required TResult Function() loading,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? resting,
+    TResult Function(String? message)? resting,
     TResult Function()? loading,
     required TResult orElse(),
   }) =>
@@ -78,6 +80,7 @@ class _$RunZoneStateCopyWithImpl<$Res> implements $RunZoneStateCopyWith<$Res> {
 abstract class _$RestingCopyWith<$Res> {
   factory _$RestingCopyWith(_Resting value, $Res Function(_Resting) then) =
       __$RestingCopyWithImpl<$Res>;
+  $Res call({String? message});
 }
 
 /// @nodoc
@@ -88,44 +91,68 @@ class __$RestingCopyWithImpl<$Res> extends _$RunZoneStateCopyWithImpl<$Res>
 
   @override
   _Resting get _value => super._value as _Resting;
+
+  @override
+  $Res call({
+    Object? message = freezed,
+  }) {
+    return _then(_Resting(
+      message: message == freezed
+          ? _value.message
+          : message // ignore: cast_nullable_to_non_nullable
+              as String?,
+    ));
+  }
 }
 
 /// @nodoc
 
 class _$_Resting implements _Resting {
-  _$_Resting();
+  _$_Resting({this.message});
+
+  @override
+  final String? message;
 
   @override
   String toString() {
-    return 'RunZoneState.resting()';
+    return 'RunZoneState.resting(message: $message)';
   }
 
   @override
   bool operator ==(dynamic other) {
-    return identical(this, other) || (other is _Resting);
+    return identical(this, other) ||
+        (other is _Resting &&
+            (identical(other.message, message) ||
+                const DeepCollectionEquality().equals(other.message, message)));
   }
 
   @override
-  int get hashCode => runtimeType.hashCode;
+  int get hashCode =>
+      runtimeType.hashCode ^ const DeepCollectionEquality().hash(message);
+
+  @JsonKey(ignore: true)
+  @override
+  _$RestingCopyWith<_Resting> get copyWith =>
+      __$RestingCopyWithImpl<_Resting>(this, _$identity);
 
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function() resting,
+    required TResult Function(String? message) resting,
     required TResult Function() loading,
   }) {
-    return resting();
+    return resting(message);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? resting,
+    TResult Function(String? message)? resting,
     TResult Function()? loading,
     required TResult orElse(),
   }) {
     if (resting != null) {
-      return resting();
+      return resting(message);
     }
     return orElse();
   }
@@ -154,7 +181,12 @@ class _$_Resting implements _Resting {
 }
 
 abstract class _Resting implements RunZoneState {
-  factory _Resting() = _$_Resting;
+  factory _Resting({String? message}) = _$_Resting;
+
+  String? get message => throw _privateConstructorUsedError;
+  @JsonKey(ignore: true)
+  _$RestingCopyWith<_Resting> get copyWith =>
+      throw _privateConstructorUsedError;
 }
 
 /// @nodoc
@@ -194,7 +226,7 @@ class _$_Loading implements _Loading {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function() resting,
+    required TResult Function(String? message) resting,
     required TResult Function() loading,
   }) {
     return loading();
@@ -203,7 +235,7 @@ class _$_Loading implements _Loading {
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? resting,
+    TResult Function(String? message)? resting,
     TResult Function()? loading,
     required TResult orElse(),
   }) {

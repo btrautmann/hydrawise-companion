@@ -9,6 +9,8 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/widgets.dart';
 import 'package:hydrawise/app/domain/create_database.dart';
 import 'package:hydrawise/core/core.dart';
@@ -28,6 +30,8 @@ Future<void> main() async {
   await runZonedGuarded(
     () async {
       WidgetsFlutterBinding.ensureInitialized();
+      await Firebase.initializeApp();
+      FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(false);
 
       final database = await CreateHydrawiseDatabase().call(
         databaseName: 'hydrawise_companion_dev.db',
@@ -62,9 +66,6 @@ Future<void> main() async {
         getWeather: getWeather,
       ));
     },
-    (error, stackTrace) {
-      print(error.toString());
-      print(stackTrace.toString());
-    },
+    (error, stackTrace) => log(error.toString(), stackTrace: stackTrace),
   );
 }

@@ -1,0 +1,60 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "hydrawise-companion (prod)",
+            "request": "launch",
+            "type": "dart",
+            "program": "lib/main_production.dart",
+            "flutterMode": "debug",
+            "args": [
+                "--dart-define",
+                "OPEN_WEATHER_MAP_API_KEY=${env:OPEN_WEATHER_MAP_API_KEY}",
+                "--flavor",
+                "production"
+            ]
+        },
+        {
+            "name": "hydrawise-companion (dev)",
+            "request": "launch",
+            "type": "dart",
+            "program": "lib/main_development.dart",
+            "flutterMode": "debug",
+            "args": [
+                "--dart-define",
+                "OPEN_WEATHER_MAP_API_KEY=${env:OPEN_WEATHER_MAP_API_KEY}",
+                "--flavor",
+                "development"
+            ]
+        },
+        {
+            "name": "hydrawise-companion (staging)",
+            "request": "launch",
+            "type": "dart",
+            "program": "lib/main_staging.dart",
+            "flutterMode": "debug",
+            "args": [
+                "--dart-define",
+                "OPEN_WEATHER_MAP_API_KEY=${env:OPEN_WEATHER_MAP_API_KEY}",
+                "--flavor",
+                "staging"
+            ]
+        },
+        {
+            "name": "hydrawise-companion (profile mode)",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile",
+            "program": "lib/main_production.dart",
+            "args": [
+                "--dart-define",
+                "OPEN_WEATHER_MAP_API_KEY=${env:OPEN_WEATHER_MAP_API_KEY}",
+                "--flavor",
+                "production"
+            ]
+        }
+    ]
+}

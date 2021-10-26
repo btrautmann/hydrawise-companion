@@ -42,14 +42,19 @@ class CustomerDetailsCubit extends Cubit<CustomerDetailsState> {
     final apiKey = await _getApiKey();
     if (apiKey != null && apiKey.isNotEmpty) {
       final customerDetails = await _getCustomerDetails();
-      final customerStatus = await _getCustomerStatus(
-        activeControllerId: customerDetails.activeControllerId,
-      );
-      emit(CustomerDetailsState.complete(
-        customerDetails: customerDetails,
-        customerStatus: customerStatus,
-      ));
-      _poll();
+      // TODO(brandon): Handle failure
+      if (customerDetails.isSuccess) {
+        final customerStatus = await _getCustomerStatus(
+          activeControllerId: customerDetails.success.activeControllerId,
+        );
+        if (customerStatus.isSuccess) {
+          emit(CustomerDetailsState.complete(
+            customerDetails: customerDetails.success,
+            customerStatus: customerStatus.success,
+          ));
+        }
+        _poll();
+      }
     } else {
       emit(CustomerDetailsState.empty());
     }
@@ -57,18 +62,19 @@ class CustomerDetailsCubit extends Cubit<CustomerDetailsState> {
 
   void _poll() {
     Timer.periodic(const Duration(seconds: 1), (timer) {
-      state.when(
-          loading: () {},
-          empty: () {},
+      state.maybeWhen(
           complete: (details, status) async {
             final customerStatus = await _getCustomerStatus();
-            emit(
-              CustomerDetailsState.complete(
-                customerDetails: details,
-                customerStatus: customerStatus,
-              ),
-            );
-          });
+            if (customerStatus.isSuccess) {
+              emit(
+                CustomerDetailsState.complete(
+                  customerDetails: details,
+                  customerStatus: customerStatus.success,
+                ),
+              );
+            }
+          },
+          orElse: () {});
     });
   }
 

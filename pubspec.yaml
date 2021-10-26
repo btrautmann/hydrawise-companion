@@ -8,6 +8,10 @@ environment:
 
 dependencies:
   bloc: ^7.1.0
+  dio: ^4.0.0
+  firebase_analytics: ^8.3.4
+  firebase_core: ^1.8.0
+  firebase_crashlytics: ^2.2.4
   flutter:
     sdk: flutter
   flutter_bloc: ^7.2.0
@@ -28,12 +32,12 @@ dependencies:
 dev_dependencies:
   bloc_test: ^8.1.0
   build_runner: ^2.1.2
+  flutter_lints: ^1.0.4
   flutter_test:
     sdk: flutter
   freezed: ^0.14.2
   json_serializable: ^4.1.0
   mocktail: ^0.1.0
-  very_good_analysis: ^2.3.0
 
 flutter:
   uses-material-design: true

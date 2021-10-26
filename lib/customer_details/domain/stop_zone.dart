@@ -1,40 +1,42 @@
-import 'dart:convert';
-import 'package:http/http.dart' as http;
+import 'package:dio/dio.dart';
+import 'package:hydrawise/core/core.dart';
 import 'package:hydrawise/customer_details/api/domain/get_api_key.dart';
 import 'package:hydrawise/customer_details/models/run_zone_response.dart';
 import 'package:hydrawise/customer_details/models/zone.dart';
 import 'package:hydrawise/customer_details/repository/customer_details_repository.dart';
+import 'package:result_type/result_type.dart';
 
-typedef StopZone = Future<RunZoneResponse> Function({
+typedef StopZone = Future<UseCaseResult<RunZoneResponse, String>> Function({
   required Zone zone,
 });
 
 class StopZoneOverNetwork {
   StopZoneOverNetwork({
+    required HttpClient httpClient,
     required GetApiKey getApiKey,
-  }) : _getApiKey = getApiKey;
+  })  : _httpClient = httpClient,
+        _getApiKey = getApiKey;
 
   final GetApiKey _getApiKey;
+  final HttpClient _httpClient;
 
-  Future<RunZoneResponse> call({
+  Future<UseCaseResult<RunZoneResponse, String>> call({
     required Zone zone,
   }) async {
     final apiKey = await _getApiKey();
     final queryParameters = {
-      'api_key': apiKey,
+      'api_key': apiKey!,
       'action': 'stop',
       'relay_id': zone.id
     };
-    final uri = Uri.https(
-      'api.hydrawise.com',
-      '/api/v1/setzone.php',
-      queryParameters,
+    final response = await _httpClient.get<Map<String, dynamic>>(
+      'setzone.php',
+      queryParameters: queryParameters,
     );
-    // TODO(brandon): Handle error case
-    final response = await http.get(uri);
-    return RunZoneResponse.fromJson(
-      json.decode(response.body) as Map<String, dynamic>,
-    );
+    return response
+        .map<RunZoneResponse, DioError>(
+            (result) => RunZoneResponse.fromJson(result!))
+        .mapError<RunZoneResponse, String>((error) => "Can't stop ${zone.name}");
   }
 }
 
@@ -45,7 +47,7 @@ class StopZoneLocally {
 
   final CustomerDetailsRepository _repository;
 
-  Future<RunZoneResponse> call({
+  Future<UseCaseResult<RunZoneResponse, String>> call({
     required Zone zone,
   }) async {
     final stoppedZone = zone.copyWith(
@@ -57,9 +59,9 @@ class StopZoneLocally {
 
     await _repository.updateZone(stoppedZone);
 
-    return RunZoneResponse(
+    return Success(RunZoneResponse(
       message: 'Stopping zones ${zone.name}. ${zone.name} to stop now.',
       typeOfMessage: 'info',
-    );
+    ));
   }
 }

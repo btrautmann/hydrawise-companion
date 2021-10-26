@@ -1,33 +1,37 @@
-import 'dart:convert';
-import 'package:http/http.dart' as http;
+import 'package:hydrawise/core/core.dart';
 import 'package:hydrawise/customer_details/api/domain/get_api_key.dart';
 import 'package:hydrawise/customer_details/domain/get_next_poll_time.dart';
 import 'package:hydrawise/customer_details/domain/set_next_poll_time.dart';
 import 'package:hydrawise/customer_details/models/customer_status.dart';
 import 'package:hydrawise/customer_details/models/zone.dart';
 import 'package:hydrawise/customer_details/repository/customer_details_repository.dart';
+import 'package:result_type/result_type.dart';
 
-typedef GetCustomerStatus = Future<CustomerStatus> Function({
+typedef GetCustomerStatus = Future<UseCaseResult<CustomerStatus, String>>
+    Function({
   int? activeControllerId,
 });
 
 class GetCustomerStatusFromNetwork {
   GetCustomerStatusFromNetwork({
+    required HttpClient httpClient,
     required CustomerDetailsRepository repository,
     required GetApiKey getApiKey,
     required SetNextPollTime setNextPollTime,
     required GetNextPollTime getNextPollTime,
-  })  : _repository = repository,
+  })  : _httpClient = httpClient,
+        _repository = repository,
         _getApiKey = getApiKey,
         _setNextPollTime = setNextPollTime,
         _getNextPollTime = getNextPollTime;
 
+  final HttpClient _httpClient;
   final CustomerDetailsRepository _repository;
   final GetApiKey _getApiKey;
   final SetNextPollTime _setNextPollTime;
   final GetNextPollTime _getNextPollTime;
 
-  Future<CustomerStatus> call({
+  Future<UseCaseResult<CustomerStatus, String>> call({
     int? activeControllerId,
   }) async {
     final nextPollTime = await _getNextPollTime();
@@ -35,41 +39,41 @@ class GetCustomerStatusFromNetwork {
     if (DateTime.now().isAfter(nextPollTime)) {
       final apiKey = await _getApiKey();
       final queryParameters = {
-        'api_key': apiKey,
+        'api_key': apiKey!,
       };
       if (activeControllerId != null) {
         queryParameters['controller_id'] = activeControllerId.toString();
       }
-      final uri = Uri.https(
-        'api.hydrawise.com',
-        '/api/v1/statusschedule.php',
-        queryParameters,
+
+      final response = await _httpClient.get<Map<String, dynamic>>(
+        'statusschedule.php',
+        queryParameters: queryParameters,
       );
-      final response = await http.get(uri);
 
-      final decodedCustomerStatus =
-          json.decode(response.body) as Map<String, dynamic>;
+      if (response.isSuccess) {
+        final customerStatus = CustomerStatus.fromJson(response.success!);
 
-      final customerStatus = CustomerStatus.fromJson(decodedCustomerStatus);
+        await _repository.updateCustomer(customerStatus);
 
-      await _repository.updateCustomer(customerStatus);
+        final secondsUntilNextPoll =
+            customerStatus.numberOfSecondsUntilNextRequest;
+        await _setNextPollTime(secondsUntilNextPoll: secondsUntilNextPoll);
 
-      final secondsUntilNextPoll =
-          customerStatus.numberOfSecondsUntilNextRequest;
-      await _setNextPollTime(secondsUntilNextPoll: secondsUntilNextPoll);
+        return Success(customerStatus);
+      }
 
-      return customerStatus;
+      return Failure("Can't fetch customer status");
     }
 
     final zones = await _repository.getZones();
     final customer = await _repository.getCustomer();
 
-    return CustomerStatus(
+    return Success(CustomerStatus(
       numberOfSecondsUntilNextRequest:
           DateTime.now().difference(nextPollTime).inSeconds.abs(),
       timeOfLastStatusUnixEpoch: customer.lastStatusUpdate,
       zones: zones,
-    );
+    ));
   }
 }
 
@@ -80,7 +84,7 @@ class GetFakeCustomerStatus {
 
   final CustomerDetailsRepository _repository;
 
-  Future<CustomerStatus> call({
+  Future<UseCaseResult<CustomerStatus, String>> call({
     int? activeControllerId,
   }) async {
     final zones = <Zone>[];
@@ -103,10 +107,10 @@ class GetFakeCustomerStatus {
 
     await Future<void>.delayed(const Duration(seconds: 1));
 
-    return CustomerStatus(
+    return Success(CustomerStatus(
       numberOfSecondsUntilNextRequest: 5,
       timeOfLastStatusUnixEpoch: customer.lastStatusUpdate,
       zones: zones,
-    );
+    ));
   }
 }

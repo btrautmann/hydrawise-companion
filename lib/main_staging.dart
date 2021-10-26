@@ -9,6 +9,8 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
+import 'package:dio/dio.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/widgets.dart';
 import 'package:hydrawise/app/domain/create_database.dart';
 import 'package:hydrawise/core/core.dart';
@@ -28,12 +30,17 @@ Future<void> main() async {
   await runZonedGuarded(
     () async {
       WidgetsFlutterBinding.ensureInitialized();
+      await Firebase.initializeApp();
 
       final database = await CreateHydrawiseDatabase().call(
         databaseName: 'hydrawise_companion_stage.db',
         version: 1,
       );
       final repository = DatabaseBackedCustomerDetailsRepository(database);
+      final httpClient = HttpClient(
+        dio: Dio(),
+        baseUrl: 'http://api.hydrawise.com/api/v1',
+      );
 
       final sharedPreferences = await SharedPreferences.getInstance();
       final dataStorage = SharedPreferencesStorage(sharedPreferences);
@@ -48,15 +55,23 @@ Future<void> main() async {
       final getCustomerDetails = GetCustomerDetailsFromNetwork(
         repository: repository,
         getApiKey: getApiKey,
+        httpClient: httpClient,
       );
       final getCustomerStatus = GetCustomerStatusFromNetwork(
+        httpClient: httpClient,
         repository: repository,
         getApiKey: getApiKey,
         getNextPollTime: getNextPollTime,
         setNextPollTime: setNextPollTime,
       );
-      final runZone = RunZoneOverNetwork(getApiKey: getApiKey);
-      final stopZone = StopZoneOverNetwork(getApiKey: getApiKey);
+      final runZone = RunZoneOverNetwork(
+        httpClient: httpClient,
+        getApiKey: getApiKey,
+      );
+      final stopZone = StopZoneOverNetwork(
+        httpClient: httpClient,
+        getApiKey: getApiKey,
+      );
 
       runApp(App(
         getCustomerDetails: getCustomerDetails,

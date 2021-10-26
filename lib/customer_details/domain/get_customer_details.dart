@@ -1,48 +1,53 @@
-import 'dart:convert';
-import 'package:http/http.dart' as http;
+import 'package:hydrawise/core/core.dart';
+import 'package:hydrawise/core/networking/http_client.dart';
 import 'package:hydrawise/customer_details/api/domain/get_api_key.dart';
 import 'package:hydrawise/customer_details/models/controller.dart';
 import 'package:hydrawise/customer_details/models/customer_details.dart';
 import 'package:hydrawise/customer_details/models/customer_identification.dart';
 import 'package:hydrawise/customer_details/repository/customer_details_repository.dart';
+import 'package:result_type/result_type.dart';
 
-typedef GetCustomerDetails = Future<CustomerDetails> Function();
+typedef GetCustomerDetails = Future<UseCaseResult<CustomerDetails, String>>
+    Function();
 
 class GetCustomerDetailsFromNetwork {
   GetCustomerDetailsFromNetwork({
+    required HttpClient httpClient,
     required GetApiKey getApiKey,
     required CustomerDetailsRepository repository,
-  })  : _getApiKey = getApiKey,
+  })  : _httpClient = httpClient,
+        _getApiKey = getApiKey,
         _repository = repository;
 
+  final HttpClient _httpClient;
   final GetApiKey _getApiKey;
   final CustomerDetailsRepository _repository;
 
-  Future<CustomerDetails> call() async {
+  Future<UseCaseResult<CustomerDetails, String>> call() async {
     final apiKey = await _getApiKey();
 
     final queryParameters = {
-      'api_key': apiKey,
+      'api_key': apiKey!,
       'type': 'controllers',
     };
-    final uri = Uri.https(
-      'api.hydrawise.com',
-      '/api/v1/customerdetails.php',
-      queryParameters,
-    );
-    // TODO(brandon): Handle error case
-    final response = await http.get(uri);
 
-    final customerDetails = CustomerDetails.fromJson(
-      json.decode(response.body) as Map<String, dynamic>,
+    final response = await _httpClient.get<Map<String, dynamic>>(
+      'customerdetails.php',
+      queryParameters: queryParameters,
     );
 
-    final customerIdentification =
-        customerDetails.toCustomerIdentification(apiKey!);
+    if (response.isSuccess) {
+      final customerDetails = CustomerDetails.fromJson(response.success!);
 
-    await _repository.insertCustomer(customerIdentification);
+      final customerIdentification =
+          customerDetails.toCustomerIdentification(apiKey);
 
-    return customerDetails;
+      await _repository.insertCustomer(customerIdentification);
+
+      return Success(customerDetails);
+    }
+
+    return Failure("Can't fetch customer details");
   }
 }
 
@@ -53,7 +58,7 @@ class GetFakeCustomerDetails {
 
   final CustomerDetailsRepository _repository;
 
-  Future<CustomerDetails> call() async {
+  Future<UseCaseResult<CustomerDetails, String>> call() async {
     final customers = await _repository.getCustomers();
 
     if (customers.isEmpty) {
@@ -72,7 +77,7 @@ class GetFakeCustomerDetails {
 
     await Future<void>.delayed(const Duration(seconds: 1));
 
-    return CustomerDetails(
+    return Success(CustomerDetails(
       activeControllerId: customer.activeControllerId,
       customerId: customer.customerId,
       controllers: [
@@ -84,6 +89,6 @@ class GetFakeCustomerDetails {
           status: 'All good!',
         ),
       ],
-    );
+    ));
   }
 }
