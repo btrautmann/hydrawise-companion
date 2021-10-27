@@ -1,10 +1,10 @@
 import 'package:hydrawise/core/core.dart';
-import 'package:hydrawise/customer_details/api/domain/get_api_key.dart';
-import 'package:hydrawise/customer_details/domain/get_next_poll_time.dart';
-import 'package:hydrawise/customer_details/domain/set_next_poll_time.dart';
-import 'package:hydrawise/customer_details/models/customer_status.dart';
-import 'package:hydrawise/customer_details/models/zone.dart';
-import 'package:hydrawise/customer_details/repository/customer_details_repository.dart';
+import 'package:hydrawise/features/customer_details/api/domain/get_api_key.dart';
+import 'package:hydrawise/features/customer_details/domain/get_next_poll_time.dart';
+import 'package:hydrawise/features/customer_details/domain/set_next_poll_time.dart';
+import 'package:hydrawise/features/customer_details/models/customer_status.dart';
+import 'package:hydrawise/features/customer_details/models/zone.dart';
+import 'package:hydrawise/features/customer_details/repository/customer_details_repository.dart';
 import 'package:result_type/result_type.dart';
 
 typedef GetCustomerStatus = Future<UseCaseResult<CustomerStatus, String>>

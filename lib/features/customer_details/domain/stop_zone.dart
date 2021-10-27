@@ -1,9 +1,9 @@
 import 'package:dio/dio.dart';
 import 'package:hydrawise/core/core.dart';
-import 'package:hydrawise/customer_details/api/domain/get_api_key.dart';
-import 'package:hydrawise/customer_details/models/run_zone_response.dart';
-import 'package:hydrawise/customer_details/models/zone.dart';
-import 'package:hydrawise/customer_details/repository/customer_details_repository.dart';
+import 'package:hydrawise/features/customer_details/api/domain/get_api_key.dart';
+import 'package:hydrawise/features/customer_details/models/run_zone_response.dart';
+import 'package:hydrawise/features/customer_details/models/zone.dart';
+import 'package:hydrawise/features/customer_details/repository/customer_details_repository.dart';
 import 'package:result_type/result_type.dart';
 
 typedef StopZone = Future<UseCaseResult<RunZoneResponse, String>> Function({
@@ -36,7 +36,8 @@ class StopZoneOverNetwork {
     return response
         .map<RunZoneResponse, DioError>(
             (result) => RunZoneResponse.fromJson(result!))
-        .mapError<RunZoneResponse, String>((error) => "Can't stop ${zone.name}");
+        .mapError<RunZoneResponse, String>(
+            (error) => "Can't stop ${zone.name}");
   }
 }
 

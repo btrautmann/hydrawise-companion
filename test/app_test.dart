@@ -1,15 +1,8 @@
-// Copyright (c) 2021, Very Good Ventures
-// https://verygood.ventures
-//
-// Use of this source code is governed by an MIT-style
-// license that can be found in the LICENSE file or at
-// https://opensource.org/licenses/MIT.
-
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hydrawise/core/core.dart';
 import 'package:hydrawise/app/app.dart';
-import 'package:hydrawise/customer_details/customer_details.dart';
-import 'package:hydrawise/customer_details/repository/customer_details_repository.dart';
+import 'package:hydrawise/features/customer_details/customer_details.dart';
+import 'package:hydrawise/features/customer_details/repository/customer_details_repository.dart';
 import 'package:hydrawise/weather/weather.dart';
 
 void main() {

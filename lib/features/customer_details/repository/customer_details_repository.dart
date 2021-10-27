@@ -1,6 +1,6 @@
-import 'package:hydrawise/customer_details/models/customer_identification.dart';
-import 'package:hydrawise/customer_details/models/customer_status.dart';
-import 'package:hydrawise/customer_details/models/zone.dart';
+import 'package:hydrawise/features/customer_details/models/customer_identification.dart';
+import 'package:hydrawise/features/customer_details/models/customer_status.dart';
+import 'package:hydrawise/features/customer_details/models/zone.dart';
 import 'package:sqflite/sqlite_api.dart';
 
 abstract class CustomerDetailsRepository {

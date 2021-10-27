@@ -1,34 +1,50 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:hydrawise/customer_details/cubit/customer_details_cubit.dart';
-import 'package:hydrawise/customer_details/cubit/run_zone_cubit.dart';
-import 'package:hydrawise/customer_details/cubit/run_zone_state.dart';
-import 'package:hydrawise/customer_details/domain/run_zone.dart';
-import 'package:hydrawise/customer_details/domain/stop_zone.dart';
-import 'package:hydrawise/customer_details/models/zone.dart';
+import 'package:hydrawise/features/customer_details/cubit/customer_details_cubit.dart';
+import 'package:hydrawise/features/customer_details/cubit/run_zone_cubit.dart';
+import 'package:hydrawise/features/customer_details/cubit/run_zone_state.dart';
+import 'package:hydrawise/features/customer_details/customer_details.dart';
+import 'package:hydrawise/features/customer_details/domain/run_zone.dart';
+import 'package:hydrawise/features/customer_details/domain/stop_zone.dart';
+import 'package:hydrawise/features/customer_details/models/zone.dart';
 
 class RunZonesPage extends StatelessWidget {
   const RunZonesPage({
     Key? key,
-    required this.zone,
+    required this.zoneId,
   }) : super(key: key);
 
-  final Zone zone;
+  final int zoneId;
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(zone.name),
-      ),
-      body: BlocProvider<RunZoneCubit>(
-        create: (_) => RunZoneCubit(
-          runZone: context.read<RunZone>(),
-          stopZone: context.read<StopZone>(),
-          zone: zone,
-        ),
-        child: _RunZonesView(zone: zone),
-      ),
+    return BlocBuilder<CustomerDetailsCubit, CustomerDetailsState>(
+      builder: (context, state) {
+        return state.maybeWhen(
+          complete: (details, state) {
+            final zone =
+                state.zones.singleWhere((element) => element.id == zoneId);
+            return Scaffold(
+              appBar: AppBar(
+                title: Text(zone.name),
+              ),
+              body: BlocProvider<RunZoneCubit>(
+                create: (_) => RunZoneCubit(
+                  runZone: context.read<RunZone>(),
+                  stopZone: context.read<StopZone>(),
+                  zone: zone,
+                ),
+                child: _RunZonesView(zone: zone),
+              ),
+            );
+          },
+          orElse: () {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          },
+        );
+      },
     );
   }
 }

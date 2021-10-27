@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:hydrawise/customer_details/models/zone.dart';
+import 'package:hydrawise/features/customer_details/models/zone.dart';
 
 part 'customer_status.freezed.dart';
 part 'customer_status.g.dart';

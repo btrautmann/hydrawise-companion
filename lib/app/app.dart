@@ -1,26 +1,21 @@
-// Copyright (c) 2021, Very Good Ventures
-// https://verygood.ventures
-//
-// Use of this source code is governed by an MIT-style
-// license that can be found in the LICENSE file or at
-// https://opensource.org/licenses/MIT.
-
-// ignore_for_file: avoid_redundant_argument_values
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hydrawise/app/app_colors.dart';
-import 'package:hydrawise/customer_details/customer_details.dart';
-import 'package:hydrawise/customer_details/domain/stop_zone.dart';
+import 'package:hydrawise/features/customer_details/customer_details.dart';
+import 'package:hydrawise/features/customer_details/view/run_zone_page.dart';
+import 'package:hydrawise/features/error_page.dart';
+import 'package:hydrawise/features/login_page.dart';
+import 'package:hydrawise/features/splash_page.dart';
 import 'package:hydrawise/l10n/l10n.dart';
 import 'package:hydrawise/weather/domain/get_weather.dart';
 import 'package:hydrawise/weather/weather.dart';
 import 'package:provider/provider.dart';
 
 class App extends StatelessWidget {
-  const App({
+  App({
     Key? key,
     required GetCustomerDetails getCustomerDetails,
     required GetCustomerStatus getCustomerStatus,
@@ -55,6 +50,45 @@ class App extends StatelessWidget {
   final SetLocation _setLocation;
   final GetWeather _getWeather;
 
+  final _router = GoRouter(
+    routes: [
+      GoRoute(
+        path: '/',
+        pageBuilder: (context, state) => MaterialPage<void>(
+          key: state.pageKey,
+          child: const SplashPage(),
+        ),
+      ),
+      GoRoute(
+        path: '/login',
+        pageBuilder: (context, state) => MaterialPage<void>(
+          key: state.pageKey,
+          child: const LoginPage(),
+        ),
+      ),
+      GoRoute(
+        path: '/home',
+        pageBuilder: (context, state) => MaterialPage<void>(
+          key: state.pageKey,
+          child: const CustomerDetailsPage(),
+        ),
+      ),
+      GoRoute(
+        path: '/zone/:zid',
+        pageBuilder: (context, state) => MaterialPage<void>(
+          key: state.pageKey,
+          child: RunZonesPage(
+            zoneId: int.parse(state.params['zid']!),
+          ),
+        ),
+      )
+    ],
+    errorPageBuilder: (context, state) => MaterialPage<void>(
+      key: state.pageKey,
+      child: const ErrorPage(),
+    ),
+  );
+
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -71,24 +105,24 @@ class App extends StatelessWidget {
         Provider<GetWeather>.value(value: _getWeather),
       ],
       child: BlocProvider(
-        create: (_) => CustomerDetailsCubit(
-          getCustomerDetails: _getCustomerDetails,
-          getCustomerStatus: _getCustomerStatus,
-          getApiKey: _getApiKey,
-          setApiKey: _setApiKey,
-          clearCustomerDetails: _clearCustomerDetails,
-        ),
-        child: MaterialApp(
-          theme: _buildLightTheme(context),
-          darkTheme: _buildDarkTheme(context),
-          localizationsDelegates: const [
-            AppLocalizations.delegate,
-            GlobalMaterialLocalizations.delegate,
-          ],
-          supportedLocales: AppLocalizations.supportedLocales,
-          home: const CustomerDetailsPage(),
-        ),
-      ),
+          create: (_) => CustomerDetailsCubit(
+                getCustomerDetails: _getCustomerDetails,
+                getCustomerStatus: _getCustomerStatus,
+                getApiKey: _getApiKey,
+                setApiKey: _setApiKey,
+                clearCustomerDetails: _clearCustomerDetails,
+              ),
+          child: MaterialApp.router(
+            theme: _buildLightTheme(context),
+            darkTheme: _buildDarkTheme(context),
+            localizationsDelegates: const [
+              AppLocalizations.delegate,
+              GlobalMaterialLocalizations.delegate,
+            ],
+            supportedLocales: AppLocalizations.supportedLocales,
+            routeInformationParser: _router.routeInformationParser,
+            routerDelegate: _router.routerDelegate,
+          )),
     );
   }
 }

@@ -1,10 +1,3 @@
-// Copyright (c) 2021, Very Good Ventures
-// https://verygood.ventures
-//
-// Use of this source code is governed by an MIT-style
-// license that can be found in the LICENSE file or at
-// https://opensource.org/licenses/MIT.
-
 import 'dart:async';
 import 'dart:developer';
 
@@ -16,10 +9,10 @@ import 'package:hydrawise/app/domain/create_database.dart';
 import 'package:hydrawise/core/core.dart';
 import 'package:hydrawise/app/app.dart';
 import 'package:hydrawise/app/app_bloc_observer.dart';
-import 'package:hydrawise/customer_details/customer_details.dart';
-import 'package:hydrawise/customer_details/domain/get_next_poll_time.dart';
-import 'package:hydrawise/customer_details/domain/set_next_poll_time.dart';
-import 'package:hydrawise/customer_details/repository/customer_details_repository.dart';
+import 'package:hydrawise/features/customer_details/customer_details.dart';
+import 'package:hydrawise/features/customer_details/domain/get_next_poll_time.dart';
+import 'package:hydrawise/features/customer_details/domain/set_next_poll_time.dart';
+import 'package:hydrawise/features/customer_details/repository/customer_details_repository.dart';
 import 'package:hydrawise/weather/weather.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

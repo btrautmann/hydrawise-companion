@@ -1,19 +1,7 @@
-// Copyright (c) 2021, Very Good Ventures
-// https://verygood.ventures
-//
-// Use of this source code is governed by an MIT-style
-// license that can be found in the LICENSE file or at
-// https://opensource.org/licenses/MIT.
-
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:hydrawise/customer_details/api/domain/get_api_key.dart';
-import 'package:hydrawise/customer_details/api/domain/set_api_key.dart';
-import 'package:hydrawise/customer_details/cubit/customer_details_state.dart';
-import 'package:hydrawise/customer_details/customer_details.dart';
-import 'package:hydrawise/customer_details/domain/clear_customer_details.dart';
-import 'package:hydrawise/customer_details/domain/get_customer_details.dart';
+import 'package:hydrawise/features/customer_details/customer_details.dart';
 
 class CustomerDetailsCubit extends Cubit<CustomerDetailsState> {
   CustomerDetailsCubit({

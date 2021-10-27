@@ -1,19 +1,12 @@
-// Copyright (c) 2021, Very Good Ventures
-// https://verygood.ventures
-//
-// Use of this source code is governed by an MIT-style
-// license that can be found in the LICENSE file or at
-// https://opensource.org/licenses/MIT.
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hydrawise/core-ui/widgets/h_stretch.dart';
-import 'package:hydrawise/customer_details/cubit/customer_details_cubit.dart';
-import 'package:hydrawise/customer_details/customer_details.dart';
-import 'package:hydrawise/customer_details/models/customer_details.dart';
-import 'package:hydrawise/customer_details/models/customer_status.dart';
-import 'package:hydrawise/customer_details/models/zone.dart';
-import 'package:hydrawise/customer_details/view/run_zone_page.dart';
+import 'package:hydrawise/features/customer_details/cubit/customer_details_cubit.dart';
+import 'package:hydrawise/features/customer_details/customer_details.dart';
+import 'package:hydrawise/features/customer_details/models/customer_details.dart';
+import 'package:hydrawise/features/customer_details/models/customer_status.dart';
+import 'package:hydrawise/features/customer_details/models/zone.dart';
 import 'package:hydrawise/weather/weather.dart';
 import 'package:intl/intl.dart';
 
@@ -63,63 +56,18 @@ class _CustomerDetailsStateView extends StatelessWidget {
   Widget build(BuildContext context) {
     final customerDetails =
         context.select((CustomerDetailsCubit cubit) => cubit.state);
-    return customerDetails.when(
-      loading: () {
-        return const Center(
-          child: CircularProgressIndicator(),
-        );
-      },
-      empty: () {
-        return Center(child: _ApiKeyInput());
-      },
+    return customerDetails.maybeWhen(
       complete: (details, status) {
         return _AllCustomerContent(
           customerDetails: details,
           customerStatus: status,
         );
       },
-    );
-  }
-}
-
-class _ApiKeyInput extends StatefulWidget {
-  @override
-  __ApiKeyInputState createState() => __ApiKeyInputState();
-}
-
-class __ApiKeyInputState extends State<_ApiKeyInput> {
-  late TextEditingController _controller;
-
-  @override
-  void initState() {
-    _controller = TextEditingController();
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          TextField(
-            controller: _controller,
-            decoration: const InputDecoration(
-              border: OutlineInputBorder(),
-              hintText: 'Enter your Hydrawise API key',
-            ),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              context
-                  .read<CustomerDetailsCubit>()
-                  .updateApiKey(_controller.text);
-            },
-            child: const Text('Submit'),
-          )
-        ],
-      ),
+      orElse: () {
+        return const Center(
+          child: CircularProgressIndicator(),
+        );
+      },
     );
   }
 }
@@ -148,15 +96,7 @@ class _AllCustomerContent extends StatelessWidget {
           _ZoneList(
             zones: customerStatus.zones,
             onZoneTapped: (zone) {
-              // TODO(brandon): Figure out navigation pattern
-              Navigator.push<void>(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => RunZonesPage(
-                    zone: zone,
-                  ),
-                ),
-              );
+              GoRouter.of(context).push('/zone/${zone.id}');
             },
           ),
           const WeatherDetailsCard(),
