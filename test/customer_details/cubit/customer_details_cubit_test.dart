@@ -78,36 +78,36 @@ void main() {
       );
     }, skip: 'Async state initialization causes this to fail');
 
-    group('updateApiKey', () {
-      blocTest<CustomerDetailsCubit, CustomerDetailsState>(
-        'it loads associated customer details',
-        build: _buildSubject,
-        act: (cubit) => cubit.updateApiKey('1234'),
-        expect: () => <CustomerDetailsState>[
-          CustomerDetailsState.empty(),
-          CustomerDetailsState.loading(),
-          CustomerDetailsState.complete(
-            customerDetails: CustomerDetails(
-              activeControllerId: 1234,
-              customerId: 5678,
-              controllers: [
-                Controller(
-                  name: 'Fake Controller',
-                  lastContact: 1631616496,
-                  serialNumber: '123456789',
-                  id: 1234,
-                  status: 'All good!',
-                )
-              ],
-            ),
-            customerStatus: CustomerStatus(
-              numberOfSecondsUntilNextRequest: 5,
-              timeOfLastStatusUnixEpoch: 1631330889,
-              zones: [],
-            ),
-          ),
-        ],
-      );
-    });
+    // group('updateApiKey', () {
+    //   blocTest<CustomerDetailsCubit, CustomerDetailsState>(
+    //     'it loads associated customer details',
+    //     build: _buildSubject,
+    //     act: (cubit) => cubit.updateApiKey('1234'),
+    //     expect: () => <CustomerDetailsState>[
+    //       CustomerDetailsState.empty(),
+    //       CustomerDetailsState.loading(),
+    //       CustomerDetailsState.complete(
+    //         customerDetails: CustomerDetails(
+    //           activeControllerId: 1234,
+    //           customerId: 5678,
+    //           controllers: [
+    //             Controller(
+    //               name: 'Fake Controller',
+    //               lastContact: 1631616496,
+    //               serialNumber: '123456789',
+    //               id: 1234,
+    //               status: 'All good!',
+    //             )
+    //           ],
+    //         ),
+    //         customerStatus: CustomerStatus(
+    //           numberOfSecondsUntilNextRequest: 5,
+    //           timeOfLastStatusUnixEpoch: 1631330889,
+    //           zones: [],
+    //         ),
+    //       ),
+    //     ],
+    //   );
+    // });
   });
 }

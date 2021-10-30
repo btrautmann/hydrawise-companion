@@ -1,0 +1,42 @@
+import 'package:bloc/bloc.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:hydrawise/features/customer_details/api/domain/get_api_key.dart';
+import 'package:hydrawise/features/customer_details/api/domain/set_api_key.dart';
+import 'package:hydrawise/features/customer_details/customer_details.dart';
+
+part 'login_state.dart';
+part 'login_cubit.freezed.dart';
+
+class LoginCubit extends Cubit<LoginState> {
+  final GetApiKey _getApiKey;
+  final SetApiKey _setApiKey;
+  final GetCustomerDetails _getCustomerDetails;
+
+  LoginCubit({
+    required GetApiKey getApiKey,
+    required SetApiKey setApiKey,
+    required GetCustomerDetails getCustomerDetails,
+  })  : _getApiKey = getApiKey,
+        _setApiKey = setApiKey,
+        _getCustomerDetails = getCustomerDetails,
+        super(LoginState.loggedOut()) {
+    _checkAuthenticationStatus();
+  }
+
+  void _checkAuthenticationStatus() async {
+    final apiKey = await _getApiKey();
+    if (apiKey != null) {
+      emit(LoginState.loggedIn(apiKey: apiKey));
+    }
+  }
+
+  void attemptLogin(String apiKey) async {
+    await _setApiKey(apiKey);
+    final detailsResult = await _getCustomerDetails();
+    if (detailsResult.isSuccess) {
+      emit(LoginState.loggedIn(apiKey: apiKey));
+    } else {
+      // TODO(brandon): Handle auth failures
+    }
+  }
+}

@@ -13,8 +13,6 @@ class CustomerDetailsCubit extends Cubit<CustomerDetailsState> {
   })  : _getCustomerDetails = getCustomerDetails,
         _getCustomerStatus = getCustomerStatus,
         _getApiKey = getApiKey,
-        _setApiKey = setApiKey,
-        _clearCustomerDetails = clearCustomerDetails,
         super(CustomerDetailsState.loading()) {
     _loadCustomerDetails();
   }
@@ -22,8 +20,6 @@ class CustomerDetailsCubit extends Cubit<CustomerDetailsState> {
   final GetCustomerDetails _getCustomerDetails;
   final GetCustomerStatus _getCustomerStatus;
   final GetApiKey _getApiKey;
-  final SetApiKey _setApiKey;
-  final ClearCustomerDetails _clearCustomerDetails;
 
   Future<void> _loadCustomerDetails() async {
     emit(CustomerDetailsState.loading());
@@ -49,7 +45,7 @@ class CustomerDetailsCubit extends Cubit<CustomerDetailsState> {
   }
 
   void _poll() {
-    Timer.periodic(const Duration(seconds: 1), (timer) {
+    Timer.periodic(const Duration(seconds: 5), (timer) {
       state.maybeWhen(
           complete: (details, status) async {
             final customerStatus = await _getCustomerStatus();
@@ -64,15 +60,5 @@ class CustomerDetailsCubit extends Cubit<CustomerDetailsState> {
           },
           orElse: () {});
     });
-  }
-
-  Future<void> updateApiKey(String apiKey) async {
-    await _setApiKey(apiKey);
-    await _loadCustomerDetails();
-  }
-
-  Future<void> logOut() async {
-    await _clearCustomerDetails();
-    await _loadCustomerDetails();
   }
 }

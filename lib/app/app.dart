@@ -7,7 +7,7 @@ import 'package:hydrawise/app/app_colors.dart';
 import 'package:hydrawise/features/customer_details/customer_details.dart';
 import 'package:hydrawise/features/customer_details/view/run_zone_page.dart';
 import 'package:hydrawise/features/error_page.dart';
-import 'package:hydrawise/features/login_page.dart';
+import 'package:hydrawise/features/login/login.dart';
 import 'package:hydrawise/features/splash_page.dart';
 import 'package:hydrawise/l10n/l10n.dart';
 import 'package:hydrawise/weather/domain/get_weather.dart';
@@ -68,9 +68,10 @@ class App extends StatelessWidget {
       ),
       GoRoute(
         path: '/home',
-        pageBuilder: (context, state) => MaterialPage<void>(
+        pageBuilder: (context, state) => CustomTransitionPage<void>(
           key: state.pageKey,
           child: const CustomerDetailsPage(),
+          transitionsBuilder: (_, __, ___, child) => child,
         ),
       ),
       GoRoute(
@@ -92,26 +93,37 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-      providers: [
-        Provider<GetCustomerDetails>.value(value: _getCustomerDetails),
-        Provider<GetCustomerStatus>.value(value: _getCustomerStatus),
-        Provider<GetApiKey>.value(value: _getApiKey),
-        Provider<SetApiKey>.value(value: _setApiKey),
-        Provider<ClearCustomerDetails>.value(value: _clearCustomerDetails),
-        Provider<RunZone>.value(value: _runZone),
-        Provider<StopZone>.value(value: _stopZone),
-        Provider<GetLocation>.value(value: _getLocation),
-        Provider<SetLocation>.value(value: _setLocation),
-        Provider<GetWeather>.value(value: _getWeather),
-      ],
-      child: BlocProvider(
-          create: (_) => CustomerDetailsCubit(
+        providers: [
+          Provider<GetCustomerDetails>.value(value: _getCustomerDetails),
+          Provider<GetCustomerStatus>.value(value: _getCustomerStatus),
+          Provider<GetApiKey>.value(value: _getApiKey),
+          Provider<SetApiKey>.value(value: _setApiKey),
+          Provider<ClearCustomerDetails>.value(value: _clearCustomerDetails),
+          Provider<RunZone>.value(value: _runZone),
+          Provider<StopZone>.value(value: _stopZone),
+          Provider<GetLocation>.value(value: _getLocation),
+          Provider<SetLocation>.value(value: _setLocation),
+          Provider<GetWeather>.value(value: _getWeather),
+        ],
+        child: MultiBlocProvider(
+          providers: [
+            BlocProvider(
+              create: (_) => LoginCubit(
+                getApiKey: _getApiKey,
+                setApiKey: _setApiKey,
+                getCustomerDetails: _getCustomerDetails,
+              ),
+            ),
+            BlocProvider(
+              create: (context) => CustomerDetailsCubit(
                 getCustomerDetails: _getCustomerDetails,
                 getCustomerStatus: _getCustomerStatus,
                 getApiKey: _getApiKey,
                 setApiKey: _setApiKey,
                 clearCustomerDetails: _clearCustomerDetails,
               ),
+            ),
+          ],
           child: MaterialApp.router(
             theme: _buildLightTheme(context),
             darkTheme: _buildDarkTheme(context),
@@ -122,8 +134,8 @@ class App extends StatelessWidget {
             supportedLocales: AppLocalizations.supportedLocales,
             routeInformationParser: _router.routeInformationParser,
             routerDelegate: _router.routerDelegate,
-          )),
-    );
+          ),
+        ));
   }
 }
 

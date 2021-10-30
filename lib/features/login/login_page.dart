@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:hydrawise/features/customer_details/cubit/customer_details_state.dart';
-import 'package:hydrawise/features/customer_details/customer_details.dart';
+import 'package:hydrawise/features/login/cubit/login_cubit.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -31,10 +30,10 @@ class __ApiKeyInputState extends State<_ApiKeyInput> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<CustomerDetailsCubit, CustomerDetailsState>(
+    return BlocConsumer<LoginCubit, LoginState>(
       listener: (context, state) {
         state.maybeWhen(
-          complete: (_, __) => GoRouter.of(context).go('/home'),
+          loggedIn: (_) => GoRouter.of(context).go('/home'),
           orElse: () {},
         );
       },
@@ -53,9 +52,7 @@ class __ApiKeyInputState extends State<_ApiKeyInput> {
               ),
               ElevatedButton(
                 onPressed: () {
-                  context
-                      .read<CustomerDetailsCubit>()
-                      .updateApiKey(_controller.text);
+                  context.read<LoginCubit>().attemptLogin(_controller.text);
                 },
                 child: const Text('Submit'),
               )

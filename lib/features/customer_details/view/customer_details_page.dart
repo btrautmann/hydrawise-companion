@@ -26,28 +26,11 @@ class CustomerDetailsView extends StatelessWidget {
   Widget build(BuildContext context) {
     return const Scaffold(
       body: SafeArea(
-        child: SingleChildScrollView(
-          child: _CustomerDetailsStateView(),
-        ),
+        child: _CustomerDetailsStateView(),
       ),
     );
   }
 }
-
-/*
- * TODO(brandon): Add ability to log out at some point
-class _LogOutButton extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return IconButton(
-      onPressed: () {
-        context.read<CustomerDetailsCubit>().logOut();
-      },
-      icon: const Icon(Icons.exit_to_app_rounded),
-    );
-  }
-}
-*/
 
 class _CustomerDetailsStateView extends StatelessWidget {
   const _CustomerDetailsStateView({Key? key}) : super(key: key);
@@ -58,9 +41,11 @@ class _CustomerDetailsStateView extends StatelessWidget {
         context.select((CustomerDetailsCubit cubit) => cubit.state);
     return customerDetails.maybeWhen(
       complete: (details, status) {
-        return _AllCustomerContent(
-          customerDetails: details,
-          customerStatus: status,
+        return SingleChildScrollView(
+          child: _AllCustomerContent(
+            customerDetails: details,
+            customerStatus: status,
+          ),
         );
       },
       orElse: () {
