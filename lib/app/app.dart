@@ -130,7 +130,6 @@ class App extends StatelessWidget {
 ThemeData _buildLightTheme(BuildContext context) {
   final base = ThemeData.light();
   return base.copyWith(
-    accentColor: AppColors.orange500,
     bottomAppBarColor: AppColors.blue700,
     appBarTheme: base.appBarTheme.copyWith(
       iconTheme: const IconThemeData(
@@ -174,7 +173,6 @@ ThemeData _buildDarkTheme(BuildContext context) {
   final base = ThemeData.dark();
   final darkTextTheme = _buildDarkTextTheme(base.textTheme);
   return base.copyWith(
-    accentColor: AppColors.orange300,
     bottomAppBarColor: AppColors.darkBottomAppBarBackground,
     bottomSheetTheme: BottomSheetThemeData(
       backgroundColor: AppColors.darkDrawerBackground,
