@@ -9,9 +9,8 @@ import 'package:hydrawise/features/error_page.dart';
 import 'package:hydrawise/features/login/login.dart';
 import 'package:hydrawise/features/run_zone/run_zone.dart';
 import 'package:hydrawise/features/splash_page.dart';
+import 'package:hydrawise/features/weather/weather.dart';
 import 'package:hydrawise/l10n/l10n.dart';
-import 'package:hydrawise/weather/domain/get_weather.dart';
-import 'package:hydrawise/weather/weather.dart';
 import 'package:provider/provider.dart';
 
 class App extends StatelessWidget {

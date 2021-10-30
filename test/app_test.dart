@@ -6,7 +6,7 @@ import 'package:hydrawise/features/customer_details/repository/customer_details_
 import 'package:hydrawise/features/login/login.dart';
 import 'package:hydrawise/features/run_zone/run_zone.dart';
 import 'package:hydrawise/features/splash_page.dart';
-import 'package:hydrawise/weather/weather.dart';
+import 'package:hydrawise/features/weather/weather.dart';
 
 void main() {
   group('App', () {

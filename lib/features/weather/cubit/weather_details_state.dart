@@ -1,7 +1,4 @@
-import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:weather/weather.dart';
-
-part 'weather_details_state.freezed.dart';
+part of 'weather_details_cubit.dart';
 
 @freezed
 class WeatherDetailsState with _$WeatherDetailsState {

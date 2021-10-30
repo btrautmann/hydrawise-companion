@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hydrawise/core-ui/widgets/h_stretch.dart';
 import 'package:hydrawise/features/customer_details/customer_details.dart';
-import 'package:hydrawise/weather/weather.dart';
+import 'package:hydrawise/features/weather/weather.dart';
 import 'package:intl/intl.dart';
 
 class CustomerDetailsPage extends StatelessWidget {
