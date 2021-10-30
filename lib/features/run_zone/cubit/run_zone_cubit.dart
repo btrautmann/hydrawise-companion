@@ -1,8 +1,10 @@
 import 'package:bloc/bloc.dart';
-import 'package:hydrawise/features/customer_details/cubit/run_zone_state.dart';
-import 'package:hydrawise/features/customer_details/domain/run_zone.dart';
-import 'package:hydrawise/features/customer_details/domain/stop_zone.dart';
-import 'package:hydrawise/features/customer_details/models/zone.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:hydrawise/features/customer_details/customer_details.dart';
+import 'package:hydrawise/features/run_zone/run_zone.dart';
+
+part 'run_zone_state.dart';
+part 'run_zone_cubit.freezed.dart';
 
 class RunZoneCubit extends Cubit<RunZoneState> {
   RunZoneCubit({

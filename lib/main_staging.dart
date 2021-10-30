@@ -10,7 +10,8 @@ import 'package:hydrawise/core/core.dart';
 import 'package:hydrawise/app/app.dart';
 import 'package:hydrawise/app/app_bloc_observer.dart';
 import 'package:hydrawise/features/customer_details/customer_details.dart';
-import 'package:hydrawise/features/customer_details/repository/customer_details_repository.dart';
+import 'package:hydrawise/features/login/login.dart';
+import 'package:hydrawise/features/run_zone/run_zone.dart';
 import 'package:hydrawise/weather/weather.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

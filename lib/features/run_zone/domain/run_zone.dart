@@ -1,9 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:hydrawise/core/core.dart';
-import 'package:hydrawise/features/customer_details/api/domain/get_api_key.dart';
-import 'package:hydrawise/features/customer_details/models/run_zone_response.dart';
-import 'package:hydrawise/features/customer_details/models/zone.dart';
-import 'package:hydrawise/features/customer_details/repository/customer_details_repository.dart';
+import 'package:hydrawise/features/customer_details/customer_details.dart';
+import 'package:hydrawise/features/login/login.dart';
+import 'package:hydrawise/features/run_zone/run_zone.dart';
 import 'package:pedantic/pedantic.dart';
 import 'package:result_type/result_type.dart';
 

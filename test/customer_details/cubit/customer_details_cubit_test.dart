@@ -1,12 +1,8 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hydrawise/core/core.dart';
-import 'package:hydrawise/features/customer_details/cubit/customer_details_cubit.dart';
-import 'package:hydrawise/features/customer_details/cubit/customer_details_state.dart';
 import 'package:hydrawise/features/customer_details/customer_details.dart';
-import 'package:hydrawise/features/customer_details/models/controller.dart';
-import 'package:hydrawise/features/customer_details/models/customer_status.dart';
-import 'package:hydrawise/features/customer_details/repository/customer_details_repository.dart';
+import 'package:hydrawise/features/login/login.dart';
 
 void main() {
   group('CustomerDetailsCubit', () {

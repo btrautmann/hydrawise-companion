@@ -1,9 +1,4 @@
-import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:hydrawise/features/customer_details/models/customer_details.dart';
-import 'package:hydrawise/features/customer_details/models/customer_status.dart';
-
-
-part 'customer_details_state.freezed.dart';
+part of 'customer_details_cubit.dart';
 
 @freezed
 class CustomerDetailsState with _$CustomerDetailsState {

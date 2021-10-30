@@ -1,12 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:hydrawise/features/customer_details/cubit/customer_details_cubit.dart';
-import 'package:hydrawise/features/customer_details/cubit/run_zone_cubit.dart';
-import 'package:hydrawise/features/customer_details/cubit/run_zone_state.dart';
 import 'package:hydrawise/features/customer_details/customer_details.dart';
-import 'package:hydrawise/features/customer_details/domain/run_zone.dart';
-import 'package:hydrawise/features/customer_details/domain/stop_zone.dart';
-import 'package:hydrawise/features/customer_details/models/zone.dart';
+import 'package:hydrawise/features/run_zone/run_zone.dart';
 
 class RunZonesPage extends StatelessWidget {
   const RunZonesPage({

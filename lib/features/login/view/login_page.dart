@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hydrawise/features/login/cubit/login_cubit.dart';
 
+/// Page for the user to enter their API key
+/// and gain access to the rest of the application
 class LoginPage extends StatelessWidget {
   const LoginPage({Key? key}) : super(key: key);
   @override

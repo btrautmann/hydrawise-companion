@@ -1,6 +1,4 @@
-import 'package:freezed_annotation/freezed_annotation.dart';
-
-part 'run_zone_state.freezed.dart';
+part of 'run_zone_cubit.dart';
 
 @freezed
 class RunZoneState with _$RunZoneState {

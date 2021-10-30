@@ -1,10 +1,7 @@
 import 'package:hydrawise/core/core.dart';
 import 'package:hydrawise/core/networking/http_client.dart';
-import 'package:hydrawise/features/customer_details/api/domain/get_api_key.dart';
-import 'package:hydrawise/features/customer_details/models/controller.dart';
-import 'package:hydrawise/features/customer_details/models/customer_details.dart';
-import 'package:hydrawise/features/customer_details/models/customer_identification.dart';
-import 'package:hydrawise/features/customer_details/repository/customer_details_repository.dart';
+import 'package:hydrawise/features/customer_details/customer_details.dart';
+import 'package:hydrawise/features/login/login.dart';
 import 'package:result_type/result_type.dart';
 
 typedef GetCustomerDetails = Future<UseCaseResult<CustomerDetails, String>>

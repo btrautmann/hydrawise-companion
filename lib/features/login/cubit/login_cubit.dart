@@ -1,8 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:hydrawise/features/customer_details/api/domain/get_api_key.dart';
-import 'package:hydrawise/features/customer_details/api/domain/set_api_key.dart';
 import 'package:hydrawise/features/customer_details/customer_details.dart';
+import 'package:hydrawise/features/login/login.dart';
 
 part 'login_state.dart';
 part 'login_cubit.freezed.dart';
