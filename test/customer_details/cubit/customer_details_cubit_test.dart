@@ -14,18 +14,19 @@ void main() {
     final GetCustomerDetails getCustomerDetails =
         GetFakeCustomerDetails(repository: repository);
 
-    final ClearCustomerDetails clearCustomerDetails =
-        ClearCustomerDetailsFromStorage(dataStorage);
-    final GetApiKey getApiKey = GetApiKeyFromStorage(dataStorage);
     final SetApiKey setApiKey = SetApiKeyInStorage(dataStorage);
+
+    final LoginCubit loginCubit = LoginCubit(
+      getApiKey: GetApiKeyFromStorage(dataStorage),
+      setApiKey: setApiKey,
+      getCustomerDetails: getCustomerDetails,
+    );
 
     CustomerDetailsCubit _buildSubject() {
       return CustomerDetailsCubit(
         getCustomerDetails: getCustomerDetails,
         getCustomerStatus: getCustomerStatus,
-        getApiKey: getApiKey,
-        setApiKey: setApiKey,
-        clearCustomerDetails: clearCustomerDetails,
+        loginCubit: loginCubit,
       );
     }
 
@@ -33,25 +34,27 @@ void main() {
       await dataStorage.clearAll();
     });
 
-    group('loadCustomerDetails', () {
-      blocTest<CustomerDetailsCubit, CustomerDetailsState>(
-        'it emits Empty',
-        build: _buildSubject,
-        expect: () => <CustomerDetailsState>[
-          CustomerDetailsState.empty(),
-        ],
-      );
-    });
-    group('when api key is stored', () {
-      blocTest<CustomerDetailsCubit, CustomerDetailsState>(
-        'it emits Complete',
-        build: () {
-          setApiKey('1234');
-          return _buildSubject();
-        },
-        wait: const Duration(milliseconds: 1000),
-        expect: () => <CustomerDetailsState>[
-          CustomerDetailsState.complete(
+    group('start', () {
+      group('when logged out', () {
+        blocTest<CustomerDetailsCubit, CustomerDetailsState>(
+          'it emits nothing',
+          build: () => _buildSubject(),
+          act: (cubit) => cubit.start(),
+          expect: () => <CustomerDetailsState>[],
+        );
+      });
+
+      group('when logged in', () {
+        blocTest<CustomerDetailsCubit, CustomerDetailsState>(
+          'it emits Complete',
+          setUp: () async {
+            await loginCubit.login('fake-api-key');
+          },
+          build: () => _buildSubject(),
+          act: (cubit) => cubit.start(),
+          expect: () => <CustomerDetailsState>[
+            CustomerDetailsState.loading(),
+            CustomerDetailsState.complete(
               customerDetails: CustomerDetails(
                 activeControllerId: 1234,
                 customerId: 5678,
@@ -66,13 +69,15 @@ void main() {
                 ],
               ),
               customerStatus: CustomerStatus(
-                numberOfSecondsUntilNextRequest: 100,
+                numberOfSecondsUntilNextRequest: 5,
                 timeOfLastStatusUnixEpoch: 1631330889,
                 zones: [],
-              )),
-        ],
-      );
-    }, skip: 'Async state initialization causes this to fail');
+              ),
+            ),
+          ],
+        );
+      });
+    });
 
     // group('updateApiKey', () {
     //   blocTest<CustomerDetailsCubit, CustomerDetailsState>(

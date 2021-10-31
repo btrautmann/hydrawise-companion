@@ -12,45 +12,56 @@ class CustomerDetailsCubit extends Cubit<CustomerDetailsState> {
   CustomerDetailsCubit({
     required GetCustomerDetails getCustomerDetails,
     required GetCustomerStatus getCustomerStatus,
-    required GetApiKey getApiKey,
-    required SetApiKey setApiKey,
-    required ClearCustomerDetails clearCustomerDetails,
+    required LoginCubit loginCubit,
   })  : _getCustomerDetails = getCustomerDetails,
         _getCustomerStatus = getCustomerStatus,
-        _getApiKey = getApiKey,
-        super(CustomerDetailsState.loading()) {
-    _loadCustomerDetails();
-  }
+        _loginCubit = loginCubit,
+        super(CustomerDetailsState.loading());
 
   final GetCustomerDetails _getCustomerDetails;
   final GetCustomerStatus _getCustomerStatus;
-  final GetApiKey _getApiKey;
+  final LoginCubit _loginCubit;
 
-  Future<void> _loadCustomerDetails() async {
+  Timer? _timer;
+
+  void start() {
+    if (_loginCubit.state.isLoggedIn()) {
+      // Need to check initial login state because
+      // LoginCubit stream will not emit logged in
+      // if already logged in when we begin listening
+      _loadCustomerDetails();
+    }
+    _loginCubit.stream.asBroadcastStream().listen((event) {
+      event.when(loggedIn: (_) async {
+        _loadCustomerDetails();
+      }, loggedOut: () {
+        _timer?.cancel();
+        _timer = null;
+      });
+    });
+  }
+
+  void _loadCustomerDetails() async {
     emit(CustomerDetailsState.loading());
-    final apiKey = await _getApiKey();
-    if (apiKey != null && apiKey.isNotEmpty) {
-      final customerDetails = await _getCustomerDetails();
-      // TODO(brandon): Handle failure
-      if (customerDetails.isSuccess) {
-        final customerStatus = await _getCustomerStatus(
-          activeControllerId: customerDetails.success.activeControllerId,
-        );
-        if (customerStatus.isSuccess) {
-          emit(CustomerDetailsState.complete(
-            customerDetails: customerDetails.success,
-            customerStatus: customerStatus.success,
-          ));
-        }
-        _poll();
+    final customerDetails = await _getCustomerDetails();
+
+    // TODO(brandon): Handle failure
+    if (customerDetails.isSuccess) {
+      final customerStatus = await _getCustomerStatus(
+        activeControllerId: customerDetails.success.activeControllerId,
+      );
+      if (customerStatus.isSuccess) {
+        emit(CustomerDetailsState.complete(
+          customerDetails: customerDetails.success,
+          customerStatus: customerStatus.success,
+        ));
       }
-    } else {
-      emit(CustomerDetailsState.empty());
+      _poll();
     }
   }
 
   void _poll() {
-    Timer.periodic(const Duration(seconds: 5), (timer) {
+    _timer = Timer.periodic(const Duration(seconds: 5), (timer) {
       state.maybeWhen(
           complete: (details, status) async {
             final customerStatus = await _getCustomerStatus();

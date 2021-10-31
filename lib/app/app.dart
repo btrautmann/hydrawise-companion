@@ -60,9 +60,10 @@ class App extends StatelessWidget {
       ),
       GoRoute(
         path: '/login',
-        pageBuilder: (context, state) => MaterialPage<void>(
+        pageBuilder: (context, state) => CustomTransitionPage<void>(
           key: state.pageKey,
           child: const LoginPage(),
+          transitionsBuilder: (_, __, ___, child) => child,
         ),
       ),
       GoRoute(
@@ -117,22 +118,29 @@ class App extends StatelessWidget {
               create: (context) => CustomerDetailsCubit(
                 getCustomerDetails: _getCustomerDetails,
                 getCustomerStatus: _getCustomerStatus,
-                getApiKey: _getApiKey,
-                setApiKey: _setApiKey,
-                clearCustomerDetails: _clearCustomerDetails,
-              ),
+                loginCubit: context.read<LoginCubit>(),
+              )..start(),
             ),
           ],
-          child: MaterialApp.router(
-            theme: _buildLightTheme(context),
-            darkTheme: _buildDarkTheme(context),
-            localizationsDelegates: const [
-              AppLocalizations.delegate,
-              GlobalMaterialLocalizations.delegate,
-            ],
-            supportedLocales: AppLocalizations.supportedLocales,
-            routeInformationParser: _router.routeInformationParser,
-            routerDelegate: _router.routerDelegate,
+          child: BlocListener<LoginCubit, LoginState>(
+            listener: (context, state) {
+              if (state.isLoggedIn()) {
+                _router.go('/home');
+              } else {
+                _router.go('/login');
+              }
+            },
+            child: MaterialApp.router(
+              theme: _buildLightTheme(context),
+              darkTheme: _buildDarkTheme(context),
+              localizationsDelegates: const [
+                AppLocalizations.delegate,
+                GlobalMaterialLocalizations.delegate,
+              ],
+              supportedLocales: AppLocalizations.supportedLocales,
+              routeInformationParser: _router.routeInformationParser,
+              routerDelegate: _router.routerDelegate,
+            ),
           ),
         ));
   }

@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hydrawise/core-ui/widgets/h_stretch.dart';
 import 'package:hydrawise/features/customer_details/customer_details.dart';
+import 'package:hydrawise/features/login/cubit/login_cubit.dart';
 import 'package:hydrawise/features/weather/weather.dart';
 import 'package:intl/intl.dart';
 
@@ -70,9 +71,23 @@ class _AllCustomerContent extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _Greeting(
-            unixEpochMilliseconds:
-                customerStatus.timeOfLastStatusUnixEpoch * 1000,
+          Padding(
+            padding: const EdgeInsets.only(bottom: 16),
+            child: Row(
+              children: [
+                _Greeting(
+                  unixEpochMilliseconds:
+                      customerStatus.timeOfLastStatusUnixEpoch * 1000,
+                ),
+                const Spacer(),
+                IconButton(
+                  onPressed: () {
+                    context.read<LoginCubit>().logOut();
+                  },
+                  icon: const Icon(Icons.logout),
+                )
+              ],
+            ),
           ),
           _ZoneList(
             zones: customerStatus.zones,
@@ -107,12 +122,9 @@ class _Greeting extends StatelessWidget {
     } else {
       text = 'Good evening';
     }
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 16),
-      child: Text(
-        text,
-        style: theme.textTheme.headline5,
-      ),
+    return Text(
+      text,
+      style: theme.textTheme.headline5,
     );
   }
 }

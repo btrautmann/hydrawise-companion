@@ -8,3 +8,9 @@ class LoginState with _$LoginState {
 
   factory LoginState.loggedOut() = _LoggedOut;
 }
+
+extension LoginStateX on LoginState {
+  bool isLoggedIn() {
+    return when(loggedIn: (_) => true, loggedOut: () => false);
+  }
+}

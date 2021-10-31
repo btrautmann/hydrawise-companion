@@ -101,8 +101,6 @@ class GetFakeCustomerStatus {
       zones.addAll(queriedZones);
     }
 
-    await Future<void>.delayed(const Duration(seconds: 1));
-
     return Success(CustomerStatus(
       numberOfSecondsUntilNextRequest: 5,
       timeOfLastStatusUnixEpoch: customer.lastStatusUpdate,

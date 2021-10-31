@@ -72,8 +72,6 @@ class GetFakeCustomerDetails {
     // Query again for simplicity
     final customer = await _repository.getCustomer();
 
-    await Future<void>.delayed(const Duration(seconds: 1));
-
     return Success(CustomerDetails(
       activeControllerId: customer.activeControllerId,
       customerId: customer.customerId,

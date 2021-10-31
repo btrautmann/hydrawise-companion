@@ -24,12 +24,19 @@ class LoginCubit extends Cubit<LoginState> {
 
   void _checkAuthenticationStatus() async {
     final apiKey = await _getApiKey();
-    if (apiKey != null) {
+    if (apiKey != null && apiKey.isNotEmpty) {
       emit(LoginState.loggedIn(apiKey: apiKey));
+    } else {
+      emit(LoginState.loggedOut());
     }
   }
 
-  void attemptLogin(String apiKey) async {
+  Future<void> logOut() async {
+    await _setApiKey('');
+    emit(LoginState.loggedOut());
+  }
+
+  Future<void> login(String apiKey) async {
     await _setApiKey(apiKey);
     final detailsResult = await _getCustomerDetails();
     if (detailsResult.isSuccess) {

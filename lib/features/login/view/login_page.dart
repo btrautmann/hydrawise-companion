@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
-import 'package:hydrawise/features/login/cubit/login_cubit.dart';
+import 'package:hydrawise/features/login/login.dart';
 
 /// Page for the user to enter their API key
 /// and gain access to the rest of the application
@@ -32,36 +31,26 @@ class __ApiKeyInputState extends State<_ApiKeyInput> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<LoginCubit, LoginState>(
-      listener: (context, state) {
-        state.maybeWhen(
-          loggedIn: (_) => GoRouter.of(context).go('/home'),
-          orElse: () {},
-        );
-      },
-      builder: (context, state) {
-        return Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                controller: _controller,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  hintText: 'Enter your Hydrawise API key',
-                ),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  context.read<LoginCubit>().attemptLogin(_controller.text);
-                },
-                child: const Text('Submit'),
-              )
-            ],
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          TextField(
+            controller: _controller,
+            decoration: const InputDecoration(
+              border: OutlineInputBorder(),
+              hintText: 'Enter your Hydrawise API key',
+            ),
           ),
-        );
-      },
+          ElevatedButton(
+            onPressed: () {
+              context.read<LoginCubit>().login(_controller.text);
+            },
+            child: const Text('Submit'),
+          )
+        ],
+      ),
     );
   }
 }
