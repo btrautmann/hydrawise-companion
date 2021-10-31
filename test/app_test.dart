@@ -1,20 +1,16 @@
-// Copyright (c) 2021, Very Good Ventures
-// https://verygood.ventures
-//
-// Use of this source code is governed by an MIT-style
-// license that can be found in the LICENSE file or at
-// https://opensource.org/licenses/MIT.
-
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hydrawise/core/core.dart';
 import 'package:hydrawise/app/app.dart';
-import 'package:hydrawise/customer_details/customer_details.dart';
-import 'package:hydrawise/customer_details/repository/customer_details_repository.dart';
-import 'package:hydrawise/weather/weather.dart';
+import 'package:hydrawise/features/customer_details/customer_details.dart';
+import 'package:hydrawise/features/customer_details/repository/customer_details_repository.dart';
+import 'package:hydrawise/features/login/login.dart';
+import 'package:hydrawise/features/run_zone/run_zone.dart';
+import 'package:hydrawise/features/splash_page.dart';
+import 'package:hydrawise/features/weather/weather.dart';
 
 void main() {
   group('App', () {
-    testWidgets('renders CustomerDetailsPage', (tester) async {
+    testWidgets('renders SplashPage', (tester) async {
       final repository = InMemoryCustomerDetailsRepository();
 
       final getCustomerDetails = GetFakeCustomerDetails(repository: repository);
@@ -41,7 +37,7 @@ void main() {
         setLocation: setLocation,
         getWeather: getWeather,
       ));
-      expect(find.byType(CustomerDetailsPage), findsOneWidget);
+      expect(find.byType(SplashPage), findsOneWidget);
     });
   });
 }

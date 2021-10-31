@@ -1,26 +1,20 @@
-// Copyright (c) 2021, Very Good Ventures
-// https://verygood.ventures
-//
-// Use of this source code is governed by an MIT-style
-// license that can be found in the LICENSE file or at
-// https://opensource.org/licenses/MIT.
-
-// ignore_for_file: avoid_redundant_argument_values
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hydrawise/app/app_colors.dart';
-import 'package:hydrawise/customer_details/customer_details.dart';
-import 'package:hydrawise/customer_details/domain/stop_zone.dart';
+import 'package:hydrawise/features/customer_details/customer_details.dart';
+import 'package:hydrawise/features/error_page.dart';
+import 'package:hydrawise/features/login/login.dart';
+import 'package:hydrawise/features/run_zone/run_zone.dart';
+import 'package:hydrawise/features/splash_page.dart';
+import 'package:hydrawise/features/weather/weather.dart';
 import 'package:hydrawise/l10n/l10n.dart';
-import 'package:hydrawise/weather/domain/get_weather.dart';
-import 'package:hydrawise/weather/weather.dart';
 import 'package:provider/provider.dart';
 
 class App extends StatelessWidget {
-  const App({
+  App({
     Key? key,
     required GetCustomerDetails getCustomerDetails,
     required GetCustomerStatus getCustomerStatus,
@@ -55,48 +49,106 @@ class App extends StatelessWidget {
   final SetLocation _setLocation;
   final GetWeather _getWeather;
 
+  final _router = GoRouter(
+    routes: [
+      GoRoute(
+        path: '/',
+        pageBuilder: (context, state) => MaterialPage<void>(
+          key: state.pageKey,
+          child: const SplashPage(),
+        ),
+      ),
+      GoRoute(
+        path: '/login',
+        pageBuilder: (context, state) => CustomTransitionPage<void>(
+          key: state.pageKey,
+          child: const LoginPage(),
+          transitionsBuilder: (_, __, ___, child) => child,
+        ),
+      ),
+      GoRoute(
+        path: '/home',
+        pageBuilder: (context, state) => CustomTransitionPage<void>(
+          key: state.pageKey,
+          child: const CustomerDetailsPage(),
+          transitionsBuilder: (_, __, ___, child) => child,
+        ),
+      ),
+      GoRoute(
+        path: '/zone/:zid',
+        pageBuilder: (context, state) => MaterialPage<void>(
+          key: state.pageKey,
+          child: RunZonesPage(
+            zoneId: int.parse(state.params['zid']!),
+          ),
+        ),
+      )
+    ],
+    errorPageBuilder: (context, state) => MaterialPage<void>(
+      key: state.pageKey,
+      child: const ErrorPage(),
+    ),
+  );
+
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-      providers: [
-        Provider<GetCustomerDetails>.value(value: _getCustomerDetails),
-        Provider<GetCustomerStatus>.value(value: _getCustomerStatus),
-        Provider<GetApiKey>.value(value: _getApiKey),
-        Provider<SetApiKey>.value(value: _setApiKey),
-        Provider<ClearCustomerDetails>.value(value: _clearCustomerDetails),
-        Provider<RunZone>.value(value: _runZone),
-        Provider<StopZone>.value(value: _stopZone),
-        Provider<GetLocation>.value(value: _getLocation),
-        Provider<SetLocation>.value(value: _setLocation),
-        Provider<GetWeather>.value(value: _getWeather),
-      ],
-      child: BlocProvider(
-        create: (_) => CustomerDetailsCubit(
-          getCustomerDetails: _getCustomerDetails,
-          getCustomerStatus: _getCustomerStatus,
-          getApiKey: _getApiKey,
-          setApiKey: _setApiKey,
-          clearCustomerDetails: _clearCustomerDetails,
-        ),
-        child: MaterialApp(
-          theme: _buildLightTheme(context),
-          darkTheme: _buildDarkTheme(context),
-          localizationsDelegates: const [
-            AppLocalizations.delegate,
-            GlobalMaterialLocalizations.delegate,
+        providers: [
+          Provider<GetCustomerDetails>.value(value: _getCustomerDetails),
+          Provider<GetCustomerStatus>.value(value: _getCustomerStatus),
+          Provider<GetApiKey>.value(value: _getApiKey),
+          Provider<SetApiKey>.value(value: _setApiKey),
+          Provider<ClearCustomerDetails>.value(value: _clearCustomerDetails),
+          Provider<RunZone>.value(value: _runZone),
+          Provider<StopZone>.value(value: _stopZone),
+          Provider<GetLocation>.value(value: _getLocation),
+          Provider<SetLocation>.value(value: _setLocation),
+          Provider<GetWeather>.value(value: _getWeather),
+        ],
+        child: MultiBlocProvider(
+          providers: [
+            BlocProvider(
+              create: (_) => LoginCubit(
+                getApiKey: _getApiKey,
+                setApiKey: _setApiKey,
+                getCustomerDetails: _getCustomerDetails,
+              ),
+            ),
+            BlocProvider(
+              create: (context) => CustomerDetailsCubit(
+                getCustomerDetails: _getCustomerDetails,
+                getCustomerStatus: _getCustomerStatus,
+                loginCubit: context.read<LoginCubit>(),
+              )..start(),
+            ),
           ],
-          supportedLocales: AppLocalizations.supportedLocales,
-          home: const CustomerDetailsPage(),
-        ),
-      ),
-    );
+          child: BlocListener<LoginCubit, LoginState>(
+            listener: (context, state) {
+              if (state.isLoggedIn()) {
+                _router.go('/home');
+              } else {
+                _router.go('/login');
+              }
+            },
+            child: MaterialApp.router(
+              theme: _buildLightTheme(context),
+              darkTheme: _buildDarkTheme(context),
+              localizationsDelegates: const [
+                AppLocalizations.delegate,
+                GlobalMaterialLocalizations.delegate,
+              ],
+              supportedLocales: AppLocalizations.supportedLocales,
+              routeInformationParser: _router.routeInformationParser,
+              routerDelegate: _router.routerDelegate,
+            ),
+          ),
+        ));
   }
 }
 
 ThemeData _buildLightTheme(BuildContext context) {
   final base = ThemeData.light();
   return base.copyWith(
-    accentColor: AppColors.orange500,
     bottomAppBarColor: AppColors.blue700,
     appBarTheme: base.appBarTheme.copyWith(
       iconTheme: const IconThemeData(
@@ -140,7 +192,6 @@ ThemeData _buildDarkTheme(BuildContext context) {
   final base = ThemeData.dark();
   final darkTextTheme = _buildDarkTextTheme(base.textTheme);
   return base.copyWith(
-    accentColor: AppColors.orange300,
     bottomAppBarColor: AppColors.darkBottomAppBarBackground,
     bottomSheetTheme: BottomSheetThemeData(
       backgroundColor: AppColors.darkDrawerBackground,
