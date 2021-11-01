@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:hydrawise/app/app_colors.dart';
 import 'package:hydrawise/features/customer_details/customer_details.dart';
 import 'package:hydrawise/features/error_page.dart';
+import 'package:hydrawise/features/home/home.dart';
 import 'package:hydrawise/features/login/login.dart';
 import 'package:hydrawise/features/run_zone/run_zone.dart';
 import 'package:hydrawise/features/splash_page.dart';
@@ -66,14 +67,24 @@ class App extends StatelessWidget {
           transitionsBuilder: (_, __, ___, child) => child,
         ),
       ),
+      // Allow for `/home` to be invoked by itself so
+      // we can decide the "default" tab in one place
       GoRoute(
         path: '/home',
-        pageBuilder: (context, state) => CustomTransitionPage<void>(
-          key: state.pageKey,
-          child: const CustomerDetailsPage(),
-          transitionsBuilder: (_, __, ___, child) => child,
-        ),
+        redirect: (state) => '/home/0',
       ),
+      GoRoute(
+          path: '/home/:tid',
+          pageBuilder: (context, state) {
+            final tabIndex = state.params['tid'] ?? '0';
+            return CustomTransitionPage<void>(
+              key: state.pageKey,
+              child: HomePage(
+                selectedTabIndex: int.parse(tabIndex),
+              ),
+              transitionsBuilder: (_, __, ___, child) => child,
+            );
+          }),
       GoRoute(
         path: '/zone/:zid',
         pageBuilder: (context, state) => MaterialPage<void>(
@@ -86,7 +97,7 @@ class App extends StatelessWidget {
     ],
     errorPageBuilder: (context, state) => MaterialPage<void>(
       key: state.pageKey,
-      child: const ErrorPage(),
+      child: ErrorPage(exception: state.error),
     ),
   );
 
@@ -165,15 +176,13 @@ ThemeData _buildLightTheme(BuildContext context) {
     navigationRailTheme: NavigationRailThemeData(
       backgroundColor: AppColors.blue700,
       selectedIconTheme: const IconThemeData(color: AppColors.orange500),
-      selectedLabelTextStyle:
-          GoogleFonts.workSansTextTheme().headline5?.copyWith(
-                color: AppColors.orange500,
-              ),
+      selectedLabelTextStyle: GoogleFonts.workSansTextTheme().headline5?.copyWith(
+            color: AppColors.orange500,
+          ),
       unselectedIconTheme: const IconThemeData(color: AppColors.blue200),
-      unselectedLabelTextStyle:
-          GoogleFonts.workSansTextTheme().headline5?.copyWith(
-                color: AppColors.blue200,
-              ),
+      unselectedLabelTextStyle: GoogleFonts.workSansTextTheme().headline5?.copyWith(
+            color: AppColors.blue200,
+          ),
     ),
     chipTheme: _buildChipTheme(
       AppColors.blue700,
@@ -208,15 +217,13 @@ ThemeData _buildDarkTheme(BuildContext context) {
     navigationRailTheme: NavigationRailThemeData(
       backgroundColor: AppColors.darkBottomAppBarBackground,
       selectedIconTheme: const IconThemeData(color: AppColors.orange300),
-      selectedLabelTextStyle:
-          GoogleFonts.workSansTextTheme().headline5?.copyWith(
-                color: AppColors.orange300,
-              ),
+      selectedLabelTextStyle: GoogleFonts.workSansTextTheme().headline5?.copyWith(
+            color: AppColors.orange300,
+          ),
       unselectedIconTheme: const IconThemeData(color: AppColors.greyLabel),
-      unselectedLabelTextStyle:
-          GoogleFonts.workSansTextTheme().headline5?.copyWith(
-                color: AppColors.greyLabel,
-              ),
+      unselectedLabelTextStyle: GoogleFonts.workSansTextTheme().headline5?.copyWith(
+            color: AppColors.greyLabel,
+          ),
     ),
     chipTheme: _buildChipTheme(
       AppColors.blue200,
@@ -352,9 +359,7 @@ ChipThemeData _buildChipTheme(
     padding: const EdgeInsets.all(4),
     shape: const StadiumBorder(),
     labelStyle: GoogleFonts.workSansTextTheme().bodyText2!.copyWith(
-          color: brightness == Brightness.dark
-              ? AppColors.white50
-              : AppColors.black900,
+          color: brightness == Brightness.dark ? AppColors.white50 : AppColors.black900,
         ),
     secondaryLabelStyle: GoogleFonts.workSansTextTheme().bodyText2!,
     brightness: brightness,

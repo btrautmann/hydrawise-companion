@@ -1,4 +1,3 @@
-
 import 'package:hydrawise/core/core.dart';
 
 typedef ClearCustomerDetails = Future<void> Function();

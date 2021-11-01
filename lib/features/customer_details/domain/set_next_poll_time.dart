@@ -11,8 +11,7 @@ class SetNextPollTimeInStorage {
 
   Future<void> call({required int secondsUntilNextPoll}) {
     // Store nextPollTime as millisecondsSinceEpoch
-    final nextPollTime =
-        DateTime.now().millisecondsSinceEpoch + (secondsUntilNextPoll * 1000);
+    final nextPollTime = DateTime.now().millisecondsSinceEpoch + (secondsUntilNextPoll * 1000);
 
     return _dataStorage.setInt('next_poll_time', nextPollTime);
   }

@@ -34,8 +34,7 @@ Future<void> main() async {
       final repository = DatabaseBackedCustomerDetailsRepository(database);
 
       final sharedPreferences = await SharedPreferences.getInstance();
-      final DataStorage dataStorage =
-          SharedPreferencesStorage(sharedPreferences);
+      final DataStorage dataStorage = SharedPreferencesStorage(sharedPreferences);
       final getCustomerDetails = GetFakeCustomerDetails(repository: repository);
       final getCustomerStatus = GetFakeCustomerStatus(repository: repository);
       final getApiKey = GetApiKeyFromStorage(dataStorage);

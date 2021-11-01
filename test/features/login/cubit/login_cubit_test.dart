@@ -12,8 +12,7 @@ void main() {
     final SetApiKey setApiKey = SetApiKeyInStorage(dataStorage);
 
     final repository = InMemoryCustomerDetailsRepository();
-    final GetCustomerDetails getCustomerDetails =
-        GetFakeCustomerDetails(repository: repository);
+    final GetCustomerDetails getCustomerDetails = GetFakeCustomerDetails(repository: repository);
 
     LoginCubit _buildSubject() {
       return LoginCubit(
@@ -48,31 +47,31 @@ void main() {
           ],
         );
       });
+    });
 
-      group('logIn', () {
-        blocTest<LoginCubit, LoginState>(
-          'it emits [loggedIn]',
-          build: () => _buildSubject(),
-          act: (cubit) async => await cubit.login('1234'),
-          skip: 1, // Initial check
-          expect: () => <LoginState>[
-            LoginState.loggedIn(apiKey: '1234'),
-          ],
-        );
-      });
+    group('logIn', () {
+      blocTest<LoginCubit, LoginState>(
+        'it emits [loggedIn]',
+        build: () => _buildSubject(),
+        act: (cubit) async => await cubit.login('1234'),
+        skip: 1, // Initial check
+        expect: () => <LoginState>[
+          LoginState.loggedIn(apiKey: '1234'),
+        ],
+      );
+    });
 
-      group('logOut', () {
-        blocTest<LoginCubit, LoginState>(
-          'it emits [loggedOut]',
-          setUp: () async => await setApiKey('1234'),
-          build: () => _buildSubject(),
-          act: (cubit) async => await cubit.logOut(),
-          skip: 1, // Initial check
-          expect: () => <LoginState>[
-            LoginState.loggedOut(),
-          ],
-        );
-      });
+    group('logOut', () {
+      blocTest<LoginCubit, LoginState>(
+        'it emits [loggedOut]',
+        setUp: () async => await setApiKey('1234'),
+        build: () => _buildSubject(),
+        act: (cubit) async => await cubit.logOut(),
+        skip: 1, // Initial check
+        expect: () => <LoginState>[
+          LoginState.loggedOut(),
+        ],
+      );
     });
   });
 }

@@ -5,8 +5,7 @@ import 'package:hydrawise/features/customer_details/customer_details.dart';
 void main() {
   group('ClearCustomerDetailsFromStorage', () {
     final storage = InMemoryStorage();
-    final clearCustomerDetailsFromStorage =
-        ClearCustomerDetailsFromStorage(storage);
+    final clearCustomerDetailsFromStorage = ClearCustomerDetailsFromStorage(storage);
     test('it sets api_key to an empty string', () async {
       await storage.setString('api_key', '1234');
       expect(await storage.getString('api_key'), '1234');

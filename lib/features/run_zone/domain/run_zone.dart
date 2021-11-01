@@ -38,8 +38,7 @@ class RunZoneOverNetwork {
       queryParameters: queryParameters,
     );
     return response
-        .map<RunZoneResponse, DioError>(
-            (result) => RunZoneResponse.fromJson(result!))
+        .map<RunZoneResponse, DioError>((result) => RunZoneResponse.fromJson(result!))
         .mapError<RunZoneResponse, String>(
           (error) => "Can't run ${zone.name}. ${error.message}",
         );
