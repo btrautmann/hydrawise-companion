@@ -77,7 +77,7 @@ class __RunZonesViewState extends State<_RunZonesView> {
                   padding: const EdgeInsets.only(top: 16),
                   child: _NextWaterText(zone: selectedZone),
                 ),
-                if (!selectedZone.isRunning)
+                if (!selectedZone.isRunning && !selectedZone.isSuspended)
                   Padding(
                     padding: const EdgeInsets.only(top: 16),
                     child: _RunLengthSlider(
@@ -97,6 +97,12 @@ class __RunZonesViewState extends State<_RunZonesView> {
                   },
                   onStopPressed: () {
                     context.read<RunZoneCubit>().stopZone();
+                  },
+                  onResumePressed: () {
+
+                  },
+                  onSuspendPressed: () {
+                    
                   },
                 ),
                 _MessageSnackbarListener(),
@@ -186,14 +192,27 @@ class _ZoneButtons extends StatelessWidget {
     required this.zone,
     required this.onRunPressed,
     required this.onStopPressed,
+    required this.onResumePressed,
+    required this.onSuspendPressed,
   }) : super(key: key);
 
   final Zone zone;
   final VoidCallback onRunPressed;
   final VoidCallback onStopPressed;
+  final VoidCallback onResumePressed;
+  final VoidCallback onSuspendPressed;
 
   List<Widget> _buildZoneButtons(BuildContext context) {
-    if (zone.isRunning) {
+    if (zone.isSuspended) {
+      return [
+        const Spacer(),
+        _ZoneButton(
+          text: 'Resume',
+          onPressed: onResumePressed,
+        ),
+        const Spacer(),
+      ];
+    } else if (zone.isRunning) {
       return [
         const Spacer(),
         _ZoneButton(
@@ -207,7 +226,7 @@ class _ZoneButtons extends StatelessWidget {
         const Spacer(),
         _ZoneButton(
           text: 'Suspend',
-          onPressed: () {},
+          onPressed: onSuspendPressed,
         ),
         const Spacer(),
         _ZoneButton(
@@ -341,8 +360,10 @@ class _NextWaterText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final secondsUntilNextRun = zone.secondsUntilNextRun;
-    if (secondsUntilNextRun == 1) {
+    if (zone.isSuspended) {
+      return const Text('Suspended');
+    }
+    if (zone.isRunning) {
       final endOfRun = DateTime.now().add(
         Duration(seconds: zone.lengthOfNextRunTimeOrTimeRemaining),
       );

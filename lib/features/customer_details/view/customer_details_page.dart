@@ -208,6 +208,11 @@ class _ZoneCell extends StatelessWidget {
   final ValueSetter<Zone> onZoneTapped;
 
   String formattedTimeOfNextRun(Zone zone) {
+    if (zone.isSuspended) {
+      return 'Suspended';
+    } else if (zone.isRunning) {
+      return 'Running now';
+    }
     // TODO(brandon): Show 12/24hr time based on device setting
     final formatter = DateFormat('h:mm a');
     return formatter.format(zone.dateTimeOfNextRun);

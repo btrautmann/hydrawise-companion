@@ -36,4 +36,8 @@ extension ZoneX on Zone {
   bool get isRunning {
     return secondsUntilNextRun == 1;
   }
+
+  bool get isSuspended {
+    return secondsUntilNextRun == 1576800000;
+  }
 }
