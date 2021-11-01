@@ -27,14 +27,15 @@ class WeatherDetailsStateView extends StatelessWidget {
     final weatherState =
         context.select((WeatherDetailsCubit cubit) => cubit.state);
     return weatherState.when(
-        noLocationInformation: () => const _NoLocationView(),
-        loading: () => const Center(
-              child: CircularProgressIndicator(),
-            ),
-        complete: (weather) => _WeatherDetailsView(weatherForecast: weather),
-        error: (message) => _NoLocationView(
-              message: message,
-            ));
+      noLocationInformation: () => const _NoLocationView(),
+      loading: () => const Center(
+        child: CircularProgressIndicator(),
+      ),
+      complete: (weather) => _WeatherDetailsView(weatherForecast: weather),
+      error: (message) => _NoLocationView(
+        message: message,
+      ),
+    );
   }
 }
 
@@ -134,10 +135,9 @@ class _WeatherDetailsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final currentWeather = weatherForecast
-        .firstWhere((element) => element.date?.day == DateTime.now().day);
-    final tomorrowWeather = weatherForecast
-        .firstWhere((element) => element.date!.day > currentWeather.date!.day);
+    final currentWeather = weatherForecast.first;
+    final tomorrowWeather = weatherForecast.firstWhere((weather) =>
+        weather.date!.difference(currentWeather.date!).inHours > 24);
     return Card(
       clipBehavior: Clip.hardEdge,
       child: Column(
