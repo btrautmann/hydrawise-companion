@@ -9,10 +9,8 @@ void main() {
     final repository = InMemoryCustomerDetailsRepository();
     final DataStorage dataStorage = InMemoryStorage();
 
-    final GetCustomerStatus getCustomerStatus =
-        GetFakeCustomerStatus(repository: repository);
-    final GetCustomerDetails getCustomerDetails =
-        GetFakeCustomerDetails(repository: repository);
+    final GetCustomerStatus getCustomerStatus = GetFakeCustomerStatus(repository: repository);
+    final GetCustomerDetails getCustomerDetails = GetFakeCustomerDetails(repository: repository);
 
     final SetApiKey setApiKey = SetApiKeyInStorage(dataStorage);
 

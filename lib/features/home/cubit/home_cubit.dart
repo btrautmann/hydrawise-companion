@@ -5,7 +5,6 @@ part 'home_state.dart';
 part 'home_cubit.freezed.dart';
 
 class HomeCubit extends Cubit<HomeState> {
-  
   HomeCubit() : super(HomeState(selectedTabIndex: 0));
 
   void selectTab(int selectedTabIndex) {

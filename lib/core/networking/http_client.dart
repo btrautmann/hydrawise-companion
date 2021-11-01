@@ -25,9 +25,7 @@ class HttpClient {
       queryParameters: queryParameters,
       options: options,
     );
-    if (response.statusCode == null ||
-        response.statusCode! < 200 ||
-        response.statusCode! > 300) {
+    if (response.statusCode == null || response.statusCode! < 200 || response.statusCode! > 300) {
       return Failure(DioError(
         requestOptions: response.requestOptions,
         error: response.statusMessage,
