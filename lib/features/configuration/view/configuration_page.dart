@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hydrawise/app/cubit/app_cubit.dart';
+import 'package:hydrawise/core-ui/core_ui.dart';
 import 'package:hydrawise/features/customer_details/customer_details.dart';
 
 class ConfigurationPage extends StatelessWidget {
@@ -33,22 +35,87 @@ class ConfigurationView extends StatelessWidget {
             ],
           ),
         ),
-        BlocBuilder<CustomerDetailsCubit, CustomerDetailsState>(
-          builder: (context, state) {
-            return state.maybeWhen(
-              complete: (details, status) {
-                return _ZoneList(
-                  zones: status.zones,
-                  onZoneTapped: (zone) {},
-                );
-              },
-              orElse: () => const Center(
-                child: CircularProgressIndicator(),
-              ),
-            );
-          },
-        )
+        Padding(
+          padding: const EdgeInsets.only(top: 16),
+          child: BlocBuilder<CustomerDetailsCubit, CustomerDetailsState>(
+            builder: (context, state) {
+              return state.maybeWhen(
+                complete: (details, status) {
+                  return _ZoneList(
+                    zones: status.zones,
+                    onZoneTapped: (zone) {},
+                  );
+                },
+                orElse: () => const Center(
+                  child: CircularProgressIndicator(),
+                ),
+              );
+            },
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(top: 16),
+          child: ListRow(
+            leadingIcon: const CircleBackground(
+              child: Icon(Icons.light_mode),
+            ),
+            title: const Text('Dark mode'),
+            onTapped: () => showDialog<void>(
+              context: context,
+              builder: (_) => ChooseThemeModeDialog(),
+            ),
+          ),
+        ),
+        const Divider(
+          indent: 16,
+        ),
       ],
+    );
+  }
+}
+
+class ChooseThemeModeDialog extends StatelessWidget {
+  const ChooseThemeModeDialog({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListRow(
+              leadingIcon: const CircleBackground(child: Icon(Icons.light_mode)),
+              title: const Text('Light mode'),
+              onTapped: () {
+                context.read<AppCubit>().setThemeMode(ThemeMode.light);
+                Navigator.pop(context);
+              },
+            ),
+            const Divider(),
+            ListRow(
+              leadingIcon: const CircleBackground(child: Icon(Icons.light_mode)),
+              title: const Text('Dark mode'),
+              onTapped: () {
+                context.read<AppCubit>().setThemeMode(ThemeMode.dark);
+                Navigator.pop(context);
+              },
+            ),
+            const Divider(),
+            ListRow(
+              leadingIcon: const CircleBackground(child: Icon(Icons.light_mode)),
+              title: const Text('Follow system'),
+              onTapped: () {
+                context.read<AppCubit>().setThemeMode(ThemeMode.system);
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
@@ -66,33 +133,26 @@ class _ZoneList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     zones.sort(
-      (z1, z2) => z1.secondsUntilNextRun.compareTo(
-        z2.secondsUntilNextRun,
+      (z1, z2) => z1.physicalNumber.compareTo(
+        z2.physicalNumber,
       ),
     );
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(top: 8, bottom: 8),
-            child: ListView.builder(
-              primary: false,
-              physics: const NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              itemCount: zones.length,
-              itemBuilder: (_, index) {
-                return _ZoneCell(
-                  zone: zones[index],
-                  shouldShowDivider: index != zones.length - 1,
-                  onZoneTapped: onZoneTapped,
-                );
-              },
-            ),
-          ),
-        ],
-      ),
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        ListView.builder(
+          primary: false,
+          physics: const NeverScrollableScrollPhysics(),
+          shrinkWrap: true,
+          itemCount: zones.length,
+          itemBuilder: (_, index) {
+            return _ZoneCell(
+              zone: zones[index],
+              onZoneTapped: onZoneTapped,
+            );
+          },
+        ),
+      ],
     );
   }
 }
@@ -101,12 +161,10 @@ class _ZoneCell extends StatelessWidget {
   const _ZoneCell({
     Key? key,
     required this.zone,
-    required this.shouldShowDivider,
     required this.onZoneTapped,
   }) : super(key: key);
 
   final Zone zone;
-  final bool shouldShowDivider;
   final ValueSetter<Zone> onZoneTapped;
 
   @override
@@ -115,48 +173,16 @@ class _ZoneCell extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
-        InkWell(
-          onTap: () => onZoneTapped(zone),
-          child: Padding(
-            padding: const EdgeInsets.only(left: 16, right: 16),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(right: 8),
-                  child: Hero(
-                    tag: zone,
-                    child: Material(
-                      type: MaterialType.transparency,
-                      child: Container(
-                        decoration: const BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [
-                              Colors.green,
-                              Colors.lightGreen,
-                            ],
-                          ),
-                          shape: BoxShape.circle,
-                          color: Colors.green,
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(16),
-                          child: Text(zone.physicalNumber.toString()),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                Text(zone.name),
-                const Spacer(),
-              ],
-            ),
+        ListRow(
+          leadingIcon: CircleBackground(
+            child: Text(zone.physicalNumber.toString()),
           ),
+          title: Text(zone.name),
+          onTapped: () => onZoneTapped(zone),
         ),
-        if (shouldShowDivider)
-          const Divider(
-            indent: 16,
-          ),
+        const Divider(
+          indent: 16,
+        ),
       ],
     );
   }
