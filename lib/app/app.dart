@@ -4,6 +4,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hydrawise/app/app_colors.dart';
+import 'package:hydrawise/app/cubit/app_cubit.dart';
 import 'package:hydrawise/features/customer_details/customer_details.dart';
 import 'package:hydrawise/features/error_page.dart';
 import 'package:hydrawise/features/home/home.dart';
@@ -119,6 +120,9 @@ class App extends StatelessWidget {
         child: MultiBlocProvider(
           providers: [
             BlocProvider(
+              create: (_) => AppCubit(),
+            ),
+            BlocProvider(
               create: (_) => LoginCubit(
                 getApiKey: _getApiKey,
                 setApiKey: _setApiKey,
@@ -141,16 +145,21 @@ class App extends StatelessWidget {
                 _router.go('/login');
               }
             },
-            child: MaterialApp.router(
-              theme: _buildLightTheme(context),
-              darkTheme: _buildDarkTheme(context),
-              localizationsDelegates: const [
-                AppLocalizations.delegate,
-                GlobalMaterialLocalizations.delegate,
-              ],
-              supportedLocales: AppLocalizations.supportedLocales,
-              routeInformationParser: _router.routeInformationParser,
-              routerDelegate: _router.routerDelegate,
+            child: BlocBuilder<AppCubit, AppState>(
+              builder: (context, state) {
+                return MaterialApp.router(
+                  theme: _buildLightTheme(context),
+                  darkTheme: _buildDarkTheme(context),
+                  localizationsDelegates: const [
+                    AppLocalizations.delegate,
+                    GlobalMaterialLocalizations.delegate,
+                  ],
+                  themeMode: state.themeMode,
+                  supportedLocales: AppLocalizations.supportedLocales,
+                  routeInformationParser: _router.routeInformationParser,
+                  routerDelegate: _router.routerDelegate,
+                );
+              },
             ),
           ),
         ));
