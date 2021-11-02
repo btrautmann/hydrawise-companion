@@ -7,8 +7,7 @@ typedef BuildHttpInterceptors = Future<List<Interceptor>> Function();
 class BuildProductionHttpInterceptors {
   final VoidCallback _onAuthenticationFailure;
 
-  BuildProductionHttpInterceptors(
-      {required VoidCallback onAuthenticationFailure})
+  BuildProductionHttpInterceptors({required VoidCallback onAuthenticationFailure})
       : _onAuthenticationFailure = onAuthenticationFailure;
 
   Future<List<Interceptor>> call() async {
