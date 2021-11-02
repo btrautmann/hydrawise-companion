@@ -62,7 +62,7 @@ class ConfigurationView extends StatelessWidget {
             title: const Text('Dark mode'),
             onTapped: () => showDialog<void>(
               context: context,
-              builder: (_) => ChooseThemeModeDialog(),
+              builder: (_) => const ChooseThemeModeDialog(),
             ),
           ),
         ),
