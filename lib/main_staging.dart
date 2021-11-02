@@ -5,6 +5,8 @@ import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/widgets.dart';
+import 'package:hydrawise/app/domain/build_http_interceptors.dart';
+import 'package:hydrawise/app/domain/build_router.dart';
 import 'package:hydrawise/app/domain/create_database.dart';
 import 'package:hydrawise/core/core.dart';
 import 'package:hydrawise/app/app.dart';
@@ -26,18 +28,14 @@ Future<void> main() async {
       WidgetsFlutterBinding.ensureInitialized();
       await Firebase.initializeApp();
 
+      final sharedPreferences = await SharedPreferences.getInstance();
+      final dataStorage = SharedPreferencesStorage(sharedPreferences);
       final database = await CreateHydrawiseDatabase().call(
         databaseName: 'hydrawise_companion_stage.db',
         version: 1,
       );
-      final repository = DatabaseBackedCustomerDetailsRepository(database);
-      final httpClient = HttpClient(
-        dio: Dio(),
-        baseUrl: 'http://api.hydrawise.com/api/v1',
-      );
 
-      final sharedPreferences = await SharedPreferences.getInstance();
-      final dataStorage = SharedPreferencesStorage(sharedPreferences);
+      final repository = DatabaseBackedCustomerDetailsRepository(database);
       final getApiKey = GetApiKeyFromStorage(dataStorage);
       final setApiKey = SetApiKeyInStorage(dataStorage);
       final clearCustomerDetails = ClearCustomerDetailsFromStorage(dataStorage);
@@ -46,6 +44,14 @@ Future<void> main() async {
       final setLocation = SetLocationInStorage(dataStorage);
       final getNextPollTime = GetNextPollTimeFromStorage(dataStorage);
       final setNextPollTime = SetNextPollTimeInStorage(dataStorage);
+
+      final router = await BuildStandardRouter().call();
+
+      final httpClient = HttpClient(
+        dio: Dio(),
+        baseUrl: 'http://api.hydrawise.com/api/v1/',
+      );
+
       final getCustomerDetails = GetCustomerDetailsFromNetwork(
         repository: repository,
         getApiKey: getApiKey,
@@ -67,7 +73,25 @@ Future<void> main() async {
         getApiKey: getApiKey,
       );
 
+      final loginCubit = LoginCubit(
+        getApiKey: getApiKey,
+        setApiKey: setApiKey,
+        getCustomerDetails: getCustomerDetails,
+      );
+
+      void onAuthenticationFailure() {
+        loginCubit.logOut();
+      }
+
+      final interceptors = await BuildProductionHttpInterceptors(
+        onAuthenticationFailure: onAuthenticationFailure,
+      ).call();
+
+      httpClient.addInterceptors(interceptors);
+
       runApp(App(
+        router: router,
+        loginCubit: loginCubit,
         getCustomerDetails: getCustomerDetails,
         getCustomerStatus: getCustomerStatus,
         getApiKey: getApiKey,

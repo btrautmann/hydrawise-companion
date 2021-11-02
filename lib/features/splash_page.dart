@@ -8,18 +8,17 @@ import 'package:hydrawise/features/login/login.dart';
 /// authentication state and route the user to the correct
 /// location in the app.
 class SplashPage extends StatelessWidget {
-  const SplashPage({Key? key}) : super(key: key);
+  const SplashPage({
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<LoginCubit, LoginState>(
-      listener: (context, state) {
-        state.when(
-          loggedOut: () => GoRouter.of(context).go('/login'),
-          loggedIn: (_) => GoRouter.of(context).go('/home'),
-        );
-      },
-      child: const Scaffold(),
+    final state = context.read<LoginCubit>().state;
+    state.when(
+      loggedIn: (_) => GoRouter.of(context).go('/home'),
+      loggedOut: () => GoRouter.of(context).go('/login'),
     );
+    return const Scaffold();
   }
 }

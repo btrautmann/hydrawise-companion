@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:hydrawise/app/domain/build_router.dart';
 import 'package:hydrawise/core/core.dart';
 import 'package:hydrawise/app/app.dart';
 import 'package:hydrawise/features/customer_details/customer_details.dart';
@@ -25,7 +26,15 @@ void main() {
       final getLocation = GetLocationFromStorage(dataStorage);
       final setLocation = SetLocationInStorage(dataStorage);
 
+      final router = await BuildStandardRouter().call();
+
       await tester.pumpWidget(App(
+        router: router,
+        loginCubit: LoginCubit(
+          getApiKey: getApiKey,
+          setApiKey: setApiKey,
+          getCustomerDetails: getCustomerDetails,
+        ),
         getCustomerDetails: getCustomerDetails,
         getCustomerStatus: getCustomerStatus,
         getApiKey: getApiKey,

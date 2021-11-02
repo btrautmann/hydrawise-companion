@@ -5,6 +5,7 @@ import 'package:bloc/bloc.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/widgets.dart';
+import 'package:hydrawise/app/domain/build_router.dart';
 import 'package:hydrawise/app/domain/create_database.dart';
 import 'package:hydrawise/core/core.dart';
 import 'package:hydrawise/app/app.dart';
@@ -27,26 +28,34 @@ Future<void> main() async {
       await Firebase.initializeApp();
       FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(false);
 
+      final sharedPreferences = await SharedPreferences.getInstance();
+      final dataStorage = SharedPreferencesStorage(sharedPreferences);
       final database = await CreateHydrawiseDatabase().call(
         databaseName: 'hydrawise_companion_dev.db',
         version: 2,
       );
-      final repository = DatabaseBackedCustomerDetailsRepository(database);
 
-      final sharedPreferences = await SharedPreferences.getInstance();
-      final DataStorage dataStorage = SharedPreferencesStorage(sharedPreferences);
-      final getCustomerDetails = GetFakeCustomerDetails(repository: repository);
-      final getCustomerStatus = GetFakeCustomerStatus(repository: repository);
+      final repository = DatabaseBackedCustomerDetailsRepository(database);
+      final clearCustomerDetails = ClearCustomerDetailsFromStorage(dataStorage);
       final getApiKey = GetApiKeyFromStorage(dataStorage);
       final setApiKey = SetApiKeyInStorage(dataStorage);
-      final clearCustomerDetails = ClearCustomerDetailsFromStorage(dataStorage);
-      final runZone = RunZoneLocally(repository: repository);
-      final stopZone = StopZoneLocally(repository: repository);
       final getWeather = GetWeatherFromNetwork();
       final getLocation = GetLocationFromStorage(dataStorage);
       final setLocation = SetLocationInStorage(dataStorage);
+      final runZone = RunZoneLocally(repository: repository);
+      final stopZone = StopZoneLocally(repository: repository);
+      final getCustomerDetails = GetFakeCustomerDetails(repository: repository);
+      final getCustomerStatus = GetFakeCustomerStatus(repository: repository);
+
+      final router = await BuildStandardRouter().call();
 
       runApp(App(
+        router: router,
+        loginCubit: LoginCubit(
+          getApiKey: getApiKey,
+          setApiKey: setApiKey,
+          getCustomerDetails: getCustomerDetails,
+        ),
         getCustomerDetails: getCustomerDetails,
         getCustomerStatus: getCustomerStatus,
         getApiKey: getApiKey,
