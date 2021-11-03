@@ -9,7 +9,7 @@ import 'package:hydrawise/app/networking/build_http_interceptors.dart';
 import 'package:hydrawise/app/domain/build_router.dart';
 import 'package:hydrawise/app/domain/create_database.dart';
 import 'package:hydrawise/core/core.dart';
-import 'package:hydrawise/app/app.dart';
+import 'package:hydrawise/app/hydrawise_companion_app.dart';
 import 'package:hydrawise/app/app_bloc_observer.dart';
 import 'package:hydrawise/features/app_theme_mode/app_theme_mode.dart';
 import 'package:hydrawise/features/customer_details/customer_details.dart';

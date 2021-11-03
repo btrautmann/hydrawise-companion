@@ -14,12 +14,10 @@ class HydrawiseApiDecoder {
     ResponseBody responseBody,
   ) {
     final response = convert.utf8.decode(responseBytes);
-    String massagedResponse;
+    String transformedResponse = response;
     if (response == 'API key not valid') {
-      massagedResponse = '{"error" : "$response"}';
-    } else {
-      massagedResponse = response;
+      transformedResponse = '{"error": "$response"}';
     }
-    return massagedResponse;
+    return transformedResponse;
   }
 }

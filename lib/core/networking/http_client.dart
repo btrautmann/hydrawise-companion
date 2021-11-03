@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
-import 'package:hydrawise/app/networking/api_response_decoder.dart';
+import 'package:hydrawise/app/networking/hydrawise_api_decoder.dart';
 import 'package:result_type/result_type.dart';
 
 typedef NetworkResult<T> = Result<T, DioError>;

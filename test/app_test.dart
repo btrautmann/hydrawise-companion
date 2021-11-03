@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hydrawise/app/domain/build_router.dart';
 import 'package:hydrawise/core/core.dart';
-import 'package:hydrawise/app/app.dart';
+import 'package:hydrawise/app/hydrawise_companion_app.dart';
 import 'package:hydrawise/features/app_theme_mode/app_theme_mode.dart';
 import 'package:hydrawise/features/app_theme_mode/domain/set_app_theme_mode.dart';
 import 'package:hydrawise/features/customer_details/customer_details.dart';
