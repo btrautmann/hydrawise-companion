@@ -21,25 +21,27 @@ class FakeErrorInterceptorHandler extends ErrorInterceptorHandler {
 
 void main() {
   group('AuthenticationInterceptor', () {
-    test('it invokes the callback when a 404 is encountered', () async {
-      bool authenticationFailure = false;
-      final authInterceptor = AuthenticationInterceptor(
-        onAuthenticationFailure: () {
-          authenticationFailure = true;
-        },
-      );
+    group('onError', () {
+      test('it invokes the callback when a 404 is encountered', () async {
+        bool authenticationFailure = false;
+        final authInterceptor = AuthenticationInterceptor(
+          onAuthenticationFailure: () {
+            authenticationFailure = true;
+          },
+        );
 
-      authInterceptor.onError(
-        DioError(
-          requestOptions: RequestOptions(path: 'fake-path'),
-          response: Response(
+        authInterceptor.onError(
+          DioError(
             requestOptions: RequestOptions(path: 'fake-path'),
-            statusCode: 404,
+            response: Response(
+              requestOptions: RequestOptions(path: 'fake-path'),
+              statusCode: 404,
+            ),
           ),
-        ),
-        FakeErrorInterceptorHandler(),
-      );
-      expect(authenticationFailure, isTrue);
+          FakeErrorInterceptorHandler(),
+        );
+        expect(authenticationFailure, isTrue);
+      });
     });
   });
 }
