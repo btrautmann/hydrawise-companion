@@ -10,14 +10,17 @@ class LoginCubit extends Cubit<LoginState> {
   final GetApiKey _getApiKey;
   final SetApiKey _setApiKey;
   final GetCustomerDetails _getCustomerDetails;
+  final ClearCustomerDetails _clearCustomerDetails;
 
   LoginCubit({
     required GetApiKey getApiKey,
     required SetApiKey setApiKey,
     required GetCustomerDetails getCustomerDetails,
+    required ClearCustomerDetails clearCustomerDetails,
   })  : _getApiKey = getApiKey,
         _setApiKey = setApiKey,
         _getCustomerDetails = getCustomerDetails,
+        _clearCustomerDetails = clearCustomerDetails,
         super(LoginState.loggedOut()) {
     _checkAuthenticationStatus();
   }
@@ -32,7 +35,7 @@ class LoginCubit extends Cubit<LoginState> {
   }
 
   Future<void> logOut() async {
-    await _setApiKey('');
+    await _clearCustomerDetails();
     emit(LoginState.loggedOut());
   }
 

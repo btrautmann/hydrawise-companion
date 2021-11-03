@@ -12,13 +12,18 @@ void main() {
     final SetApiKey setApiKey = SetApiKeyInStorage(dataStorage);
 
     final repository = InMemoryCustomerDetailsRepository();
-    final GetCustomerDetails getCustomerDetails = GetFakeCustomerDetails(repository: repository);
+    final GetCustomerDetails getCustomerDetails =
+        GetFakeCustomerDetails(repository: repository);
 
     LoginCubit _buildSubject() {
       return LoginCubit(
         getApiKey: getApiKey,
         setApiKey: setApiKey,
         getCustomerDetails: getCustomerDetails,
+        clearCustomerDetails: ClearCustomerDetailsFromStorage(
+          dataStorage: dataStorage,
+          customerDetailsRepository: repository,
+        ),
       );
     }
 

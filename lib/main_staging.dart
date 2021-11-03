@@ -11,6 +11,7 @@ import 'package:hydrawise/app/domain/create_database.dart';
 import 'package:hydrawise/core/core.dart';
 import 'package:hydrawise/app/app.dart';
 import 'package:hydrawise/app/app_bloc_observer.dart';
+import 'package:hydrawise/features/app_theme_mode/app_theme_mode.dart';
 import 'package:hydrawise/features/customer_details/customer_details.dart';
 import 'package:hydrawise/features/login/login.dart';
 import 'package:hydrawise/features/run_zone/run_zone.dart';
@@ -38,7 +39,10 @@ Future<void> main() async {
       final repository = DatabaseBackedCustomerDetailsRepository(database);
       final getApiKey = GetApiKeyFromStorage(dataStorage);
       final setApiKey = SetApiKeyInStorage(dataStorage);
-      final clearCustomerDetails = ClearCustomerDetailsFromStorage(dataStorage);
+      final clearCustomerDetails = ClearCustomerDetailsFromStorage(
+        dataStorage: dataStorage,
+        customerDetailsRepository: repository,
+      );
       final getWeather = GetWeatherFromNetwork();
       final getLocation = GetLocationFromStorage(dataStorage);
       final setLocation = SetLocationInStorage(dataStorage);
@@ -77,7 +81,11 @@ Future<void> main() async {
         getApiKey: getApiKey,
         setApiKey: setApiKey,
         getCustomerDetails: getCustomerDetails,
+        clearCustomerDetails: clearCustomerDetails,
       );
+
+      final setAppThemeMode = SetAppThemeModeInStorage(dataStorage);
+      final getAppThemeMode = GetAppThemeModeFromStorage(dataStorage);
 
       void onAuthenticationFailure() {
         loginCubit.logOut();
@@ -92,6 +100,8 @@ Future<void> main() async {
       runApp(App(
         router: router,
         loginCubit: loginCubit,
+        setAppThemeMode: setAppThemeMode,
+        getAppThemeMode: getAppThemeMode,
         getCustomerDetails: getCustomerDetails,
         getCustomerStatus: getCustomerStatus,
         getApiKey: getApiKey,

@@ -9,8 +9,16 @@ void main() {
     final repository = InMemoryCustomerDetailsRepository();
     final DataStorage dataStorage = InMemoryStorage();
 
-    final GetCustomerStatus getCustomerStatus = GetFakeCustomerStatus(repository: repository);
-    final GetCustomerDetails getCustomerDetails = GetFakeCustomerDetails(repository: repository);
+    final GetCustomerStatus getCustomerStatus = GetFakeCustomerStatus(
+      repository: repository,
+    );
+    final GetCustomerDetails getCustomerDetails = GetFakeCustomerDetails(
+      repository: repository,
+    );
+    final clearCustomerDetails = ClearCustomerDetailsFromStorage(
+      dataStorage: dataStorage,
+      customerDetailsRepository: repository,
+    );
 
     final SetApiKey setApiKey = SetApiKeyInStorage(dataStorage);
 
@@ -18,6 +26,7 @@ void main() {
       getApiKey: GetApiKeyFromStorage(dataStorage),
       setApiKey: setApiKey,
       getCustomerDetails: getCustomerDetails,
+      clearCustomerDetails: clearCustomerDetails,
     );
 
     CustomerDetailsCubit _buildSubject() {
