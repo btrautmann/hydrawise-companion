@@ -17,7 +17,6 @@ class GetAppThemeModeFromStorage {
 
 extension on String {
   ThemeMode toThemeMode() {
-    print('Parsing this: $this');
     if (this == 'ThemeMode.dark') {
       return ThemeMode.dark;
     } else if (this == 'ThemeMode.light') {
