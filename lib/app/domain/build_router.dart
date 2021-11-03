@@ -6,11 +6,16 @@ import 'package:hydrawise/features/login/login.dart';
 import 'package:hydrawise/features/run_zone/run_zone.dart';
 import 'package:hydrawise/features/splash_page.dart';
 
-typedef BuildRouter = Future<GoRouter> Function();
+/// Contract for building the [GoRouter] that the app
+/// will use for all of its navigation
+abstract class BuildRouter {
+  Future<GoRouter> call();
+}
 
-class BuildStandardRouter {
+class BuildStandardRouter implements BuildRouter {
   BuildStandardRouter();
 
+  @override
   Future<GoRouter> call() async {
     return GoRouter(
       routes: [

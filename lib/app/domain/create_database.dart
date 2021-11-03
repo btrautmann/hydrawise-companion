@@ -1,12 +1,17 @@
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
-typedef CreateDatabase = Future<Database> Function(
-  String databaseName,
-  int version,
-);
+/// Contract for creating the [Database] that the app
+/// will use to store complex, relational data
+abstract class CreateDatabase {
+  Future<Database> call({
+    required String databaseName,
+    required int version,
+  });
+}
 
-class CreateHydrawiseDatabase {
+class CreateHydrawiseDatabase implements CreateDatabase {
+  @override
   Future<Database> call({
     required String databaseName,
     required int version,

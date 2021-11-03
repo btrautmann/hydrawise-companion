@@ -1,6 +1,10 @@
 import 'package:dio/dio.dart';
 import 'package:hydrawise/features/customer_details/customer_details.dart';
 
+/// An [Interceptor] that intercepts requests and checks for the
+/// existence of a `demo` API key. If that key is present, we're
+/// in demo mode and this interceptor will return fake data for
+/// the purpose of navigating the app and demonstrating its features
 class DemoModeInterceptor extends Interceptor {
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {

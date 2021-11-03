@@ -5,7 +5,7 @@ import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/widgets.dart';
-import 'package:hydrawise/app/domain/build_http_interceptors.dart';
+import 'package:hydrawise/app/networking/build_http_interceptors.dart';
 import 'package:hydrawise/app/domain/build_router.dart';
 import 'package:hydrawise/app/domain/create_database.dart';
 import 'package:hydrawise/core/core.dart';

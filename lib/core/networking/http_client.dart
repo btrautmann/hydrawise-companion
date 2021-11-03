@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
-import 'package:hydrawise/app/domain/api_response_decoder.dart';
+import 'package:hydrawise/app/networking/api_response_decoder.dart';
 import 'package:result_type/result_type.dart';
 
 typedef NetworkResult<T> = Result<T, DioError>;
@@ -15,12 +15,7 @@ class HttpClient {
     if (interceptors != null) {
       _dio.interceptors.addAll(interceptors);
     }
-    _dio.options.responseDecoder = (
-      responseBytes,
-      options,
-      responseBody,
-    ) =>
-        apiDecoder(responseBytes, options, responseBody);
+    _dio.options.responseDecoder = HydrawiseApiDecoder.decode;
   }
 
   final Dio _dio;
@@ -40,7 +35,9 @@ class HttpClient {
         queryParameters: queryParameters,
         options: options,
       );
-      if (response.statusCode == null || response.statusCode! < 200 || response.statusCode! > 300) {
+      if (response.statusCode == null ||
+          response.statusCode! < 200 ||
+          response.statusCode! > 300) {
         return Failure(DioError(
           requestOptions: response.requestOptions,
           error: response.statusMessage,
