@@ -13,8 +13,7 @@ abstract class CustomerDetailsRepository {
   Future<void> clearAllData();
 }
 
-class DatabaseBackedCustomerDetailsRepository
-    implements CustomerDetailsRepository {
+class DatabaseBackedCustomerDetailsRepository implements CustomerDetailsRepository {
   DatabaseBackedCustomerDetailsRepository(this._database);
 
   final Database _database;

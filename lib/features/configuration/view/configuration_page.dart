@@ -103,8 +103,7 @@ class ChooseThemeModeDialog extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             ListRow(
-              leadingIcon:
-                  const CircleBackground(child: Icon(Icons.light_mode)),
+              leadingIcon: const CircleBackground(child: Icon(Icons.light_mode)),
               title: const Text('Light mode'),
               onTapped: () {
                 context.read<AppCubit>().setThemeMode(ThemeMode.light);

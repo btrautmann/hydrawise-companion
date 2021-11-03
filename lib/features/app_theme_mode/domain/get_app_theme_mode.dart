@@ -10,9 +10,7 @@ class GetAppThemeModeFromStorage {
 
   Future<ThemeMode> call() async {
     final themeModeString = await _dataStorage.getString('app_theme_mode');
-    final mode = themeModeString == null
-        ? ThemeMode.system
-        : themeModeString.toThemeMode();
+    final mode = themeModeString == null ? ThemeMode.system : themeModeString.toThemeMode();
     return mode;
   }
 }
