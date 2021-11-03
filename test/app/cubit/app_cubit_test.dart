@@ -73,9 +73,7 @@ void main() {
         build: () => _buildSubject(),
         act: (cubit) => cubit.setThemeMode(ThemeMode.dark),
         skip: 1,
-        expect: () => <AppState>[
-          AppState(themeMode: ThemeMode.dark)
-        ],
+        expect: () => <AppState>[AppState(themeMode: ThemeMode.dark)],
       );
     });
   });
