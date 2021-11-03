@@ -10,9 +10,11 @@ abstract class CustomerDetailsRepository {
   Future<CustomerIdentification> getCustomer();
   Future<List<Zone>> getZones();
   Future<void> insertZone(Zone zone);
+  Future<void> clearAllData();
 }
 
-class DatabaseBackedCustomerDetailsRepository implements CustomerDetailsRepository {
+class DatabaseBackedCustomerDetailsRepository
+    implements CustomerDetailsRepository {
   DatabaseBackedCustomerDetailsRepository(this._database);
 
   final Database _database;
@@ -87,6 +89,12 @@ class DatabaseBackedCustomerDetailsRepository implements CustomerDetailsReposito
   Future<void> insertZone(Zone zone) {
     return _database.insert('zones', zone.toJson());
   }
+
+  @override
+  Future<void> clearAllData() async {
+    await _database.delete('zones');
+    await _database.delete('customers');
+  }
 }
 
 class InMemoryCustomerDetailsRepository implements CustomerDetailsRepository {
@@ -138,5 +146,11 @@ class InMemoryCustomerDetailsRepository implements CustomerDetailsRepository {
     zones
       ..retainWhere((element) => element.id != zone.id)
       ..add(zone);
+  }
+
+  @override
+  Future<void> clearAllData() async {
+    zones.clear();
+    customers.clear();
   }
 }

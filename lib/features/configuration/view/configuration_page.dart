@@ -55,15 +55,30 @@ class ConfigurationView extends StatelessWidget {
         ),
         Padding(
           padding: const EdgeInsets.only(top: 16),
-          child: ListRow(
-            leadingIcon: const CircleBackground(
-              child: Icon(Icons.light_mode),
-            ),
-            title: const Text('Dark mode'),
-            onTapped: () => showDialog<void>(
-              context: context,
-              builder: (_) => const ChooseThemeModeDialog(),
-            ),
+          child: BlocBuilder<AppCubit, AppState>(
+            builder: (context, state) {
+              final currentThemeMode = state.themeMode;
+              Icon icon;
+              switch (currentThemeMode) {
+                case ThemeMode.system:
+                  icon = const Icon(Icons.settings);
+                  break;
+                case ThemeMode.light:
+                  icon = const Icon(Icons.light_mode);
+                  break;
+                case ThemeMode.dark:
+                  icon = const Icon(Icons.dark_mode);
+                  break;
+              }
+              return ListRow(
+                leadingIcon: CircleBackground(child: icon),
+                title: const Text('App theme'),
+                onTapped: () => showDialog<void>(
+                  context: context,
+                  builder: (_) => const ChooseThemeModeDialog(),
+                ),
+              );
+            },
           ),
         ),
         const Divider(
@@ -88,7 +103,8 @@ class ChooseThemeModeDialog extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             ListRow(
-              leadingIcon: const CircleBackground(child: Icon(Icons.light_mode)),
+              leadingIcon:
+                  const CircleBackground(child: Icon(Icons.light_mode)),
               title: const Text('Light mode'),
               onTapped: () {
                 context.read<AppCubit>().setThemeMode(ThemeMode.light);
@@ -97,7 +113,7 @@ class ChooseThemeModeDialog extends StatelessWidget {
             ),
             const Divider(),
             ListRow(
-              leadingIcon: const CircleBackground(child: Icon(Icons.light_mode)),
+              leadingIcon: const CircleBackground(child: Icon(Icons.dark_mode)),
               title: const Text('Dark mode'),
               onTapped: () {
                 context.read<AppCubit>().setThemeMode(ThemeMode.dark);
@@ -106,7 +122,7 @@ class ChooseThemeModeDialog extends StatelessWidget {
             ),
             const Divider(),
             ListRow(
-              leadingIcon: const CircleBackground(child: Icon(Icons.light_mode)),
+              leadingIcon: const CircleBackground(child: Icon(Icons.settings)),
               title: const Text('Follow system'),
               onTapped: () {
                 context.read<AppCubit>().setThemeMode(ThemeMode.system);

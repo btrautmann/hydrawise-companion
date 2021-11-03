@@ -5,10 +5,13 @@ import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/widgets.dart';
+import 'package:hydrawise/app/domain/build_http_interceptors.dart';
+import 'package:hydrawise/app/domain/build_router.dart';
 import 'package:hydrawise/app/domain/create_database.dart';
 import 'package:hydrawise/core/core.dart';
 import 'package:hydrawise/app/app.dart';
 import 'package:hydrawise/app/app_bloc_observer.dart';
+import 'package:hydrawise/features/app_theme_mode/app_theme_mode.dart';
 import 'package:hydrawise/features/customer_details/customer_details.dart';
 import 'package:hydrawise/features/login/login.dart';
 import 'package:hydrawise/features/run_zone/run_zone.dart';
@@ -26,18 +29,18 @@ Future<void> main() async {
       WidgetsFlutterBinding.ensureInitialized();
       await Firebase.initializeApp();
 
+      final sharedPreferences = await SharedPreferences.getInstance();
+      final dataStorage = SharedPreferencesStorage(sharedPreferences);
       final database = await CreateHydrawiseDatabase().call(
         databaseName: 'hydrawise_companion_prod.db',
         version: 2,
       );
-      final repository = DatabaseBackedCustomerDetailsRepository(database);
-      final httpClient = HttpClient(
-        dio: Dio(),
-        baseUrl: 'http://api.hydrawise.com/api/v1/',
-      );
 
-      final sharedPreferences = await SharedPreferences.getInstance();
-      final dataStorage = SharedPreferencesStorage(sharedPreferences);
+      final repository = DatabaseBackedCustomerDetailsRepository(database);
+      final clearCustomerDetails = ClearCustomerDetailsFromStorage(
+        dataStorage: dataStorage,
+        customerDetailsRepository: repository,
+      );
       final getApiKey = GetApiKeyFromStorage(dataStorage);
       final setApiKey = SetApiKeyInStorage(dataStorage);
       final getWeather = GetWeatherFromNetwork();
@@ -45,6 +48,14 @@ Future<void> main() async {
       final setLocation = SetLocationInStorage(dataStorage);
       final getNextPollTime = GetNextPollTimeFromStorage(dataStorage);
       final setNextPollTime = SetNextPollTimeInStorage(dataStorage);
+
+      final router = await BuildStandardRouter().call();
+
+      final httpClient = HttpClient(
+        dio: Dio(),
+        baseUrl: 'http://api.hydrawise.com/api/v1/',
+      );
+
       final getCustomerDetails = GetCustomerDetailsFromNetwork(
         httpClient: httpClient,
         repository: repository,
@@ -58,7 +69,6 @@ Future<void> main() async {
         setNextPollTime: setNextPollTime,
       );
 
-      final clearCustomerDetails = ClearCustomerDetailsFromStorage(dataStorage);
       final runZone = RunZoneOverNetwork(
         httpClient: httpClient,
         getApiKey: getApiKey,
@@ -68,7 +78,31 @@ Future<void> main() async {
         getApiKey: getApiKey,
       );
 
+      final loginCubit = LoginCubit(
+        getApiKey: getApiKey,
+        setApiKey: setApiKey,
+        getCustomerDetails: getCustomerDetails,
+        clearCustomerDetails: clearCustomerDetails,
+      );
+
+      final setAppThemeMode = SetAppThemeModeInStorage(dataStorage);
+      final getAppThemeMode = GetAppThemeModeFromStorage(dataStorage);
+
+      void onAuthenticationFailure() {
+        loginCubit.logOut();
+      }
+
+      final interceptors = await BuildProductionHttpInterceptors(
+        onAuthenticationFailure: onAuthenticationFailure,
+      ).call();
+
+      httpClient.addInterceptors(interceptors);
+
       runApp(App(
+        router: router,
+        loginCubit: loginCubit,
+        setAppThemeMode: setAppThemeMode,
+        getAppThemeMode: getAppThemeMode,
         getCustomerDetails: getCustomerDetails,
         getCustomerStatus: getCustomerStatus,
         getApiKey: getApiKey,
