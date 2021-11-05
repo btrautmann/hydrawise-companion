@@ -7,7 +7,7 @@ import 'package:dio/dio.dart';
 /// that aren't valid JSON. The String it returns
 /// is correct JSON so the rest of the networking
 /// pipeline can digest it.
-class HydrawiseApiDecoder {
+abstract class HydrawiseApiDecoder {
   static String decode(
     List<int> responseBytes,
     RequestOptions options,

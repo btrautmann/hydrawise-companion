@@ -7,8 +7,6 @@ import 'package:hydrawise/app/app.dart';
 import 'package:hydrawise/features/app_theme_mode/app_theme_mode.dart';
 import 'package:hydrawise/features/customer_details/customer_details.dart';
 import 'package:hydrawise/features/login/login.dart';
-import 'package:hydrawise/features/run_zone/run_zone.dart';
-import 'package:hydrawise/features/weather/weather.dart';
 import 'package:hydrawise/l10n/l10n.dart';
 import 'package:provider/provider.dart';
 
@@ -16,78 +14,39 @@ class App extends StatelessWidget {
   const App({
     Key? key,
     required GoRouter router,
-    required LoginCubit loginCubit,
-    required SetAppThemeMode setAppThemeMode,
-    required GetAppThemeMode getAppThemeMode,
-    required GetCustomerDetails getCustomerDetails,
-    required GetCustomerStatus getCustomerStatus,
-    required GetApiKey getApiKey,
-    required SetApiKey setApiKey,
-    required ClearCustomerDetails clearCustomerDetails,
-    required RunZone runZone,
-    required StopZone stopZone,
-    required GetLocation getLocation,
-    required SetLocation setLocation,
-    required GetWeather getWeather,
+    required List<Provider> providers,
   })  : _router = router,
-        _loginCubit = loginCubit,
-        _setAppThemeMode = setAppThemeMode,
-        _getAppThemeMode = getAppThemeMode,
-        _getCustomerDetails = getCustomerDetails,
-        _getCustomerStatus = getCustomerStatus,
-        _getApiKey = getApiKey,
-        _setApiKey = setApiKey,
-        _clearCustomerDetails = clearCustomerDetails,
-        _runZone = runZone,
-        _stopZone = stopZone,
-        _getLocation = getLocation,
-        _setLocation = setLocation,
-        _getWeather = getWeather,
+        _providers = providers,
         super(key: key);
 
   final GoRouter _router;
-  final LoginCubit _loginCubit;
-  final SetAppThemeMode _setAppThemeMode;
-  final GetAppThemeMode _getAppThemeMode;
-  final GetCustomerDetails _getCustomerDetails;
-  final GetCustomerStatus _getCustomerStatus;
-  final GetApiKey _getApiKey;
-  final SetApiKey _setApiKey;
-  final ClearCustomerDetails _clearCustomerDetails;
-  final RunZone _runZone;
-  final StopZone _stopZone;
-  final GetLocation _getLocation;
-  final SetLocation _setLocation;
-  final GetWeather _getWeather;
+  final List<Provider> _providers;
 
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-        providers: [
-          Provider<GetCustomerDetails>.value(value: _getCustomerDetails),
-          Provider<GetCustomerStatus>.value(value: _getCustomerStatus),
-          Provider<GetApiKey>.value(value: _getApiKey),
-          Provider<SetApiKey>.value(value: _setApiKey),
-          Provider<ClearCustomerDetails>.value(value: _clearCustomerDetails),
-          Provider<RunZone>.value(value: _runZone),
-          Provider<StopZone>.value(value: _stopZone),
-          Provider<GetLocation>.value(value: _getLocation),
-          Provider<SetLocation>.value(value: _setLocation),
-          Provider<GetWeather>.value(value: _getWeather),
-        ],
+        providers: _providers,
         child: MultiBlocProvider(
           providers: [
             BlocProvider(
-              create: (_) => AppCubit(
-                setAppThemeMode: _setAppThemeMode,
-                getAppThemeMode: _getAppThemeMode,
+              create: (context) => AppCubit(
+                setAppThemeMode: context.read<SetAppThemeMode>(),
+                getAppThemeMode: context.read<GetAppThemeMode>(),
               ),
             ),
-            BlocProvider.value(value: _loginCubit),
+            BlocProvider(
+              create: (context) => LoginCubit(
+                clearCustomerDetails: context.read<ClearCustomerDetails>(),
+                getApiKey: context.read<GetApiKey>(),
+                getCustomerDetails: context.read<GetCustomerDetails>(),
+                setApiKey: context.read<SetApiKey>(),
+                getAuthFailures: context.read<GetAuthFailures>(),
+              ),
+            ),
             BlocProvider(
               create: (context) => CustomerDetailsCubit(
-                getCustomerDetails: _getCustomerDetails,
-                getCustomerStatus: _getCustomerStatus,
+                getCustomerDetails: context.read<GetCustomerDetails>(),
+                getCustomerStatus: context.read<GetCustomerStatus>(),
                 loginCubit: context.read<LoginCubit>(),
               )..start(),
             ),
@@ -140,13 +99,15 @@ ThemeData _buildLightTheme(BuildContext context) {
     navigationRailTheme: NavigationRailThemeData(
       backgroundColor: AppColors.blue700,
       selectedIconTheme: const IconThemeData(color: AppColors.orange500),
-      selectedLabelTextStyle: GoogleFonts.workSansTextTheme().headline5?.copyWith(
-            color: AppColors.orange500,
-          ),
+      selectedLabelTextStyle:
+          GoogleFonts.workSansTextTheme().headline5?.copyWith(
+                color: AppColors.orange500,
+              ),
       unselectedIconTheme: const IconThemeData(color: AppColors.blue200),
-      unselectedLabelTextStyle: GoogleFonts.workSansTextTheme().headline5?.copyWith(
-            color: AppColors.blue200,
-          ),
+      unselectedLabelTextStyle:
+          GoogleFonts.workSansTextTheme().headline5?.copyWith(
+                color: AppColors.blue200,
+              ),
     ),
     chipTheme: _buildChipTheme(
       AppColors.blue700,
@@ -181,13 +142,15 @@ ThemeData _buildDarkTheme(BuildContext context) {
     navigationRailTheme: NavigationRailThemeData(
       backgroundColor: AppColors.darkBottomAppBarBackground,
       selectedIconTheme: const IconThemeData(color: AppColors.orange300),
-      selectedLabelTextStyle: GoogleFonts.workSansTextTheme().headline5?.copyWith(
-            color: AppColors.orange300,
-          ),
+      selectedLabelTextStyle:
+          GoogleFonts.workSansTextTheme().headline5?.copyWith(
+                color: AppColors.orange300,
+              ),
       unselectedIconTheme: const IconThemeData(color: AppColors.greyLabel),
-      unselectedLabelTextStyle: GoogleFonts.workSansTextTheme().headline5?.copyWith(
-            color: AppColors.greyLabel,
-          ),
+      unselectedLabelTextStyle:
+          GoogleFonts.workSansTextTheme().headline5?.copyWith(
+                color: AppColors.greyLabel,
+              ),
     ),
     chipTheme: _buildChipTheme(
       AppColors.blue200,
@@ -323,7 +286,9 @@ ChipThemeData _buildChipTheme(
     padding: const EdgeInsets.all(4),
     shape: const StadiumBorder(),
     labelStyle: GoogleFonts.workSansTextTheme().bodyText2!.copyWith(
-          color: brightness == Brightness.dark ? AppColors.white50 : AppColors.black900,
+          color: brightness == Brightness.dark
+              ? AppColors.white50
+              : AppColors.black900,
         ),
     secondaryLabelStyle: GoogleFonts.workSansTextTheme().bodyText2!,
     brightness: brightness,

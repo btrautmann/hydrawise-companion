@@ -5,17 +5,14 @@ import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/widgets.dart';
+import 'package:hydrawise/app/app.dart';
 import 'package:hydrawise/app/networking/build_http_interceptors.dart';
 import 'package:hydrawise/app/domain/build_router.dart';
 import 'package:hydrawise/app/domain/create_database.dart';
 import 'package:hydrawise/core/core.dart';
 import 'package:hydrawise/app/hydrawise_companion_app.dart';
 import 'package:hydrawise/app/app_bloc_observer.dart';
-import 'package:hydrawise/features/app_theme_mode/app_theme_mode.dart';
 import 'package:hydrawise/features/customer_details/customer_details.dart';
-import 'package:hydrawise/features/login/login.dart';
-import 'package:hydrawise/features/run_zone/run_zone.dart';
-import 'package:hydrawise/features/weather/weather.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 Future<void> main() async {
@@ -37,81 +34,34 @@ Future<void> main() async {
       );
 
       final repository = DatabaseBackedCustomerDetailsRepository(database);
-      final getApiKey = GetApiKeyFromStorage(dataStorage);
-      final setApiKey = SetApiKeyInStorage(dataStorage);
-      final clearCustomerDetails = ClearCustomerDetailsFromStorage(
-        dataStorage: dataStorage,
-        customerDetailsRepository: repository,
-      );
-      final getWeather = GetWeatherFromNetwork();
-      final getLocation = GetLocationFromStorage(dataStorage);
-      final setLocation = SetLocationInStorage(dataStorage);
-      final getNextPollTime = GetNextPollTimeFromStorage(dataStorage);
-      final setNextPollTime = SetNextPollTimeInStorage(dataStorage);
+      // ignore: prefer_void_to_null
+      final authFailures = StreamController<Null>();
 
       final router = await BuildStandardRouter().call();
 
-      final httpClient = HttpClient(
-        dio: Dio(),
-        baseUrl: 'http://api.hydrawise.com/api/v1/',
-      );
-
-      final getCustomerDetails = GetCustomerDetailsFromNetwork(
-        repository: repository,
-        getApiKey: getApiKey,
-        httpClient: httpClient,
-      );
-      final getCustomerStatus = GetCustomerStatusFromNetwork(
-        httpClient: httpClient,
-        repository: repository,
-        getApiKey: getApiKey,
-        getNextPollTime: getNextPollTime,
-        setNextPollTime: setNextPollTime,
-      );
-      final runZone = RunZoneOverNetwork(
-        httpClient: httpClient,
-        getApiKey: getApiKey,
-      );
-      final stopZone = StopZoneOverNetwork(
-        httpClient: httpClient,
-        getApiKey: getApiKey,
-      );
-
-      final loginCubit = LoginCubit(
-        getApiKey: getApiKey,
-        setApiKey: setApiKey,
-        getCustomerDetails: getCustomerDetails,
-        clearCustomerDetails: clearCustomerDetails,
-      );
-
-      final setAppThemeMode = SetAppThemeModeInStorage(dataStorage);
-      final getAppThemeMode = GetAppThemeModeFromStorage(dataStorage);
-
       void onAuthenticationFailure() {
-        loginCubit.logOut();
+        authFailures.add(null);
       }
 
-      final interceptors = await BuildStagingHttpInterceptors(
+      final interceptors = await BuildProductionHttpInterceptors(
         onAuthenticationFailure: onAuthenticationFailure,
       ).call();
 
-      httpClient.addInterceptors(interceptors);
+      final httpClient = HttpClient(
+          dio: Dio(),
+          baseUrl: 'http://api.hydrawise.com/api/v1/',
+          interceptors: interceptors);
+
+      final providers = ProductionDomainFactory.build(
+        client: httpClient,
+        dataStorage: dataStorage,
+        repository: repository,
+        authFailures: authFailures,
+      );
 
       runApp(App(
         router: router,
-        loginCubit: loginCubit,
-        setAppThemeMode: setAppThemeMode,
-        getAppThemeMode: getAppThemeMode,
-        getCustomerDetails: getCustomerDetails,
-        getCustomerStatus: getCustomerStatus,
-        getApiKey: getApiKey,
-        setApiKey: setApiKey,
-        clearCustomerDetails: clearCustomerDetails,
-        runZone: runZone,
-        stopZone: stopZone,
-        getLocation: getLocation,
-        setLocation: setLocation,
-        getWeather: getWeather,
+        providers: providers,
       ));
     },
     (error, stackTrace) => log(error.toString(), stackTrace: stackTrace),

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hydrawise/core/core.dart';
@@ -12,7 +14,16 @@ void main() {
     final SetApiKey setApiKey = SetApiKeyInStorage(dataStorage);
 
     final repository = InMemoryCustomerDetailsRepository();
-    final GetCustomerDetails getCustomerDetails = GetFakeCustomerDetails(repository: repository);
+    final GetCustomerDetails getCustomerDetails = GetFakeCustomerDetails(
+      repository: repository,
+    );
+    late GetAuthFailures getAuthFailures;
+
+    setUp(() {
+      getAuthFailures = GetNetworkAuthFailures(
+        authFailuresController: StreamController(),
+      );
+    });
 
     LoginCubit _buildSubject() {
       return LoginCubit(
@@ -23,6 +34,7 @@ void main() {
           dataStorage: dataStorage,
           customerDetailsRepository: repository,
         ),
+        getAuthFailures: getAuthFailures,
       );
     }
 

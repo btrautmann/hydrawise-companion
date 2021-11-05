@@ -20,10 +20,6 @@ class HttpClient {
 
   final Dio _dio;
 
-  void addInterceptors(List<Interceptor> interceptors) {
-    _dio.interceptors.addAll(interceptors);
-  }
-
   Future<NetworkResult<T?>> _request<T extends Object>(
     String path,
     String method,
