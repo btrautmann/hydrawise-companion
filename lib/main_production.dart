@@ -46,10 +46,8 @@ Future<void> main() async {
         onAuthenticationFailure: onAuthenticationFailure,
       ).call();
 
-      final httpClient = HttpClient(
-          dio: Dio(),
-          baseUrl: 'http://api.hydrawise.com/api/v1/',
-          interceptors: interceptors);
+      final httpClient =
+          HttpClient(dio: Dio(), baseUrl: 'http://api.hydrawise.com/api/v1/', interceptors: interceptors);
 
       final providers = ProductionDomainFactory.build(
         client: httpClient,
