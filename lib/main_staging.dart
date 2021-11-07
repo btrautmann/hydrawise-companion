@@ -37,8 +37,6 @@ Future<void> main() async {
       // ignore: prefer_void_to_null
       final authFailures = StreamController<Null>();
 
-      final router = await BuildStandardRouter().call();
-
       void onAuthenticationFailure() {
         authFailures.add(null);
       }
@@ -47,8 +45,11 @@ Future<void> main() async {
         onAuthenticationFailure: onAuthenticationFailure,
       ).call();
 
-      final httpClient =
-          HttpClient(dio: Dio(), baseUrl: 'http://api.hydrawise.com/api/v1/', interceptors: interceptors);
+      final httpClient = HttpClient(
+        dio: Dio(),
+        baseUrl: 'http://api.hydrawise.com/api/v1/',
+        interceptors: interceptors,
+      );
 
       final providers = ProductionDomainFactory.build(
         client: httpClient,
@@ -56,6 +57,8 @@ Future<void> main() async {
         repository: repository,
         authFailures: authFailures,
       );
+
+      final router = await BuildStandardRouter().call();
 
       runApp(App(
         router: router,

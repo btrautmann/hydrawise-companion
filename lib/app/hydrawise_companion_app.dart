@@ -42,6 +42,7 @@ class App extends StatelessWidget {
                 setApiKey: context.read<SetApiKey>(),
                 getAuthFailures: context.read<GetAuthFailures>(),
               ),
+              lazy: false,
             ),
             BlocProvider(
               create: (context) => CustomerDetailsCubit(

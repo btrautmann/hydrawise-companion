@@ -34,11 +34,12 @@ Future<void> main() async {
       );
 
       final repository = DatabaseBackedCustomerDetailsRepository(database);
-      final router = await BuildStandardRouter().call();
       final providers = DevelopmentDomainFactory.build(
         dataStorage: dataStorage,
         repository: repository,
       );
+
+      final router = await BuildStandardRouter().call();
 
       runApp(App(
         router: router,
