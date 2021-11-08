@@ -1,15 +1,26 @@
 import 'package:hydrawise/features/customer_details/customer_details.dart';
+import 'package:hydrawise/features/programs/programs.dart';
 import 'package:sqflite/sqlite_api.dart';
 
 abstract class CustomerDetailsRepository {
+  // Customer
   Future<void> insertCustomer(CustomerIdentification customer);
   Future<void> updateCustomer(CustomerStatus customerStatus);
-  Future<void> updateZone(Zone zone);
   Future<List<CustomerIdentification>> getCustomers();
-  // TODO(brandon): Do we need to support get by id?
   Future<CustomerIdentification> getCustomer();
-  Future<List<Zone>> getZones();
+
+  // Zone
   Future<void> insertZone(Zone zone);
+  Future<void> updateZone(Zone zone);
+  // TODO(brandon): Do we need to support get by id?
+  Future<List<Zone>> getZones();
+
+  // Program
+  Future<void> insertProgram(Program program);
+  Future<void> updateProgram(Program program);
+  Future<List<Program>> getPrograms();
+
+  // Utility
   Future<void> clearAllData();
 }
 
@@ -90,6 +101,46 @@ class DatabaseBackedCustomerDetailsRepository implements CustomerDetailsReposito
   }
 
   @override
+  Future<void> insertProgram(Program program) async {
+    await _database.insert('programs', program.toJson());
+    for (int i = 0; i < program.startTimes.length; i++) {
+      final startTime = program.startTimes[i];
+      await _database.insert(
+        'program_start_times',
+        startTime.toJson(
+          program.name,
+        ),
+      );
+    }
+  }
+
+  @override
+  Future<void> updateProgram(Program program) {
+    // TODO: implement updateProgram
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<List<Program>> getPrograms() async {
+    final programsRaw = await _database.query('programs');
+    final programs = <Program>[];
+    for (int i = 0; i < programsRaw.length; i++) {
+      final program = Program.fromJson(programsRaw[i]);
+      final startTimes = await _database.query(
+        'program_start_times',
+        where: 'program_name = ?',
+        whereArgs: [program.name],
+      );
+      programs.add(
+        program.copyWith(
+          startTimes: startTimes.map((e) => StartTime.fromJson(e)).toList(),
+        ),
+      );
+    }
+    return programs;
+  }
+
+  @override
   Future<void> clearAllData() async {
     await _database.delete('zones');
     await _database.delete('customers');
@@ -145,6 +196,24 @@ class InMemoryCustomerDetailsRepository implements CustomerDetailsRepository {
     zones
       ..retainWhere((element) => element.id != zone.id)
       ..add(zone);
+  }
+
+  @override
+  Future<void> insertProgram(Program program) {
+    // TODO: implement updateProgram
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> updateProgram(Program program) {
+    // TODO: implement updateProgram
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<List<Program>> getPrograms() {
+    // TODO: implement getPrograms
+    throw UnimplementedError();
   }
 
   @override

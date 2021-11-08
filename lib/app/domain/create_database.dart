@@ -28,6 +28,14 @@ CREATE TABLE IF NOT EXISTS zones(relay_id INTEGER PRIMARY KEY, relay INTEGER, na
       '''
 CREATE TABLE IF NOT EXISTS customers(customer_id INTEGER PRIMARY KEY, controller_id INTEGER, api_key TEXT, last_status_update INTEGER)''',
     );
+    await database.execute(
+      '''
+CREATE TABLE IF NOT EXISTS programs(name TEXT PRIMARY KEY, monday INTEGER, tuesday INTEGER, wednesday INTEGER, thursday INTEGER, friday INTEGER, saturday INTEGER, sunday INTEGER)''',
+    );
+    await database.execute(
+      '''
+CREATE TABLE IF NOT EXISTS program_start_times(id TEXT PRIMARY KEY, program_name TEXT, time TEXT, zone_ids TEXT, FOREIGN KEY(program_name) REFERENCES programs(name))''',
+    );
     return database;
   }
 }

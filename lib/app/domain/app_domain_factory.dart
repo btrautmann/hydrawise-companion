@@ -4,6 +4,7 @@ import 'package:hydrawise/core/core.dart';
 import 'package:hydrawise/features/app_theme_mode/app_theme_mode.dart';
 import 'package:hydrawise/features/customer_details/customer_details.dart';
 import 'package:hydrawise/features/login/login.dart';
+import 'package:hydrawise/features/programs/programs.dart';
 import 'package:hydrawise/features/run_zone/run_zone.dart';
 import 'package:hydrawise/features/weather/weather.dart';
 import 'package:provider/provider.dart';
@@ -40,6 +41,8 @@ abstract class ProductionDomainFactory {
       getNextPollTime: getNextPollTime,
       setNextPollTime: setNextPollTime,
     );
+    final getPrograms = GetProgramsFromRepository(repository: repository);
+    final createProgram = AddProgramToRepository(repository: repository);
 
     final runZone = RunZoneOverNetwork(
       httpClient: client,
@@ -62,6 +65,8 @@ abstract class ProductionDomainFactory {
     return [
       Provider<GetCustomerDetails>.value(value: getCustomerDetails),
       Provider<GetCustomerStatus>.value(value: getCustomerStatus),
+      Provider<GetPrograms>.value(value: getPrograms),
+      Provider<CreateProgram>.value(value: createProgram),
       Provider<GetApiKey>.value(value: getApiKey),
       Provider<SetApiKey>.value(value: setApiKey),
       Provider<ClearCustomerDetails>.value(value: clearCustomerDetails),
@@ -95,6 +100,8 @@ abstract class DevelopmentDomainFactory {
     final stopZone = StopZoneLocally(repository: repository);
     final getCustomerDetails = GetFakeCustomerDetails(repository: repository);
     final getCustomerStatus = GetFakeCustomerStatus(repository: repository);
+    final getPrograms = GetProgramsFromRepository(repository: repository);
+    final createProgram = AddProgramToRepository(repository: repository);
     final setAppThemeMode = SetAppThemeModeInStorage(dataStorage);
     final getAppThemeMode = GetAppThemeModeFromStorage(dataStorage);
     final getAuthFailures = GetNetworkAuthFailures(
@@ -108,6 +115,8 @@ abstract class DevelopmentDomainFactory {
     return [
       Provider<GetCustomerDetails>.value(value: getCustomerDetails),
       Provider<GetCustomerStatus>.value(value: getCustomerStatus),
+      Provider<GetPrograms>.value(value: getPrograms),
+      Provider<CreateProgram>.value(value: createProgram),
       Provider<GetApiKey>.value(value: getApiKey),
       Provider<SetApiKey>.value(value: setApiKey),
       Provider<ClearCustomerDetails>.value(value: clearCustomerDetails),
