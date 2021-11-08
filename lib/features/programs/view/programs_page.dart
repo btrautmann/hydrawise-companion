@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hydrawise/core-ui/core_ui.dart';
 import 'package:hydrawise/features/programs/programs.dart';
 
@@ -97,19 +98,7 @@ class ProgramsPageView extends StatelessWidget {
                 ),
                 TextButton(
                   onPressed: () {
-                    context.read<ProgramsCubit>().createProgram(
-                      name: 'My Program',
-                      frequency: Frequency(
-                        monday: true,
-                        tuesday: true,
-                        wednesday: true,
-                        thursday: true,
-                        friday: true,
-                        saturday: true,
-                        sunday: true,
-                      ),
-                      runs: [],
-                    );
+                    GoRouter.of(context).push('/create_program');
                   },
                   child: const Text('ADD PROGRAM'),
                 )
