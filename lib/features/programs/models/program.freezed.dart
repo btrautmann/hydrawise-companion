@@ -17,13 +17,15 @@ class _$ProgramTearOff {
   const _$ProgramTearOff();
 
   _Program call(
-      {required String name,
+      {required String id,
+      required String name,
       required Frequency frequency,
-      required List<StartTime> startTimes}) {
+      required List<Run> runs}) {
     return _Program(
+      id: id,
       name: name,
       frequency: frequency,
-      startTimes: startTimes,
+      runs: runs,
     );
   }
 }
@@ -33,11 +35,10 @@ const $Program = _$ProgramTearOff();
 
 /// @nodoc
 mixin _$Program {
-  String get name =>
-      throw _privateConstructorUsedError; // PRIMARY ID in `programs`
-  Frequency get frequency =>
-      throw _privateConstructorUsedError; // INTEGER COLUMN in `programs` (0/1)
-  List<StartTime> get startTimes => throw _privateConstructorUsedError;
+  String get id => throw _privateConstructorUsedError;
+  String get name => throw _privateConstructorUsedError;
+  Frequency get frequency => throw _privateConstructorUsedError;
+  List<Run> get runs => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $ProgramCopyWith<Program> get copyWith => throw _privateConstructorUsedError;
@@ -47,7 +48,7 @@ mixin _$Program {
 abstract class $ProgramCopyWith<$Res> {
   factory $ProgramCopyWith(Program value, $Res Function(Program) then) =
       _$ProgramCopyWithImpl<$Res>;
-  $Res call({String name, Frequency frequency, List<StartTime> startTimes});
+  $Res call({String id, String name, Frequency frequency, List<Run> runs});
 
   $FrequencyCopyWith<$Res> get frequency;
 }
@@ -62,11 +63,16 @@ class _$ProgramCopyWithImpl<$Res> implements $ProgramCopyWith<$Res> {
 
   @override
   $Res call({
+    Object? id = freezed,
     Object? name = freezed,
     Object? frequency = freezed,
-    Object? startTimes = freezed,
+    Object? runs = freezed,
   }) {
     return _then(_value.copyWith(
+      id: id == freezed
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as String,
       name: name == freezed
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
@@ -75,10 +81,10 @@ class _$ProgramCopyWithImpl<$Res> implements $ProgramCopyWith<$Res> {
           ? _value.frequency
           : frequency // ignore: cast_nullable_to_non_nullable
               as Frequency,
-      startTimes: startTimes == freezed
-          ? _value.startTimes
-          : startTimes // ignore: cast_nullable_to_non_nullable
-              as List<StartTime>,
+      runs: runs == freezed
+          ? _value.runs
+          : runs // ignore: cast_nullable_to_non_nullable
+              as List<Run>,
     ));
   }
 
@@ -95,7 +101,7 @@ abstract class _$ProgramCopyWith<$Res> implements $ProgramCopyWith<$Res> {
   factory _$ProgramCopyWith(_Program value, $Res Function(_Program) then) =
       __$ProgramCopyWithImpl<$Res>;
   @override
-  $Res call({String name, Frequency frequency, List<StartTime> startTimes});
+  $Res call({String id, String name, Frequency frequency, List<Run> runs});
 
   @override
   $FrequencyCopyWith<$Res> get frequency;
@@ -112,11 +118,16 @@ class __$ProgramCopyWithImpl<$Res> extends _$ProgramCopyWithImpl<$Res>
 
   @override
   $Res call({
+    Object? id = freezed,
     Object? name = freezed,
     Object? frequency = freezed,
-    Object? startTimes = freezed,
+    Object? runs = freezed,
   }) {
     return _then(_Program(
+      id: id == freezed
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as String,
       name: name == freezed
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
@@ -125,10 +136,10 @@ class __$ProgramCopyWithImpl<$Res> extends _$ProgramCopyWithImpl<$Res>
           ? _value.frequency
           : frequency // ignore: cast_nullable_to_non_nullable
               as Frequency,
-      startTimes: startTimes == freezed
-          ? _value.startTimes
-          : startTimes // ignore: cast_nullable_to_non_nullable
-              as List<StartTime>,
+      runs: runs == freezed
+          ? _value.runs
+          : runs // ignore: cast_nullable_to_non_nullable
+              as List<Run>,
     ));
   }
 }
@@ -137,40 +148,47 @@ class __$ProgramCopyWithImpl<$Res> extends _$ProgramCopyWithImpl<$Res>
 
 class _$_Program implements _Program {
   _$_Program(
-      {required this.name, required this.frequency, required this.startTimes});
+      {required this.id,
+      required this.name,
+      required this.frequency,
+      required this.runs});
 
   @override
+  final String id;
+  @override
   final String name;
-  @override // PRIMARY ID in `programs`
+  @override
   final Frequency frequency;
-  @override // INTEGER COLUMN in `programs` (0/1)
-  final List<StartTime> startTimes;
+  @override
+  final List<Run> runs;
 
   @override
   String toString() {
-    return 'Program(name: $name, frequency: $frequency, startTimes: $startTimes)';
+    return 'Program(id: $id, name: $name, frequency: $frequency, runs: $runs)';
   }
 
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other is _Program &&
+            (identical(other.id, id) ||
+                const DeepCollectionEquality().equals(other.id, id)) &&
             (identical(other.name, name) ||
                 const DeepCollectionEquality().equals(other.name, name)) &&
             (identical(other.frequency, frequency) ||
                 const DeepCollectionEquality()
                     .equals(other.frequency, frequency)) &&
-            (identical(other.startTimes, startTimes) ||
-                const DeepCollectionEquality()
-                    .equals(other.startTimes, startTimes)));
+            (identical(other.runs, runs) ||
+                const DeepCollectionEquality().equals(other.runs, runs)));
   }
 
   @override
   int get hashCode =>
       runtimeType.hashCode ^
+      const DeepCollectionEquality().hash(id) ^
       const DeepCollectionEquality().hash(name) ^
       const DeepCollectionEquality().hash(frequency) ^
-      const DeepCollectionEquality().hash(startTimes);
+      const DeepCollectionEquality().hash(runs);
 
   @JsonKey(ignore: true)
   @override
@@ -180,16 +198,19 @@ class _$_Program implements _Program {
 
 abstract class _Program implements Program {
   factory _Program(
-      {required String name,
+      {required String id,
+      required String name,
       required Frequency frequency,
-      required List<StartTime> startTimes}) = _$_Program;
+      required List<Run> runs}) = _$_Program;
 
   @override
+  String get id => throw _privateConstructorUsedError;
+  @override
   String get name => throw _privateConstructorUsedError;
-  @override // PRIMARY ID in `programs`
+  @override
   Frequency get frequency => throw _privateConstructorUsedError;
-  @override // INTEGER COLUMN in `programs` (0/1)
-  List<StartTime> get startTimes => throw _privateConstructorUsedError;
+  @override
+  List<Run> get runs => throw _privateConstructorUsedError;
   @override
   @JsonKey(ignore: true)
   _$ProgramCopyWith<_Program> get copyWith =>

@@ -24,8 +24,16 @@ class ProgramsCubit extends Cubit<ProgramsState> {
     emit(state.copyWith(programs: programs));
   }
 
-  Future<void> createProgram(Program program) async {
-    await _createProgram(program: program);
+  Future<void> createProgram({
+    required String name,
+    required Frequency frequency,
+    required List<Run> runs,
+  }) async {
+    await _createProgram(
+      name: name,
+      frequency: frequency,
+      runs: runs,
+    );
     _initPrograms();
   }
 }

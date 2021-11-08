@@ -1,6 +1,7 @@
 import 'package:hydrawise/features/customer_details/customer_details.dart';
 import 'package:hydrawise/features/programs/programs.dart';
 import 'package:sqflite/sqlite_api.dart';
+import 'package:uuid/uuid.dart';
 
 abstract class CustomerDetailsRepository {
   // Customer
@@ -16,7 +17,11 @@ abstract class CustomerDetailsRepository {
   Future<List<Zone>> getZones();
 
   // Program
-  Future<void> insertProgram(Program program);
+  Future<Program> createProgram(
+    String name,
+    Frequency frequency,
+    List<Run> runs,
+  );
   Future<void> updateProgram(Program program);
   Future<List<Program>> getPrograms();
 
@@ -24,7 +29,8 @@ abstract class CustomerDetailsRepository {
   Future<void> clearAllData();
 }
 
-class DatabaseBackedCustomerDetailsRepository implements CustomerDetailsRepository {
+class DatabaseBackedCustomerDetailsRepository
+    implements CustomerDetailsRepository {
   DatabaseBackedCustomerDetailsRepository(this._database);
 
   final Database _database;
@@ -101,17 +107,20 @@ class DatabaseBackedCustomerDetailsRepository implements CustomerDetailsReposito
   }
 
   @override
-  Future<void> insertProgram(Program program) async {
-    await _database.insert('programs', program.toJson());
-    for (int i = 0; i < program.startTimes.length; i++) {
-      final startTime = program.startTimes[i];
-      await _database.insert(
-        'program_start_times',
-        startTime.toJson(
-          program.name,
-        ),
-      );
-    }
+  Future<Program> createProgram(
+    String name,
+    Frequency frequency,
+    List<Run> runs,
+  ) async {
+    final programId = const Uuid().v4().toString();
+    final program = Program(
+      id: programId,
+      name: name,
+      frequency: frequency,
+      runs: runs,
+    );
+    await _database.insert('programs', ProgramX.toJson(program));
+    return program;
   }
 
   @override
@@ -125,15 +134,15 @@ class DatabaseBackedCustomerDetailsRepository implements CustomerDetailsReposito
     final programsRaw = await _database.query('programs');
     final programs = <Program>[];
     for (int i = 0; i < programsRaw.length; i++) {
-      final program = Program.fromJson(programsRaw[i]);
-      final startTimes = await _database.query(
-        'program_start_times',
-        where: 'program_name = ?',
-        whereArgs: [program.name],
+      final program = ProgramX.fromJson(programsRaw[i]);
+      final runs = await _database.query(
+        'runs',
+        where: 'p_id = ?',
+        whereArgs: [program.id],
       );
       programs.add(
         program.copyWith(
-          startTimes: startTimes.map((e) => StartTime.fromJson(e)).toList(),
+          runs: runs.map((e) => Run.fromJson(e)).toList(),
         ),
       );
     }
@@ -199,8 +208,12 @@ class InMemoryCustomerDetailsRepository implements CustomerDetailsRepository {
   }
 
   @override
-  Future<void> insertProgram(Program program) {
-    // TODO: implement updateProgram
+  Future<Program> createProgram(
+    String name,
+    Frequency frequency,
+    List<Run> runs,
+  ) {
+    // TODO: implement createProgram
     throw UnimplementedError();
   }
 

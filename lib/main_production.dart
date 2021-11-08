@@ -30,7 +30,7 @@ Future<void> main() async {
       final dataStorage = SharedPreferencesStorage(sharedPreferences);
       final database = await CreateHydrawiseDatabase().call(
         databaseName: 'hydrawise_companion_prod.db',
-        version: 2,
+        version: 3,
       );
       final repository = DatabaseBackedCustomerDetailsRepository(database);
 

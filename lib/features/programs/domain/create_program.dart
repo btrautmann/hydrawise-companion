@@ -2,7 +2,11 @@ import 'package:hydrawise/features/customer_details/repository/customer_details_
 import 'package:hydrawise/features/programs/programs.dart';
 
 abstract class CreateProgram {
-  Future<void> call({required Program program});
+  Future<Program> call({
+    required String name,
+    required Frequency frequency,
+    required List<Run> runs,
+  });
 }
 
 class AddProgramToRepository implements CreateProgram {
@@ -13,7 +17,11 @@ class AddProgramToRepository implements CreateProgram {
   }) : _repository = repository;
 
   @override
-  Future<void> call({required Program program}) {
-    return _repository.insertProgram(program);
+  Future<Program> call({
+    required String name,
+    required Frequency frequency,
+    required List<Run> runs,
+  }) {
+    return _repository.createProgram(name, frequency, runs);
   }
 }

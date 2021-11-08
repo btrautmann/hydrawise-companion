@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hydrawise/core-ui/core_ui.dart';
 import 'package:hydrawise/features/programs/programs.dart';
-import 'package:uuid/uuid.dart';
 
 class ProgramsPage extends StatelessWidget {
   const ProgramsPage({Key? key}) : super(key: key);
@@ -38,26 +37,18 @@ class ProgramsPageView extends StatelessWidget {
                     child: ElevatedButton(
                       onPressed: () {
                         context.read<ProgramsCubit>().createProgram(
-                              Program(
-                                name: 'name',
-                                frequency: Frequency(
-                                  monday: true,
-                                  tuesday: true,
-                                  wednesday: true,
-                                  thursday: true,
-                                  friday: true,
-                                  saturday: true,
-                                  sunday: true,
-                                ),
-                                startTimes: [
-                                  StartTime(
-                                    id: const Uuid().v4().toString(),
-                                    time: TimeOfDay.now(),
-                                    zoneIds: [],
-                                  ),
-                                ],
-                              ),
-                            );
+                          name: 'My Program',
+                          frequency: Frequency(
+                            monday: true,
+                            tuesday: true,
+                            wednesday: true,
+                            thursday: true,
+                            friday: true,
+                            saturday: true,
+                            sunday: true,
+                          ),
+                          runs: [],
+                        );
                       },
                       child: const Text('Create Program'),
                     ),
@@ -107,26 +98,18 @@ class ProgramsPageView extends StatelessWidget {
                 TextButton(
                   onPressed: () {
                     context.read<ProgramsCubit>().createProgram(
-                          Program(
-                            name: const Uuid().v4().toString(),
-                            frequency: Frequency(
-                              monday: true,
-                              tuesday: true,
-                              wednesday: true,
-                              thursday: true,
-                              friday: true,
-                              saturday: true,
-                              sunday: true,
-                            ),
-                            startTimes: [
-                              StartTime(
-                                id: const Uuid().v4().toString(),
-                                time: TimeOfDay.now(),
-                                zoneIds: [],
-                              )
-                            ],
-                          ),
-                        );
+                      name: 'My Program',
+                      frequency: Frequency(
+                        monday: true,
+                        tuesday: true,
+                        wednesday: true,
+                        thursday: true,
+                        friday: true,
+                        saturday: true,
+                        sunday: true,
+                      ),
+                      runs: [],
+                    );
                   },
                   child: const Text('ADD PROGRAM'),
                 )
@@ -157,7 +140,7 @@ class ProgramDetailsDialog extends StatelessWidget {
           children: [
             Text(_program.name),
             Text(_program.frequency.toString()),
-            Text(_program.startTimes.toString()),
+            Text(_program.runs.toString()),
           ],
         ),
       ),
