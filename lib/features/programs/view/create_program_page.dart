@@ -92,38 +92,31 @@ class _FrequencySelectionState extends State<_FrequencySelection> {
                   widget.onFrequencyChanged(_frequency);
                 },
                 text: 'M',
-                colorResolver: (states) =>
-                    _frequency.monday ? Colors.green : Colors.transparent,
+                colorResolver: (states) => _frequency.monday ? Colors.green : Colors.transparent,
               ),
               _DayButton(
                 onTapped: () {
-                  _frequency =
-                      _frequency.copyWith(tuesday: !_frequency.tuesday);
+                  _frequency = _frequency.copyWith(tuesday: !_frequency.tuesday);
                   widget.onFrequencyChanged(_frequency);
                 },
                 text: 'T',
-                colorResolver: (states) =>
-                    _frequency.tuesday ? Colors.green : Colors.transparent,
+                colorResolver: (states) => _frequency.tuesday ? Colors.green : Colors.transparent,
               ),
               _DayButton(
                 onTapped: () {
-                  _frequency =
-                      _frequency.copyWith(wednesday: !_frequency.wednesday);
+                  _frequency = _frequency.copyWith(wednesday: !_frequency.wednesday);
                   widget.onFrequencyChanged(_frequency);
                 },
                 text: 'W',
-                colorResolver: (states) =>
-                    _frequency.wednesday ? Colors.green : Colors.transparent,
+                colorResolver: (states) => _frequency.wednesday ? Colors.green : Colors.transparent,
               ),
               _DayButton(
                 onTapped: () {
-                  _frequency =
-                      _frequency.copyWith(thursday: !_frequency.thursday);
+                  _frequency = _frequency.copyWith(thursday: !_frequency.thursday);
                   widget.onFrequencyChanged(_frequency);
                 },
                 text: 'R',
-                colorResolver: (states) =>
-                    _frequency.thursday ? Colors.green : Colors.transparent,
+                colorResolver: (states) => _frequency.thursday ? Colors.green : Colors.transparent,
               ),
               _DayButton(
                 onTapped: () {
@@ -131,18 +124,15 @@ class _FrequencySelectionState extends State<_FrequencySelection> {
                   widget.onFrequencyChanged(_frequency);
                 },
                 text: 'F',
-                colorResolver: (friday) =>
-                    _frequency.friday ? Colors.green : Colors.transparent,
+                colorResolver: (friday) => _frequency.friday ? Colors.green : Colors.transparent,
               ),
               _DayButton(
                 onTapped: () {
-                  _frequency =
-                      _frequency.copyWith(saturday: !_frequency.saturday);
+                  _frequency = _frequency.copyWith(saturday: !_frequency.saturday);
                   widget.onFrequencyChanged(_frequency);
                 },
                 text: 'S',
-                colorResolver: (states) =>
-                    _frequency.saturday ? Colors.green : Colors.transparent,
+                colorResolver: (states) => _frequency.saturday ? Colors.green : Colors.transparent,
               ),
               _DayButton(
                 onTapped: () {
@@ -150,8 +140,7 @@ class _FrequencySelectionState extends State<_FrequencySelection> {
                   widget.onFrequencyChanged(_frequency);
                 },
                 text: 'Su',
-                colorResolver: (states) =>
-                    _frequency.sunday ? Colors.green : Colors.transparent,
+                colorResolver: (states) => _frequency.sunday ? Colors.green : Colors.transparent,
               ),
             ],
           ),
@@ -254,10 +243,8 @@ class _RunsConfigurationState extends State<_RunsConfiguration> {
                                       initialTime: TimeOfDay.now(),
                                     );
                                     if (time != null) {
-                                      _runs[rIndex] = _runs[rIndex]
-                                          .copyWith(timeOfDay: time);
-                                      _timeOfDayController.text =
-                                          '${time.hour}:${time.minute}';
+                                      _runs[rIndex] = _runs[rIndex].copyWith(timeOfDay: time);
+                                      _timeOfDayController.text = '${time.hour}:${time.minute}';
                                     }
                                   },
                                 ),
@@ -297,19 +284,16 @@ class _RunsConfigurationState extends State<_RunsConfiguration> {
                                   key: ValueKey(
                                     _runs[rIndex].zones![zIndex].id,
                                   ),
-                                  label:
-                                      Text(_runs[rIndex].zones![zIndex].name),
+                                  label: Text(_runs[rIndex].zones![zIndex].name),
                                   onPressed: () {
-                                    final rZones =
-                                        _runs[rIndex].zones ?? List.empty();
+                                    final rZones = _runs[rIndex].zones ?? List.empty();
                                     if (!rZones.contains(zones[zIndex])) {
                                       rZones.add(zones[zIndex]);
                                     } else {
                                       rZones.remove(zones[zIndex]);
                                     }
                                     setState(() {
-                                      _runs[rIndex] =
-                                          _runs[rIndex].copyWith(zones: rZones);
+                                      _runs[rIndex] = _runs[rIndex].copyWith(zones: rZones);
                                     });
                                   },
                                 );
