@@ -30,7 +30,6 @@ extension ProgramX on Program {
   }
 
   static Program fromJson(Map<String, dynamic> json) {
-    print('Parsing program from $json');
     return Program(
       id: json['id'] as String,
       name: json['name'] as String,

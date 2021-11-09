@@ -9,8 +9,7 @@ class Run with _$Run {
   factory Run({
     @JsonKey(name: 'id') required String id,
     @JsonKey(name: 'p_id') required String programId,
-    @JsonKey(name: 'start_time', toJson: TimeOfDayX.toJson, fromJson: TimeOfDayX.fromJson)
-        required TimeOfDay startTime,
+    @JsonKey(name: 'start_time', toJson: TimeOfDayX.toJson, fromJson: TimeOfDayX.fromJson) required TimeOfDay startTime,
     @JsonKey(name: 'duration') required int duration,
     @JsonKey(name: 'z_id') required int zoneId,
   }) = _Run;
