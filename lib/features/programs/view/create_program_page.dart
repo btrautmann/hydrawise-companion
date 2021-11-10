@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hydrawise/features/customer_details/customer_details.dart';
 import 'package:hydrawise/features/customer_details/models/zone.dart';
 import 'package:hydrawise/features/programs/programs.dart';
+import 'package:uuid/uuid.dart';
 
 import 'create_program_page/run_creation.dart';
 
@@ -23,7 +24,7 @@ class CreateProgramView extends StatelessWidget {
   const CreateProgramView({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return Center(
+    return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -35,8 +36,12 @@ class CreateProgramView extends StatelessWidget {
               ),
             ),
           ),
-          _FrequencySelection(onFrequencyChanged: (frequency) {}),
-          _RunsConfiguration(),
+          _FrequencySelection(
+            onFrequencyChanged: (frequency) {},
+          ),
+          _RunsConfiguration(
+            onRunsChanged: (runs) {},
+          ),
         ],
       ),
     );
@@ -79,6 +84,12 @@ class _FrequencySelectionState extends State<_FrequencySelection> {
           child: Text(
             'Run on',
             style: Theme.of(context).textTheme.headline6,
+          ),
+        ),
+        const Padding(
+          padding: EdgeInsets.only(left: 16, top: 8),
+          child: Text(
+            'Which days of the week should this program run?',
           ),
         ),
         SingleChildScrollView(
@@ -181,19 +192,19 @@ class _DayButton extends StatelessWidget {
 }
 
 class _RunsConfiguration extends StatefulWidget {
+  final ValueSetter<List<RunCreation>> onRunsChanged;
+
+  const _RunsConfiguration({
+    Key? key,
+    required this.onRunsChanged,
+  }) : super(key: key);
+
   @override
   _RunsConfigurationState createState() => _RunsConfigurationState();
 }
 
 class _RunsConfigurationState extends State<_RunsConfiguration> {
   final _runs = <RunCreation>[];
-  late TextEditingController _timeOfDayController;
-
-  @override
-  void initState() {
-    _timeOfDayController = TextEditingController();
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -205,7 +216,6 @@ class _RunsConfigurationState extends State<_RunsConfiguration> {
         );
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
           children: [
             Padding(
               padding: const EdgeInsets.only(left: 16, top: 8),
@@ -214,110 +224,46 @@ class _RunsConfigurationState extends State<_RunsConfiguration> {
                 style: Theme.of(context).textTheme.headline6,
               ),
             ),
+            const Padding(
+              padding: EdgeInsets.only(left: 16, top: 8),
+              child: Text(
+                'Set start times and durations for groups of zones.',
+              ),
+            ),
             if (_runs.isNotEmpty)
-              Padding(
-                padding: const EdgeInsets.only(left: 16, top: 16),
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: _runs.length,
-                  itemBuilder: (context, rIndex) {
-                    return Padding(
-                      padding: const EdgeInsets.only(top: 8, bottom: 8),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Row(
-                            children: [
-                              SizedBox(
-                                height: 48,
-                                width: 100,
-                                child: TextField(
-                                  controller: _timeOfDayController,
-                                  decoration: const InputDecoration(
-                                    border: OutlineInputBorder(),
-                                  ),
-                                  onTap: () async {
-                                    final time = await showTimePicker(
-                                      context: context,
-                                      initialTime: TimeOfDay.now(),
-                                    );
-                                    if (time != null) {
-                                      _runs[rIndex] = _runs[rIndex].copyWith(timeOfDay: time);
-                                      _timeOfDayController.text = '${time.hour}:${time.minute}';
-                                    }
-                                  },
-                                ),
-                              ),
-                              const Padding(
-                                padding: EdgeInsets.only(left: 8, right: 8),
-                                child: Text('for'),
-                              ),
-                              SizedBox(
-                                height: 48,
-                                width: 100,
-                                child: TextField(
-                                  keyboardType: TextInputType.number,
-                                  decoration: const InputDecoration(
-                                    border: OutlineInputBorder(),
-                                  ),
-                                  onTap: () {
-                                    print('Show time chooser');
-                                  },
-                                ),
-                              ),
-                              const Padding(
-                                padding: EdgeInsets.only(left: 8, right: 8),
-                                child: Text('minutes'),
-                              ),
-                            ],
-                          ),
-                          SizedBox(
-                            width: 100,
-                            height: 100,
-                            child: ListView.builder(
-                              shrinkWrap: true,
-                              itemCount: _runs[rIndex].zones?.length ?? 0,
-                              scrollDirection: Axis.horizontal,
-                              itemBuilder: (context, zIndex) {
-                                return ActionChip(
-                                  key: ValueKey(
-                                    _runs[rIndex].zones![zIndex].id,
-                                  ),
-                                  label: Text(_runs[rIndex].zones![zIndex].name),
-                                  onPressed: () {
-                                    final rZones = _runs[rIndex].zones ?? List.empty();
-                                    if (!rZones.contains(zones[zIndex])) {
-                                      rZones.add(zones[zIndex]);
-                                    } else {
-                                      rZones.remove(zones[zIndex]);
-                                    }
-                                    setState(() {
-                                      _runs[rIndex] = _runs[rIndex].copyWith(zones: rZones);
-                                    });
-                                  },
-                                );
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
-                    );
-                  },
-                ),
+              ListView.builder(
+                primary: false,
+                shrinkWrap: true,
+                itemCount: _runs.length,
+                itemBuilder: (context, rIndex) {
+                  return _RunCreationView(
+                    runCreation: _runs[rIndex],
+                    availableZones: zones,
+                    onChanged: (runCreation) {
+                      setState(() {
+                        _runs[rIndex] = runCreation;
+                      });
+                      widget.onRunsChanged(_runs);
+                    },
+                    onRemoved: (runCreation) {
+                      setState(() {
+                        _runs.remove(runCreation);
+                      });
+                      widget.onRunsChanged(_runs);
+                    },
+                  );
+                },
               ),
             Align(
               alignment: Alignment.center,
               child: Padding(
-                padding: const EdgeInsets.only(left: 16),
-                child: TextButton(
+                padding: const EdgeInsets.all(16),
+                child: ElevatedButton(
                   onPressed: () {
                     setState(() {
-                      // TODO(brandon): Don't use real Run objects here,
-                      // store only necessary data and create Runs in the
-                      // repository
-                      _runs.add(RunCreation(zones: zones));
+                      _runs.add(RunCreation(zones: []));
                     });
+                    widget.onRunsChanged(_runs);
                   },
                   child: const Text('Add Run'),
                 ),
@@ -326,6 +272,161 @@ class _RunsConfigurationState extends State<_RunsConfiguration> {
           ],
         );
       },
+    );
+  }
+}
+
+class _RunCreationView extends StatefulWidget {
+  final RunCreation runCreation;
+  final List<Zone> availableZones;
+  final ValueSetter<RunCreation> onChanged;
+  final ValueSetter<RunCreation> onRemoved;
+
+  const _RunCreationView({
+    Key? key,
+    required this.runCreation,
+    required this.availableZones,
+    required this.onChanged,
+    required this.onRemoved,
+  }) : super(key: key);
+
+  @override
+  _RunCreationViewState createState() => _RunCreationViewState();
+}
+
+class _RunCreationViewState extends State<_RunCreationView> {
+  late TextEditingController _timeOfDayController;
+  late TextEditingController _durationController;
+  late RunCreation _runCreation;
+
+  @override
+  void initState() {
+    _runCreation = widget.runCreation;
+    _timeOfDayController = TextEditingController();
+    _durationController = TextEditingController();
+    super.initState();
+  }
+
+  void _changeTime(TimeOfDay? timeOfDay) {
+    if (timeOfDay != null) {
+      setState(() {
+        _runCreation = _runCreation.copyWith(timeOfDay: timeOfDay);
+        widget.onChanged(_runCreation);
+      });
+      _timeOfDayController.text = '${timeOfDay.hour}:${timeOfDay.minute}';
+    }
+  }
+
+  void _changeDuration(String minutes) {
+    if (minutes.isNotEmpty) {
+      setState(() {
+        _runCreation = _runCreation.copyWith(
+            duration: Duration(
+          minutes: int.parse(minutes),
+        ));
+        widget.onChanged(_runCreation);
+      });
+    }
+  }
+
+  void _changeZoneMembership(bool isSelected, Zone zone) {
+    final zones = _runCreation.zones ?? [];
+    if (isSelected) {
+      zones.add(zone);
+    } else {
+      zones.remove(zone);
+    }
+    _runCreation = _runCreation.copyWith(zones: zones);
+    widget.onChanged(_runCreation);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(16),
+          child: Row(
+            children: [
+              IconButton(
+                onPressed: () {
+                  widget.onRemoved(_runCreation);
+                },
+                icon: const Icon(Icons.remove_circle),
+              ),
+              SizedBox(
+                height: 48,
+                width: 100,
+                child: TextField(
+                  controller: _timeOfDayController,
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                  ),
+                  onTap: () async {
+                    final time = await showTimePicker(
+                      context: context,
+                      initialTime: TimeOfDay.now(),
+                    );
+                    _changeTime(time);
+                  },
+                ),
+              ),
+              const Padding(
+                padding: EdgeInsets.only(left: 8, right: 8),
+                child: Text('for'),
+              ),
+              SizedBox(
+                height: 48,
+                width: 100,
+                child: TextField(
+                  onChanged: (text) {
+                    _changeDuration(text);
+                  },
+                  controller: _durationController,
+                  keyboardType: TextInputType.number,
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+              ),
+              const Padding(
+                padding: EdgeInsets.only(left: 8, right: 8),
+                child: Text('minutes'),
+              ),
+            ],
+          ),
+        ),
+        SizedBox(
+          height: 48,
+          child: ListView.builder(
+            padding: const EdgeInsets.only(left: 16, right: 16),
+            shrinkWrap: true,
+            itemCount: widget.availableZones.length,
+            scrollDirection: Axis.horizontal,
+            itemBuilder: (context, zIndex) {
+              final zone = widget.availableZones[zIndex];
+              return Padding(
+                padding: const EdgeInsets.only(
+                  left: 4,
+                  right: 4,
+                ),
+                child: FilterChip(
+                  key: ValueKey(zone.id),
+                  label: Text(zone.name),
+                  selectedColor: Colors.green,
+                  selected: _runCreation.zones?.contains(zone) ?? false,
+                  onSelected: (isSelected) {
+                    _changeZoneMembership(isSelected, zone);
+                  },
+                ),
+              );
+            },
+          ),
+        ),
+        const Divider(),
+      ],
     );
   }
 }

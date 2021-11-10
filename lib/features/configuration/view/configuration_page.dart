@@ -147,11 +147,6 @@ class _ZoneList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    zones.sort(
-      (z1, z2) => z1.physicalNumber.compareTo(
-        z2.physicalNumber,
-      ),
-    );
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
