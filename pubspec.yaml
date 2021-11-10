@@ -1,6 +1,6 @@
 name: hydrawise
 description: A Very Good Project created by Very Good CLI.
-version: 0.0.10+13
+version: 0.0.11+14
 publish_to: none
 
 environment:
