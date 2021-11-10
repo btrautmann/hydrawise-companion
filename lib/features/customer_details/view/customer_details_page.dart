@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hydrawise/core-ui/core_ui.dart';
 import 'package:hydrawise/core-ui/widgets/h_stretch.dart';
 import 'package:hydrawise/features/customer_details/customer_details.dart';
 import 'package:hydrawise/features/login/login.dart';
@@ -84,7 +85,10 @@ class _AllCustomerContent extends StatelessWidget {
                   onPressed: () {
                     context.read<LoginCubit>().logOut();
                   },
-                  icon: const Icon(Icons.logout),
+                  icon: const Tooltip(
+                    message: 'Log out',
+                    child: Icon(Icons.logout),
+                  ),
                 )
               ],
             ),
@@ -155,12 +159,16 @@ class _ZoneList extends StatelessWidget {
           children: [
             HStretch(
               child: Container(
-                decoration: BoxDecoration(color: Theme.of(context).accentColor),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.secondary,
+                ),
                 child: Padding(
                   padding: const EdgeInsets.all(16),
                   child: Text(
                     'Watering Schedule',
-                    style: Theme.of(context).textTheme.headline6,
+                    style: Theme.of(context).textTheme.headline6?.copyWith(
+                          color: Theme.of(context).colorScheme.onSecondary,
+                        ),
                   ),
                 ),
               ),
@@ -228,18 +236,8 @@ class _ZoneCell extends StatelessWidget {
                   padding: const EdgeInsets.only(right: 8),
                   child: Hero(
                     tag: zone,
-                    child: Material(
-                      type: MaterialType.transparency,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Theme.of(context).accentColor,
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(16),
-                          child: Text(zone.physicalNumber.toString()),
-                        ),
-                      ),
+                    child: CircleBackground(
+                      child: Text(zone.physicalNumber.toString()),
                     ),
                   ),
                 ),

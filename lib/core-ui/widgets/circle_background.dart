@@ -18,9 +18,19 @@ class CircleBackground extends StatelessWidget {
         constraints: BoxConstraints.tight(const Size(42, 42)),
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          color: Theme.of(context).accentColor,
+          color: Theme.of(context).colorScheme.secondary,
         ),
-        child: _child,
+        child: IconTheme(
+          data: Theme.of(context).iconTheme.copyWith(
+                color: Theme.of(context).colorScheme.onSecondary,
+              ),
+          child: DefaultTextStyle(
+            style: TextStyle(
+              color: Theme.of(context).colorScheme.onSecondary,
+            ),
+            child: _child,
+          ),
+        ),
       ),
     );
   }

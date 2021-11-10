@@ -37,19 +37,7 @@ class ProgramsPageView extends StatelessWidget {
                     padding: const EdgeInsets.all(8.0),
                     child: ElevatedButton(
                       onPressed: () {
-                        context.read<ProgramsCubit>().createProgram(
-                          name: 'My Program',
-                          frequency: Frequency(
-                            monday: true,
-                            tuesday: true,
-                            wednesday: true,
-                            thursday: true,
-                            friday: true,
-                            saturday: true,
-                            sunday: true,
-                          ),
-                          runs: [],
-                        );
+                        GoRouter.of(context).push('/create_program');
                       },
                       child: const Text('Create Program'),
                     ),

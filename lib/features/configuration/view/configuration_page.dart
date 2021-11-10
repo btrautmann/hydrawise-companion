@@ -98,12 +98,14 @@ class ChooseThemeModeDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     return Dialog(
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.only(top: 16, bottom: 16),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             ListRow(
-              leadingIcon: const CircleBackground(child: Icon(Icons.light_mode)),
+              leadingIcon: const CircleBackground(
+                child: Icon(Icons.light_mode),
+              ),
               title: const Text('Light mode'),
               onTapped: () {
                 context.read<AppCubit>().setThemeMode(ThemeMode.light);
@@ -112,7 +114,9 @@ class ChooseThemeModeDialog extends StatelessWidget {
             ),
             const Divider(),
             ListRow(
-              leadingIcon: const CircleBackground(child: Icon(Icons.dark_mode)),
+              leadingIcon: const CircleBackground(
+                child: Icon(Icons.dark_mode),
+              ),
               title: const Text('Dark mode'),
               onTapped: () {
                 context.read<AppCubit>().setThemeMode(ThemeMode.dark);
@@ -121,7 +125,9 @@ class ChooseThemeModeDialog extends StatelessWidget {
             ),
             const Divider(),
             ListRow(
-              leadingIcon: const CircleBackground(child: Icon(Icons.settings)),
+              leadingIcon: const CircleBackground(
+                child: Icon(Icons.settings),
+              ),
               title: const Text('Follow system'),
               onTapped: () {
                 context.read<AppCubit>().setThemeMode(ThemeMode.system);
