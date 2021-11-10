@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hydrawise/core-ui/core_ui.dart';
 import 'package:hydrawise/core-ui/widgets/h_stretch.dart';
 import 'package:hydrawise/features/customer_details/customer_details.dart';
 import 'package:hydrawise/features/login/login.dart';
@@ -34,7 +35,8 @@ class _CustomerDetailsStateView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final customerDetails = context.select((CustomerDetailsCubit cubit) => cubit.state);
+    final customerDetails =
+        context.select((CustomerDetailsCubit cubit) => cubit.state);
     return customerDetails.maybeWhen(
       complete: (details, status) {
         return SingleChildScrollView(
@@ -75,7 +77,8 @@ class _AllCustomerContent extends StatelessWidget {
             child: Row(
               children: [
                 _Greeting(
-                  unixEpochMilliseconds: customerStatus.timeOfLastStatusUnixEpoch * 1000,
+                  unixEpochMilliseconds:
+                      customerStatus.timeOfLastStatusUnixEpoch * 1000,
                 ),
                 const Spacer(),
                 IconButton(
@@ -233,23 +236,8 @@ class _ZoneCell extends StatelessWidget {
                   padding: const EdgeInsets.only(right: 8),
                   child: Hero(
                     tag: zone,
-                    child: Material(
-                      type: MaterialType.transparency,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Theme.of(context).colorScheme.secondary,
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(16),
-                          child: Text(
-                            zone.physicalNumber.toString(),
-                            style: TextStyle(
-                              color: Theme.of(context).colorScheme.onSecondary,
-                            ),
-                          ),
-                        ),
-                      ),
+                    child: CircleBackground(
+                      child: Text(zone.physicalNumber.toString()),
                     ),
                   ),
                 ),
