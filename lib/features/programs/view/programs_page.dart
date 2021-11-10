@@ -35,7 +35,7 @@ class ProgramsPageView extends StatelessWidget {
                 ],
               ),
             ),
-            Spacer(),
+            const Spacer(),
             Visibility(
               visible: state.programs.isEmpty,
               child: Center(
@@ -96,9 +96,8 @@ class ProgramsPageView extends StatelessWidget {
                   )
                 ],
               ),
-            )
-                      ,Spacer(),
-
+            ),
+            const Spacer(),
           ],
         );
       },
