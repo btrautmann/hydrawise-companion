@@ -35,8 +35,7 @@ class _CustomerDetailsStateView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final customerDetails =
-        context.select((CustomerDetailsCubit cubit) => cubit.state);
+    final customerDetails = context.select((CustomerDetailsCubit cubit) => cubit.state);
     return customerDetails.maybeWhen(
       complete: (details, status) {
         return SingleChildScrollView(
