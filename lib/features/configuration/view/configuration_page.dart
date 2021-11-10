@@ -59,16 +59,15 @@ class ConfigurationView extends StatelessWidget {
             builder: (context, state) {
               final currentThemeMode = state.themeMode;
               Icon icon;
-              final color = Theme.of(context).colorScheme.onSecondary;
               switch (currentThemeMode) {
                 case ThemeMode.system:
-                  icon = Icon(Icons.settings, color: color);
+                  icon = const Icon(Icons.settings);
                   break;
                 case ThemeMode.light:
-                  icon = Icon(Icons.light_mode, color: color);
+                  icon = const Icon(Icons.light_mode);
                   break;
                 case ThemeMode.dark:
-                  icon = Icon(Icons.dark_mode, color: color);
+                  icon = const Icon(Icons.dark_mode);
                   break;
               }
               return ListRow(
@@ -97,7 +96,6 @@ class ChooseThemeModeDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = Theme.of(context).colorScheme.onSecondary;
     return Dialog(
       child: Padding(
         padding: const EdgeInsets.only(top: 16, bottom: 16),
@@ -105,11 +103,8 @@ class ChooseThemeModeDialog extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             ListRow(
-              leadingIcon: CircleBackground(
-                child: Icon(
-                  Icons.light_mode,
-                  color: color,
-                ),
+              leadingIcon: const CircleBackground(
+                child: Icon(Icons.light_mode),
               ),
               title: const Text('Light mode'),
               onTapped: () {
@@ -119,11 +114,8 @@ class ChooseThemeModeDialog extends StatelessWidget {
             ),
             const Divider(),
             ListRow(
-              leadingIcon: CircleBackground(
-                child: Icon(
-                  Icons.dark_mode,
-                  color: color,
-                ),
+              leadingIcon: const CircleBackground(
+                child: Icon(Icons.dark_mode),
               ),
               title: const Text('Dark mode'),
               onTapped: () {
@@ -133,11 +125,8 @@ class ChooseThemeModeDialog extends StatelessWidget {
             ),
             const Divider(),
             ListRow(
-              leadingIcon: CircleBackground(
-                child: Icon(
-                  Icons.settings,
-                  color: color,
-                ),
+              leadingIcon: const CircleBackground(
+                child: Icon(Icons.settings),
               ),
               title: const Text('Follow system'),
               onTapped: () {

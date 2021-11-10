@@ -20,11 +20,16 @@ class CircleBackground extends StatelessWidget {
           shape: BoxShape.circle,
           color: Theme.of(context).colorScheme.secondary,
         ),
-        child: DefaultTextStyle(
-          style: TextStyle(
-            color: Theme.of(context).colorScheme.onSecondary,
+        child: IconTheme(
+          data: Theme.of(context).iconTheme.copyWith(
+                color: Theme.of(context).colorScheme.onSecondary,
+              ),
+          child: DefaultTextStyle(
+            style: TextStyle(
+              color: Theme.of(context).colorScheme.onSecondary,
+            ),
+            child: _child,
           ),
-          child: _child,
         ),
       ),
     );
