@@ -19,27 +19,71 @@ class CreateProgramPage extends StatelessWidget {
   }
 }
 
-class CreateProgramView extends StatelessWidget {
+class CreateProgramView extends StatefulWidget {
   const CreateProgramView({Key? key}) : super(key: key);
+
+  @override
+  _CreateProgramViewState createState() => _CreateProgramViewState();
+}
+
+class _CreateProgramViewState extends State<CreateProgramView> {
+  String? _name;
+  Frequency? _frequency;
+  List<RunCreation> _runCreations = [];
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Padding(
-            padding: EdgeInsets.all(16),
+          Padding(
+            padding: const EdgeInsets.all(16),
             child: TextField(
-              decoration: InputDecoration(
+              onChanged: (text) {
+                setState(() {
+                  _name = text;
+                });
+              },
+              decoration: const InputDecoration(
                 hintText: 'Give your program a name',
               ),
             ),
           ),
           _FrequencySelection(
-            onFrequencyChanged: (frequency) {},
+            onFrequencyChanged: (frequency) {
+              setState(() {
+                _frequency = frequency;
+              });
+            },
           ),
           _RunsConfiguration(
-            onRunsChanged: (runs) {},
+            onRunsChanged: (runs) {
+              setState(() {
+                _runCreations = runs;
+              });
+            },
+          ),
+          Visibility(
+            // TODO(brandon): Duration can be removed and done
+            // button still shows
+            visible: _name != null &&
+                _name!.isNotEmpty &&
+                _frequency != null &&
+                _frequency!.hasAtLeastOneDay() &&
+                _runCreations.isNotEmpty &&
+                !(_runCreations.any((element) =>
+                    element.duration == null ||
+                    element.timeOfDay == null ||
+                    element.zones == null ||
+                    element.zones!.isEmpty)),
+            child: Align(
+              alignment: Alignment.center,
+              child: ElevatedButton(
+                child: const Text('Done'),
+                onPressed: () {},
+              ),
+            ),
           ),
         ],
       ),
@@ -102,35 +146,42 @@ class _FrequencySelectionState extends State<_FrequencySelection> {
                   widget.onFrequencyChanged(_frequency);
                 },
                 text: 'M',
-                colorResolver: (states) =>
-                    _frequency.monday ? Theme.of(context).colorScheme.secondary : Colors.transparent,
+                colorResolver: (states) => _frequency.monday
+                    ? Theme.of(context).colorScheme.secondary
+                    : Colors.transparent,
               ),
               _DayButton(
                 onTapped: () {
-                  _frequency = _frequency.copyWith(tuesday: !_frequency.tuesday);
+                  _frequency =
+                      _frequency.copyWith(tuesday: !_frequency.tuesday);
                   widget.onFrequencyChanged(_frequency);
                 },
                 text: 'T',
-                colorResolver: (states) =>
-                    _frequency.tuesday ? Theme.of(context).colorScheme.secondary : Colors.transparent,
+                colorResolver: (states) => _frequency.tuesday
+                    ? Theme.of(context).colorScheme.secondary
+                    : Colors.transparent,
               ),
               _DayButton(
                 onTapped: () {
-                  _frequency = _frequency.copyWith(wednesday: !_frequency.wednesday);
+                  _frequency =
+                      _frequency.copyWith(wednesday: !_frequency.wednesday);
                   widget.onFrequencyChanged(_frequency);
                 },
                 text: 'W',
-                colorResolver: (states) =>
-                    _frequency.wednesday ? Theme.of(context).colorScheme.secondary : Colors.transparent,
+                colorResolver: (states) => _frequency.wednesday
+                    ? Theme.of(context).colorScheme.secondary
+                    : Colors.transparent,
               ),
               _DayButton(
                 onTapped: () {
-                  _frequency = _frequency.copyWith(thursday: !_frequency.thursday);
+                  _frequency =
+                      _frequency.copyWith(thursday: !_frequency.thursday);
                   widget.onFrequencyChanged(_frequency);
                 },
                 text: 'R',
-                colorResolver: (states) =>
-                    _frequency.thursday ? Theme.of(context).colorScheme.secondary : Colors.transparent,
+                colorResolver: (states) => _frequency.thursday
+                    ? Theme.of(context).colorScheme.secondary
+                    : Colors.transparent,
               ),
               _DayButton(
                 onTapped: () {
@@ -138,17 +189,20 @@ class _FrequencySelectionState extends State<_FrequencySelection> {
                   widget.onFrequencyChanged(_frequency);
                 },
                 text: 'F',
-                colorResolver: (friday) =>
-                    _frequency.friday ? Theme.of(context).colorScheme.secondary : Colors.transparent,
+                colorResolver: (friday) => _frequency.friday
+                    ? Theme.of(context).colorScheme.secondary
+                    : Colors.transparent,
               ),
               _DayButton(
                 onTapped: () {
-                  _frequency = _frequency.copyWith(saturday: !_frequency.saturday);
+                  _frequency =
+                      _frequency.copyWith(saturday: !_frequency.saturday);
                   widget.onFrequencyChanged(_frequency);
                 },
                 text: 'S',
-                colorResolver: (states) =>
-                    _frequency.saturday ? Theme.of(context).colorScheme.secondary : Colors.transparent,
+                colorResolver: (states) => _frequency.saturday
+                    ? Theme.of(context).colorScheme.secondary
+                    : Colors.transparent,
               ),
               _DayButton(
                 onTapped: () {
@@ -156,8 +210,9 @@ class _FrequencySelectionState extends State<_FrequencySelection> {
                   widget.onFrequencyChanged(_frequency);
                 },
                 text: 'Su',
-                colorResolver: (states) =>
-                    _frequency.sunday ? Theme.of(context).colorScheme.secondary : Colors.transparent,
+                colorResolver: (states) => _frequency.sunday
+                    ? Theme.of(context).colorScheme.secondary
+                    : Colors.transparent,
               ),
             ],
           ),
@@ -270,7 +325,7 @@ class _RunsConfigurationState extends State<_RunsConfiguration> {
               alignment: Alignment.center,
               child: Padding(
                 padding: const EdgeInsets.all(16),
-                child: ElevatedButton(
+                child: TextButton(
                   onPressed: () {
                     setState(() {
                       _runs.add(RunCreation(zones: []));
@@ -319,13 +374,13 @@ class _RunCreationViewState extends State<_RunCreationView> {
     super.initState();
   }
 
-  void _changeTime(TimeOfDay? timeOfDay) {
+  void _changeTime(TimeOfDay? timeOfDay, BuildContext context) {
     if (timeOfDay != null) {
       setState(() {
         _runCreation = _runCreation.copyWith(timeOfDay: timeOfDay);
         widget.onChanged(_runCreation);
       });
-      _timeOfDayController.text = '${timeOfDay.hour}:${timeOfDay.minute}';
+      _timeOfDayController.text = timeOfDay.format(context);
     }
   }
 
@@ -381,7 +436,7 @@ class _RunCreationViewState extends State<_RunCreationView> {
                       context: context,
                       initialTime: TimeOfDay.now(),
                     );
-                    _changeTime(time);
+                    _changeTime(time, context);
                   },
                 ),
               ),
@@ -428,7 +483,8 @@ class _RunCreationViewState extends State<_RunCreationView> {
                   key: ValueKey(zone.id),
                   label: Text(
                     zone.name,
-                    style: TextStyle(color: Theme.of(context).colorScheme.onSecondary),
+                    style: TextStyle(
+                        color: Theme.of(context).colorScheme.onSecondary),
                   ),
                   checkmarkColor: Theme.of(context).colorScheme.onSecondary,
                   selectedColor: Theme.of(context).colorScheme.secondary,
