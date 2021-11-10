@@ -34,8 +34,7 @@ class _CustomerDetailsStateView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final customerDetails =
-        context.select((CustomerDetailsCubit cubit) => cubit.state);
+    final customerDetails = context.select((CustomerDetailsCubit cubit) => cubit.state);
     return customerDetails.maybeWhen(
       complete: (details, status) {
         return SingleChildScrollView(
@@ -76,15 +75,17 @@ class _AllCustomerContent extends StatelessWidget {
             child: Row(
               children: [
                 _Greeting(
-                  unixEpochMilliseconds:
-                      customerStatus.timeOfLastStatusUnixEpoch * 1000,
+                  unixEpochMilliseconds: customerStatus.timeOfLastStatusUnixEpoch * 1000,
                 ),
                 const Spacer(),
                 IconButton(
                   onPressed: () {
                     context.read<LoginCubit>().logOut();
                   },
-                  icon: const Icon(Icons.logout),
+                  icon: const Tooltip(
+                    message: 'Log out',
+                    child: Icon(Icons.logout),
+                  ),
                 )
               ],
             ),
@@ -155,12 +156,16 @@ class _ZoneList extends StatelessWidget {
           children: [
             HStretch(
               child: Container(
-                decoration: BoxDecoration(color: Theme.of(context).accentColor),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.secondary,
+                ),
                 child: Padding(
                   padding: const EdgeInsets.all(16),
                   child: Text(
                     'Watering Schedule',
-                    style: Theme.of(context).textTheme.headline6,
+                    style: Theme.of(context).textTheme.headline6?.copyWith(
+                          color: Theme.of(context).colorScheme.onSecondary,
+                        ),
                   ),
                 ),
               ),
@@ -233,11 +238,16 @@ class _ZoneCell extends StatelessWidget {
                       child: Container(
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: Theme.of(context).accentColor,
+                          color: Theme.of(context).colorScheme.secondary,
                         ),
                         child: Padding(
                           padding: const EdgeInsets.all(16),
-                          child: Text(zone.physicalNumber.toString()),
+                          child: Text(
+                            zone.physicalNumber.toString(),
+                            style: TextStyle(
+                              color: Theme.of(context).colorScheme.onSecondary,
+                            ),
+                          ),
                         ),
                       ),
                     ),

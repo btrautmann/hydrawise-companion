@@ -102,42 +102,35 @@ class _FrequencySelectionState extends State<_FrequencySelection> {
                   widget.onFrequencyChanged(_frequency);
                 },
                 text: 'M',
-                colorResolver: (states) => _frequency.monday
-                    ? Theme.of(context).accentColor
-                    : Colors.transparent,
+                colorResolver: (states) =>
+                    _frequency.monday ? Theme.of(context).colorScheme.secondary : Colors.transparent,
               ),
               _DayButton(
                 onTapped: () {
-                  _frequency =
-                      _frequency.copyWith(tuesday: !_frequency.tuesday);
+                  _frequency = _frequency.copyWith(tuesday: !_frequency.tuesday);
                   widget.onFrequencyChanged(_frequency);
                 },
                 text: 'T',
-                colorResolver: (states) => _frequency.tuesday
-                    ? Theme.of(context).accentColor
-                    : Colors.transparent,
+                colorResolver: (states) =>
+                    _frequency.tuesday ? Theme.of(context).colorScheme.secondary : Colors.transparent,
               ),
               _DayButton(
                 onTapped: () {
-                  _frequency =
-                      _frequency.copyWith(wednesday: !_frequency.wednesday);
+                  _frequency = _frequency.copyWith(wednesday: !_frequency.wednesday);
                   widget.onFrequencyChanged(_frequency);
                 },
                 text: 'W',
-                colorResolver: (states) => _frequency.wednesday
-                    ? Theme.of(context).accentColor
-                    : Colors.transparent,
+                colorResolver: (states) =>
+                    _frequency.wednesday ? Theme.of(context).colorScheme.secondary : Colors.transparent,
               ),
               _DayButton(
                 onTapped: () {
-                  _frequency =
-                      _frequency.copyWith(thursday: !_frequency.thursday);
+                  _frequency = _frequency.copyWith(thursday: !_frequency.thursday);
                   widget.onFrequencyChanged(_frequency);
                 },
                 text: 'R',
-                colorResolver: (states) => _frequency.thursday
-                    ? Theme.of(context).accentColor
-                    : Colors.transparent,
+                colorResolver: (states) =>
+                    _frequency.thursday ? Theme.of(context).colorScheme.secondary : Colors.transparent,
               ),
               _DayButton(
                 onTapped: () {
@@ -145,20 +138,17 @@ class _FrequencySelectionState extends State<_FrequencySelection> {
                   widget.onFrequencyChanged(_frequency);
                 },
                 text: 'F',
-                colorResolver: (friday) => _frequency.friday
-                    ? Theme.of(context).accentColor
-                    : Colors.transparent,
+                colorResolver: (friday) =>
+                    _frequency.friday ? Theme.of(context).colorScheme.secondary : Colors.transparent,
               ),
               _DayButton(
                 onTapped: () {
-                  _frequency =
-                      _frequency.copyWith(saturday: !_frequency.saturday);
+                  _frequency = _frequency.copyWith(saturday: !_frequency.saturday);
                   widget.onFrequencyChanged(_frequency);
                 },
                 text: 'S',
-                colorResolver: (states) => _frequency.saturday
-                    ? Theme.of(context).accentColor
-                    : Colors.transparent,
+                colorResolver: (states) =>
+                    _frequency.saturday ? Theme.of(context).colorScheme.secondary : Colors.transparent,
               ),
               _DayButton(
                 onTapped: () {
@@ -166,9 +156,8 @@ class _FrequencySelectionState extends State<_FrequencySelection> {
                   widget.onFrequencyChanged(_frequency);
                 },
                 text: 'Su',
-                colorResolver: (states) => _frequency.sunday
-                    ? Theme.of(context).accentColor
-                    : Colors.transparent,
+                colorResolver: (states) =>
+                    _frequency.sunday ? Theme.of(context).colorScheme.secondary : Colors.transparent,
               ),
             ],
           ),
@@ -198,7 +187,7 @@ class _DayButton extends StatelessWidget {
         shape: MaterialStateProperty.all<CircleBorder>(
           CircleBorder(
             side: BorderSide(
-              color: Theme.of(context).accentColor,
+              color: Theme.of(context).colorScheme.secondary,
             ),
           ),
         ),
@@ -206,6 +195,8 @@ class _DayButton extends StatelessWidget {
       onPressed: onTapped,
       child: Padding(
         padding: const EdgeInsets.all(4.0),
+        // TODO(brandon): Dynamically color text based on
+        // selection
         child: Text(text),
       ),
     );
@@ -435,8 +426,12 @@ class _RunCreationViewState extends State<_RunCreationView> {
                 ),
                 child: FilterChip(
                   key: ValueKey(zone.id),
-                  label: Text(zone.name),
-                  selectedColor: Theme.of(context).accentColor,
+                  label: Text(
+                    zone.name,
+                    style: TextStyle(color: Theme.of(context).colorScheme.onSecondary),
+                  ),
+                  checkmarkColor: Theme.of(context).colorScheme.onSecondary,
+                  selectedColor: Theme.of(context).colorScheme.secondary,
                   selected: _runCreation.zones?.contains(zone) ?? false,
                   onSelected: (isSelected) {
                     _changeZoneMembership(isSelected, zone);

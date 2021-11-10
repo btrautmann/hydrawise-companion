@@ -310,13 +310,15 @@ class _ZoneHeader extends StatelessWidget {
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: Theme.of(context).accentColor,
+                  color: Theme.of(context).colorScheme.secondary,
                 ),
                 child: Padding(
                   padding: const EdgeInsets.all(16),
                   child: Text(
                     zone.physicalNumber.toString(),
-                    style: Theme.of(context).textTheme.headline3,
+                    style: Theme.of(context).textTheme.headline3?.copyWith(
+                          color: Theme.of(context).colorScheme.onSecondary,
+                        ),
                   ),
                 ),
               ),
