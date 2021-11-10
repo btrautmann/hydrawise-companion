@@ -308,15 +308,9 @@ class _ZoneHeader extends StatelessWidget {
             children: [
               Container(
                 alignment: Alignment.center,
-                decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [
-                      Colors.green,
-                      Colors.lightGreen,
-                    ],
-                  ),
+                decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: Colors.green,
+                  color: Theme.of(context).accentColor,
                 ),
                 child: Padding(
                   padding: const EdgeInsets.all(16),

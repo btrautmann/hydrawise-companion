@@ -16,15 +16,9 @@ class CircleBackground extends StatelessWidget {
       child: Container(
         alignment: Alignment.center,
         constraints: BoxConstraints.tight(const Size(42, 42)),
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              Colors.green,
-              Colors.lightGreen,
-            ],
-          ),
+        decoration: BoxDecoration(
           shape: BoxShape.circle,
-          color: Colors.green,
+          color: Theme.of(context).accentColor,
         ),
         child: _child,
       ),
