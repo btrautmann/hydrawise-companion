@@ -34,7 +34,8 @@ class _CustomerDetailsStateView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final customerDetails = context.select((CustomerDetailsCubit cubit) => cubit.state);
+    final customerDetails =
+        context.select((CustomerDetailsCubit cubit) => cubit.state);
     return customerDetails.maybeWhen(
       complete: (details, status) {
         return SingleChildScrollView(
@@ -75,7 +76,8 @@ class _AllCustomerContent extends StatelessWidget {
             child: Row(
               children: [
                 _Greeting(
-                  unixEpochMilliseconds: customerStatus.timeOfLastStatusUnixEpoch * 1000,
+                  unixEpochMilliseconds:
+                      customerStatus.timeOfLastStatusUnixEpoch * 1000,
                 ),
                 const Spacer(),
                 IconButton(
@@ -153,14 +155,7 @@ class _ZoneList extends StatelessWidget {
           children: [
             HStretch(
               child: Container(
-                decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [
-                      Colors.lightBlue,
-                      Colors.blue,
-                    ],
-                  ),
-                ),
+                decoration: BoxDecoration(color: Theme.of(context).accentColor),
                 child: Padding(
                   padding: const EdgeInsets.all(16),
                   child: Text(
