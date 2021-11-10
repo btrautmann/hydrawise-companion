@@ -26,13 +26,9 @@ class ConfigurationView extends StatelessWidget {
       children: [
         Padding(
           padding: const EdgeInsets.all(16),
-          child: Row(
-            children: [
-              Text(
-                'Configuration',
-                style: Theme.of(context).textTheme.headline5,
-              ),
-            ],
+          child: Text(
+            'Configuration',
+            style: Theme.of(context).textTheme.headline5,
           ),
         ),
         Padding(

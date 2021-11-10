@@ -7,6 +7,7 @@ import 'package:hydrawise/app/app.dart';
 import 'package:hydrawise/features/app_theme_mode/app_theme_mode.dart';
 import 'package:hydrawise/features/customer_details/customer_details.dart';
 import 'package:hydrawise/features/login/login.dart';
+import 'package:hydrawise/features/programs/programs.dart';
 import 'package:hydrawise/l10n/l10n.dart';
 import 'package:provider/provider.dart';
 
@@ -50,6 +51,12 @@ class App extends StatelessWidget {
                 getCustomerStatus: context.read<GetCustomerStatus>(),
                 loginCubit: context.read<LoginCubit>(),
               )..start(),
+            ),
+            BlocProvider(
+              create: (context) => ProgramsCubit(
+                getPrograms: context.read<GetPrograms>(),
+                createProgram: context.read<CreateProgram>(),
+              ),
             ),
           ],
           child: BlocListener<LoginCubit, LoginState>(
@@ -100,13 +107,15 @@ ThemeData _buildLightTheme(BuildContext context) {
     navigationRailTheme: NavigationRailThemeData(
       backgroundColor: AppColors.blue700,
       selectedIconTheme: const IconThemeData(color: AppColors.orange500),
-      selectedLabelTextStyle: GoogleFonts.workSansTextTheme().headline5?.copyWith(
-            color: AppColors.orange500,
-          ),
+      selectedLabelTextStyle:
+          GoogleFonts.workSansTextTheme().headline5?.copyWith(
+                color: AppColors.orange500,
+              ),
       unselectedIconTheme: const IconThemeData(color: AppColors.blue200),
-      unselectedLabelTextStyle: GoogleFonts.workSansTextTheme().headline5?.copyWith(
-            color: AppColors.blue200,
-          ),
+      unselectedLabelTextStyle:
+          GoogleFonts.workSansTextTheme().headline5?.copyWith(
+                color: AppColors.blue200,
+              ),
     ),
     chipTheme: _buildChipTheme(
       AppColors.blue700,
@@ -141,13 +150,15 @@ ThemeData _buildDarkTheme(BuildContext context) {
     navigationRailTheme: NavigationRailThemeData(
       backgroundColor: AppColors.darkBottomAppBarBackground,
       selectedIconTheme: const IconThemeData(color: AppColors.orange300),
-      selectedLabelTextStyle: GoogleFonts.workSansTextTheme().headline5?.copyWith(
-            color: AppColors.orange300,
-          ),
+      selectedLabelTextStyle:
+          GoogleFonts.workSansTextTheme().headline5?.copyWith(
+                color: AppColors.orange300,
+              ),
       unselectedIconTheme: const IconThemeData(color: AppColors.greyLabel),
-      unselectedLabelTextStyle: GoogleFonts.workSansTextTheme().headline5?.copyWith(
-            color: AppColors.greyLabel,
-          ),
+      unselectedLabelTextStyle:
+          GoogleFonts.workSansTextTheme().headline5?.copyWith(
+                color: AppColors.greyLabel,
+              ),
     ),
     chipTheme: _buildChipTheme(
       AppColors.blue200,
@@ -283,7 +294,9 @@ ChipThemeData _buildChipTheme(
     padding: const EdgeInsets.all(4),
     shape: const StadiumBorder(),
     labelStyle: GoogleFonts.workSansTextTheme().bodyText2!.copyWith(
-          color: brightness == Brightness.dark ? AppColors.white50 : AppColors.black900,
+          color: brightness == Brightness.dark
+              ? AppColors.white50
+              : AppColors.black900,
         ),
     secondaryLabelStyle: GoogleFonts.workSansTextTheme().bodyText2!,
     brightness: brightness,
