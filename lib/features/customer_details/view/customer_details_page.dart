@@ -236,15 +236,9 @@ class _ZoneCell extends StatelessWidget {
                     child: Material(
                       type: MaterialType.transparency,
                       child: Container(
-                        decoration: const BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [
-                              Colors.green,
-                              Colors.lightGreen,
-                            ],
-                          ),
+                        decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: Colors.green,
+                          color: Theme.of(context).accentColor,
                         ),
                         child: Padding(
                           padding: const EdgeInsets.all(16),
