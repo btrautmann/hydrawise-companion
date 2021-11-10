@@ -3,7 +3,8 @@ import 'package:hydrawise/features/customer_details/customer_details.dart';
 import 'package:hydrawise/features/login/login.dart';
 import 'package:result_type/result_type.dart';
 
-typedef GetCustomerStatus = Future<UseCaseResult<CustomerStatus, String>> Function({
+typedef GetCustomerStatus = Future<UseCaseResult<CustomerStatus, String>>
+    Function({
   int? activeControllerId,
 });
 
@@ -31,6 +32,8 @@ class GetCustomerStatusFromNetwork {
   }) async {
     final nextPollTime = await _getNextPollTime();
 
+    // TODO(brandon): Use a framework we can
+    // modify under test for time
     if (DateTime.now().isAfter(nextPollTime)) {
       final apiKey = await _getApiKey();
       final queryParameters = {
@@ -50,7 +53,8 @@ class GetCustomerStatusFromNetwork {
 
         await _repository.updateCustomer(customerStatus);
 
-        final secondsUntilNextPoll = customerStatus.numberOfSecondsUntilNextRequest;
+        final secondsUntilNextPoll =
+            customerStatus.numberOfSecondsUntilNextRequest;
         await _setNextPollTime(secondsUntilNextPoll: secondsUntilNextPoll);
 
         return Success(customerStatus);
@@ -63,7 +67,10 @@ class GetCustomerStatusFromNetwork {
     final customer = await _repository.getCustomer();
 
     return Success(CustomerStatus(
-      numberOfSecondsUntilNextRequest: DateTime.now().difference(nextPollTime).inSeconds.abs(),
+      // TODO(brandon): Use a framework we can
+      // modify under test for time
+      numberOfSecondsUntilNextRequest:
+          DateTime.now().difference(nextPollTime).inSeconds.abs(),
       timeOfLastStatusUnixEpoch: customer.lastStatusUpdate,
       zones: zones,
     ));

@@ -22,6 +22,8 @@ class DemoModeInterceptor extends Interceptor {
                 Controller(
                   id: 1,
                   name: 'Fake Controller',
+                  // TODO(brandon): Use a framework we can
+                  // modify under test for time
                   lastContact: DateTime.now().millisecondsSinceEpoch,
                   serialNumber: 'fake-serial-number',
                   status: 'All good!',

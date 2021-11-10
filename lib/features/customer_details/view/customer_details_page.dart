@@ -76,10 +76,7 @@ class _AllCustomerContent extends StatelessWidget {
             padding: const EdgeInsets.only(bottom: 16),
             child: Row(
               children: [
-                _Greeting(
-                  unixEpochMilliseconds:
-                      customerStatus.timeOfLastStatusUnixEpoch * 1000,
-                ),
+                const _Greeting(),
                 const Spacer(),
                 IconButton(
                   onPressed: () {
@@ -107,21 +104,18 @@ class _AllCustomerContent extends StatelessWidget {
 }
 
 class _Greeting extends StatelessWidget {
-  const _Greeting({
-    Key? key,
-    required this.unixEpochMilliseconds,
-  }) : super(key: key);
-
-  final int unixEpochMilliseconds;
+  const _Greeting({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final dateTime = DateTime.fromMillisecondsSinceEpoch(unixEpochMilliseconds);
+    // TODO(brandon): Use a framework we can
+    // modify under test for time
+    final dateTime = DateTime.now();
     String text;
-    if (dateTime.hour <= 12) {
+    if (dateTime.hour < 12) {
       text = 'Good morning';
-    } else if (dateTime.hour <= 18) {
+    } else if (dateTime.hour < 18) {
       text = 'Good afternoon';
     } else {
       text = 'Good evening';

@@ -17,7 +17,8 @@ class RunZonesPage extends StatelessWidget {
       builder: (context, state) {
         return state.maybeWhen(
           complete: (details, state) {
-            final zone = state.zones.singleWhere((element) => element.id == zoneId);
+            final zone =
+                state.zones.singleWhere((element) => element.id == zoneId);
             return Scaffold(
               appBar: AppBar(
                 title: Text(zone.name),
@@ -60,10 +61,12 @@ class __RunZonesViewState extends State<_RunZonesView> {
 
   @override
   Widget build(BuildContext context) {
-    final customerDetailsState = context.select((CustomerDetailsCubit cubit) => cubit.state);
+    final customerDetailsState =
+        context.select((CustomerDetailsCubit cubit) => cubit.state);
     return customerDetailsState.maybeWhen(
       complete: (details, status) {
-        final selectedZone = status.zones.singleWhere((element) => element.id == widget.zone.id);
+        final selectedZone =
+            status.zones.singleWhere((element) => element.id == widget.zone.id);
         return Center(
           child: Padding(
             padding: const EdgeInsets.all(16),
@@ -89,7 +92,8 @@ class __RunZonesViewState extends State<_RunZonesView> {
                   onRunPressed: () {
                     // TODO(brandon): Figure out correct way to get time from
                     // slider
-                    context.read<RunZoneCubit>().runZone(runLengthMinutes: selectedRunLengthInMinutes.toInt());
+                    context.read<RunZoneCubit>().runZone(
+                        runLengthMinutes: selectedRunLengthInMinutes.toInt());
                   },
                   onStopPressed: () {
                     context.read<RunZoneCubit>().stopZone();
@@ -151,8 +155,9 @@ class __RunLengthSliderState extends State<_RunLengthSlider> {
   @override
   void initState() {
     // TODO(brandon): Fix this hack
-    final maxValue =
-        widget.zone.lengthOfNextRunTimeOrTimeRemaining == 0 ? 90 : widget.zone.lengthOfNextRunTimeOrTimeRemaining / 60;
+    final maxValue = widget.zone.lengthOfNextRunTimeOrTimeRemaining == 0
+        ? 90
+        : widget.zone.lengthOfNextRunTimeOrTimeRemaining / 60;
     _setCurrentValue(maxValue.toDouble());
     super.initState();
   }
@@ -254,7 +259,8 @@ class _ZoneButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<RunZoneCubit, RunZoneState>(
       builder: (_, state) {
-        final isLoading = state.when(resting: (_) => false, loading: () => true);
+        final isLoading =
+            state.when(resting: (_) => false, loading: () => true);
         return ActionChip(
           onPressed: onPressed,
           label: SizedBox(
@@ -350,6 +356,8 @@ class _NextWaterText extends StatelessWidget {
       return const Text('Suspended');
     }
     if (zone.isRunning) {
+      // TODO(brandon): Use a framework we can
+      // modify under test for time
       final endOfRun = DateTime.now().add(
         Duration(seconds: zone.lengthOfNextRunTimeOrTimeRemaining),
       );
