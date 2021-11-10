@@ -3,14 +3,20 @@ import 'package:go_router/go_router.dart';
 import 'package:hydrawise/features/error_page.dart';
 import 'package:hydrawise/features/home/home.dart';
 import 'package:hydrawise/features/login/login.dart';
+import 'package:hydrawise/features/programs/programs.dart';
 import 'package:hydrawise/features/run_zone/run_zone.dart';
 import 'package:hydrawise/features/splash_page.dart';
 
-typedef BuildRouter = Future<GoRouter> Function();
+/// Contract for building the [GoRouter] that the app
+/// will use for all of its navigation
+abstract class BuildRouter {
+  Future<GoRouter> call();
+}
 
-class BuildStandardRouter {
+class BuildStandardRouter implements BuildRouter {
   BuildStandardRouter();
 
+  @override
   Future<GoRouter> call() async {
     return GoRouter(
       routes: [
@@ -55,7 +61,14 @@ class BuildStandardRouter {
               zoneId: int.parse(state.params['zid']!),
             ),
           ),
-        )
+        ),
+        GoRoute(
+          path: '/create_program',
+          pageBuilder: (context, state) => MaterialPage<void>(
+            key: state.pageKey,
+            child: const CreateProgramPage(),
+          ),
+        ),
       ],
       errorPageBuilder: (context, state) => MaterialPage<void>(
         key: state.pageKey,

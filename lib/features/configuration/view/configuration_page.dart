@@ -103,8 +103,7 @@ class ChooseThemeModeDialog extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             ListRow(
-              leadingIcon:
-                  const CircleBackground(child: Icon(Icons.light_mode)),
+              leadingIcon: const CircleBackground(child: Icon(Icons.light_mode)),
               title: const Text('Light mode'),
               onTapped: () {
                 context.read<AppCubit>().setThemeMode(ThemeMode.light);
@@ -148,11 +147,6 @@ class _ZoneList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    zones.sort(
-      (z1, z2) => z1.physicalNumber.compareTo(
-        z2.physicalNumber,
-      ),
-    );
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [

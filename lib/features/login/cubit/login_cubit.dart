@@ -11,18 +11,30 @@ class LoginCubit extends Cubit<LoginState> {
   final SetApiKey _setApiKey;
   final GetCustomerDetails _getCustomerDetails;
   final ClearCustomerDetails _clearCustomerDetails;
+  final GetAuthFailures _getAuthFailures;
 
   LoginCubit({
     required GetApiKey getApiKey,
     required SetApiKey setApiKey,
     required GetCustomerDetails getCustomerDetails,
     required ClearCustomerDetails clearCustomerDetails,
+    required GetAuthFailures getAuthFailures,
   })  : _getApiKey = getApiKey,
         _setApiKey = setApiKey,
         _getCustomerDetails = getCustomerDetails,
         _clearCustomerDetails = clearCustomerDetails,
+        _getAuthFailures = getAuthFailures,
         super(LoginState.loggedOut()) {
     _checkAuthenticationStatus();
+    _listenForAuthFailures();
+  }
+
+  void _listenForAuthFailures() async {
+    await _getAuthFailures().then(
+      (stream) => stream.listen((event) {
+        emit(LoginState.loggedOut());
+      }),
+    );
   }
 
   void _checkAuthenticationStatus() async {

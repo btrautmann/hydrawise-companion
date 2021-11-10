@@ -1,12 +1,15 @@
 import 'package:hydrawise/core/core.dart';
 
-typedef GetApiKey = Future<String?> Function();
+abstract class GetApiKey {
+  Future<String?> call();
+}
 
-class GetApiKeyFromStorage {
+class GetApiKeyFromStorage implements GetApiKey {
   GetApiKeyFromStorage(this._dataStorage);
 
   final DataStorage _dataStorage;
 
+  @override
   Future<String?> call() {
     return _dataStorage.getString('api_key');
   }

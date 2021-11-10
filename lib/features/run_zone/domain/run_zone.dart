@@ -6,21 +6,30 @@ import 'package:hydrawise/features/run_zone/run_zone.dart';
 import 'package:pedantic/pedantic.dart';
 import 'package:result_type/result_type.dart';
 
-typedef RunZone = Future<UseCaseResult<RunZoneResponse, String>> Function({
-  required Zone zone,
-  required int runLengthSeconds,
-});
+abstract class RunZone {
+  Future<UseCaseResult<RunZoneResponse, String>> call({
+    required Zone zone,
+    required int runLengthSeconds,
+  });
+}
 
-class RunZoneOverNetwork {
+class RunZoneOverNetwork implements RunZone {
   RunZoneOverNetwork({
     required HttpClient httpClient,
     required GetApiKey getApiKey,
+    required SetNextPollTime setNextPollTime,
+    required CustomerDetailsRepository repository,
   })  : _httpClient = httpClient,
-        _getApiKey = getApiKey;
+        _getApiKey = getApiKey,
+        _setNextPollTime = setNextPollTime,
+        _repository = repository;
 
   final GetApiKey _getApiKey;
   final HttpClient _httpClient;
+  final SetNextPollTime _setNextPollTime;
+  final CustomerDetailsRepository _repository;
 
+  @override
   Future<UseCaseResult<RunZoneResponse, String>> call({
     required Zone zone,
     required int runLengthSeconds,
@@ -33,10 +42,25 @@ class RunZoneOverNetwork {
       'custom': runLengthSeconds,
       'relay_id': zone.id
     };
-    final response = await _httpClient.get<Map<String, dynamic>>(
+    final response = await _httpClient
+        .get<Map<String, dynamic>>(
       'setzone.php',
       queryParameters: queryParameters,
-    );
+    )
+        .then((result) {
+      if (result.isSuccess) {
+        _repository.updateZone(
+          zone.copyWith(
+            secondsUntilNextRun: 1,
+            lengthOfNextRunTimeOrTimeRemaining: runLengthSeconds,
+          ),
+        );
+        // Push next poll time back to right after the zone is set
+        // to complete, so our state will update correctly
+        _setNextPollTime(secondsUntilNextPoll: runLengthSeconds + 1);
+      }
+    });
+
     return response
         .map<RunZoneResponse, DioError>((result) => RunZoneResponse.fromJson(result!))
         .mapError<RunZoneResponse, String>(
@@ -45,13 +69,14 @@ class RunZoneOverNetwork {
   }
 }
 
-class RunZoneLocally {
+class RunZoneLocally implements RunZone {
   RunZoneLocally({
     required CustomerDetailsRepository repository,
   }) : _repository = repository;
 
   final CustomerDetailsRepository _repository;
 
+  @override
   Future<Result<RunZoneResponse, String>> call({
     required Zone zone,
     required int runLengthSeconds,

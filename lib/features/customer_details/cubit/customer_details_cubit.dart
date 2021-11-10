@@ -66,10 +66,16 @@ class CustomerDetailsCubit extends Cubit<CustomerDetailsState> {
           complete: (details, status) async {
             final customerStatus = await _getCustomerStatus();
             if (customerStatus.isSuccess) {
+              final status = customerStatus.success;
+              status.zones.sort(
+                (z1, z2) => z1.physicalNumber.compareTo(
+                  z2.physicalNumber,
+                ),
+              );
               emit(
                 CustomerDetailsState.complete(
                   customerDetails: details,
-                  customerStatus: customerStatus.success,
+                  customerStatus: status,
                 ),
               );
             }

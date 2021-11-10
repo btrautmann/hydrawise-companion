@@ -1,15 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:hydrawise/core/core.dart';
 
-typedef SetAppThemeMode = Future<void> Function(ThemeMode mode);
+/// Contract for setting the new app [ThemeMode]
+abstract class SetAppThemeMode {
+  Future<void> call(ThemeMode mode);
+}
 
-class SetAppThemeModeInStorage {
+/// Sets the new [ThemeMode] in provided
+/// [DataStorage]. Uses the toString() of the [ThemeMode].
+class SetAppThemeModeInStorage implements SetAppThemeMode {
   final DataStorage _dataStorage;
 
   SetAppThemeModeInStorage(this._dataStorage);
 
+  @override
   Future<void> call(ThemeMode mode) async {
-    print('mode toString is ${mode.toString()}');
     await _dataStorage.setString('app_theme_mode', mode.toString());
   }
 }
