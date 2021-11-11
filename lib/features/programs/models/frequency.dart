@@ -14,3 +14,9 @@ class Frequency with _$Frequency {
     @JsonKey(name: 'sunday') required bool sunday,
   }) = _Frequency;
 }
+
+extension FrequencyX on Frequency {
+  bool hasAtLeastOneDay() {
+    return monday || tuesday || wednesday || thursday || friday || saturday || sunday;
+  }
+}

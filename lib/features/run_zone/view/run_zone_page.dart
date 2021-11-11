@@ -350,6 +350,8 @@ class _NextWaterText extends StatelessWidget {
       return const Text('Suspended');
     }
     if (zone.isRunning) {
+      // TODO(brandon): Use a framework we can
+      // modify under test for time
       final endOfRun = DateTime.now().add(
         Duration(seconds: zone.lengthOfNextRunTimeOrTimeRemaining),
       );

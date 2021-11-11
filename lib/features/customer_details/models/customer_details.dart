@@ -25,6 +25,8 @@ extension CustomerDetailsX on CustomerDetails {
       activeControllerId: activeControllerId,
       customerId: customerId,
       apiKey: apiKey,
+      // TODO(brandon): Use a framework we can
+      // modify under test for time
       lastStatusUpdate: DateTime.now().millisecondsSinceEpoch,
     );
   }

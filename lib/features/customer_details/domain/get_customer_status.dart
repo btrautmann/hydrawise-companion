@@ -31,6 +31,8 @@ class GetCustomerStatusFromNetwork {
   }) async {
     final nextPollTime = await _getNextPollTime();
 
+    // TODO(brandon): Use a framework we can
+    // modify under test for time
     if (DateTime.now().isAfter(nextPollTime)) {
       final apiKey = await _getApiKey();
       final queryParameters = {
@@ -63,6 +65,8 @@ class GetCustomerStatusFromNetwork {
     final customer = await _repository.getCustomer();
 
     return Success(CustomerStatus(
+      // TODO(brandon): Use a framework we can
+      // modify under test for time
       numberOfSecondsUntilNextRequest: DateTime.now().difference(nextPollTime).inSeconds.abs(),
       timeOfLastStatusUnixEpoch: customer.lastStatusUpdate,
       zones: zones,

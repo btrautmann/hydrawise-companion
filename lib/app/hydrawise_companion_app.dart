@@ -7,6 +7,7 @@ import 'package:hydrawise/app/app.dart';
 import 'package:hydrawise/features/app_theme_mode/app_theme_mode.dart';
 import 'package:hydrawise/features/customer_details/customer_details.dart';
 import 'package:hydrawise/features/login/login.dart';
+import 'package:hydrawise/features/programs/programs.dart';
 import 'package:hydrawise/l10n/l10n.dart';
 import 'package:provider/provider.dart';
 
@@ -50,6 +51,12 @@ class App extends StatelessWidget {
                 getCustomerStatus: context.read<GetCustomerStatus>(),
                 loginCubit: context.read<LoginCubit>(),
               )..start(),
+            ),
+            BlocProvider(
+              create: (context) => ProgramsCubit(
+                getPrograms: context.read<GetPrograms>(),
+                createProgram: context.read<CreateProgram>(),
+              ),
             ),
           ],
           child: BlocListener<LoginCubit, LoginState>(
