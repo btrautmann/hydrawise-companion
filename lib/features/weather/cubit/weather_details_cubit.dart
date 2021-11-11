@@ -1,10 +1,10 @@
 import 'package:bloc/bloc.dart';
-import 'package:hydrawise/features/weather/weather.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:hydrawise/features/weather/weather.dart';
 import 'package:weather/weather.dart';
 
-part 'weather_details_state.dart';
 part 'weather_details_cubit.freezed.dart';
+part 'weather_details_state.dart';
 
 class WeatherDetailsCubit extends Cubit<WeatherDetailsState> {
   WeatherDetailsCubit({
