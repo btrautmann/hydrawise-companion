@@ -340,7 +340,10 @@ class _RunsConfigurationState extends State<_RunsConfiguration> {
                 child: TextButton(
                   onPressed: () {
                     setState(() {
-                      _runs.add(RunCreation(zones: []));
+                      _runs.add(RunCreation(
+                        timeOfDay: TimeOfDay.now(),
+                        zones: [],
+                      ));
                     });
                     widget.onRunsChanged(_runs);
                   },
@@ -424,11 +427,14 @@ class _RunCreationViewState extends State<_RunCreationView> {
           padding: const EdgeInsets.all(16),
           child: Row(
             children: [
-              IconButton(
-                onPressed: () {
-                  widget.onRemoved(_runCreation);
-                },
-                icon: const Icon(Icons.remove_circle),
+              Tooltip(
+                message: 'Remove run',
+                child: IconButton(
+                  onPressed: () {
+                    widget.onRemoved(_runCreation);
+                  },
+                  icon: const Icon(Icons.remove_circle),
+                ),
               ),
               OutlinedButton(
                 child: Text(_runCreation.timeOfDay?.format(context) ?? ''),
