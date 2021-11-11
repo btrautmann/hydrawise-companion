@@ -74,6 +74,7 @@ class _CreateProgramViewState extends State<CreateProgramView> {
                 _runCreations.isNotEmpty &&
                 !(_runCreations.any((element) =>
                     element.duration == null ||
+                    element.duration!.inMinutes == 0 ||
                     element.timeOfDay == null ||
                     element.zones == null ||
                     element.zones!.isEmpty)),
@@ -81,7 +82,17 @@ class _CreateProgramViewState extends State<CreateProgramView> {
               alignment: Alignment.center,
               child: ElevatedButton(
                 child: const Text('Done'),
-                onPressed: () {},
+                onPressed: () {
+                  // TODO(brandon): Create the program
+                  ScaffoldMessenger.of(context)
+                    ..removeCurrentSnackBar()
+                    ..showSnackBar(
+                      SnackBar(
+                        content: Text(
+                            'Create program with frequency $_frequency and runs $_runCreations'),
+                      ),
+                    );
+                },
               ),
             ),
           ),
@@ -146,35 +157,42 @@ class _FrequencySelectionState extends State<_FrequencySelection> {
                   widget.onFrequencyChanged(_frequency);
                 },
                 text: 'M',
-                colorResolver: (states) =>
-                    _frequency.monday ? Theme.of(context).colorScheme.secondary : Colors.transparent,
+                colorResolver: (states) => _frequency.monday
+                    ? Theme.of(context).colorScheme.secondary
+                    : Colors.transparent,
               ),
               _DayButton(
                 onTapped: () {
-                  _frequency = _frequency.copyWith(tuesday: !_frequency.tuesday);
+                  _frequency =
+                      _frequency.copyWith(tuesday: !_frequency.tuesday);
                   widget.onFrequencyChanged(_frequency);
                 },
                 text: 'T',
-                colorResolver: (states) =>
-                    _frequency.tuesday ? Theme.of(context).colorScheme.secondary : Colors.transparent,
+                colorResolver: (states) => _frequency.tuesday
+                    ? Theme.of(context).colorScheme.secondary
+                    : Colors.transparent,
               ),
               _DayButton(
                 onTapped: () {
-                  _frequency = _frequency.copyWith(wednesday: !_frequency.wednesday);
+                  _frequency =
+                      _frequency.copyWith(wednesday: !_frequency.wednesday);
                   widget.onFrequencyChanged(_frequency);
                 },
                 text: 'W',
-                colorResolver: (states) =>
-                    _frequency.wednesday ? Theme.of(context).colorScheme.secondary : Colors.transparent,
+                colorResolver: (states) => _frequency.wednesday
+                    ? Theme.of(context).colorScheme.secondary
+                    : Colors.transparent,
               ),
               _DayButton(
                 onTapped: () {
-                  _frequency = _frequency.copyWith(thursday: !_frequency.thursday);
+                  _frequency =
+                      _frequency.copyWith(thursday: !_frequency.thursday);
                   widget.onFrequencyChanged(_frequency);
                 },
                 text: 'R',
-                colorResolver: (states) =>
-                    _frequency.thursday ? Theme.of(context).colorScheme.secondary : Colors.transparent,
+                colorResolver: (states) => _frequency.thursday
+                    ? Theme.of(context).colorScheme.secondary
+                    : Colors.transparent,
               ),
               _DayButton(
                 onTapped: () {
@@ -182,17 +200,20 @@ class _FrequencySelectionState extends State<_FrequencySelection> {
                   widget.onFrequencyChanged(_frequency);
                 },
                 text: 'F',
-                colorResolver: (friday) =>
-                    _frequency.friday ? Theme.of(context).colorScheme.secondary : Colors.transparent,
+                colorResolver: (friday) => _frequency.friday
+                    ? Theme.of(context).colorScheme.secondary
+                    : Colors.transparent,
               ),
               _DayButton(
                 onTapped: () {
-                  _frequency = _frequency.copyWith(saturday: !_frequency.saturday);
+                  _frequency =
+                      _frequency.copyWith(saturday: !_frequency.saturday);
                   widget.onFrequencyChanged(_frequency);
                 },
                 text: 'S',
-                colorResolver: (states) =>
-                    _frequency.saturday ? Theme.of(context).colorScheme.secondary : Colors.transparent,
+                colorResolver: (states) => _frequency.saturday
+                    ? Theme.of(context).colorScheme.secondary
+                    : Colors.transparent,
               ),
               _DayButton(
                 onTapped: () {
@@ -200,8 +221,9 @@ class _FrequencySelectionState extends State<_FrequencySelection> {
                   widget.onFrequencyChanged(_frequency);
                 },
                 text: 'Su',
-                colorResolver: (states) =>
-                    _frequency.sunday ? Theme.of(context).colorScheme.secondary : Colors.transparent,
+                colorResolver: (states) => _frequency.sunday
+                    ? Theme.of(context).colorScheme.secondary
+                    : Colors.transparent,
               ),
             ],
           ),
@@ -293,6 +315,7 @@ class _RunsConfigurationState extends State<_RunsConfiguration> {
                 itemCount: _runs.length,
                 itemBuilder: (context, rIndex) {
                   return _RunCreationView(
+                    key: ObjectKey(_runs[rIndex]),
                     runCreation: _runs[rIndex],
                     availableZones: zones,
                     onChanged: (runCreation) {
@@ -351,15 +374,11 @@ class _RunCreationView extends StatefulWidget {
 }
 
 class _RunCreationViewState extends State<_RunCreationView> {
-  late TextEditingController _timeOfDayController;
-  late TextEditingController _durationController;
   late RunCreation _runCreation;
 
   @override
   void initState() {
     _runCreation = widget.runCreation;
-    _timeOfDayController = TextEditingController();
-    _durationController = TextEditingController();
     super.initState();
   }
 
@@ -369,7 +388,6 @@ class _RunCreationViewState extends State<_RunCreationView> {
         _runCreation = _runCreation.copyWith(timeOfDay: timeOfDay);
         widget.onChanged(_runCreation);
       });
-      _timeOfDayController.text = timeOfDay.format(context);
     }
   }
 
@@ -412,40 +430,31 @@ class _RunCreationViewState extends State<_RunCreationView> {
                 },
                 icon: const Icon(Icons.remove_circle),
               ),
-              SizedBox(
-                height: 48,
-                width: 100,
-                child: TextField(
-                  controller: _timeOfDayController,
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                  ),
-                  onTap: () async {
-                    final time = await showTimePicker(
-                      context: context,
-                      initialTime: TimeOfDay.now(),
-                    );
-                    _changeTime(time, context);
-                  },
-                ),
+              OutlinedButton(
+                child: Text(_runCreation.timeOfDay?.format(context) ?? ''),
+                onPressed: () async {
+                  final time = await showTimePicker(
+                    context: context,
+                    initialTime: TimeOfDay.now(),
+                  );
+                  _changeTime(time, context);
+                },
               ),
               const Padding(
                 padding: EdgeInsets.only(left: 8, right: 8),
                 child: Text('for'),
               ),
-              SizedBox(
-                height: 48,
-                width: 100,
-                child: TextField(
-                  onChanged: (text) {
-                    _changeDuration(text);
-                  },
-                  controller: _durationController,
-                  keyboardType: TextInputType.number,
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                  ),
-                ),
+              OutlinedButton(
+                child: Text(_runCreation.duration?.inMinutes.toString() ?? '0'),
+                onPressed: () async {
+                  await showDialog(
+                      context: context,
+                      builder: (_) {
+                        return _DurationTimeInputDialog(onSubmit: (value) {
+                          _changeDuration(value);
+                        });
+                      });
+                },
               ),
               const Padding(
                 padding: EdgeInsets.only(left: 8, right: 8),
@@ -472,7 +481,8 @@ class _RunCreationViewState extends State<_RunCreationView> {
                   key: ValueKey(zone.id),
                   label: Text(
                     zone.name,
-                    style: TextStyle(color: Theme.of(context).colorScheme.onSecondary),
+                    style: TextStyle(
+                        color: Theme.of(context).colorScheme.onSecondary),
                   ),
                   checkmarkColor: Theme.of(context).colorScheme.onSecondary,
                   selectedColor: Theme.of(context).colorScheme.secondary,
@@ -487,6 +497,32 @@ class _RunCreationViewState extends State<_RunCreationView> {
         ),
         const Divider(),
       ],
+    );
+  }
+}
+
+class _DurationTimeInputDialog extends StatelessWidget {
+  final ValueSetter<String> onSubmit;
+
+  const _DurationTimeInputDialog({
+    Key? key,
+    required this.onSubmit,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      child: TextField(
+        autofocus: true,
+        onSubmitted: (value) {
+          onSubmit(value);
+          Navigator.pop(context);
+        },
+        decoration: const InputDecoration(
+          border: OutlineInputBorder(),
+        ),
+        keyboardType: const TextInputType.numberWithOptions(signed: true),
+      ),
     );
   }
 }

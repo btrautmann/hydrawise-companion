@@ -35,7 +35,7 @@ class ProgramsPageView extends StatelessWidget {
                 ],
               ),
             ),
-            const Spacer(),
+            Visibility(visible: state.programs.isEmpty, child: const Spacer()),
             Visibility(
               visible: state.programs.isEmpty,
               child: Center(
@@ -60,12 +60,11 @@ class ProgramsPageView extends StatelessWidget {
             Visibility(
               visible: state.programs.isNotEmpty,
               child: Column(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: ListView.builder(
+                      primary: false,
                       shrinkWrap: true,
                       itemCount: state.programs.length,
                       itemBuilder: (context, index) {
@@ -97,7 +96,7 @@ class ProgramsPageView extends StatelessWidget {
                 ],
               ),
             ),
-            const Spacer(),
+            Visibility(visible: state.programs.isEmpty, child: const Spacer()),
           ],
         );
       },
