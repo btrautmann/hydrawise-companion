@@ -135,10 +135,8 @@ class DatabaseBackedCustomerDetailsRepository
       frequency: frequency,
       runs: createdRuns,
     );
-    print('Inserting program $program');
     await _database.insert('programs', ProgramX.toJson(program));
     for (final createdRun in createdRuns) {
-      print('Inserting createdRun $createdRun');
       await _database.insert('runs', createdRun.toJson());
     }
     return program;
@@ -159,7 +157,6 @@ class DatabaseBackedCustomerDetailsRepository
   @override
   Future<List<Program>> getPrograms() async {
     final programsRaw = await _database.query('programs');
-    print('Got raw programs $programsRaw');
     final programs = <Program>[];
     for (int i = 0; i < programsRaw.length; i++) {
       final program = ProgramX.fromJson(programsRaw[i]);
@@ -168,14 +165,12 @@ class DatabaseBackedCustomerDetailsRepository
         where: 'p_id = ?',
         whereArgs: [program.id],
       );
-      print('Got runs $runs');
       programs.add(
         program.copyWith(
           runs: runs.map((e) => Run.fromJson(e)).toList(),
         ),
       );
     }
-    print('Returning programs $programs');
     return programs;
   }
 

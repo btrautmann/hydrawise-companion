@@ -64,9 +64,6 @@ Future<void> main() async {
         providers: providers,
       ));
     },
-    (error, stackTrace) {
-      print(error.toString());
-      print(stackTrace);
-    },
+    (error, stackTrace) => log(error.toString(), stackTrace: stackTrace),
   );
 }

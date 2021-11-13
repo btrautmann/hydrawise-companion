@@ -25,9 +25,7 @@ class ProgramsCubit extends Cubit<ProgramsState> {
   }
 
   Future<void> _initPrograms() async {
-    print('received init');
     final programs = await _getPrograms();
-    print('Found program $programs');
     emit(state.copyWith(programs: programs));
   }
 
@@ -36,13 +34,11 @@ class ProgramsCubit extends Cubit<ProgramsState> {
     required Frequency frequency,
     required List<RunCreation> runs,
   }) async {
-    print('Creating program with name $name and runs $runs');
     await _createProgram(
       name: name,
       frequency: frequency,
       runs: runs,
     );
-    print('calling init');
     _initPrograms();
   }
 
