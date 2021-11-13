@@ -42,7 +42,8 @@ class ProgramsCubit extends Cubit<ProgramsState> {
     _initPrograms();
   }
 
-  Future<void> deleteProgram({required String programId}) {
-    return _deleteProgram(programId: programId);
+  Future<void> deleteProgram({required String programId}) async {
+    await _deleteProgram(programId: programId);
+    _initPrograms();
   }
 }

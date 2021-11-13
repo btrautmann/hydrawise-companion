@@ -86,6 +86,7 @@ class _CreateProgramViewState extends State<CreateProgramView> {
                         frequency: _frequency!,
                         runs: _runCreations,
                       );
+                  Navigator.of(context).pop();
                 },
               ),
             ),
