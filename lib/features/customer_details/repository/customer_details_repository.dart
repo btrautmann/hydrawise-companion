@@ -1,5 +1,6 @@
 import 'package:hydrawise/features/customer_details/customer_details.dart';
 import 'package:hydrawise/features/programs/programs.dart';
+import 'package:hydrawise/features/programs/view/create_program_page/run_creation.dart';
 import 'package:sqflite/sqlite_api.dart';
 import 'package:uuid/uuid.dart';
 
@@ -20,8 +21,9 @@ abstract class CustomerDetailsRepository {
   Future<Program> createProgram(
     String name,
     Frequency frequency,
-    List<Run> runs,
+    List<RunCreation> runs,
   );
+  Future<void> deleteProgram({required String programId});
   Future<void> updateProgram(Program program);
   Future<List<Program>> getPrograms();
 
@@ -29,7 +31,8 @@ abstract class CustomerDetailsRepository {
   Future<void> clearAllData();
 }
 
-class DatabaseBackedCustomerDetailsRepository implements CustomerDetailsRepository {
+class DatabaseBackedCustomerDetailsRepository
+    implements CustomerDetailsRepository {
   DatabaseBackedCustomerDetailsRepository(this._database);
 
   final Database _database;
@@ -109,17 +112,42 @@ class DatabaseBackedCustomerDetailsRepository implements CustomerDetailsReposito
   Future<Program> createProgram(
     String name,
     Frequency frequency,
-    List<Run> runs,
+    List<RunCreation> runs,
   ) async {
     final programId = const Uuid().v4().toString();
+    final List<Run> createdRuns = [];
+    for (final element in runs) {
+      for (final zone in element.zones!) {
+        createdRuns.add(
+          Run(
+            id: const Uuid().v4().toString(),
+            programId: programId,
+            startTime: element.timeOfDay!,
+            duration: element.duration!.inSeconds,
+            zoneId: zone.id,
+          ),
+        );
+      }
+    }
     final program = Program(
       id: programId,
       name: name,
       frequency: frequency,
-      runs: runs,
+      runs: createdRuns,
     );
+    print('Inserting program $program');
     await _database.insert('programs', ProgramX.toJson(program));
+    for (final createdRun in createdRuns) {
+      print('Inserting createdRun $createdRun');
+      await _database.insert('runs', createdRun.toJson());
+    }
     return program;
+  }
+
+  @override
+  Future<void> deleteProgram({required String programId}) {
+    return _database
+        .delete('programs', where: 'id = ?', whereArgs: [programId]);
   }
 
   @override
@@ -131,6 +159,7 @@ class DatabaseBackedCustomerDetailsRepository implements CustomerDetailsReposito
   @override
   Future<List<Program>> getPrograms() async {
     final programsRaw = await _database.query('programs');
+    print('Got raw programs $programsRaw');
     final programs = <Program>[];
     for (int i = 0; i < programsRaw.length; i++) {
       final program = ProgramX.fromJson(programsRaw[i]);
@@ -139,12 +168,14 @@ class DatabaseBackedCustomerDetailsRepository implements CustomerDetailsReposito
         where: 'p_id = ?',
         whereArgs: [program.id],
       );
+      print('Got runs $runs');
       programs.add(
         program.copyWith(
           runs: runs.map((e) => Run.fromJson(e)).toList(),
         ),
       );
     }
+    print('Returning programs $programs');
     return programs;
   }
 
@@ -210,9 +241,15 @@ class InMemoryCustomerDetailsRepository implements CustomerDetailsRepository {
   Future<Program> createProgram(
     String name,
     Frequency frequency,
-    List<Run> runs,
+    List<RunCreation> runs,
   ) {
     // TODO: implement createProgram
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> deleteProgram({required String programId}) {
+    // TODO: implement deleteProgram
     throw UnimplementedError();
   }
 

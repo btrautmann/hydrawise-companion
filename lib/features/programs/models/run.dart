@@ -22,9 +22,8 @@ extension TimeOfDayX on TimeOfDay {
     return '${timeOfDay.hour}:${timeOfDay.minute}';
   }
 
-  static TimeOfDay fromJson(Map<String, dynamic> json) {
-    final timeString = json['time'] as String;
-    final splits = timeString.split(':');
+  static TimeOfDay fromJson(String json) {
+    final splits = json.split(':');
     return TimeOfDay(
       hour: int.parse(splits[0]),
       minute: int.parse(splits[1]),

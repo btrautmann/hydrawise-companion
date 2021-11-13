@@ -8,7 +8,7 @@ part 'run_creation.freezed.dart';
 class RunCreation with _$RunCreation {
   factory RunCreation({
     TimeOfDay? timeOfDay,
-    List<Zone> zones,
+    List<Zone>? zones,
     Duration? duration,
   }) = _RunCreation;
 }

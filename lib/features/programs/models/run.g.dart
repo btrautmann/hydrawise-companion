@@ -10,7 +10,7 @@ _$_Run _$_$_RunFromJson(Map json) {
   return _$_Run(
     id: json['id'] as String,
     programId: json['p_id'] as String,
-    startTime: TimeOfDayX.fromJson(json['start_time'] as Map<String, dynamic>),
+    startTime: TimeOfDayX.fromJson(json['start_time'] as String),
     duration: json['duration'] as int,
     zoneId: json['z_id'] as int,
   );

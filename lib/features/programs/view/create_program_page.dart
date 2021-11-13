@@ -65,8 +65,6 @@ class _CreateProgramViewState extends State<CreateProgramView> {
             },
           ),
           Visibility(
-            // TODO(brandon): Duration can be removed and done
-            // button still shows
             visible: _name != null &&
                 _name!.isNotEmpty &&
                 _frequency != null &&
@@ -83,15 +81,11 @@ class _CreateProgramViewState extends State<CreateProgramView> {
               child: ElevatedButton(
                 child: const Text('Done'),
                 onPressed: () {
-                  // TODO(brandon): Create the program
-                  ScaffoldMessenger.of(context)
-                    ..removeCurrentSnackBar()
-                    ..showSnackBar(
-                      SnackBar(
-                        content: Text(
-                            'Create program with frequency $_frequency and runs $_runCreations'),
-                      ),
-                    );
+                  context.read<ProgramsCubit>().createProgram(
+                        name: _name!,
+                        frequency: _frequency!,
+                        runs: _runCreations,
+                      );
                 },
               ),
             ),

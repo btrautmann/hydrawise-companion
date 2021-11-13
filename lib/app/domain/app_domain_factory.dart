@@ -43,6 +43,7 @@ abstract class ProductionDomainFactory {
     );
     final getPrograms = GetProgramsFromRepository(repository: repository);
     final createProgram = AddProgramToRepository(repository: repository);
+    final deleteProgram = DeleteProgram(repository: repository);
 
     final runZone = RunZoneOverNetwork(
       httpClient: client,
@@ -67,6 +68,7 @@ abstract class ProductionDomainFactory {
       Provider<GetCustomerStatus>.value(value: getCustomerStatus),
       Provider<GetPrograms>.value(value: getPrograms),
       Provider<CreateProgram>.value(value: createProgram),
+      Provider<DeleteProgram>.value(value: deleteProgram),
       Provider<GetApiKey>.value(value: getApiKey),
       Provider<SetApiKey>.value(value: setApiKey),
       Provider<ClearCustomerDetails>.value(value: clearCustomerDetails),
@@ -102,6 +104,7 @@ abstract class DevelopmentDomainFactory {
     final getCustomerStatus = GetFakeCustomerStatus(repository: repository);
     final getPrograms = GetProgramsFromRepository(repository: repository);
     final createProgram = AddProgramToRepository(repository: repository);
+    final deleteProgram = DeleteProgram(repository: repository);
     final setAppThemeMode = SetAppThemeModeInStorage(dataStorage);
     final getAppThemeMode = GetAppThemeModeFromStorage(dataStorage);
     final getAuthFailures = GetNetworkAuthFailures(
@@ -117,6 +120,7 @@ abstract class DevelopmentDomainFactory {
       Provider<GetCustomerStatus>.value(value: getCustomerStatus),
       Provider<GetPrograms>.value(value: getPrograms),
       Provider<CreateProgram>.value(value: createProgram),
+      Provider<DeleteProgram>.value(value: deleteProgram),
       Provider<GetApiKey>.value(value: getApiKey),
       Provider<SetApiKey>.value(value: setApiKey),
       Provider<ClearCustomerDetails>.value(value: clearCustomerDetails),
