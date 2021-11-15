@@ -17,6 +17,24 @@ class Frequency with _$Frequency {
 
 extension FrequencyX on Frequency {
   bool hasAtLeastOneDay() {
-    return monday || tuesday || wednesday || thursday || friday || saturday || sunday;
+    return monday ||
+        tuesday ||
+        wednesday ||
+        thursday ||
+        friday ||
+        saturday ||
+        sunday;
+  }
+
+  static Frequency none() {
+    return Frequency(
+      monday: false,
+      tuesday: false,
+      wednesday: false,
+      thursday: false,
+      friday: false,
+      saturday: false,
+      sunday: false,
+    );
   }
 }

@@ -84,11 +84,8 @@ class ProgramsPageView extends StatelessWidget {
                                   ),
                                   title: Text(state.programs[index].name),
                                   onTapped: () {
-                                    showDialog(
-                                      context: context,
-                                      builder: (_) => ProgramDetailsDialog(
-                                        program: state.programs[index],
-                                      ),
+                                    GoRouter.of(context).push(
+                                      '/update_program/${state.programs[index].id}',
                                     );
                                   },
                                 ),

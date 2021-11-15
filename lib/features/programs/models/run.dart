@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:hydrawise/features/programs/models/run_draft.dart';
 
 part 'run.freezed.dart';
 part 'run.g.dart';
@@ -9,7 +10,8 @@ class Run with _$Run {
   factory Run({
     @JsonKey(name: 'id') required String id,
     @JsonKey(name: 'p_id') required String programId,
-    @JsonKey(name: 'start_time', toJson: TimeOfDayX.toJson, fromJson: TimeOfDayX.fromJson) required TimeOfDay startTime,
+    @JsonKey(name: 'start_time', toJson: TimeOfDayX.toJson, fromJson: TimeOfDayX.fromJson)
+        required TimeOfDay startTime,
     @JsonKey(name: 'duration') required int duration,
     @JsonKey(name: 'z_id') required int zoneId,
   }) = _Run;
@@ -28,5 +30,35 @@ extension TimeOfDayX on TimeOfDay {
       hour: int.parse(splits[0]),
       minute: int.parse(splits[1]),
     );
+  }
+}
+
+extension ListRunX on List<Run> {
+  List<RunDraft> toRunModifications() {
+    final mods = <RunDraft>[];
+    forEach((run) {
+      final addedMod = mods.singleWhereOrNull(
+        (mod) =>
+            mod.timeOfDay == run.startTime &&
+            mod.duration.inSeconds == run.duration,
+      );
+      if (addedMod == null) {
+        // A runDraft containing this run has not
+        // been created yet
+        mods.add(RunDraft.modification(
+          timeOfDay: run.startTime,
+          zoneIds: [run.zoneId],
+          duration: Duration(seconds: run.duration),
+        ));
+      } else {
+        // Add this run's zoneId to the run draft
+        final index = mods.indexWhere(
+          (element) => element.timeOfDay == addedMod.timeOfDay,
+        );
+        mods[index] =
+            addedMod.copyWith(zoneIds: [run.zoneId, ...addedMod.zoneIds]);
+      }
+    });
+    return mods;
   }
 }

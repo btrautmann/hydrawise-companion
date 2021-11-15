@@ -42,7 +42,8 @@ abstract class ProductionDomainFactory {
       setNextPollTime: setNextPollTime,
     );
     final getPrograms = GetProgramsFromRepository(repository: repository);
-    final createProgram = AddProgramToRepository(repository: repository);
+    final createProgram = CreateProgram(repository: repository);
+    final updateProgram = UpdateProgram(repository: repository);
     final deleteProgram = DeleteProgram(repository: repository);
 
     final runZone = RunZoneOverNetwork(
@@ -68,6 +69,7 @@ abstract class ProductionDomainFactory {
       Provider<GetCustomerStatus>.value(value: getCustomerStatus),
       Provider<GetPrograms>.value(value: getPrograms),
       Provider<CreateProgram>.value(value: createProgram),
+      Provider<UpdateProgram>.value(value: updateProgram),
       Provider<DeleteProgram>.value(value: deleteProgram),
       Provider<GetApiKey>.value(value: getApiKey),
       Provider<SetApiKey>.value(value: setApiKey),
@@ -103,7 +105,8 @@ abstract class DevelopmentDomainFactory {
     final getCustomerDetails = GetFakeCustomerDetails(repository: repository);
     final getCustomerStatus = GetFakeCustomerStatus(repository: repository);
     final getPrograms = GetProgramsFromRepository(repository: repository);
-    final createProgram = AddProgramToRepository(repository: repository);
+    final createProgram = CreateProgram(repository: repository);
+    final updateProgram = UpdateProgram(repository: repository);
     final deleteProgram = DeleteProgram(repository: repository);
     final setAppThemeMode = SetAppThemeModeInStorage(dataStorage);
     final getAppThemeMode = GetAppThemeModeFromStorage(dataStorage);
@@ -120,6 +123,7 @@ abstract class DevelopmentDomainFactory {
       Provider<GetCustomerStatus>.value(value: getCustomerStatus),
       Provider<GetPrograms>.value(value: getPrograms),
       Provider<CreateProgram>.value(value: createProgram),
+      Provider<UpdateProgram>.value(value: updateProgram),
       Provider<DeleteProgram>.value(value: deleteProgram),
       Provider<GetApiKey>.value(value: getApiKey),
       Provider<SetApiKey>.value(value: setApiKey),

@@ -69,6 +69,15 @@ class BuildStandardRouter implements BuildRouter {
             child: const CreateProgramPage(),
           ),
         ),
+        GoRoute(
+          path: '/update_program/:pid',
+          pageBuilder: (context, state) => MaterialPage<void>(
+            key: state.pageKey,
+            child: CreateProgramPage(
+              existingProgramId: state.params['pid']!,
+            ),
+          ),
+        ),
       ],
       errorPageBuilder: (context, state) => MaterialPage<void>(
         key: state.pageKey,
