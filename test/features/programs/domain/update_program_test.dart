@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hydrawise/features/customer_details/customer_details.dart';
@@ -27,7 +25,9 @@ void main() {
       );
 
       expect(
-        await repository.getProgram(programId: programId).then((value) => value.name),
+        await repository
+            .getProgram(programId: programId)
+            .then((value) => value.name),
         'New',
       );
     });
@@ -54,7 +54,9 @@ void main() {
       );
 
       expect(
-        await repository.getProgram(programId: programId).then((value) => value.frequency.monday),
+        await repository
+            .getProgram(programId: programId)
+            .then((value) => value.frequency.monday),
         isTrue,
       );
     });
