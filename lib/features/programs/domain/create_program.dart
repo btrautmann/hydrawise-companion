@@ -1,27 +1,40 @@
-import 'package:hydrawise/features/customer_details/repository/customer_details_repository.dart';
+import 'package:hydrawise/features/customer_details/customer_details.dart';
 import 'package:hydrawise/features/programs/programs.dart';
+import 'package:uuid/uuid.dart';
 
-abstract class CreateProgram {
-  Future<Program> call({
-    required String name,
-    required Frequency frequency,
-    required List<Run> runs,
-  });
-}
-
-class AddProgramToRepository implements CreateProgram {
+class CreateProgram {
   final CustomerDetailsRepository _repository;
 
-  AddProgramToRepository({
+  CreateProgram({
     required CustomerDetailsRepository repository,
   }) : _repository = repository;
 
-  @override
-  Future<Program> call({
+  Future<void> call({
     required String name,
     required Frequency frequency,
-    required List<Run> runs,
-  }) {
-    return _repository.createProgram(name, frequency, runs);
+    required List<RunDraft> runDrafts,
+  }) async {
+    final programId = await _repository.createProgram(
+      name: name,
+      frequency: frequency,
+    );
+    final runs = <Run>[];
+    for (final draft in runDrafts) {
+      for (final zoneId in draft.zoneIds) {
+        runs.add(
+          Run(
+            id: const Uuid().v4().toString(),
+            programId: programId,
+            startTime: draft.timeOfDay,
+            duration: draft.duration.inSeconds,
+            zoneId: zoneId,
+          ),
+        );
+      }
+    }
+    await _repository.insertRuns(
+      programId: programId,
+      runs: runs,
+    );
   }
 }

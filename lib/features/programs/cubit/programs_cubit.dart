@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:hydrawise/features/programs/domain/delete_program.dart';
 import 'package:hydrawise/features/programs/domain/get_programs.dart';
 import 'package:hydrawise/features/programs/programs.dart';
 
@@ -9,12 +10,18 @@ part 'programs_cubit.freezed.dart';
 class ProgramsCubit extends Cubit<ProgramsState> {
   final GetPrograms _getPrograms;
   final CreateProgram _createProgram;
+  final UpdateProgram _updateProgram;
+  final DeleteProgram _deleteProgram;
 
   ProgramsCubit({
     required GetPrograms getPrograms,
     required CreateProgram createProgram,
+    required UpdateProgram updateProgram,
+    required DeleteProgram deleteProgram,
   })  : _getPrograms = getPrograms,
         _createProgram = createProgram,
+        _updateProgram = updateProgram,
+        _deleteProgram = deleteProgram,
         super(ProgramsState(programs: [])) {
     _initPrograms();
   }
@@ -27,13 +34,33 @@ class ProgramsCubit extends Cubit<ProgramsState> {
   Future<void> createProgram({
     required String name,
     required Frequency frequency,
-    required List<Run> runs,
+    required List<RunDraft> runs,
   }) async {
     await _createProgram(
       name: name,
       frequency: frequency,
-      runs: runs,
+      runDrafts: runs,
     );
+    _initPrograms();
+  }
+
+  Future<void> updateProgram({
+    required String programId,
+    required String name,
+    required Frequency frequency,
+    required List<RunDraft> runs,
+  }) async {
+    await _updateProgram(
+      programId: programId,
+      name: name,
+      frequency: frequency,
+      runDrafts: runs,
+    );
+    _initPrograms();
+  }
+
+  Future<void> deleteProgram({required String programId}) async {
+    await _deleteProgram(programId: programId);
     _initPrograms();
   }
 }

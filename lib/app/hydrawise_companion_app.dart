@@ -56,6 +56,8 @@ class App extends StatelessWidget {
               create: (context) => ProgramsCubit(
                 getPrograms: context.read<GetPrograms>(),
                 createProgram: context.read<CreateProgram>(),
+                updateProgram: context.read<UpdateProgram>(),
+                deleteProgram: context.read<DeleteProgram>(),
               ),
             ),
           ],

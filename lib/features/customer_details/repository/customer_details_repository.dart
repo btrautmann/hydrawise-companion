@@ -15,15 +15,37 @@ abstract class CustomerDetailsRepository {
   Future<void> updateZone(Zone zone);
   // TODO(brandon): Do we need to support get by id?
   Future<List<Zone>> getZones();
-
   // Program
-  Future<Program> createProgram(
-    String name,
-    Frequency frequency,
-    List<Run> runs,
-  );
-  Future<void> updateProgram(Program program);
+  Future<String> createProgram({
+    required String name,
+    required Frequency frequency,
+  });
+  Future<Program> getProgram({
+    required String programId,
+  });
   Future<List<Program>> getPrograms();
+  Future<void> updateProgram({
+    required String programId,
+    required String name,
+    required Frequency frequency,
+  });
+  Future<void> deleteProgram({
+    required String programId,
+  });
+  Future<void> insertRuns({
+    required String programId,
+    required List<Run> runs,
+  });
+  Future<void> updateRuns({
+    required String programId,
+    required List<Run> runs,
+  });
+  Future<List<Run>> getRunsForProgram({
+    required String programId,
+  });
+  Future<void> deleteRun({
+    required String runId,
+  });
 
   // Utility
   Future<void> clearAllData();
@@ -106,26 +128,66 @@ class DatabaseBackedCustomerDetailsRepository implements CustomerDetailsReposito
   }
 
   @override
-  Future<Program> createProgram(
-    String name,
-    Frequency frequency,
-    List<Run> runs,
-  ) async {
-    final programId = const Uuid().v4().toString();
+  Future<String> createProgram({
+    required String name,
+    required Frequency frequency,
+  }) async {
     final program = Program(
-      id: programId,
+      id: const Uuid().v4().toString(),
       name: name,
       frequency: frequency,
-      runs: runs,
+      // Runs aren't serialized, so pass empty list
+      // TODO(brandon): This isn't great, possibly
+      // introduce ProgramDraft
+      runs: [],
     );
-    await _database.insert('programs', ProgramX.toJson(program));
-    return program;
+    await _database.insert(
+      'programs',
+      ProgramX.toJson(program),
+    );
+    return program.id;
   }
 
   @override
-  Future<void> updateProgram(Program program) {
-    // TODO: implement updateProgram
-    throw UnimplementedError();
+  Future<void> updateProgram({
+    required String programId,
+    required String name,
+    required Frequency frequency,
+  }) {
+    return _database.update(
+      'programs',
+      ProgramX.toJson(
+        Program(
+          id: programId,
+          name: name,
+          frequency: frequency,
+          // Runs aren't serialized, so pass empty list
+          // TODO(brandon): This isn't great, possibly
+          // introduce ProgramDraft
+          runs: [],
+        ),
+      ),
+      where: 'id = ?',
+      whereArgs: [programId],
+    );
+  }
+
+  @override
+  Future<void> deleteProgram({required String programId}) {
+    return _database.delete(
+      'programs',
+      where: 'id = ?',
+      whereArgs: [programId],
+    );
+  }
+
+  @override
+  Future<Program> getProgram({required String programId}) {
+    return _database.query(
+      'programs',
+      where: 'id = ?',
+      whereArgs: [programId],
+    ).then((value) => value.map((e) => ProgramX.fromJson(e)).single);
   }
 
   @override
@@ -149,15 +211,62 @@ class DatabaseBackedCustomerDetailsRepository implements CustomerDetailsReposito
   }
 
   @override
+  Future<void> insertRuns({
+    required String programId,
+    required List<Run> runs,
+  }) async {
+    final batch = _database.batch();
+    for (final run in runs) {
+      batch.insert('runs', run.toJson());
+    }
+    await batch.commit();
+  }
+
+  @override
+  Future<void> updateRuns({
+    required String programId,
+    required List<Run> runs,
+  }) async {
+    final batch = _database.batch();
+    for (final run in runs) {
+      batch.update(
+        'runs',
+        run.toJson(),
+        where: 'id = ?',
+        whereArgs: [run.id],
+      );
+    }
+    await batch.commit();
+  }
+
+  @override
+  Future<List<Run>> getRunsForProgram({required String programId}) {
+    return _database.query(
+      'runs',
+      where: 'p_id = ?',
+      whereArgs: [programId],
+    ).then((value) => value.map((e) => Run.fromJson(e)).toList());
+  }
+
+  @override
+  Future<void> deleteRun({required String runId}) {
+    return _database.delete('runs', where: 'id = ?', whereArgs: [runId]);
+  }
+
+  @override
   Future<void> clearAllData() async {
     await _database.delete('zones');
     await _database.delete('customers');
+    await _database.delete('programs');
+    await _database.delete('runs');
   }
 }
 
 class InMemoryCustomerDetailsRepository implements CustomerDetailsRepository {
   final customers = <CustomerIdentification>[];
   final zones = <Zone>[];
+  final programs = <Program>[];
+  final runs = <Run>[];
 
   @override
   Future<CustomerIdentification> getCustomer() async {
@@ -207,30 +316,82 @@ class InMemoryCustomerDetailsRepository implements CustomerDetailsRepository {
   }
 
   @override
-  Future<Program> createProgram(
-    String name,
-    Frequency frequency,
-    List<Run> runs,
-  ) {
-    // TODO: implement createProgram
-    throw UnimplementedError();
+  Future<String> createProgram({
+    required String name,
+    required Frequency frequency,
+  }) async {
+    final program = Program(
+      id: const Uuid().v4().toString(),
+      name: name,
+      frequency: frequency,
+      runs: [],
+    );
+    programs.add(program);
+    return program.id;
   }
 
   @override
-  Future<void> updateProgram(Program program) {
-    // TODO: implement updateProgram
-    throw UnimplementedError();
+  Future<void> deleteProgram({required String programId}) async {
+    programs.removeWhere((element) => element.id == programId);
   }
 
   @override
-  Future<List<Program>> getPrograms() {
-    // TODO: implement getPrograms
-    throw UnimplementedError();
+  Future<void> updateProgram({
+    required String programId,
+    required String name,
+    required Frequency frequency,
+  }) async {
+    final index = programs.indexWhere((element) => element.id == programId);
+    programs[index] = programs[index].copyWith(
+      name: name,
+      frequency: frequency,
+    );
+  }
+
+  @override
+  Future<List<Program>> getPrograms() async {
+    return programs;
+  }
+
+  @override
+  Future<Program> getProgram({required String programId}) async {
+    return programs.singleWhere((element) => element.id == programId);
+  }
+
+  @override
+  Future<void> insertRuns({
+    required String programId,
+    required List<Run> runs,
+  }) async {
+    this.runs.addAll(runs);
+  }
+
+  @override
+  Future<void> updateRuns({
+    required String programId,
+    required List<Run> runs,
+  }) async {
+    for (final run in runs) {
+      final index = runs.indexWhere((element) => run.id == element.id);
+      this.runs[index] = run;
+    }
+  }
+
+  @override
+  Future<List<Run>> getRunsForProgram({required String programId}) async {
+    return runs.where((element) => element.programId == programId).toList();
+  }
+
+  @override
+  Future<void> deleteRun({required String runId}) async {
+    runs.removeWhere((element) => element.id == runId);
   }
 
   @override
   Future<void> clearAllData() async {
     zones.clear();
     customers.clear();
+    programs.clear();
+    runs.clear();
   }
 }

@@ -62,27 +62,38 @@ class ProgramsPageView extends StatelessWidget {
               child: Column(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.all(16.0),
+                    padding: const EdgeInsets.only(top: 16, bottom: 16),
                     child: ListView.builder(
                       primary: false,
                       shrinkWrap: true,
                       itemCount: state.programs.length,
                       itemBuilder: (context, index) {
-                        return ListRow(
-                          leadingIcon: CircleBackground(
-                            child: Text(
-                              state.programs[index].name.characters.first,
-                            ),
-                          ),
-                          title: Text(state.programs[index].name),
-                          onTapped: () {
-                            showDialog(
-                              context: context,
-                              builder: (_) => ProgramDetailsDialog(
-                                program: state.programs[index],
+                        return Column(
+                          children: [
+                            Dismissible(
+                              key: ObjectKey(state.programs[index]),
+                              child: Padding(
+                                padding: const EdgeInsets.only(top: 4, bottom: 4),
+                                child: ListRow(
+                                  leadingIcon: CircleBackground(
+                                    child: Text(
+                                      state.programs[index].name.characters.first,
+                                    ),
+                                  ),
+                                  title: Text(state.programs[index].name),
+                                  onTapped: () {
+                                    GoRouter.of(context).push(
+                                      '/update_program/${state.programs[index].id}',
+                                    );
+                                  },
+                                ),
                               ),
-                            );
-                          },
+                              onDismissed: (direction) {
+                                context.read<ProgramsCubit>().deleteProgram(programId: state.programs[index].id);
+                              },
+                            ),
+                            const Divider(),
+                          ],
                         );
                       },
                     ),

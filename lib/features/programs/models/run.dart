@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:hydrawise/features/programs/models/run_draft.dart';
 
 part 'run.freezed.dart';
 part 'run.g.dart';
@@ -22,12 +23,38 @@ extension TimeOfDayX on TimeOfDay {
     return '${timeOfDay.hour}:${timeOfDay.minute}';
   }
 
-  static TimeOfDay fromJson(Map<String, dynamic> json) {
-    final timeString = json['time'] as String;
-    final splits = timeString.split(':');
+  static TimeOfDay fromJson(String json) {
+    final splits = json.split(':');
     return TimeOfDay(
       hour: int.parse(splits[0]),
       minute: int.parse(splits[1]),
     );
+  }
+}
+
+extension ListRunX on List<Run> {
+  List<RunDraft> toRunModifications() {
+    final mods = <RunDraft>[];
+    forEach((run) {
+      final addedMod = mods.singleWhereOrNull(
+        (mod) => mod.timeOfDay == run.startTime && mod.duration.inSeconds == run.duration,
+      );
+      if (addedMod == null) {
+        // A runDraft containing this run has not
+        // been created yet
+        mods.add(RunDraft.modification(
+          timeOfDay: run.startTime,
+          zoneIds: [run.zoneId],
+          duration: Duration(seconds: run.duration),
+        ));
+      } else {
+        // Add this run's zoneId to the run draft
+        final index = mods.indexWhere(
+          (element) => element.timeOfDay == addedMod.timeOfDay,
+        );
+        mods[index] = addedMod.copyWith(zoneIds: [run.zoneId, ...addedMod.zoneIds]);
+      }
+    });
+    return mods;
   }
 }
