@@ -1,4 +1,5 @@
-import 'package:dio/dio.dart';
+import 'package:dio/dio.dart' hide VoidCallback;
+import 'package:flutter/material.dart';
 import 'package:hydrawise/app/networking/authentication_interceptor.dart';
 import 'package:hydrawise/app/networking/demo_mode_interceptor.dart';
 
