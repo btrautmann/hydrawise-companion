@@ -26,24 +26,18 @@ class UpdateProgram {
     final existingRuns = await _repository.getRunsForProgram(
       programId: programId,
     );
-    print('Existing Runs: $existingRuns');
-
-    final newRunDrafts = runDrafts.where((element) => element.isNewRunDraft());
-    print('New run drafts: $newRunDrafts');
 
     final modifiedRunDrafts =
-        runDrafts.where((element) => !element.isNewRunDraft());
-    print('Modified run drafts: $modifiedRunDrafts');
+        runDrafts.where((element) => !element.isNewRunDraft()).toList();
 
     final deletedRuns = existingRuns.where(
-      (existingRun) => !modifiedRunDrafts.any(
+      (existingRun) => modifiedRunDrafts.none(
         (element) =>
             element.zoneIds.contains(existingRun.zoneId) &&
             element.timeOfDay == existingRun.startTime &&
             element.duration.inSeconds == existingRun.duration,
       ),
     );
-    print('Deleted runs: $deletedRuns');
     for (final run in deletedRuns) {
       await _repository.deleteRun(runId: run.id);
     }
@@ -89,10 +83,8 @@ class UpdateProgram {
         );
         final isCreating = existingRuns.none((run) => run.id == runId);
         if (isCreating) {
-          print('creating runId $runId for zoneId $zoneId');
           runsToInsert.add(run);
         } else {
-          print('updating runId $runId for zoneId $zoneId');
           runsToUpdate.add(run);
         }
       }
