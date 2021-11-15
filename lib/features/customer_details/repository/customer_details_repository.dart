@@ -51,8 +51,7 @@ abstract class CustomerDetailsRepository {
   Future<void> clearAllData();
 }
 
-class DatabaseBackedCustomerDetailsRepository
-    implements CustomerDetailsRepository {
+class DatabaseBackedCustomerDetailsRepository implements CustomerDetailsRepository {
   DatabaseBackedCustomerDetailsRepository(this._database);
 
   final Database _database;
@@ -258,12 +257,16 @@ class DatabaseBackedCustomerDetailsRepository
   Future<void> clearAllData() async {
     await _database.delete('zones');
     await _database.delete('customers');
+    await _database.delete('programs');
+    await _database.delete('runs');
   }
 }
 
 class InMemoryCustomerDetailsRepository implements CustomerDetailsRepository {
   final customers = <CustomerIdentification>[];
   final zones = <Zone>[];
+  final programs = <Program>[];
+  final runs = <Run>[];
 
   @override
   Future<CustomerIdentification> getCustomer() async {
@@ -316,15 +319,20 @@ class InMemoryCustomerDetailsRepository implements CustomerDetailsRepository {
   Future<String> createProgram({
     required String name,
     required Frequency frequency,
-  }) {
-    // TODO: implement createProgram
-    throw UnimplementedError();
+  }) async {
+    final program = Program(
+      id: const Uuid().v4().toString(),
+      name: name,
+      frequency: frequency,
+      runs: [],
+    );
+    programs.add(program);
+    return program.id;
   }
 
   @override
-  Future<void> deleteProgram({required String programId}) {
-    // TODO: implement deleteProgram
-    throw UnimplementedError();
+  Future<void> deleteProgram({required String programId}) async {
+    programs.removeWhere((element) => element.id == programId);
   }
 
   @override
@@ -332,56 +340,58 @@ class InMemoryCustomerDetailsRepository implements CustomerDetailsRepository {
     required String programId,
     required String name,
     required Frequency frequency,
-  }) {
-    // TODO: implement updateProgram
-    throw UnimplementedError();
+  }) async {
+    final index = programs.indexWhere((element) => element.id == programId);
+    programs[index] = programs[index].copyWith(
+      name: name,
+      frequency: frequency,
+    );
   }
 
   @override
-  Future<List<Program>> getPrograms() {
-    // TODO: implement getPrograms
-    throw UnimplementedError();
+  Future<List<Program>> getPrograms() async {
+    return programs;
   }
 
   @override
-  Future<Program> getProgram({required String programId}) {
-    // TODO: implement getProgram
-    throw UnimplementedError();
+  Future<Program> getProgram({required String programId}) async {
+    return programs.singleWhere((element) => element.id == programId);
   }
 
   @override
   Future<void> insertRuns({
     required String programId,
     required List<Run> runs,
-  }) {
-    // TODO: implement saveRuns
-    throw UnimplementedError();
+  }) async {
+    this.runs.addAll(runs);
   }
 
   @override
   Future<void> updateRuns({
     required String programId,
     required List<Run> runs,
-  }) {
-    // TODO: implement updateRuns
-    throw UnimplementedError();
+  }) async {
+    for (final run in runs) {
+      final index = runs.indexWhere((element) => run.id == element.id);
+      this.runs[index] = run;
+    }
   }
 
   @override
-  Future<List<Run>> getRunsForProgram({required String programId}) {
-    // TODO: implement getRunsForProgram
-    throw UnimplementedError();
+  Future<List<Run>> getRunsForProgram({required String programId}) async {
+    return runs.where((element) => element.programId == programId).toList();
   }
 
   @override
-  Future<void> deleteRun({required String runId}) {
-    // TODO: implement deleteRun
-    throw UnimplementedError();
+  Future<void> deleteRun({required String runId}) async {
+    runs.removeWhere((element) => element.id == runId);
   }
 
   @override
   Future<void> clearAllData() async {
     zones.clear();
     customers.clear();
+    programs.clear();
+    runs.clear();
   }
 }

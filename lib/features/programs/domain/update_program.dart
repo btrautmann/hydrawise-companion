@@ -27,8 +27,7 @@ class UpdateProgram {
       programId: programId,
     );
 
-    final modifiedRunDrafts =
-        runDrafts.where((element) => !element.isNewRunDraft()).toList();
+    final modifiedRunDrafts = runDrafts.where((element) => !element.isNewRunDraft()).toList();
 
     final deletedRuns = existingRuns.where(
       (existingRun) => modifiedRunDrafts.none(
