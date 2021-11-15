@@ -8,7 +8,6 @@ import 'package:hydrawise/features/app_theme_mode/app_theme_mode.dart';
 import 'package:hydrawise/features/customer_details/customer_details.dart';
 import 'package:hydrawise/features/login/login.dart';
 import 'package:hydrawise/features/programs/programs.dart';
-import 'package:hydrawise/l10n/l10n.dart';
 import 'package:provider/provider.dart';
 
 class App extends StatelessWidget {
@@ -75,11 +74,9 @@ class App extends StatelessWidget {
                   theme: _buildLightTheme(context),
                   darkTheme: _buildDarkTheme(context),
                   localizationsDelegates: const [
-                    AppLocalizations.delegate,
                     GlobalMaterialLocalizations.delegate,
                   ],
                   themeMode: state.themeMode,
-                  supportedLocales: AppLocalizations.supportedLocales,
                   routeInformationParser: _router.routeInformationParser,
                   routerDelegate: _router.routerDelegate,
                 );
