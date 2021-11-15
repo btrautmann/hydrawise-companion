@@ -27,7 +27,8 @@ class UpdateProgram {
       programId: programId,
     );
 
-    final modifiedRunDrafts = runDrafts.where((element) => !element.isNewRunDraft()).toList();
+    final modifiedRunDrafts =
+        runDrafts.where((element) => !element.isNewRunDraft()).toList();
 
     final deletedRuns = existingRuns.where(
       (existingRun) => modifiedRunDrafts.none(
@@ -47,27 +48,24 @@ class UpdateProgram {
       for (final zoneId in runDraft.zoneIds) {
         // If the provided RunDraft is a modification,
         // we may be adding runs OR updating runs,
-        // and as such need to assign the correct existing
-        // or new ID to the run being saved
+        // and as such need to assign the correct Id, either
+        // a new one or an existing one
         Future<String> modificationId() async {
-          // Get run matching programId and zoneId and start time
-
           final matchingRun = existingRuns.singleWhereOrNull(
             (existingRun) =>
                 existingRun.startTime == runDraft.timeOfDay &&
                 existingRun.zoneId == zoneId &&
                 existingRun.duration == runDraft.duration.inSeconds,
           );
-          // if it exists, return its ID, otherwise a new Id
+          // TODO(brandon): Create GetUniqueId to abstract the usage
+          // of Uuid
           return matchingRun?.id ?? const Uuid().v4().toString();
         }
 
-        // Assign the correct ID based on whether this RunDraft
-        // is being created or modified
         final Future<String> id = runDraft.map(
-          // We're creating a run, create a new Id
+          // TODO(brandon): Create GetUniqueId to abstract the usage
+          // of Uuid
           creation: (_) async => const Uuid().v4().toString(),
-          // We're modified an existing run, use its Id
           modification: (r) => modificationId(),
         );
 
