@@ -1,4 +1,5 @@
-import 'package:dio/dio.dart';
+import 'package:dio/dio.dart' hide VoidCallback;
+import 'package:flutter/material.dart';
 
 /// An [Interceptor] that intercepts errors and checks
 /// for a 404 error code which indicates the user is no
