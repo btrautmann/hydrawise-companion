@@ -5,8 +5,9 @@ import 'package:hydrawise/core-ui/core_ui.dart';
 import 'package:hydrawise/core-ui/widgets/h_stretch.dart';
 import 'package:hydrawise/features/customer_details/customer_details.dart';
 import 'package:hydrawise/features/login/login.dart';
+import 'package:hydrawise/features/programs/cubit/programs_cubit.dart';
+import 'package:hydrawise/features/programs/programs.dart';
 import 'package:hydrawise/features/weather/weather.dart';
-import 'package:intl/intl.dart';
 
 class CustomerDetailsPage extends StatelessWidget {
   const CustomerDetailsPage({Key? key}) : super(key: key);
@@ -35,19 +36,12 @@ class _CustomerDetailsStateView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final customerDetails = context.select((CustomerDetailsCubit cubit) => cubit.state);
-    return customerDetails.maybeWhen(
-      complete: (details, status) {
+    return BlocBuilder<ProgramsCubit, ProgramsState>(
+      builder: (context, state) {
         return SingleChildScrollView(
           child: _AllCustomerContent(
-            customerDetails: details,
-            customerStatus: status,
+            programs: state.programs,
           ),
-        );
-      },
-      orElse: () {
-        return const Center(
-          child: CircularProgressIndicator(),
         );
       },
     );
@@ -57,12 +51,10 @@ class _CustomerDetailsStateView extends StatelessWidget {
 class _AllCustomerContent extends StatelessWidget {
   const _AllCustomerContent({
     Key? key,
-    required this.customerDetails,
-    required this.customerStatus,
+    required this.programs,
   }) : super(key: key);
 
-  final CustomerDetails customerDetails;
-  final CustomerStatus customerStatus;
+  final List<Program> programs;
 
   @override
   Widget build(BuildContext context) {
@@ -89,10 +81,10 @@ class _AllCustomerContent extends StatelessWidget {
               ],
             ),
           ),
-          _ZoneList(
-            zones: customerStatus.zones,
-            onZoneTapped: (zone) {
-              GoRouter.of(context).push('/zone/${zone.id}');
+          _RunsList(
+            programs: programs,
+            onRunTapped: (run) {
+              GoRouter.of(context).push('/zone/${run.zoneId}');
             },
           ),
           const WeatherDetailsCard(),
@@ -126,23 +118,37 @@ class _Greeting extends StatelessWidget {
   }
 }
 
-class _ZoneList extends StatelessWidget {
-  const _ZoneList({
+class _RunsList extends StatelessWidget {
+  _RunsList({
     Key? key,
-    required this.zones,
-    required this.onZoneTapped,
-  }) : super(key: key);
+    required this.programs,
+    required this.onRunTapped,
+  }) : super(key: key) {
+    final currentDay = DateTime.now().weekday;
+    currentDayRuns = programs
+        .expand(
+          (p) => p.frequency.toWeekdayMap()[currentDay] ?? false
+              ? p.runs
+              : <Run>[],
+        )
+        .toList();
 
-  final List<Zone> zones;
-  final ValueSetter<Zone> onZoneTapped;
+    final nextDay = currentDay == 7 ? 1 : currentDay + 1;
+    nextDayRuns = programs
+        .expand(
+          (p) =>
+              p.frequency.toWeekdayMap()[nextDay] ?? false ? p.runs : <Run>[],
+        )
+        .toList();
+  }
+
+  final List<Program> programs;
+  final ValueSetter<Run> onRunTapped;
+  late List<Run> currentDayRuns;
+  late List<Run> nextDayRuns;
 
   @override
   Widget build(BuildContext context) {
-    zones.sort(
-      (z1, z2) => z1.secondsUntilNextRun.compareTo(
-        z2.secondsUntilNextRun,
-      ),
-    );
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
       child: Card(
@@ -168,16 +174,64 @@ class _ZoneList extends StatelessWidget {
             ),
             Padding(
               padding: const EdgeInsets.only(top: 8, bottom: 8),
-              child: ListView.builder(
-                primary: false,
-                physics: const NeverScrollableScrollPhysics(),
-                shrinkWrap: true,
-                itemCount: zones.length,
-                itemBuilder: (_, index) {
-                  return _ZoneCell(
-                    zone: zones[index],
-                    shouldShowDivider: index != zones.length - 1,
-                    onZoneTapped: onZoneTapped,
+              child: BlocBuilder<CustomerDetailsCubit, CustomerDetailsState>(
+                builder: (context, state) {
+                  return state.maybeWhen(
+                    complete: (_, state) {
+                      return ListView.builder(
+                        primary: false,
+                        physics: const NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        itemCount: currentDayRuns.length + nextDayRuns.length,
+                        itemBuilder: (_, index) {
+                          final concat = [...currentDayRuns, ...nextDayRuns];
+                          final runCell = _RunCell(
+                            zone: state.zones.singleWhere(
+                              (z) => z.id == concat[index].zoneId,
+                            ),
+                            program: programs.singleWhere(
+                              (p) => p.id == concat[index].programId,
+                            ),
+                            run: concat[index],
+                            shouldShowDivider:
+                                index != currentDayRuns.length - 1 &&
+                                    index != concat.length - 1,
+                            onRunTapped: onRunTapped,
+                          );
+                          if (index == 0) {
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const Padding(
+                                  padding: EdgeInsets.all(16),
+                                  child: Text('Today'),
+                                ),
+                                runCell,
+                              ],
+                            );
+                          } else if (nextDayRuns.contains(concat[index]) &&
+                              nextDayRuns.indexOf(concat[index]) == 0) {
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const Padding(
+                                  padding: EdgeInsets.all(16),
+                                  child: Text('Tomorrow'),
+                                ),
+                                runCell,
+                              ],
+                            );
+                          } else {
+                            return runCell;
+                          }
+                        },
+                      );
+                    },
+                    orElse: () => const Center(
+                      child: CircularProgressIndicator(),
+                    ),
                   );
                 },
               ),
@@ -189,27 +243,28 @@ class _ZoneList extends StatelessWidget {
   }
 }
 
-class _ZoneCell extends StatelessWidget {
-  const _ZoneCell({
+class _RunCell extends StatelessWidget {
+  const _RunCell({
     Key? key,
     required this.zone,
+    required this.program,
+    required this.run,
     required this.shouldShowDivider,
-    required this.onZoneTapped,
+    required this.onRunTapped,
   }) : super(key: key);
 
+  final Program program;
   final Zone zone;
+  final Run run;
   final bool shouldShowDivider;
-  final ValueSetter<Zone> onZoneTapped;
+  final ValueSetter<Run> onRunTapped;
 
-  String formattedTimeOfNextRun(Zone zone) {
-    if (zone.isSuspended) {
-      return 'Suspended';
-    } else if (zone.isRunning) {
+  String formattedTimeOfNextRun(BuildContext context) {
+    if (zone.isRunning) {
       return 'Running now';
     }
     // TODO(brandon): Show 12/24hr time based on device setting
-    final formatter = DateFormat('h:mm a');
-    return formatter.format(zone.dateTimeOfNextRun);
+    return run.startTime.format(context);
   }
 
   @override
@@ -219,7 +274,7 @@ class _ZoneCell extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         InkWell(
-          onTap: () => onZoneTapped(zone),
+          onTap: () => onRunTapped(run),
           child: Padding(
             padding: const EdgeInsets.only(left: 16, right: 16),
             child: Row(
@@ -228,15 +283,27 @@ class _ZoneCell extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.only(right: 8),
                   child: Hero(
-                    tag: zone,
+                    tag: run,
                     child: CircleBackground(
                       child: Text(zone.physicalNumber.toString()),
                     ),
                   ),
                 ),
-                Text(zone.name),
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(zone.name),
+                    Text(
+                      program.name,
+                      style: const TextStyle(
+                        fontStyle: FontStyle.italic,
+                      ),
+                    ),
+                  ],
+                ),
                 const Spacer(),
-                Text(formattedTimeOfNextRun(zone)),
+                Text(formattedTimeOfNextRun(context)),
               ],
             ),
           ),
