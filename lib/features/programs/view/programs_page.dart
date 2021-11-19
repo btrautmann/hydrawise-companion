@@ -20,7 +20,36 @@ class ProgramsPageView extends StatelessWidget {
   const ProgramsPageView({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ProgramsCubit, ProgramsState>(
+    return BlocConsumer<ProgramsCubit, ProgramsState>(
+      listener: (context, state) {
+        if (state.pendingDeletes.isNotEmpty) {
+          showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: const Text('Are you sure?'),
+                content: const Text('Deleting programs is permanent'),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      context.read<ProgramsCubit>().deletePending();
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text('Yes'),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      context.read<ProgramsCubit>().resetPrograms();
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text('No'),
+                  )
+                ],
+              );
+            },
+          );
+        }
+      },
       builder: (context, state) {
         return Column(
           children: [
@@ -71,13 +100,33 @@ class ProgramsPageView extends StatelessWidget {
                         return Column(
                           children: [
                             Dismissible(
+                              background: ColoredBox(
+                                color: Theme.of(context).errorColor,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Text(
+                                      'Delete',
+                                      style: TextStyle(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .onError,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              direction: DismissDirection.startToEnd,
                               key: ObjectKey(state.programs[index]),
                               child: Padding(
-                                padding: const EdgeInsets.only(top: 4, bottom: 4),
+                                padding:
+                                    const EdgeInsets.only(top: 4, bottom: 4),
                                 child: ListRow(
                                   leadingIcon: CircleBackground(
                                     child: Text(
-                                      state.programs[index].name.characters.first,
+                                      state.programs[index].name.characters
+                                          .first,
                                     ),
                                   ),
                                   title: Text(state.programs[index].name),
@@ -89,7 +138,9 @@ class ProgramsPageView extends StatelessWidget {
                                 ),
                               ),
                               onDismissed: (direction) {
-                                context.read<ProgramsCubit>().deleteProgram(programId: state.programs[index].id);
+                                context
+                                    .read<ProgramsCubit>()
+                                    .addToPendingDeletes(state.programs[index]);
                               },
                             ),
                             const Divider(),

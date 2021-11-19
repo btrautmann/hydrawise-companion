@@ -16,9 +16,12 @@ final _privateConstructorUsedError = UnsupportedError(
 class _$ProgramsStateTearOff {
   const _$ProgramsStateTearOff();
 
-  _ProgramsState call({required List<Program> programs}) {
+  _ProgramsState call(
+      {required List<Program> programs,
+      List<Program> pendingDeletes = const []}) {
     return _ProgramsState(
       programs: programs,
+      pendingDeletes: pendingDeletes,
     );
   }
 }
@@ -29,6 +32,7 @@ const $ProgramsState = _$ProgramsStateTearOff();
 /// @nodoc
 mixin _$ProgramsState {
   List<Program> get programs => throw _privateConstructorUsedError;
+  List<Program> get pendingDeletes => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $ProgramsStateCopyWith<ProgramsState> get copyWith =>
@@ -40,7 +44,7 @@ abstract class $ProgramsStateCopyWith<$Res> {
   factory $ProgramsStateCopyWith(
           ProgramsState value, $Res Function(ProgramsState) then) =
       _$ProgramsStateCopyWithImpl<$Res>;
-  $Res call({List<Program> programs});
+  $Res call({List<Program> programs, List<Program> pendingDeletes});
 }
 
 /// @nodoc
@@ -55,11 +59,16 @@ class _$ProgramsStateCopyWithImpl<$Res>
   @override
   $Res call({
     Object? programs = freezed,
+    Object? pendingDeletes = freezed,
   }) {
     return _then(_value.copyWith(
       programs: programs == freezed
           ? _value.programs
           : programs // ignore: cast_nullable_to_non_nullable
+              as List<Program>,
+      pendingDeletes: pendingDeletes == freezed
+          ? _value.pendingDeletes
+          : pendingDeletes // ignore: cast_nullable_to_non_nullable
               as List<Program>,
     ));
   }
@@ -72,7 +81,7 @@ abstract class _$ProgramsStateCopyWith<$Res>
           _ProgramsState value, $Res Function(_ProgramsState) then) =
       __$ProgramsStateCopyWithImpl<$Res>;
   @override
-  $Res call({List<Program> programs});
+  $Res call({List<Program> programs, List<Program> pendingDeletes});
 }
 
 /// @nodoc
@@ -89,11 +98,16 @@ class __$ProgramsStateCopyWithImpl<$Res>
   @override
   $Res call({
     Object? programs = freezed,
+    Object? pendingDeletes = freezed,
   }) {
     return _then(_ProgramsState(
       programs: programs == freezed
           ? _value.programs
           : programs // ignore: cast_nullable_to_non_nullable
+              as List<Program>,
+      pendingDeletes: pendingDeletes == freezed
+          ? _value.pendingDeletes
+          : pendingDeletes // ignore: cast_nullable_to_non_nullable
               as List<Program>,
     ));
   }
@@ -102,14 +116,17 @@ class __$ProgramsStateCopyWithImpl<$Res>
 /// @nodoc
 
 class _$_ProgramsState implements _ProgramsState {
-  _$_ProgramsState({required this.programs});
+  _$_ProgramsState({required this.programs, this.pendingDeletes = const []});
 
   @override
   final List<Program> programs;
+  @JsonKey(defaultValue: const [])
+  @override
+  final List<Program> pendingDeletes;
 
   @override
   String toString() {
-    return 'ProgramsState(programs: $programs)';
+    return 'ProgramsState(programs: $programs, pendingDeletes: $pendingDeletes)';
   }
 
   @override
@@ -118,12 +135,17 @@ class _$_ProgramsState implements _ProgramsState {
         (other is _ProgramsState &&
             (identical(other.programs, programs) ||
                 const DeepCollectionEquality()
-                    .equals(other.programs, programs)));
+                    .equals(other.programs, programs)) &&
+            (identical(other.pendingDeletes, pendingDeletes) ||
+                const DeepCollectionEquality()
+                    .equals(other.pendingDeletes, pendingDeletes)));
   }
 
   @override
   int get hashCode =>
-      runtimeType.hashCode ^ const DeepCollectionEquality().hash(programs);
+      runtimeType.hashCode ^
+      const DeepCollectionEquality().hash(programs) ^
+      const DeepCollectionEquality().hash(pendingDeletes);
 
   @JsonKey(ignore: true)
   @override
@@ -132,10 +154,14 @@ class _$_ProgramsState implements _ProgramsState {
 }
 
 abstract class _ProgramsState implements ProgramsState {
-  factory _ProgramsState({required List<Program> programs}) = _$_ProgramsState;
+  factory _ProgramsState(
+      {required List<Program> programs,
+      List<Program> pendingDeletes}) = _$_ProgramsState;
 
   @override
   List<Program> get programs => throw _privateConstructorUsedError;
+  @override
+  List<Program> get pendingDeletes => throw _privateConstructorUsedError;
   @override
   @JsonKey(ignore: true)
   _$ProgramsStateCopyWith<_ProgramsState> get copyWith =>

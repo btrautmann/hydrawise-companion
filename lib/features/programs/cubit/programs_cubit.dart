@@ -44,6 +44,40 @@ class ProgramsCubit extends Cubit<ProgramsState> {
     _initPrograms();
   }
 
+  void addToPendingDeletes(Program program) {
+    final pending = <Program>[];
+    final programs = <Program>[];
+    pending.addAll(state.pendingDeletes);
+    pending.add(program);
+    programs.addAll(state.programs);
+    programs.removeWhere((element) => element.id == program.id);
+    emit(
+      state.copyWith(
+        programs: programs,
+        pendingDeletes: pending,
+      ),
+    );
+  }
+
+  void resetPrograms() {
+    final programs = <Program>[];
+    programs.addAll(state.pendingDeletes);
+    programs.addAll(state.programs);
+    emit(
+      state.copyWith(
+        programs: programs,
+        pendingDeletes: [],
+      ),
+    );
+  }
+
+  Future<void> deletePending() async {
+    for (final program in state.pendingDeletes) {
+      await deleteProgram(programId: program.id);
+    }
+    emit(state.copyWith(pendingDeletes: []));
+  }
+
   Future<void> updateProgram({
     required String programId,
     required String name,
