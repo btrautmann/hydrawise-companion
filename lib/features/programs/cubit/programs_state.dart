@@ -4,5 +4,6 @@ part of 'programs_cubit.dart';
 class ProgramsState with _$ProgramsState {
   factory ProgramsState({
     required List<Program> programs,
+    @Default([]) List<Program> pendingDeletes,
   }) = _ProgramsState;
 }

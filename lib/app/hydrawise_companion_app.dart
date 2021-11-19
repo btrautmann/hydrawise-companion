@@ -307,7 +307,7 @@ const ColorScheme _lightColorScheme = ColorScheme.light(
   onSecondary: AppColors.black900,
   onBackground: AppColors.black900,
   onSurface: AppColors.black900,
-  onError: AppColors.black900,
+  onError: AppColors.white50,
   background: AppColors.blue50,
 );
 
@@ -322,6 +322,6 @@ const ColorScheme _darkColorScheme = ColorScheme.dark(
   onSecondary: AppColors.black900,
   onBackground: AppColors.white50,
   onSurface: AppColors.white50,
-  onError: AppColors.black900,
+  onError: AppColors.white50,
   background: AppColors.black900Alpha087,
 );

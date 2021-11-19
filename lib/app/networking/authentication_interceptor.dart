@@ -1,4 +1,4 @@
-import 'package:dio/dio.dart' hide VoidCallback;
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
 /// An [Interceptor] that intercepts errors and checks

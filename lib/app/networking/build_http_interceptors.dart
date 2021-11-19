@@ -1,4 +1,4 @@
-import 'package:dio/dio.dart' hide VoidCallback;
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:hydrawise/app/networking/authentication_interceptor.dart';
 import 'package:hydrawise/app/networking/demo_mode_interceptor.dart';
@@ -24,7 +24,7 @@ class BuildProductionHttpInterceptors implements BuildHttpInterceptors {
         onAuthenticationFailure: _onAuthenticationFailure,
       ),
       // Always place LogInterceptor at the end
-      LogInterceptor(),
+      LogInterceptor(logPrint: (o) => debugPrint.call(o.toString())),
     ];
   }
 }
