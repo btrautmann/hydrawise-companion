@@ -45,4 +45,48 @@ extension ProgramX on Program {
       runs: [],
     );
   }
+
+  List<int> toWeekdays() {
+    final days = <int>[];
+    if (frequency.monday) {
+      days.add(DateTime.monday);
+    }
+    if (frequency.tuesday) {
+      days.add(DateTime.tuesday);
+    }
+    if (frequency.wednesday) {
+      days.add(DateTime.wednesday);
+    }
+    if (frequency.thursday) {
+      days.add(DateTime.thursday);
+    }
+    if (frequency.friday) {
+      days.add(DateTime.friday);
+    }
+    if (frequency.saturday) {
+      days.add(DateTime.saturday);
+    }
+    if (frequency.sunday) {
+      days.add(DateTime.sunday);
+    }
+    return days;
+  }
+}
+
+extension ListProgramX on List<Program> {
+  /// Returns the runs that will run today,
+  /// if any
+  List<Run> todayRuns() {
+    final now = DateTime.now();
+    final dayOfWeek = now.weekday;
+    final todayPrograms =
+        where((element) => element.toWeekdays().contains(dayOfWeek));
+    return todayPrograms
+        .expand(
+          (element) => element.runs.where(
+            (element) => element.startTime.isAfter(now),
+          ),
+        )
+        .toList();
+  }
 }

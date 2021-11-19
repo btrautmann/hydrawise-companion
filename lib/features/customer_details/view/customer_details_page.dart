@@ -123,29 +123,12 @@ class _RunsList extends StatelessWidget {
     Key? key,
     required this.programs,
     required this.onRunTapped,
-  }) : super(key: key) {
-    final currentDay = DateTime.now().weekday;
-    currentDayRuns = programs
-        .expand(
-          (p) => p.frequency.toWeekdayMap()[currentDay] ?? false
-              ? p.runs
-              : <Run>[],
-        )
-        .toList();
-
-    final nextDay = currentDay == 7 ? 1 : currentDay + 1;
-    nextDayRuns = programs
-        .expand(
-          (p) =>
-              p.frequency.toWeekdayMap()[nextDay] ?? false ? p.runs : <Run>[],
-        )
-        .toList();
-  }
+  })  : todayRuns = programs.todayRuns(),
+        super(key: key);
 
   final List<Program> programs;
+  final List<Run> todayRuns;
   final ValueSetter<Run> onRunTapped;
-  late List<Run> currentDayRuns;
-  late List<Run> nextDayRuns;
 
   @override
   Widget build(BuildContext context) {
@@ -178,55 +161,39 @@ class _RunsList extends StatelessWidget {
                 builder: (context, state) {
                   return state.maybeWhen(
                     complete: (_, state) {
-                      return ListView.builder(
-                        primary: false,
-                        physics: const NeverScrollableScrollPhysics(),
-                        shrinkWrap: true,
-                        itemCount: currentDayRuns.length + nextDayRuns.length,
-                        itemBuilder: (_, index) {
-                          final concat = [...currentDayRuns, ...nextDayRuns];
-                          final runCell = _RunCell(
-                            zone: state.zones.singleWhere(
-                              (z) => z.id == concat[index].zoneId,
+                      return Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Visibility(
+                            visible: todayRuns.isEmpty,
+                            child: const Padding(
+                              padding: EdgeInsets.all(16),
+                              child: Text('No more runs today'),
                             ),
-                            program: programs.singleWhere(
-                              (p) => p.id == concat[index].programId,
+                          ),
+                          Visibility(
+                            visible: todayRuns.isNotEmpty,
+                            child: ListView.builder(
+                              primary: false,
+                              physics: const NeverScrollableScrollPhysics(),
+                              shrinkWrap: true,
+                              itemCount: todayRuns.length,
+                              itemBuilder: (_, index) {
+                                return _RunCell(
+                                  zone: state.zones.singleWhere(
+                                    (z) => z.id == todayRuns[index].zoneId,
+                                  ),
+                                  program: programs.singleWhere(
+                                    (p) => p.id == todayRuns[index].programId,
+                                  ),
+                                  run: todayRuns[index],
+                                  shouldShowDivider: index != todayRuns.length - 1,
+                                  onRunTapped: onRunTapped,
+                                );
+                              },
                             ),
-                            run: concat[index],
-                            shouldShowDivider:
-                                index != currentDayRuns.length - 1 &&
-                                    index != concat.length - 1,
-                            onRunTapped: onRunTapped,
-                          );
-                          if (index == 0) {
-                            return Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                const Padding(
-                                  padding: EdgeInsets.all(16),
-                                  child: Text('Today'),
-                                ),
-                                runCell,
-                              ],
-                            );
-                          } else if (nextDayRuns.contains(concat[index]) &&
-                              nextDayRuns.indexOf(concat[index]) == 0) {
-                            return Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                const Padding(
-                                  padding: EdgeInsets.all(16),
-                                  child: Text('Tomorrow'),
-                                ),
-                                runCell,
-                              ],
-                            );
-                          } else {
-                            return runCell;
-                          }
-                        },
+                          ),
+                        ],
                       );
                     },
                     orElse: () => const Center(
@@ -263,7 +230,6 @@ class _RunCell extends StatelessWidget {
     if (zone.isRunning) {
       return 'Running now';
     }
-    // TODO(brandon): Show 12/24hr time based on device setting
     return run.startTime.format(context);
   }
 
