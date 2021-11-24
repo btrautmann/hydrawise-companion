@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 /// Authenticates with Firebase anonymously and returns
-/// the user's uid to
+/// the user's uid if successful
 class AuthenticateWithFirebase {
   AuthenticateWithFirebase({
     required FirebaseFirestore firestore,
