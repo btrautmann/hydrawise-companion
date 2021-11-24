@@ -15,8 +15,10 @@ void main() {
     final setApiKey = SetApiKey(dataStorage);
     final setFirebaseUid = SetFirebaseUid(dataStorage);
     final getFirebaseUid = GetFirebaseUid(dataStorage);
-    final authenticateWithFirebase =
-        AuthenticateWithFirebase(FakeFirebaseFirestore(), MockFirebaseAuth());
+    final authenticateWithFirebase = AuthenticateWithFirebase(
+      firestore: FakeFirebaseFirestore(),
+      auth: MockFirebaseAuth(),
+    );
 
     final repository = InMemoryCustomerDetailsRepository();
     final GetCustomerDetails getCustomerDetails = GetFakeCustomerDetails(

@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:hydrawise/features/auth/auth.dart';
 import 'package:hydrawise/features/customer_details/customer_details.dart';
 import 'package:hydrawise/features/programs/programs.dart';
 import 'package:sqflite/sqlite_api.dart';
@@ -45,10 +47,273 @@ abstract class CustomerDetailsRepository {
   });
   Future<void> deleteRun({
     required String runId,
+    required String programId,
   });
 
   // Utility
   Future<void> clearAllData();
+}
+
+class FirebaseBackedCustomerDetailsRepository
+    implements CustomerDetailsRepository {
+  FirebaseBackedCustomerDetailsRepository({
+    required FirebaseFirestore firestore,
+    required GetFirebaseUid getFirebaseUid,
+  })  : _firestore = firestore,
+        _getFirebaseUid = getFirebaseUid;
+
+  final FirebaseFirestore _firestore;
+  final GetFirebaseUid _getFirebaseUid;
+
+  Future<DocumentReference> _getUserDocument() async {
+    final uId = await _getFirebaseUid();
+    assert(
+      uId != null && uId.isNotEmpty,
+      'Firebase uId was $uId when using $runtimeType',
+    );
+    return _firestore.collection('users').doc(uId);
+  }
+
+  @override
+  Future<void> clearAllData() async {}
+
+  @override
+  Future<String> createProgram({
+    required String name,
+    required Frequency frequency,
+  }) async {
+    final program = Program(
+      id: const Uuid().v4(),
+      name: name,
+      frequency: frequency,
+      // Runs aren't serialized, so pass empty list
+      // TODO(brandon): This isn't great, possibly
+      // introduce ProgramDraft
+      runs: [],
+    );
+    await _getUserDocument().then(
+      (d) => d.collection('programs').doc(program.id).set(
+            ProgramX.toJson(program),
+          ),
+    );
+    return program.id;
+  }
+
+  @override
+  Future<void> deleteProgram({required String programId}) {
+    return _getUserDocument().then(
+      (d) => d.collection('programs').doc(programId).delete(),
+    );
+  }
+
+  @override
+  Future<void> deleteRun({
+    required String runId,
+    required String programId,
+  }) {
+    return _getUserDocument().then(
+      (d) => d
+          .collection('programs')
+          .doc(programId)
+          .collection('runs')
+          .doc(runId)
+          .delete(),
+    );
+  }
+
+  @override
+  Future<CustomerIdentification> getCustomer() {
+    return _getUserDocument().then(
+      (d) => d.get().then(
+        (s) {
+          // ignore: cast_nullable_to_non_nullable
+          final json = s.data() as Map<String, dynamic>;
+          return CustomerIdentification.fromJson(json);
+        },
+      ),
+    );
+  }
+
+  @override
+  Future<List<CustomerIdentification>> getCustomers() async {
+    final customer = await getCustomer();
+    return [customer];
+  }
+
+  @override
+  Future<Program> getProgram({required String programId}) {
+    return _getUserDocument().then(
+      (d) => d.collection('programs').doc(programId).get().then(
+        (s) {
+          // ignore: cast_nullable_to_non_nullable
+          final json = s.data() as Map<String, dynamic>;
+          return ProgramX.fromJson(json);
+        },
+      ),
+    );
+  }
+
+  @override
+  Future<List<Program>> getPrograms() async {
+    final programs = await _getUserDocument().then(
+      (d) => d.collection('programs').get().then(
+        (s) {
+          return s.docs.map((e) => ProgramX.fromJson(e.data())).toList();
+        },
+      ),
+    );
+    final programsWithRuns = <Program>[];
+    for (final program in programs) {
+      await _getUserDocument().then(
+        (d) => d
+            .collection('programs')
+            .doc(program.id)
+            .collection('runs')
+            .get()
+            .then(
+              (s) => programsWithRuns.add(
+                program.copyWith(
+                  runs: s.docs.map((e) => Run.fromJson(e.data())).toList(),
+                ),
+              ),
+            ),
+      );
+    }
+    return programsWithRuns;
+  }
+
+  @override
+  Future<List<Run>> getRunsForProgram({required String programId}) {
+    return _getUserDocument().then(
+      (d) =>
+          d.collection('programs').doc(programId).collection('runs').get().then(
+        (s) {
+          return s.docs.map((e) => Run.fromJson(e.data())).toList();
+        },
+      ),
+    );
+  }
+
+  @override
+  Future<List<Zone>> getZones() {
+    return _getUserDocument().then(
+      (d) => d.collection('zones').get().then(
+        (s) {
+          return s.docs.map((e) => Zone.fromJson(e.data())).toList();
+        },
+      ),
+    );
+  }
+
+  @override
+  Future<void> insertCustomer(CustomerIdentification customer) {
+    return _getUserDocument()
+        .then((d) => d.set(customer.toJson(), SetOptions(merge: true)));
+  }
+
+  @override
+  Future<void> insertRuns({
+    required String programId,
+    required List<Run> runs,
+  }) async {
+    final batch = _firestore.batch();
+    for (final run in runs) {
+      final doc = await _getUserDocument().then(
+        (d) => d
+            .collection('programs')
+            .doc(programId)
+            .collection('runs')
+            .doc(run.id),
+      );
+      batch.set(doc, run.toJson());
+    }
+    return batch.commit();
+  }
+
+  @override
+  Future<void> insertZone(Zone zone) {
+    return _getUserDocument().then(
+      (d) => d.collection('zones').doc(zone.id.toString()).set(zone.toJson()),
+    );
+  }
+
+  @override
+  Future<void> updateCustomer(CustomerStatus customerStatus) async {
+    for (final zone in customerStatus.zones) {
+      await _getUserDocument().then(
+        (d) => d.collection('zones').doc(zone.id.toString()).set(
+              zone.toJson(),
+              SetOptions(merge: true),
+            ),
+      );
+    }
+    final customer = await getCustomer();
+    return _getUserDocument().then(
+      (d) => d.set(
+        customer
+            .copyWith(
+              lastStatusUpdate: customerStatus.timeOfLastStatusUnixEpoch,
+            )
+            .toJson(),
+        SetOptions(merge: true),
+      ),
+    );
+  }
+
+  @override
+  Future<void> updateProgram({
+    required String programId,
+    required String name,
+    required Frequency frequency,
+  }) {
+    return _getUserDocument().then(
+      (d) => d.collection('programs').doc(programId).set(
+            ProgramX.toJson(
+              Program(
+                id: programId,
+                name: name,
+                frequency: frequency,
+                // Runs aren't serialized, so pass empty list
+                // TODO(brandon): This isn't great, possibly
+                // introduce ProgramDraft
+                runs: [],
+              ),
+            ),
+          ),
+    );
+  }
+
+  @override
+  Future<void> updateRuns({
+    required String programId,
+    required List<Run> runs,
+  }) async {
+    final batch = _firestore.batch();
+    for (final run in runs) {
+      await _getUserDocument().then(
+        (d) => d
+            .collection('programs')
+            .doc(programId)
+            .collection('runs')
+            .doc(run.id)
+            .set(
+              run.toJson(),
+              SetOptions(merge: true),
+            ),
+      );
+      return batch.commit();
+    }
+  }
+
+  @override
+  Future<void> updateZone(Zone zone) {
+    return _getUserDocument().then(
+      (d) => d.collection('zones').doc(zone.id.toString()).set(
+            zone.toJson(),
+            SetOptions(merge: true),
+          ),
+    );
+  }
 }
 
 class DatabaseBackedCustomerDetailsRepository
@@ -250,7 +515,10 @@ class DatabaseBackedCustomerDetailsRepository
   }
 
   @override
-  Future<void> deleteRun({required String runId}) {
+  Future<void> deleteRun({
+    required String runId,
+    required String programId,
+  }) {
     return _database.delete('runs', where: 'id = ?', whereArgs: [runId]);
   }
 
@@ -384,7 +652,10 @@ class InMemoryCustomerDetailsRepository implements CustomerDetailsRepository {
   }
 
   @override
-  Future<void> deleteRun({required String runId}) async {
+  Future<void> deleteRun({
+    required String runId,
+    required String programId,
+  }) async {
     runs.removeWhere((element) => element.id == runId);
   }
 

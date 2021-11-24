@@ -4,7 +4,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 /// Authenticates with Firebase anonymously and returns
 /// the user's uid to
 class AuthenticateWithFirebase {
-  AuthenticateWithFirebase(this._firestore, this._auth);
+  AuthenticateWithFirebase({
+    required FirebaseFirestore firestore,
+    required FirebaseAuth auth,
+  })  : _firestore = firestore,
+        _auth = auth;
 
   final FirebaseFirestore _firestore;
   final FirebaseAuth _auth;

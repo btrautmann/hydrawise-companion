@@ -39,7 +39,7 @@ class UpdateProgram {
       ),
     );
     for (final run in deletedRuns) {
-      await _repository.deleteRun(runId: run.id);
+      await _repository.deleteRun(runId: run.id, programId: programId);
     }
 
     final runsToInsert = <Run>[];

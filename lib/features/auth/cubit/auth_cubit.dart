@@ -62,18 +62,19 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   Future<void> login(String apiKey) async {
-    await _setApiKey(apiKey);
-    final detailsResult = await _getCustomerDetails();
-    if (detailsResult.isSuccess) {
-      final uId = await _authenticateWithFirebase();
-      if (uId != null) {
-        await _setFirebaseUid(uId);
+    final uId = await _authenticateWithFirebase();
+    if (uId != null) {
+      await _setFirebaseUid(uId);
+      await _setApiKey(apiKey);
+      final detailsResult = await _getCustomerDetails();
+      if (detailsResult.isSuccess) {
         emit(AuthState.loggedIn());
-      } else {
-        await logOut();
+        return;
       }
-    } else {
-      // TODO(brandon): Handle auth failures
     }
+    // If we got here, either we failed to authenticate
+    // with Hydrawise or Firebase
+    // TODO(brandon): Handle auth failures
+    await logOut();
   }
 }

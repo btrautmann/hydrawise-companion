@@ -17,6 +17,8 @@ abstract class ProductionDomainFactory {
     required HttpClient client,
     required DataStorage dataStorage,
     required CustomerDetailsRepository repository,
+    required FirebaseFirestore firebaseFirestore,
+    required FirebaseAuth firebaseAuth,
     // ignore: prefer_void_to_null
     required StreamController<Null> authFailures,
   }) {
@@ -30,8 +32,8 @@ abstract class ProductionDomainFactory {
       customerDetailsRepository: repository,
     );
     final authenticateWithFirebase = AuthenticateWithFirebase(
-      FirebaseFirestore.instance,
-      FirebaseAuth.instance,
+      firestore: firebaseFirestore,
+      auth: firebaseAuth,
     );
     final getWeather = GetWeather();
     final getLocation = GetLocation(dataStorage);

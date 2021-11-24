@@ -39,8 +39,8 @@ void main() {
       clearCustomerDetails: clearCustomerDetails,
       getAuthFailures: getAuthFailures,
       authenticateWithFirebase: AuthenticateWithFirebase(
-        FakeFirebaseFirestore(),
-        MockFirebaseAuth(),
+        firestore: FakeFirebaseFirestore(),
+        auth: MockFirebaseAuth(),
       ),
       setFirebaseUid: setFirebaseUid,
       getFirebaseUid: getFirebaseUid,
