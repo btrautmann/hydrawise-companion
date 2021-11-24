@@ -10,8 +10,7 @@ class Run with _$Run {
   factory Run({
     @JsonKey(name: 'id') required String id,
     @JsonKey(name: 'p_id') required String programId,
-    @JsonKey(name: 'start_time', toJson: TimeOfDayX.toJson, fromJson: TimeOfDayX.fromJson)
-        required TimeOfDay startTime,
+    @JsonKey(name: 'start_time', toJson: TimeOfDayX.toJson, fromJson: TimeOfDayX.fromJson) required TimeOfDay startTime,
     @JsonKey(name: 'duration') required int duration,
     @JsonKey(name: 'z_id') required int zoneId,
   }) = _Run;
@@ -54,9 +53,7 @@ extension ListRunX on List<Run> {
     final mods = <RunDraft>[];
     forEach((run) {
       final addedMod = mods.singleWhereOrNull(
-        (mod) =>
-            mod.timeOfDay == run.startTime &&
-            mod.duration.inSeconds == run.duration,
+        (mod) => mod.timeOfDay == run.startTime && mod.duration.inSeconds == run.duration,
       );
       if (addedMod == null) {
         // A runDraft containing this run has not
@@ -71,8 +68,7 @@ extension ListRunX on List<Run> {
         final index = mods.indexWhere(
           (element) => element.timeOfDay == addedMod.timeOfDay,
         );
-        mods[index] =
-            addedMod.copyWith(zoneIds: [run.zoneId, ...addedMod.zoneIds]);
+        mods[index] = addedMod.copyWith(zoneIds: [run.zoneId, ...addedMod.zoneIds]);
       }
     });
     return mods;

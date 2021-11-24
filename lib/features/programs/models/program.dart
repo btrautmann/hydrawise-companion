@@ -79,8 +79,7 @@ extension ListProgramX on List<Program> {
   List<Run> todayRuns() {
     final now = DateTime.now();
     final dayOfWeek = now.weekday;
-    final todayPrograms =
-        where((element) => element.toWeekdays().contains(dayOfWeek));
+    final todayPrograms = where((element) => element.toWeekdays().contains(dayOfWeek));
     return todayPrograms
         .expand(
           (element) => element.runs.where(
