@@ -8,11 +8,9 @@ import 'package:flutter/widgets.dart';
 import 'package:hydrawise/app/app_bloc_observer.dart';
 import 'package:hydrawise/app/domain/app_domain_factory.dart';
 import 'package:hydrawise/app/domain/build_router.dart';
-import 'package:hydrawise/app/domain/create_database.dart';
 import 'package:hydrawise/app/hydrawise_companion_app.dart';
 import 'package:hydrawise/core/core.dart';
 import 'package:hydrawise/features/customer_details/customer_details.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 Future<void> main() async {
   Bloc.observer = AppBlocObserver();
@@ -26,14 +24,8 @@ Future<void> main() async {
       await Firebase.initializeApp();
       await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(false);
 
-      final sharedPreferences = await SharedPreferences.getInstance();
-      final dataStorage = SharedPreferencesStorage(sharedPreferences);
-      final database = await CreateDatabase().call(
-        databaseName: 'hydrawise_companion_dev.db',
-        version: 2,
-      );
-
-      final repository = DatabaseBackedCustomerDetailsRepository(database);
+      final dataStorage = InMemoryStorage();
+      final repository = InMemoryCustomerDetailsRepository();
       final providers = DevelopmentDomainFactory.build(
         dataStorage: dataStorage,
         repository: repository,
