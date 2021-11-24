@@ -21,8 +21,7 @@ class FakeRequestInterceptorHandler extends RequestInterceptorHandler {
   }
 
   @override
-  void resolve(Response response,
-      [bool callFollowingResponseInterceptor = false]) {
+  void resolve(Response response, [bool callFollowingResponseInterceptor = false]) {
     onResolve?.call(response);
   }
 
