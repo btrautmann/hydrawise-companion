@@ -10,11 +10,11 @@ abstract class BuildHttpInterceptors {
 }
 
 class BuildProductionHttpInterceptors implements BuildHttpInterceptors {
-  final VoidCallback _onAuthenticationFailure;
-
   BuildProductionHttpInterceptors({
     required VoidCallback onAuthenticationFailure,
   }) : _onAuthenticationFailure = onAuthenticationFailure;
+
+  final VoidCallback _onAuthenticationFailure;
 
   @override
   Future<List<Interceptor>> call() async {
@@ -30,11 +30,11 @@ class BuildProductionHttpInterceptors implements BuildHttpInterceptors {
 }
 
 class BuildStagingHttpInterceptors implements BuildHttpInterceptors {
-  final VoidCallback _onAuthenticationFailure;
-
   BuildStagingHttpInterceptors({
     required VoidCallback onAuthenticationFailure,
   }) : _onAuthenticationFailure = onAuthenticationFailure;
+
+  final VoidCallback _onAuthenticationFailure;
 
   @override
   Future<List<Interceptor>> call() {

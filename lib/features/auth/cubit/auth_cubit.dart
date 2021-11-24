@@ -7,15 +7,6 @@ part 'auth_cubit.freezed.dart';
 part 'auth_state.dart';
 
 class AuthCubit extends Cubit<AuthState> {
-  final GetApiKey _getApiKey;
-  final SetApiKey _setApiKey;
-  final GetFirebaseUid _getFirebaseUid;
-  final SetFirebaseUid _setFirebaseUid;
-  final AuthenticateWithFirebase _authenticateWithFirebase;
-  final GetCustomerDetails _getCustomerDetails;
-  final ClearCustomerDetails _clearCustomerDetails;
-  final GetAuthFailures _getAuthFailures;
-
   AuthCubit({
     required GetApiKey getApiKey,
     required SetApiKey setApiKey,
@@ -37,6 +28,15 @@ class AuthCubit extends Cubit<AuthState> {
     _checkAuthenticationStatus();
     _listenForAuthFailures();
   }
+
+  final GetApiKey _getApiKey;
+  final SetApiKey _setApiKey;
+  final GetFirebaseUid _getFirebaseUid;
+  final SetFirebaseUid _setFirebaseUid;
+  final AuthenticateWithFirebase _authenticateWithFirebase;
+  final GetCustomerDetails _getCustomerDetails;
+  final ClearCustomerDetails _clearCustomerDetails;
+  final GetAuthFailures _getAuthFailures;
 
   void _listenForAuthFailures() async {
     await _getAuthFailures().then(

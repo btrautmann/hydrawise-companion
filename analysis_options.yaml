@@ -8,6 +8,7 @@ analyzer:
     avoid_print: error
 linter:
   rules:
+    sort_constructors_first: true
     public_member_api_docs: false
     directives_ordering: true
     

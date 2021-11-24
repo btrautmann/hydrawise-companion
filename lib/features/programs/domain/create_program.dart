@@ -3,11 +3,11 @@ import 'package:hydrawise/features/programs/programs.dart';
 import 'package:uuid/uuid.dart';
 
 class CreateProgram {
-  final CustomerDetailsRepository _repository;
-
   CreateProgram({
     required CustomerDetailsRepository repository,
   }) : _repository = repository;
+
+  final CustomerDetailsRepository _repository;
 
   Future<void> call({
     required String name,

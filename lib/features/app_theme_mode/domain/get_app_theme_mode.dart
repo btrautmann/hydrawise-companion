@@ -5,13 +5,15 @@ import 'package:hydrawise/core/core.dart';
 /// [DataStorage]. If no mode has been set previously,
 /// defaults to [ThemeMode.system].
 class GetAppThemeMode {
-  final DataStorage _dataStorage;
-
   GetAppThemeMode(this._dataStorage);
+
+  final DataStorage _dataStorage;
 
   Future<ThemeMode> call() async {
     final themeModeString = await _dataStorage.getString('app_theme_mode');
-    final mode = themeModeString == null ? ThemeMode.system : themeModeString.toThemeMode();
+    final mode = themeModeString == null
+        ? ThemeMode.system
+        : themeModeString.toThemeMode();
     return mode;
   }
 }

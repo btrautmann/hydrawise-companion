@@ -5,11 +5,11 @@ import 'package:hydrawise/features/programs/programs.dart';
 import 'package:uuid/uuid.dart';
 
 class UpdateProgram {
-  final CustomerDetailsRepository _repository;
-
   UpdateProgram({
     required CustomerDetailsRepository repository,
   }) : _repository = repository;
+
+  final CustomerDetailsRepository _repository;
 
   Future<void> call({
     required String programId,
@@ -27,7 +27,8 @@ class UpdateProgram {
       programId: programId,
     );
 
-    final modifiedRunDrafts = runDrafts.where((element) => !element.isNewRunDraft()).toList();
+    final modifiedRunDrafts =
+        runDrafts.where((element) => !element.isNewRunDraft()).toList();
 
     final deletedRuns = existingRuns.where(
       (existingRun) => modifiedRunDrafts.none(

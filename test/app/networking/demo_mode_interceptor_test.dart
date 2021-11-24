@@ -5,15 +5,15 @@ import 'package:hydrawise/app/networking/demo_mode_interceptor.dart';
 import 'package:hydrawise/features/customer_details/customer_details.dart';
 
 class FakeRequestInterceptorHandler extends RequestInterceptorHandler {
-  final ValueSetter<RequestOptions>? onNext;
-  final ValueSetter<Response>? onResolve;
-  final ValueSetter<DioError>? onReject;
-
   FakeRequestInterceptorHandler({
     this.onNext,
     this.onResolve,
     this.onReject,
   });
+
+  final ValueSetter<RequestOptions>? onNext;
+  final ValueSetter<Response>? onResolve;
+  final ValueSetter<DioError>? onReject;
 
   @override
   void next(RequestOptions requestOptions) {
@@ -21,7 +21,8 @@ class FakeRequestInterceptorHandler extends RequestInterceptorHandler {
   }
 
   @override
-  void resolve(Response response, [bool callFollowingResponseInterceptor = false]) {
+  void resolve(Response response,
+      [bool callFollowingResponseInterceptor = false]) {
     onResolve?.call(response);
   }
 

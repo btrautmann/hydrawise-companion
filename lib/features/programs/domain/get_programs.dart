@@ -6,11 +6,11 @@ abstract class GetPrograms {
 }
 
 class GetProgramsFromRepository implements GetPrograms {
-  final CustomerDetailsRepository _repository;
-
   GetProgramsFromRepository({
     required CustomerDetailsRepository repository,
   }) : _repository = repository;
+
+  final CustomerDetailsRepository _repository;
 
   @override
   Future<List<Program>> call() {

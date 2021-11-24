@@ -6,11 +6,6 @@ part 'programs_state.dart';
 part 'programs_cubit.freezed.dart';
 
 class ProgramsCubit extends Cubit<ProgramsState> {
-  final GetPrograms _getPrograms;
-  final CreateProgram _createProgram;
-  final UpdateProgram _updateProgram;
-  final DeleteProgram _deleteProgram;
-
   ProgramsCubit({
     required GetPrograms getPrograms,
     required CreateProgram createProgram,
@@ -23,6 +18,11 @@ class ProgramsCubit extends Cubit<ProgramsState> {
         super(ProgramsState(programs: [])) {
     _initPrograms();
   }
+
+  final GetPrograms _getPrograms;
+  final CreateProgram _createProgram;
+  final UpdateProgram _updateProgram;
+  final DeleteProgram _deleteProgram;
 
   Future<void> _initPrograms() async {
     final programs = await _getPrograms();
