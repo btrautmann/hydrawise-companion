@@ -27,7 +27,8 @@ class UpdateProgram {
       programId: programId,
     );
 
-    final modifiedRunDrafts = runDrafts.where((element) => !element.isNewRunDraft()).toList();
+    final modifiedRunDrafts =
+        runDrafts.where((element) => !element.isNewRunDraft()).toList();
 
     final deletedRuns = existingRuns.where(
       (existingRun) => modifiedRunDrafts.none(
@@ -58,17 +59,17 @@ class UpdateProgram {
           );
           // TODO(brandon): Create GetUniqueId to abstract the usage
           // of Uuid
-          return matchingRun?.id ?? const Uuid().v4().toString();
+          return matchingRun?.id ?? const Uuid().v4();
         }
 
-        final Future<String> id = runDraft.map(
+        final id = runDraft.map(
           // TODO(brandon): Create GetUniqueId to abstract the usage
           // of Uuid
-          creation: (_) async => const Uuid().v4().toString(),
+          creation: (_) async => const Uuid().v4(),
           modification: (r) => modificationId(),
         );
 
-        final String runId = await id;
+        final runId = await id;
 
         final run = Run(
           id: runId,

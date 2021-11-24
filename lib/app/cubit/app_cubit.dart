@@ -23,7 +23,7 @@ class AppCubit extends Cubit<AppState> {
   final SetAppThemeMode _setAppThemeMode;
   final GetAppThemeMode _getAppThemeMode;
 
-  void _initAppThemeMode() async {
+  Future<void> _initAppThemeMode() async {
     final mode = await _getAppThemeMode();
     emit(state.copyWith(themeMode: mode));
   }

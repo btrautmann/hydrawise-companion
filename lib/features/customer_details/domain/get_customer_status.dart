@@ -3,7 +3,8 @@ import 'package:hydrawise/features/auth/auth.dart';
 import 'package:hydrawise/features/customer_details/customer_details.dart';
 import 'package:result_type/result_type.dart';
 
-typedef GetCustomerStatus = Future<UseCaseResult<CustomerStatus, String>> Function({
+typedef GetCustomerStatus = Future<UseCaseResult<CustomerStatus, String>>
+    Function({
   int? activeControllerId,
 });
 
@@ -52,7 +53,8 @@ class GetCustomerStatusFromHydrawise {
 
         await _repository.updateCustomer(customerStatus);
 
-        final secondsUntilNextPoll = customerStatus.numberOfSecondsUntilNextRequest;
+        final secondsUntilNextPoll =
+            customerStatus.numberOfSecondsUntilNextRequest;
         await _setNextPollTime(secondsUntilNextPoll: secondsUntilNextPoll);
 
         return Success(customerStatus);
@@ -64,13 +66,16 @@ class GetCustomerStatusFromHydrawise {
     final zones = await _repository.getZones();
     final customer = await _repository.getCustomer();
 
-    return Success(CustomerStatus(
-      // TODO(brandon): Use a framework we can
-      // modify under test for time
-      numberOfSecondsUntilNextRequest: DateTime.now().difference(nextPollTime).inSeconds.abs(),
-      timeOfLastStatusUnixEpoch: customer.lastStatusUpdate,
-      zones: zones,
-    ));
+    return Success(
+      CustomerStatus(
+        // TODO(brandon): Use a framework we can
+        // modify under test for time
+        numberOfSecondsUntilNextRequest:
+            DateTime.now().difference(nextPollTime).inSeconds.abs(),
+        timeOfLastStatusUnixEpoch: customer.lastStatusUpdate,
+        zones: zones,
+      ),
+    );
   }
 }
 
@@ -102,10 +107,12 @@ class GetFakeCustomerStatus {
       zones.addAll(queriedZones);
     }
 
-    return Success(CustomerStatus(
-      numberOfSecondsUntilNextRequest: 5,
-      timeOfLastStatusUnixEpoch: customer.lastStatusUpdate,
-      zones: zones,
-    ));
+    return Success(
+      CustomerStatus(
+        numberOfSecondsUntilNextRequest: 5,
+        timeOfLastStatusUnixEpoch: customer.lastStatusUpdate,
+        zones: zones,
+      ),
+    );
   }
 }

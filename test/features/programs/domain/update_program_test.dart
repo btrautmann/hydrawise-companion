@@ -12,7 +12,7 @@ void main() {
       updateProgram = UpdateProgram(repository: repository);
     });
     test('it updates the program name', () async {
-      String programId = await repository.createProgram(
+      final programId = await repository.createProgram(
         name: 'Original',
         frequency: FrequencyX.none(),
       );
@@ -25,13 +25,15 @@ void main() {
       );
 
       expect(
-        await repository.getProgram(programId: programId).then((value) => value.name),
+        await repository
+            .getProgram(programId: programId)
+            .then((value) => value.name),
         'New',
       );
     });
 
     test('it updates the program frequency', () async {
-      String programId = await repository.createProgram(
+      final programId = await repository.createProgram(
         name: 'Original',
         frequency: FrequencyX.none(),
       );
@@ -52,18 +54,21 @@ void main() {
       );
 
       expect(
-        await repository.getProgram(programId: programId).then((value) => value.frequency.monday),
+        await repository
+            .getProgram(programId: programId)
+            .then((value) => value.frequency.monday),
         isTrue,
       );
     });
 
     test('it adds a run when a zone is added', () async {
-      String programId = await repository.createProgram(
+      final programId = await repository.createProgram(
         name: 'Original',
         frequency: FrequencyX.none(),
       );
 
-      final runsBefore = await repository.getRunsForProgram(programId: programId);
+      final runsBefore =
+          await repository.getRunsForProgram(programId: programId);
       expect(runsBefore.length, 0);
 
       await updateProgram(
@@ -87,14 +92,15 @@ void main() {
         ],
       );
 
-      final runsAfter = await repository.getRunsForProgram(programId: programId);
+      final runsAfter =
+          await repository.getRunsForProgram(programId: programId);
 
       expect(runsAfter.length, 1);
       expect(runsAfter.single.zoneId, 1);
     });
 
     test('it removes a run when a zone is removed', () async {
-      String programId = await repository.createProgram(
+      final programId = await repository.createProgram(
         name: 'Original',
         frequency: FrequencyX.none(),
       );
@@ -118,7 +124,8 @@ void main() {
         ],
       );
 
-      final runsBefore = await repository.getRunsForProgram(programId: programId);
+      final runsBefore =
+          await repository.getRunsForProgram(programId: programId);
       expect(runsBefore.length, 2);
 
       await updateProgram(
@@ -134,14 +141,15 @@ void main() {
         ],
       );
 
-      final runsAfter = await repository.getRunsForProgram(programId: programId);
+      final runsAfter =
+          await repository.getRunsForProgram(programId: programId);
 
       expect(runsAfter.length, 1);
       expect(runsAfter.single.zoneId, 1);
     });
 
     test('it updates start time and duration of existing zones', () async {
-      String programId = await repository.createProgram(
+      final programId = await repository.createProgram(
         name: 'Original',
         frequency: FrequencyX.none(),
       );
@@ -158,7 +166,8 @@ void main() {
         ],
       );
 
-      final runsBefore = await repository.getRunsForProgram(programId: programId);
+      final runsBefore =
+          await repository.getRunsForProgram(programId: programId);
       expect(runsBefore.single.startTime, const TimeOfDay(hour: 9, minute: 9));
       expect(runsBefore.single.duration, 55);
 
@@ -175,7 +184,8 @@ void main() {
         ],
       );
 
-      final runsAfter = await repository.getRunsForProgram(programId: programId);
+      final runsAfter =
+          await repository.getRunsForProgram(programId: programId);
 
       expect(runsAfter.single.startTime, const TimeOfDay(hour: 5, minute: 5));
       expect(runsAfter.single.duration, 25);

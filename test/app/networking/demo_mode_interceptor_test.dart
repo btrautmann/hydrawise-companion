@@ -21,7 +21,10 @@ class FakeRequestInterceptorHandler extends RequestInterceptorHandler {
   }
 
   @override
-  void resolve(Response response, [bool callFollowingResponseInterceptor = false]) {
+  void resolve(
+    Response response, [
+    bool callFollowingResponseInterceptor = false,
+  ]) {
     onResolve?.call(response);
   }
 
@@ -94,11 +97,14 @@ void main() {
           RequestOptions(
             path: 'http://api.hydrawise.com/api/v1/customerdetails.php',
           ),
-          FakeRequestInterceptorHandler(onResolve: (r) {
-            response = r;
-          }, onNext: (o) {
-            requestOptions = o;
-          }),
+          FakeRequestInterceptorHandler(
+            onResolve: (r) {
+              response = r;
+            },
+            onNext: (o) {
+              requestOptions = o;
+            },
+          ),
         );
 
         expect(response, isNull);

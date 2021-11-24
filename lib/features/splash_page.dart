@@ -15,6 +15,7 @@ class SplashPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final state = context.read<AuthCubit>().state;
+    // ignore: cascade_invocations
     state.when(
       loggedIn: () => GoRouter.of(context).go('/home'),
       loggedOut: () => GoRouter.of(context).go('/login'),

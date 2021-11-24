@@ -6,6 +6,7 @@ import 'package:hydrawise/features/run_zone/run_zone.dart';
 import 'package:pedantic/pedantic.dart';
 import 'package:result_type/result_type.dart';
 
+// ignore: one_member_abstracts
 abstract class RunZone {
   Future<UseCaseResult<RunZoneResponse, String>> call({
     required Zone zone,
@@ -61,9 +62,13 @@ class RunZoneOverNetwork implements RunZone {
       }
     });
 
+    // ignore: avoid_dynamic_calls
     return response
-        .map<RunZoneResponse, DioError>((result) => RunZoneResponse.fromJson(result!))
+        .map<RunZoneResponse, DioError>(
+          (result) => RunZoneResponse.fromJson(result!),
+        )
         .mapError<RunZoneResponse, String>(
+          // ignore: avoid_dynamic_calls
           (error) => "Can't run ${zone.name}. ${error.message}",
         );
   }
@@ -102,9 +107,11 @@ class RunZoneLocally implements RunZone {
       }),
     );
 
-    return Success(RunZoneResponse(
-      message: 'Starting zones ${zone.name}. ${zone.name} to run now.',
-      typeOfMessage: 'info',
-    ));
+    return Success(
+      RunZoneResponse(
+        message: 'Starting zones ${zone.name}. ${zone.name} to run now.',
+        typeOfMessage: 'info',
+      ),
+    );
   }
 }

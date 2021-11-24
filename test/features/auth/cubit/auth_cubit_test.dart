@@ -11,11 +11,11 @@ import 'package:hydrawise/features/customer_details/customer_details.dart';
 void main() {
   group('AuthCubit', () {
     final DataStorage dataStorage = InMemoryStorage();
-    final GetApiKey getApiKey = GetApiKey(dataStorage);
-    final SetApiKey setApiKey = SetApiKey(dataStorage);
-    final SetFirebaseUid setFirebaseUid = SetFirebaseUid(dataStorage);
-    final GetFirebaseUid getFirebaseUid = GetFirebaseUid(dataStorage);
-    final AuthenticateWithFirebase authenticateWithFirebase =
+    final getApiKey = GetApiKey(dataStorage);
+    final setApiKey = SetApiKey(dataStorage);
+    final setFirebaseUid = SetFirebaseUid(dataStorage);
+    final getFirebaseUid = GetFirebaseUid(dataStorage);
+    final authenticateWithFirebase =
         AuthenticateWithFirebase(FakeFirebaseFirestore(), MockFirebaseAuth());
 
     final repository = InMemoryCustomerDetailsRepository();
@@ -55,7 +55,7 @@ void main() {
       group('when not logged in', () {
         blocTest<AuthCubit, AuthState>(
           'it emits [loggedOut]',
-          build: () => _buildSubject(),
+          build: _buildSubject,
           expect: () => <AuthState>[
             AuthState.loggedOut(),
           ],
@@ -69,7 +69,7 @@ void main() {
             await setApiKey('1234');
             await setFirebaseUid('1');
           },
-          build: () => _buildSubject(),
+          build: _buildSubject,
           expect: () => <AuthState>[
             AuthState.loggedIn(),
           ],
@@ -80,8 +80,8 @@ void main() {
     group('logIn', () {
       blocTest<AuthCubit, AuthState>(
         'it emits [loggedIn]',
-        build: () => _buildSubject(),
-        act: (cubit) async => await cubit.login('1234'),
+        build: _buildSubject,
+        act: (cubit) async => cubit.login('1234'),
         skip: 1, // Initial check
         expect: () => <AuthState>[
           AuthState.loggedIn(),
@@ -96,8 +96,8 @@ void main() {
           await setApiKey('1234');
           await setFirebaseUid('1');
         },
-        build: () => _buildSubject(),
-        act: (cubit) async => await cubit.logOut(),
+        build: _buildSubject,
+        act: (cubit) async => cubit.logOut(),
         skip: 1, // Initial check
         expect: () => <AuthState>[
           AuthState.loggedOut(),

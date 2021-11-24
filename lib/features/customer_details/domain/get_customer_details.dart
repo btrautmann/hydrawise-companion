@@ -4,7 +4,8 @@ import 'package:hydrawise/features/auth/auth.dart';
 import 'package:hydrawise/features/customer_details/customer_details.dart';
 import 'package:result_type/result_type.dart';
 
-typedef GetCustomerDetails = Future<UseCaseResult<CustomerDetails, String>> Function();
+typedef GetCustomerDetails = Future<UseCaseResult<CustomerDetails, String>>
+    Function();
 
 class GetCustomerDetailsFromHydrawise {
   GetCustomerDetailsFromHydrawise({
@@ -35,7 +36,8 @@ class GetCustomerDetailsFromHydrawise {
     if (response.isSuccess) {
       final customerDetails = CustomerDetails.fromJson(response.success!);
 
-      final customerIdentification = customerDetails.toCustomerIdentification(apiKey);
+      final customerIdentification =
+          customerDetails.toCustomerIdentification(apiKey);
 
       await _repository.insertCustomer(customerIdentification);
 
@@ -70,18 +72,20 @@ class GetFakeCustomerDetails {
     // Query again for simplicity
     final customer = await _repository.getCustomer();
 
-    return Success(CustomerDetails(
-      activeControllerId: customer.activeControllerId,
-      customerId: customer.customerId,
-      controllers: [
-        Controller(
-          name: 'Fake Controller',
-          lastContact: 1631616496,
-          serialNumber: '123456789',
-          id: 1234,
-          status: 'All good!',
-        ),
-      ],
-    ));
+    return Success(
+      CustomerDetails(
+        activeControllerId: customer.activeControllerId,
+        customerId: customer.customerId,
+        controllers: [
+          Controller(
+            name: 'Fake Controller',
+            lastContact: 1631616496,
+            serialNumber: '123456789',
+            id: 1234,
+            status: 'All good!',
+          ),
+        ],
+      ),
+    );
   }
 }

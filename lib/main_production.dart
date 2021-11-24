@@ -28,13 +28,13 @@ Future<void> main() async {
 
       final sharedPreferences = await SharedPreferences.getInstance();
       final dataStorage = SharedPreferencesStorage(sharedPreferences);
-      final database = await CreateHydrawiseDatabase().call(
+      final database = await CreateDatabase().call(
         databaseName: 'hydrawise_companion_prod.db',
         version: 3,
       );
       final repository = DatabaseBackedCustomerDetailsRepository(database);
 
-      // ignore: prefer_void_to_null
+      // ignore: prefer_void_to_null, close_sinks
       final authFailures = StreamController<Null>();
       void onAuthenticationFailure() {
         authFailures.add(null);
@@ -57,12 +57,14 @@ Future<void> main() async {
         authFailures: authFailures,
       );
 
-      final router = await BuildStandardRouter().call();
+      final router = await BuildAppRouter().call();
 
-      runApp(App(
-        router: router,
-        providers: providers,
-      ));
+      runApp(
+        App(
+          router: router,
+          providers: providers,
+        ),
+      );
     },
     (error, stackTrace) => log(error.toString(), stackTrace: stackTrace),
   );

@@ -38,7 +38,7 @@ class AuthCubit extends Cubit<AuthState> {
   final ClearCustomerDetails _clearCustomerDetails;
   final GetAuthFailures _getAuthFailures;
 
-  void _listenForAuthFailures() async {
+  Future<void> _listenForAuthFailures() async {
     await _getAuthFailures().then(
       (stream) => stream.listen((event) {
         emit(AuthState.loggedOut());
@@ -46,7 +46,7 @@ class AuthCubit extends Cubit<AuthState> {
     );
   }
 
-  void _checkAuthenticationStatus() async {
+  Future<void> _checkAuthenticationStatus() async {
     final apiKey = await _getApiKey();
     final uId = await _getFirebaseUid();
     if (apiKey != null && apiKey.isNotEmpty && uId != null && uId.isNotEmpty) {

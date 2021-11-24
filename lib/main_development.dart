@@ -24,11 +24,11 @@ Future<void> main() async {
     () async {
       WidgetsFlutterBinding.ensureInitialized();
       await Firebase.initializeApp();
-      FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(false);
+      await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(false);
 
       final sharedPreferences = await SharedPreferences.getInstance();
       final dataStorage = SharedPreferencesStorage(sharedPreferences);
-      final database = await CreateHydrawiseDatabase().call(
+      final database = await CreateDatabase().call(
         databaseName: 'hydrawise_companion_dev.db',
         version: 2,
       );
@@ -39,12 +39,14 @@ Future<void> main() async {
         repository: repository,
       );
 
-      final router = await BuildStandardRouter().call();
+      final router = await BuildAppRouter().call();
 
-      runApp(App(
-        router: router,
-        providers: providers,
-      ));
+      runApp(
+        App(
+          router: router,
+          providers: providers,
+        ),
+      );
     },
     (error, stackTrace) => log(error.toString(), stackTrace: stackTrace),
   );

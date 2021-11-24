@@ -7,7 +7,7 @@ void main() {
   group('ClearCustomerDetails', () {
     final storage = InMemoryStorage();
     final repository = InMemoryCustomerDetailsRepository();
-    final SetApiKey setApiKey = SetApiKey(storage);
+    final setApiKey = SetApiKey(storage);
     final setFirebaseUid = SetFirebaseUid(storage);
     final clearCustomerDetails = ClearCustomerDetails(
       setApiKey: setApiKey,

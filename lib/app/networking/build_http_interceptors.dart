@@ -5,6 +5,7 @@ import 'package:hydrawise/app/networking/demo_mode_interceptor.dart';
 
 /// Contract for building the interceptors that will be
 /// added to the HttpClient
+// ignore: one_member_abstracts
 abstract class BuildHttpInterceptors {
   Future<List<Interceptor>> call();
 }

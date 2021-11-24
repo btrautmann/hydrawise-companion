@@ -11,6 +11,7 @@ import 'package:hydrawise/features/run_zone/run_zone.dart';
 import 'package:hydrawise/features/weather/weather.dart';
 import 'package:provider/provider.dart';
 
+// ignore: avoid_classes_with_only_static_members
 abstract class ProductionDomainFactory {
   static List<Provider> build({
     required HttpClient client,
@@ -50,7 +51,7 @@ abstract class ProductionDomainFactory {
       getNextPollTime: getNextPollTime,
       setNextPollTime: setNextPollTime,
     );
-    final getPrograms = GetProgramsFromRepository(repository: repository);
+    final getPrograms = GetPrograms(repository: repository);
     final createProgram = CreateProgram(repository: repository);
     final updateProgram = UpdateProgram(repository: repository);
     final deleteProgram = DeleteProgram(repository: repository);
@@ -98,6 +99,7 @@ abstract class ProductionDomainFactory {
   }
 }
 
+// ignore: avoid_classes_with_only_static_members
 abstract class DevelopmentDomainFactory {
   static List<Provider> build({
     required DataStorage dataStorage,
@@ -120,7 +122,7 @@ abstract class DevelopmentDomainFactory {
     final stopZone = StopZoneLocally(repository: repository);
     final getCustomerDetails = GetFakeCustomerDetails(repository: repository);
     final getCustomerStatus = GetFakeCustomerStatus(repository: repository);
-    final getPrograms = GetProgramsFromRepository(repository: repository);
+    final getPrograms = GetPrograms(repository: repository);
     final createProgram = CreateProgram(repository: repository);
     final updateProgram = UpdateProgram(repository: repository);
     final deleteProgram = DeleteProgram(repository: repository);

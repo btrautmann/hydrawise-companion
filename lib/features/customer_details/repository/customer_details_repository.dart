@@ -51,7 +51,8 @@ abstract class CustomerDetailsRepository {
   Future<void> clearAllData();
 }
 
-class DatabaseBackedCustomerDetailsRepository implements CustomerDetailsRepository {
+class DatabaseBackedCustomerDetailsRepository
+    implements CustomerDetailsRepository {
   DatabaseBackedCustomerDetailsRepository(this._database);
 
   final Database _database;
@@ -133,7 +134,7 @@ class DatabaseBackedCustomerDetailsRepository implements CustomerDetailsReposito
     required Frequency frequency,
   }) async {
     final program = Program(
-      id: const Uuid().v4().toString(),
+      id: const Uuid().v4(),
       name: name,
       frequency: frequency,
       // Runs aren't serialized, so pass empty list
@@ -187,14 +188,14 @@ class DatabaseBackedCustomerDetailsRepository implements CustomerDetailsReposito
       'programs',
       where: 'id = ?',
       whereArgs: [programId],
-    ).then((value) => value.map((e) => ProgramX.fromJson(e)).single);
+    ).then((value) => value.map(ProgramX.fromJson).single);
   }
 
   @override
   Future<List<Program>> getPrograms() async {
     final programsRaw = await _database.query('programs');
     final programs = <Program>[];
-    for (int i = 0; i < programsRaw.length; i++) {
+    for (var i = 0; i < programsRaw.length; i++) {
       final program = ProgramX.fromJson(programsRaw[i]);
       final runs = await _database.query(
         'runs',
@@ -321,7 +322,7 @@ class InMemoryCustomerDetailsRepository implements CustomerDetailsRepository {
     required Frequency frequency,
   }) async {
     final program = Program(
-      id: const Uuid().v4().toString(),
+      id: const Uuid().v4(),
       name: name,
       frequency: frequency,
       runs: [],

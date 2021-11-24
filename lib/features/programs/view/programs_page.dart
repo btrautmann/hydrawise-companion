@@ -74,7 +74,7 @@ class ProgramsPageView extends StatelessWidget {
                   children: [
                     const Text('No programs'),
                     Padding(
-                      padding: const EdgeInsets.all(8.0),
+                      padding: const EdgeInsets.all(8),
                       child: ElevatedButton(
                         onPressed: () {
                           GoRouter.of(context).push('/create_program');
@@ -103,13 +103,15 @@ class ProgramsPageView extends StatelessWidget {
                               background: ColoredBox(
                                 color: Theme.of(context).errorColor,
                                 child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
+                                  padding: const EdgeInsets.all(8),
                                   child: Align(
                                     alignment: Alignment.centerLeft,
                                     child: Text(
                                       'Delete',
                                       style: TextStyle(
-                                        color: Theme.of(context).colorScheme.onError,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .onError,
                                       ),
                                     ),
                                   ),
@@ -118,11 +120,13 @@ class ProgramsPageView extends StatelessWidget {
                               direction: DismissDirection.startToEnd,
                               key: ObjectKey(state.programs[index]),
                               child: Padding(
-                                padding: const EdgeInsets.only(top: 4, bottom: 4),
+                                padding:
+                                    const EdgeInsets.only(top: 4, bottom: 4),
                                 child: ListRow(
                                   leadingIcon: CircleBackground(
                                     child: Text(
-                                      state.programs[index].name.characters.first,
+                                      state.programs[index].name.characters
+                                          .first,
                                     ),
                                   ),
                                   title: Text(state.programs[index].name),
@@ -134,7 +138,9 @@ class ProgramsPageView extends StatelessWidget {
                                 ),
                               ),
                               onDismissed: (direction) {
-                                context.read<ProgramsCubit>().addToPendingDeletes(state.programs[index]);
+                                context
+                                    .read<ProgramsCubit>()
+                                    .addToPendingDeletes(state.programs[index]);
                               },
                             ),
                             const Divider(),

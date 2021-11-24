@@ -32,16 +32,19 @@ class CustomerDetailsCubit extends Cubit<CustomerDetailsState> {
       _loadCustomerDetails();
     }
     _authCubit.stream.asBroadcastStream().listen((event) {
-      event.when(loggedIn: () async {
-        _loadCustomerDetails();
-      }, loggedOut: () {
-        _timer?.cancel();
-        _timer = null;
-      });
+      event.when(
+        loggedIn: () async {
+          await _loadCustomerDetails();
+        },
+        loggedOut: () {
+          _timer?.cancel();
+          _timer = null;
+        },
+      );
     });
   }
 
-  void _loadCustomerDetails() async {
+  Future<void> _loadCustomerDetails() async {
     emit(CustomerDetailsState.loading());
     final customerDetails = await _getCustomerDetails();
 
@@ -51,10 +54,12 @@ class CustomerDetailsCubit extends Cubit<CustomerDetailsState> {
         activeControllerId: customerDetails.success.activeControllerId,
       );
       if (customerStatus.isSuccess) {
-        emit(CustomerDetailsState.complete(
-          customerDetails: customerDetails.success,
-          customerStatus: customerStatus.success,
-        ));
+        emit(
+          CustomerDetailsState.complete(
+            customerDetails: customerDetails.success,
+            customerStatus: customerStatus.success,
+          ),
+        );
       }
       _poll();
     }
@@ -63,24 +68,25 @@ class CustomerDetailsCubit extends Cubit<CustomerDetailsState> {
   void _poll() {
     _timer = Timer.periodic(const Duration(seconds: 5), (timer) {
       state.maybeWhen(
-          complete: (details, status) async {
-            final customerStatus = await _getCustomerStatus();
-            if (customerStatus.isSuccess) {
-              final status = customerStatus.success;
-              status.zones.sort(
-                (z1, z2) => z1.physicalNumber.compareTo(
-                  z2.physicalNumber,
-                ),
-              );
-              emit(
-                CustomerDetailsState.complete(
-                  customerDetails: details,
-                  customerStatus: status,
-                ),
-              );
-            }
-          },
-          orElse: () {});
+        complete: (details, status) async {
+          final customerStatus = await _getCustomerStatus();
+          if (customerStatus.isSuccess) {
+            final status = customerStatus.success;
+            status.zones.sort(
+              (z1, z2) => z1.physicalNumber.compareTo(
+                z2.physicalNumber,
+              ),
+            );
+            emit(
+              CustomerDetailsState.complete(
+                customerDetails: details,
+                customerStatus: status,
+              ),
+            );
+          }
+        },
+        orElse: () {},
+      );
     });
   }
 }

@@ -187,7 +187,8 @@ class _RunsList extends StatelessWidget {
                                     (p) => p.id == todayRuns[index].programId,
                                   ),
                                   run: todayRuns[index],
-                                  shouldShowDivider: index != todayRuns.length - 1,
+                                  shouldShowDivider:
+                                      index != todayRuns.length - 1,
                                   onRunTapped: onRunTapped,
                                 );
                               },

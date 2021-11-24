@@ -23,7 +23,7 @@ class CreateProgram {
       for (final zoneId in draft.zoneIds) {
         runs.add(
           Run(
-            id: const Uuid().v4().toString(),
+            id: const Uuid().v4(),
             programId: programId,
             startTime: draft.timeOfDay,
             duration: draft.duration.inSeconds,

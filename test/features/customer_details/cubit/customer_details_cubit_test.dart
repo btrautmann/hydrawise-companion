@@ -20,8 +20,8 @@ void main() {
       repository: repository,
     );
 
-    final SetApiKey setApiKey = SetApiKey(dataStorage);
-    final GetAuthFailures getAuthFailures = GetAuthFailures(
+    final setApiKey = SetApiKey(dataStorage);
+    final getAuthFailures = GetAuthFailures(
       authFailuresController: StreamController(),
     );
     final setFirebaseUid = SetFirebaseUid(dataStorage);
@@ -32,7 +32,7 @@ void main() {
       customerDetailsRepository: repository,
     );
 
-    final AuthCubit loginCubit = AuthCubit(
+    final authCubit = AuthCubit(
       getApiKey: GetApiKey(dataStorage),
       setApiKey: setApiKey,
       getCustomerDetails: getCustomerDetails,
@@ -50,7 +50,7 @@ void main() {
       return CustomerDetailsCubit(
         getCustomerDetails: getCustomerDetails,
         getCustomerStatus: getCustomerStatus,
-        authCubit: loginCubit,
+        authCubit: authCubit,
       );
     }
 
@@ -62,7 +62,7 @@ void main() {
       group('when logged out', () {
         blocTest<CustomerDetailsCubit, CustomerDetailsState>(
           'it emits nothing',
-          build: () => _buildSubject(),
+          build: _buildSubject,
           act: (cubit) => cubit.start(),
           expect: () => <CustomerDetailsState>[],
         );
@@ -72,9 +72,9 @@ void main() {
         blocTest<CustomerDetailsCubit, CustomerDetailsState>(
           'it emits Complete',
           setUp: () async {
-            await loginCubit.login('fake-api-key');
+            await authCubit.login('fake-api-key');
           },
-          build: () => _buildSubject(),
+          build: _buildSubject,
           act: (cubit) => cubit.start(),
           expect: () => <CustomerDetailsState>[
             CustomerDetailsState.loading(),
