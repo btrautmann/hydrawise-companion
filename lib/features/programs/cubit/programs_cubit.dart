@@ -1,11 +1,6 @@
-import 'dart:convert';
-
 import 'package:bloc/bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:hydrawise/features/programs/domain/delete_program.dart';
-import 'package:hydrawise/features/programs/domain/get_programs.dart';
 import 'package:hydrawise/features/programs/programs.dart';
-import 'package:workmanager/workmanager.dart';
 
 part 'programs_state.dart';
 part 'programs_cubit.freezed.dart';
@@ -31,17 +26,6 @@ class ProgramsCubit extends Cubit<ProgramsState> {
 
   Future<void> _initPrograms() async {
     final programs = await _getPrograms();
-    Workmanager().registerOneOffTask(
-      DateTime.now().millisecondsSinceEpoch.toString(),
-      'programsTask',
-      inputData: {
-        'programs': json.encode(
-          List.from(
-            programs.map((e) => ProgramX.toJson(e)),
-          ),
-        ),
-      },
-    );
     emit(state.copyWith(programs: programs));
   }
 

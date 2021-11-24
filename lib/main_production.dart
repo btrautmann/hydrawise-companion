@@ -13,21 +13,7 @@ import 'package:hydrawise/app/hydrawise_companion_app.dart';
 import 'package:hydrawise/app/networking/build_http_interceptors.dart';
 import 'package:hydrawise/core/core.dart';
 import 'package:hydrawise/features/customer_details/customer_details.dart';
-import 'package:hydrawise/features/programs/domain/run_programs_in_background.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:workmanager/workmanager.dart';
-
-/// Dispatcher for background tasks -- must be top-level
-void callbackDispatcher() {
-  Workmanager().executeTask((task, inputData) {
-    log("Native called background task: $task");
-    final run = RunProgramsInBackground();
-    return run(
-      inputData: inputData!,
-      onPrint: (s) => log(s),
-    );
-  });
-}
 
 Future<void> main() async {
   Bloc.observer = AppBlocObserver();
@@ -39,10 +25,6 @@ Future<void> main() async {
     () async {
       WidgetsFlutterBinding.ensureInitialized();
       await Firebase.initializeApp();
-      await Workmanager().initialize(
-        callbackDispatcher,
-        isInDebugMode: true,
-      );
 
       final sharedPreferences = await SharedPreferences.getInstance();
       final dataStorage = SharedPreferencesStorage(sharedPreferences);
