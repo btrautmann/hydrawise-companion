@@ -1,13 +1,13 @@
 import 'package:hydrawise/core/core.dart';
 import 'package:hydrawise/core/networking/http_client.dart';
+import 'package:hydrawise/features/auth/auth.dart';
 import 'package:hydrawise/features/customer_details/customer_details.dart';
-import 'package:hydrawise/features/login/login.dart';
 import 'package:result_type/result_type.dart';
 
 typedef GetCustomerDetails = Future<UseCaseResult<CustomerDetails, String>> Function();
 
-class GetCustomerDetailsFromNetwork {
-  GetCustomerDetailsFromNetwork({
+class GetCustomerDetailsFromHydrawise {
+  GetCustomerDetailsFromHydrawise({
     required HttpClient httpClient,
     required GetApiKey getApiKey,
     required CustomerDetailsRepository repository,

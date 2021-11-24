@@ -6,7 +6,7 @@ import 'package:hydrawise/features/app_theme_mode/app_theme_mode.dart';
 void main() {
   group('GetAppThemeModeFromStorage', () {
     final storage = InMemoryStorage();
-    final getAppThemeMode = GetAppThemeModeFromStorage(storage);
+    final getAppThemeMode = GetAppThemeMode(storage);
 
     test('it gets the app ThemeMode from app_theme_mode', () async {
       await storage.setString('app_theme_mode', 'ThemeMode.dark');

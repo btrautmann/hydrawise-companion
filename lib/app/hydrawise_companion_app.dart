@@ -5,8 +5,8 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hydrawise/app/app.dart';
 import 'package:hydrawise/features/app_theme_mode/app_theme_mode.dart';
+import 'package:hydrawise/features/auth/auth.dart';
 import 'package:hydrawise/features/customer_details/customer_details.dart';
-import 'package:hydrawise/features/login/login.dart';
 import 'package:hydrawise/features/programs/programs.dart';
 import 'package:provider/provider.dart';
 
@@ -35,9 +35,13 @@ class App extends StatelessWidget {
               ),
             ),
             BlocProvider(
-              create: (context) => LoginCubit(
+              create: (context) => AuthCubit(
                 clearCustomerDetails: context.read<ClearCustomerDetails>(),
                 getApiKey: context.read<GetApiKey>(),
+                getFirebaseUid: context.read<GetFirebaseUid>(),
+                setFirebaseUid: context.read<SetFirebaseUid>(),
+                authenticateWithFirebase:
+                    context.read<AuthenticateWithFirebase>(),
                 getCustomerDetails: context.read<GetCustomerDetails>(),
                 setApiKey: context.read<SetApiKey>(),
                 getAuthFailures: context.read<GetAuthFailures>(),
@@ -48,7 +52,7 @@ class App extends StatelessWidget {
               create: (context) => CustomerDetailsCubit(
                 getCustomerDetails: context.read<GetCustomerDetails>(),
                 getCustomerStatus: context.read<GetCustomerStatus>(),
-                loginCubit: context.read<LoginCubit>(),
+                authCubit: context.read<AuthCubit>(),
               )..start(),
             ),
             BlocProvider(
@@ -60,7 +64,7 @@ class App extends StatelessWidget {
               ),
             ),
           ],
-          child: BlocListener<LoginCubit, LoginState>(
+          child: BlocListener<AuthCubit, AuthState>(
             listener: (context, state) {
               if (state.isLoggedIn()) {
                 _router.go('/home');
@@ -106,13 +110,15 @@ ThemeData _buildLightTheme(BuildContext context) {
     navigationRailTheme: NavigationRailThemeData(
       backgroundColor: AppColors.blue700,
       selectedIconTheme: const IconThemeData(color: AppColors.orange500),
-      selectedLabelTextStyle: GoogleFonts.workSansTextTheme().headline5?.copyWith(
-            color: AppColors.orange500,
-          ),
+      selectedLabelTextStyle:
+          GoogleFonts.workSansTextTheme().headline5?.copyWith(
+                color: AppColors.orange500,
+              ),
       unselectedIconTheme: const IconThemeData(color: AppColors.blue200),
-      unselectedLabelTextStyle: GoogleFonts.workSansTextTheme().headline5?.copyWith(
-            color: AppColors.blue200,
-          ),
+      unselectedLabelTextStyle:
+          GoogleFonts.workSansTextTheme().headline5?.copyWith(
+                color: AppColors.blue200,
+              ),
     ),
     chipTheme: _buildChipTheme(
       AppColors.blue700,
@@ -147,13 +153,15 @@ ThemeData _buildDarkTheme(BuildContext context) {
     navigationRailTheme: NavigationRailThemeData(
       backgroundColor: AppColors.darkBottomAppBarBackground,
       selectedIconTheme: const IconThemeData(color: AppColors.orange300),
-      selectedLabelTextStyle: GoogleFonts.workSansTextTheme().headline5?.copyWith(
-            color: AppColors.orange300,
-          ),
+      selectedLabelTextStyle:
+          GoogleFonts.workSansTextTheme().headline5?.copyWith(
+                color: AppColors.orange300,
+              ),
       unselectedIconTheme: const IconThemeData(color: AppColors.greyLabel),
-      unselectedLabelTextStyle: GoogleFonts.workSansTextTheme().headline5?.copyWith(
-            color: AppColors.greyLabel,
-          ),
+      unselectedLabelTextStyle:
+          GoogleFonts.workSansTextTheme().headline5?.copyWith(
+                color: AppColors.greyLabel,
+              ),
     ),
     chipTheme: _buildChipTheme(
       AppColors.blue200,
@@ -289,7 +297,9 @@ ChipThemeData _buildChipTheme(
     padding: const EdgeInsets.all(4),
     shape: const StadiumBorder(),
     labelStyle: GoogleFonts.workSansTextTheme().bodyText2!.copyWith(
-          color: brightness == Brightness.dark ? AppColors.white50 : AppColors.black900,
+          color: brightness == Brightness.dark
+              ? AppColors.white50
+              : AppColors.black900,
         ),
     secondaryLabelStyle: GoogleFonts.workSansTextTheme().bodyText2!,
     brightness: brightness,

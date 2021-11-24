@@ -1,20 +1,22 @@
-import 'package:hydrawise/core/core.dart';
+import 'package:hydrawise/features/auth/auth.dart';
 import 'package:hydrawise/features/customer_details/repository/customer_details_repository.dart';
 
-typedef ClearCustomerDetails = Future<void> Function();
-
-class ClearCustomerDetailsFromStorage {
-  ClearCustomerDetailsFromStorage({
-    required DataStorage dataStorage,
+class ClearCustomerDetails {
+  ClearCustomerDetails({
+    required SetApiKey setApiKey,
+    required SetFirebaseUid setFirebaseUid,
     required CustomerDetailsRepository customerDetailsRepository,
-  })  : _dataStorage = dataStorage,
+  })  : _setApiKey = setApiKey,
+        _setFirebaseUid = setFirebaseUid,
         _customerDetailsRepository = customerDetailsRepository;
 
-  final DataStorage _dataStorage;
+  final SetApiKey _setApiKey;
+  final SetFirebaseUid _setFirebaseUid;
   final CustomerDetailsRepository _customerDetailsRepository;
 
   Future<void> call() async {
-    await _dataStorage.setString('api_key', '');
+    await _setApiKey('');
+    await _setFirebaseUid('');
     await _customerDetailsRepository.clearAllData();
   }
 }

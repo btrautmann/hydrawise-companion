@@ -9,8 +9,8 @@ import 'package:hydrawise/features/app_theme_mode/domain/set_app_theme_mode.dart
 void main() {
   group('AppCubit', () {
     final dataStorage = InMemoryStorage();
-    final setAppTheme = SetAppThemeModeInStorage(dataStorage);
-    final getAppTheme = GetAppThemeModeFromStorage(dataStorage);
+    final setAppTheme = SetAppThemeMode(dataStorage);
+    final getAppTheme = GetAppThemeMode(dataStorage);
     AppCubit _buildSubject() {
       return AppCubit(
         setAppThemeMode: setAppTheme,

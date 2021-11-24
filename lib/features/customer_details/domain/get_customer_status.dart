@@ -1,14 +1,14 @@
 import 'package:hydrawise/core/core.dart';
+import 'package:hydrawise/features/auth/auth.dart';
 import 'package:hydrawise/features/customer_details/customer_details.dart';
-import 'package:hydrawise/features/login/login.dart';
 import 'package:result_type/result_type.dart';
 
 typedef GetCustomerStatus = Future<UseCaseResult<CustomerStatus, String>> Function({
   int? activeControllerId,
 });
 
-class GetCustomerStatusFromNetwork {
-  GetCustomerStatusFromNetwork({
+class GetCustomerStatusFromHydrawise {
+  GetCustomerStatusFromHydrawise({
     required HttpClient httpClient,
     required CustomerDetailsRepository repository,
     required GetApiKey getApiKey,

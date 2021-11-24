@@ -1,17 +1,22 @@
 import 'dart:async';
 
 import 'package:bloc_test/bloc_test.dart';
+import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
+import 'package:firebase_auth_mocks/firebase_auth_mocks.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hydrawise/core/core.dart';
+import 'package:hydrawise/features/auth/auth.dart';
 import 'package:hydrawise/features/customer_details/customer_details.dart';
-import 'package:hydrawise/features/login/cubit/login_cubit.dart';
-import 'package:hydrawise/features/login/login.dart';
 
 void main() {
-  group('LoginCubit', () {
+  group('AuthCubit', () {
     final DataStorage dataStorage = InMemoryStorage();
-    final GetApiKey getApiKey = GetApiKeyFromStorage(dataStorage);
-    final SetApiKey setApiKey = SetApiKeyInStorage(dataStorage);
+    final GetApiKey getApiKey = GetApiKey(dataStorage);
+    final SetApiKey setApiKey = SetApiKey(dataStorage);
+    final SetFirebaseUid setFirebaseUid = SetFirebaseUid(dataStorage);
+    final GetFirebaseUid getFirebaseUid = GetFirebaseUid(dataStorage);
+    final AuthenticateWithFirebase authenticateWithFirebase =
+        AuthenticateWithFirebase(FakeFirebaseFirestore(), MockFirebaseAuth());
 
     final repository = InMemoryCustomerDetailsRepository();
     final GetCustomerDetails getCustomerDetails = GetFakeCustomerDetails(
@@ -20,21 +25,25 @@ void main() {
     late GetAuthFailures getAuthFailures;
 
     setUp(() {
-      getAuthFailures = GetNetworkAuthFailures(
+      getAuthFailures = GetAuthFailures(
         authFailuresController: StreamController(),
       );
     });
 
-    LoginCubit _buildSubject() {
-      return LoginCubit(
+    AuthCubit _buildSubject() {
+      return AuthCubit(
         getApiKey: getApiKey,
         setApiKey: setApiKey,
         getCustomerDetails: getCustomerDetails,
-        clearCustomerDetails: ClearCustomerDetailsFromStorage(
-          dataStorage: dataStorage,
+        clearCustomerDetails: ClearCustomerDetails(
+          setApiKey: setApiKey,
+          setFirebaseUid: setFirebaseUid,
           customerDetailsRepository: repository,
         ),
         getAuthFailures: getAuthFailures,
+        authenticateWithFirebase: authenticateWithFirebase,
+        setFirebaseUid: setFirebaseUid,
+        getFirebaseUid: getFirebaseUid,
       );
     }
 
@@ -44,48 +53,54 @@ void main() {
 
     group('init', () {
       group('when not logged in', () {
-        blocTest<LoginCubit, LoginState>(
+        blocTest<AuthCubit, AuthState>(
           'it emits [loggedOut]',
           build: () => _buildSubject(),
-          expect: () => <LoginState>[
-            LoginState.loggedOut(),
+          expect: () => <AuthState>[
+            AuthState.loggedOut(),
           ],
         );
       });
 
       group('when logged in', () {
-        blocTest<LoginCubit, LoginState>(
+        blocTest<AuthCubit, AuthState>(
           'it emits [loggedIn]',
-          setUp: () async => await setApiKey('1234'),
+          setUp: () async {
+            await setApiKey('1234');
+            await setFirebaseUid('1');
+          },
           build: () => _buildSubject(),
-          expect: () => <LoginState>[
-            LoginState.loggedIn(apiKey: '1234'),
+          expect: () => <AuthState>[
+            AuthState.loggedIn(),
           ],
         );
       });
     });
 
     group('logIn', () {
-      blocTest<LoginCubit, LoginState>(
+      blocTest<AuthCubit, AuthState>(
         'it emits [loggedIn]',
         build: () => _buildSubject(),
         act: (cubit) async => await cubit.login('1234'),
         skip: 1, // Initial check
-        expect: () => <LoginState>[
-          LoginState.loggedIn(apiKey: '1234'),
+        expect: () => <AuthState>[
+          AuthState.loggedIn(),
         ],
       );
     });
 
     group('logOut', () {
-      blocTest<LoginCubit, LoginState>(
+      blocTest<AuthCubit, AuthState>(
         'it emits [loggedOut]',
-        setUp: () async => await setApiKey('1234'),
+        setUp: () async {
+          await setApiKey('1234');
+          await setFirebaseUid('1');
+        },
         build: () => _buildSubject(),
         act: (cubit) async => await cubit.logOut(),
         skip: 1, // Initial check
-        expect: () => <LoginState>[
-          LoginState.loggedOut(),
+        expect: () => <AuthState>[
+          AuthState.loggedOut(),
         ],
       );
     });

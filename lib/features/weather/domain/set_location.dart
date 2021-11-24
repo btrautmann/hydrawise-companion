@@ -1,9 +1,7 @@
 import 'package:hydrawise/core/core.dart';
 
-typedef SetLocation = Future<void> Function(String cityName);
-
-class SetLocationInStorage {
-  SetLocationInStorage(this._dataStorage);
+class SetLocation {
+  SetLocation(this._dataStorage);
 
   final DataStorage _dataStorage;
 

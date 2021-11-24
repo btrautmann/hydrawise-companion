@@ -2,37 +2,37 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:hydrawise/features/auth/auth.dart';
 import 'package:hydrawise/features/customer_details/customer_details.dart';
-import 'package:hydrawise/features/login/login.dart';
 
-part 'customer_details_state.dart';
 part 'customer_details_cubit.freezed.dart';
+part 'customer_details_state.dart';
 
 class CustomerDetailsCubit extends Cubit<CustomerDetailsState> {
   CustomerDetailsCubit({
     required GetCustomerDetails getCustomerDetails,
     required GetCustomerStatus getCustomerStatus,
-    required LoginCubit loginCubit,
+    required AuthCubit authCubit,
   })  : _getCustomerDetails = getCustomerDetails,
         _getCustomerStatus = getCustomerStatus,
-        _loginCubit = loginCubit,
+        _authCubit = authCubit,
         super(CustomerDetailsState.loading());
 
   final GetCustomerDetails _getCustomerDetails;
   final GetCustomerStatus _getCustomerStatus;
-  final LoginCubit _loginCubit;
+  final AuthCubit _authCubit;
 
   Timer? _timer;
 
   void start() {
-    if (_loginCubit.state.isLoggedIn()) {
+    if (_authCubit.state.isLoggedIn()) {
       // Need to check initial login state because
       // LoginCubit stream will not emit logged in
       // if already logged in when we begin listening
       _loadCustomerDetails();
     }
-    _loginCubit.stream.asBroadcastStream().listen((event) {
-      event.when(loggedIn: (_) async {
+    _authCubit.stream.asBroadcastStream().listen((event) {
+      event.when(loggedIn: () async {
         _loadCustomerDetails();
       }, loggedOut: () {
         _timer?.cancel();

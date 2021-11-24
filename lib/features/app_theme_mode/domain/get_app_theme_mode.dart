@@ -1,23 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:hydrawise/core/core.dart';
 
-/// Contract for obtaining the current app [ThemeMode]
-abstract class GetAppThemeMode {
-  Future<ThemeMode> call();
-}
-
 /// Obtains the current app [ThemeMode] from the provided
 /// [DataStorage]. If no mode has been set previously,
 /// defaults to [ThemeMode.system].
-class GetAppThemeModeFromStorage implements GetAppThemeMode {
+class GetAppThemeMode {
   final DataStorage _dataStorage;
 
-  GetAppThemeModeFromStorage(this._dataStorage);
+  GetAppThemeMode(this._dataStorage);
 
-  @override
   Future<ThemeMode> call() async {
     final themeModeString = await _dataStorage.getString('app_theme_mode');
-    final mode = themeModeString == null ? ThemeMode.system : themeModeString.toThemeMode();
+    final mode = themeModeString == null
+        ? ThemeMode.system
+        : themeModeString.toThemeMode();
     return mode;
   }
 }
