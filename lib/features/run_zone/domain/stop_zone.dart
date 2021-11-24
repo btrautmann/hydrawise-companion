@@ -23,20 +23,14 @@ class StopZoneOverNetwork {
     required Zone zone,
   }) async {
     final apiKey = await _getApiKey();
-    final queryParameters = {
-      'api_key': apiKey!,
-      'action': 'stop',
-      'relay_id': zone.id
-    };
+    final queryParameters = {'api_key': apiKey!, 'action': 'stop', 'relay_id': zone.id};
     final response = await _httpClient.get<Map<String, dynamic>>(
       'setzone.php',
       queryParameters: queryParameters,
     );
     return response
-        .map<RunZoneResponse, DioError>(
-            (result) => RunZoneResponse.fromJson(result!))
-        .mapError<RunZoneResponse, String>(
-            (error) => "Can't stop ${zone.name}");
+        .map<RunZoneResponse, DioError>((result) => RunZoneResponse.fromJson(result!))
+        .mapError<RunZoneResponse, String>((error) => "Can't stop ${zone.name}");
   }
 }
 
