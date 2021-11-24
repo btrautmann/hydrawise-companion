@@ -11,9 +11,6 @@ part 'app_cubit.freezed.dart';
 /// is therefore accessible from every place in the
 /// app's widget tree
 class AppCubit extends Cubit<AppState> {
-  final SetAppThemeMode _setAppThemeMode;
-  final GetAppThemeMode _getAppThemeMode;
-
   AppCubit({
     required SetAppThemeMode setAppThemeMode,
     required GetAppThemeMode getAppThemeMode,
@@ -23,7 +20,10 @@ class AppCubit extends Cubit<AppState> {
     _initAppThemeMode();
   }
 
-  void _initAppThemeMode() async {
+  final SetAppThemeMode _setAppThemeMode;
+  final GetAppThemeMode _getAppThemeMode;
+
+  Future<void> _initAppThemeMode() async {
     final mode = await _getAppThemeMode();
     emit(state.copyWith(themeMode: mode));
   }

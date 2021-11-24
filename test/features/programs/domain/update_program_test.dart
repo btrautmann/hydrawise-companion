@@ -12,7 +12,7 @@ void main() {
       updateProgram = UpdateProgram(repository: repository);
     });
     test('it updates the program name', () async {
-      String programId = await repository.createProgram(
+      final programId = await repository.createProgram(
         name: 'Original',
         frequency: FrequencyX.none(),
       );
@@ -33,7 +33,7 @@ void main() {
     });
 
     test('it updates the program frequency', () async {
-      String programId = await repository.createProgram(
+      final programId = await repository.createProgram(
         name: 'Original',
         frequency: FrequencyX.none(),
       );
@@ -62,7 +62,7 @@ void main() {
     });
 
     test('it adds a run when a zone is added', () async {
-      String programId = await repository.createProgram(
+      final programId = await repository.createProgram(
         name: 'Original',
         frequency: FrequencyX.none(),
       );
@@ -100,7 +100,7 @@ void main() {
     });
 
     test('it removes a run when a zone is removed', () async {
-      String programId = await repository.createProgram(
+      final programId = await repository.createProgram(
         name: 'Original',
         frequency: FrequencyX.none(),
       );
@@ -149,7 +149,7 @@ void main() {
     });
 
     test('it updates start time and duration of existing zones', () async {
-      String programId = await repository.createProgram(
+      final programId = await repository.createProgram(
         name: 'Original',
         frequency: FrequencyX.none(),
       );

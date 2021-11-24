@@ -3,11 +3,11 @@ import 'package:hydrawise/features/programs/programs.dart';
 import 'package:uuid/uuid.dart';
 
 class CreateProgram {
-  final CustomerDetailsRepository _repository;
-
   CreateProgram({
     required CustomerDetailsRepository repository,
   }) : _repository = repository;
+
+  final CustomerDetailsRepository _repository;
 
   Future<void> call({
     required String name,
@@ -23,7 +23,7 @@ class CreateProgram {
       for (final zoneId in draft.zoneIds) {
         runs.add(
           Run(
-            id: const Uuid().v4().toString(),
+            id: const Uuid().v4(),
             programId: programId,
             startTime: draft.timeOfDay,
             duration: draft.duration.inSeconds,

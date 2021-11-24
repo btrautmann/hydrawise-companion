@@ -2,6 +2,7 @@ import 'dart:convert' as convert;
 
 import 'package:dio/dio.dart';
 
+// ignore: avoid_classes_with_only_static_members
 /// A simple decoder that intercepts each response
 /// from the Hydrawise API and checks for responses
 /// that aren't valid JSON. The String it returns
@@ -14,7 +15,7 @@ abstract class HydrawiseApiDecoder {
     ResponseBody responseBody,
   ) {
     final response = convert.utf8.decode(responseBytes);
-    String transformedResponse = response;
+    var transformedResponse = response;
     if (response == 'API key not valid') {
       transformedResponse = '{"error": "$response"}';
     }

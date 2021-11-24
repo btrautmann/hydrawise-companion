@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:hydrawise/features/login/login.dart';
+import 'package:hydrawise/features/auth/auth.dart';
 
 /// Page for the user to enter their API key
 /// and gain access to the rest of the application
@@ -45,7 +45,7 @@ class __ApiKeyInputState extends State<_ApiKeyInput> {
           ),
           ElevatedButton(
             onPressed: () {
-              context.read<LoginCubit>().login(_controller.text);
+              context.read<AuthCubit>().login(_controller.text);
             },
             child: const Text('Submit'),
           )

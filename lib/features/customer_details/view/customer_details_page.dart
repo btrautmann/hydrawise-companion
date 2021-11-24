@@ -3,8 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hydrawise/core-ui/core_ui.dart';
 import 'package:hydrawise/core-ui/widgets/h_stretch.dart';
+import 'package:hydrawise/features/auth/auth.dart';
 import 'package:hydrawise/features/customer_details/customer_details.dart';
-import 'package:hydrawise/features/login/login.dart';
 import 'package:hydrawise/features/programs/cubit/programs_cubit.dart';
 import 'package:hydrawise/features/programs/programs.dart';
 import 'package:hydrawise/features/weather/weather.dart';
@@ -71,7 +71,7 @@ class _AllCustomerContent extends StatelessWidget {
                 const Spacer(),
                 IconButton(
                   onPressed: () {
-                    context.read<LoginCubit>().logOut();
+                    context.read<AuthCubit>().logOut();
                   },
                   icon: const Tooltip(
                     message: 'Log out',
@@ -187,7 +187,8 @@ class _RunsList extends StatelessWidget {
                                     (p) => p.id == todayRuns[index].programId,
                                   ),
                                   run: todayRuns[index],
-                                  shouldShowDivider: index != todayRuns.length - 1,
+                                  shouldShowDivider:
+                                      index != todayRuns.length - 1,
                                   onRunTapped: onRunTapped,
                                 );
                               },

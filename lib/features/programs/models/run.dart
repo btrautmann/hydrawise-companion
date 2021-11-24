@@ -8,12 +8,20 @@ part 'run.g.dart';
 @freezed
 class Run with _$Run {
   factory Run({
-    @JsonKey(name: 'id') required String id,
-    @JsonKey(name: 'p_id') required String programId,
-    @JsonKey(name: 'start_time', toJson: TimeOfDayX.toJson, fromJson: TimeOfDayX.fromJson)
+    @JsonKey(name: 'id')
+        required String id,
+    @JsonKey(name: 'p_id')
+        required String programId,
+    @JsonKey(
+      name: 'start_time',
+      toJson: TimeOfDayX.toJson,
+      fromJson: TimeOfDayX.fromJson,
+    )
         required TimeOfDay startTime,
-    @JsonKey(name: 'duration') required int duration,
-    @JsonKey(name: 'z_id') required int zoneId,
+    @JsonKey(name: 'duration')
+        required int duration,
+    @JsonKey(name: 'z_id')
+        required int zoneId,
   }) = _Run;
 
   factory Run.fromJson(Map<String, dynamic> json) => _$RunFromJson(json);
@@ -61,11 +69,13 @@ extension ListRunX on List<Run> {
       if (addedMod == null) {
         // A runDraft containing this run has not
         // been created yet
-        mods.add(RunDraft.modification(
-          timeOfDay: run.startTime,
-          zoneIds: [run.zoneId],
-          duration: Duration(seconds: run.duration),
-        ));
+        mods.add(
+          RunDraft.modification(
+            timeOfDay: run.startTime,
+            zoneIds: [run.zoneId],
+            duration: Duration(seconds: run.duration),
+          ),
+        );
       } else {
         // Add this run's zoneId to the run draft
         final index = mods.indexWhere(

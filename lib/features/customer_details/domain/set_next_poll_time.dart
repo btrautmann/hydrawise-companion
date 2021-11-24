@@ -13,7 +13,8 @@ class SetNextPollTimeInStorage {
     // Store nextPollTime as millisecondsSinceEpoch
     // TODO(brandon): Use a framework we can
     // modify under test for time
-    final nextPollTime = DateTime.now().millisecondsSinceEpoch + (secondsUntilNextPoll * 1000);
+    final nextPollTime =
+        DateTime.now().millisecondsSinceEpoch + (secondsUntilNextPoll * 1000);
 
     return _dataStorage.setInt('next_poll_time', nextPollTime);
   }

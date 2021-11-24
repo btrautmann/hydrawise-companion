@@ -1,19 +1,23 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hydrawise/core/core.dart';
+import 'package:hydrawise/features/auth/auth.dart';
 import 'package:hydrawise/features/customer_details/customer_details.dart';
 
 void main() {
-  group('ClearCustomerDetailsFromStorage', () {
+  group('ClearCustomerDetails', () {
     final storage = InMemoryStorage();
     final repository = InMemoryCustomerDetailsRepository();
-    final clearCustomerDetailsFromStorage = ClearCustomerDetailsFromStorage(
-      dataStorage: storage,
+    final setApiKey = SetApiKey(storage);
+    final setFirebaseUid = SetFirebaseUid(storage);
+    final clearCustomerDetails = ClearCustomerDetails(
+      setApiKey: setApiKey,
+      setFirebaseUid: setFirebaseUid,
       customerDetailsRepository: repository,
     );
     test('it sets api_key to an empty string', () async {
       await storage.setString('api_key', '1234');
       expect(await storage.getString('api_key'), '1234');
-      await clearCustomerDetailsFromStorage();
+      await clearCustomerDetails();
       expect(await storage.getString('api_key'), '');
     });
 
@@ -37,7 +41,7 @@ void main() {
 
       expect(await repository.getZones(), isNotEmpty);
       expect(await repository.getCustomers(), isNotEmpty);
-      await clearCustomerDetailsFromStorage();
+      await clearCustomerDetails();
       expect(await repository.getZones(), isEmpty);
       expect(await repository.getCustomers(), isEmpty);
     });

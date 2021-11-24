@@ -1,17 +1,12 @@
 import 'dart:async';
 
-abstract class GetAuthFailures {
-  Future<Stream<void>> call();
-}
-
-class GetNetworkAuthFailures implements GetAuthFailures {
-  final StreamController<void> _authFailuresController;
-
-  GetNetworkAuthFailures({
+class GetAuthFailures {
+  GetAuthFailures({
     required StreamController<void> authFailuresController,
   }) : _authFailuresController = authFailuresController;
 
-  @override
+  final StreamController<void> _authFailuresController;
+
   Future<Stream<void>> call() async {
     return _authFailuresController.stream.asBroadcastStream();
   }

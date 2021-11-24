@@ -18,7 +18,7 @@ void main() {
     group('selectTab', () {
       blocTest<HomeCubit, HomeState>(
         'it emits the newly selected tab',
-        build: () => _buildSubject(),
+        build: _buildSubject,
         act: (cubit) => cubit.selectTab(1),
         expect: () => <HomeState>[HomeState(selectedTabIndex: 1)],
       );

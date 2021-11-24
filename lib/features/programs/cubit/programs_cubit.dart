@@ -1,18 +1,11 @@
 import 'package:bloc/bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:hydrawise/features/programs/domain/delete_program.dart';
-import 'package:hydrawise/features/programs/domain/get_programs.dart';
 import 'package:hydrawise/features/programs/programs.dart';
 
 part 'programs_state.dart';
 part 'programs_cubit.freezed.dart';
 
 class ProgramsCubit extends Cubit<ProgramsState> {
-  final GetPrograms _getPrograms;
-  final CreateProgram _createProgram;
-  final UpdateProgram _updateProgram;
-  final DeleteProgram _deleteProgram;
-
   ProgramsCubit({
     required GetPrograms getPrograms,
     required CreateProgram createProgram,
@@ -25,6 +18,11 @@ class ProgramsCubit extends Cubit<ProgramsState> {
         super(ProgramsState(programs: [])) {
     _initPrograms();
   }
+
+  final GetPrograms _getPrograms;
+  final CreateProgram _createProgram;
+  final UpdateProgram _updateProgram;
+  final DeleteProgram _deleteProgram;
 
   Future<void> _initPrograms() async {
     final programs = await _getPrograms();
@@ -41,16 +39,16 @@ class ProgramsCubit extends Cubit<ProgramsState> {
       frequency: frequency,
       runDrafts: runs,
     );
-    _initPrograms();
+    await _initPrograms();
   }
 
   void addToPendingDeletes(Program program) {
-    final pending = <Program>[];
-    final programs = <Program>[];
-    pending.addAll(state.pendingDeletes);
-    pending.add(program);
-    programs.addAll(state.programs);
-    programs.removeWhere((element) => element.id == program.id);
+    final pending = <Program>[
+      ...state.pendingDeletes,
+      ...state.programs,
+    ];
+    final programs = <Program>[...state.programs]
+      ..removeWhere((element) => element.id == program.id);
     emit(
       state.copyWith(
         programs: programs,
@@ -60,9 +58,7 @@ class ProgramsCubit extends Cubit<ProgramsState> {
   }
 
   void resetPrograms() {
-    final programs = <Program>[];
-    programs.addAll(state.pendingDeletes);
-    programs.addAll(state.programs);
+    final programs = <Program>[...state.pendingDeletes, ...state.programs];
     emit(
       state.copyWith(
         programs: programs,
@@ -90,11 +86,11 @@ class ProgramsCubit extends Cubit<ProgramsState> {
       frequency: frequency,
       runDrafts: runs,
     );
-    _initPrograms();
+    await _initPrograms();
   }
 
   Future<void> deleteProgram({required String programId}) async {
     await _deleteProgram(programId: programId);
-    _initPrograms();
+    await _initPrograms();
   }
 }

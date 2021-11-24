@@ -24,7 +24,8 @@ class WeatherDetailsStateView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final weatherState = context.select((WeatherDetailsCubit cubit) => cubit.state);
+    final weatherState =
+        context.select((WeatherDetailsCubit cubit) => cubit.state);
     return weatherState.when(
       noLocationInformation: () => const _NoLocationView(),
       loading: () => const Center(
@@ -98,7 +99,9 @@ class __NoLocationViewState extends State<_NoLocationView> {
                   visible: _controller.text.isNotEmpty,
                   child: IconButton(
                     onPressed: () {
-                      context.read<WeatherDetailsCubit>().setLocation(_controller.text);
+                      context
+                          .read<WeatherDetailsCubit>()
+                          .setLocation(_controller.text);
                     },
                     icon: const Icon(Icons.check_circle_outline),
                   ),
@@ -130,8 +133,9 @@ class _WeatherDetailsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final currentWeather = weatherForecast.first;
-    final tomorrowWeather =
-        weatherForecast.firstWhere((weather) => weather.date!.difference(currentWeather.date!).inHours > 24);
+    final tomorrowWeather = weatherForecast.firstWhere(
+      (weather) => weather.date!.difference(currentWeather.date!).inHours > 24,
+    );
     return Card(
       clipBehavior: Clip.hardEdge,
       child: Column(
@@ -209,7 +213,9 @@ class _CurrentWeather extends StatelessWidget {
               ),
             ],
           ),
-          if (currentWeather.weatherDescription != null) ...[Text(currentWeather.weatherDescription!)],
+          if (currentWeather.weatherDescription != null) ...[
+            Text(currentWeather.weatherDescription!)
+          ],
         ],
       ),
     );

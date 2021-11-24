@@ -10,17 +10,19 @@ void main() {
   group('App', () {
     testWidgets('renders SplashPage', (tester) async {
       final repository = InMemoryCustomerDetailsRepository();
-      final router = await BuildStandardRouter().call();
+      final router = await BuildAppRouter().call();
 
       final providers = DevelopmentDomainFactory.build(
         dataStorage: InMemoryStorage(),
         repository: repository,
       );
 
-      await tester.pumpWidget(App(
-        router: router,
-        providers: providers,
-      ));
+      await tester.pumpWidget(
+        App(
+          router: router,
+          providers: providers,
+        ),
+      );
       expect(find.byType(SplashPage), findsOneWidget);
     });
   });

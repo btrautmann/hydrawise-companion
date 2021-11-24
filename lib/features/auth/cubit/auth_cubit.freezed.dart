@@ -1,7 +1,7 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides
 
-part of 'login_cubit.dart';
+part of 'auth_cubit.dart';
 
 // **************************************************************************
 // FreezedGenerator
@@ -13,13 +13,11 @@ final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more informations: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
 
 /// @nodoc
-class _$LoginStateTearOff {
-  const _$LoginStateTearOff();
+class _$AuthStateTearOff {
+  const _$AuthStateTearOff();
 
-  _LoggedIn loggedIn({required String apiKey}) {
-    return _LoggedIn(
-      apiKey: apiKey,
-    );
+  _LoggedIn loggedIn() {
+    return _LoggedIn();
   }
 
   _LoggedOut loggedOut() {
@@ -28,19 +26,19 @@ class _$LoginStateTearOff {
 }
 
 /// @nodoc
-const $LoginState = _$LoginStateTearOff();
+const $AuthState = _$AuthStateTearOff();
 
 /// @nodoc
-mixin _$LoginState {
+mixin _$AuthState {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(String apiKey) loggedIn,
+    required TResult Function() loggedIn,
     required TResult Function() loggedOut,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(String apiKey)? loggedIn,
+    TResult Function()? loggedIn,
     TResult Function()? loggedOut,
     required TResult orElse(),
   }) =>
@@ -61,98 +59,72 @@ mixin _$LoginState {
 }
 
 /// @nodoc
-abstract class $LoginStateCopyWith<$Res> {
-  factory $LoginStateCopyWith(
-          LoginState value, $Res Function(LoginState) then) =
-      _$LoginStateCopyWithImpl<$Res>;
+abstract class $AuthStateCopyWith<$Res> {
+  factory $AuthStateCopyWith(AuthState value, $Res Function(AuthState) then) =
+      _$AuthStateCopyWithImpl<$Res>;
 }
 
 /// @nodoc
-class _$LoginStateCopyWithImpl<$Res> implements $LoginStateCopyWith<$Res> {
-  _$LoginStateCopyWithImpl(this._value, this._then);
+class _$AuthStateCopyWithImpl<$Res> implements $AuthStateCopyWith<$Res> {
+  _$AuthStateCopyWithImpl(this._value, this._then);
 
-  final LoginState _value;
+  final AuthState _value;
   // ignore: unused_field
-  final $Res Function(LoginState) _then;
+  final $Res Function(AuthState) _then;
 }
 
 /// @nodoc
 abstract class _$LoggedInCopyWith<$Res> {
   factory _$LoggedInCopyWith(_LoggedIn value, $Res Function(_LoggedIn) then) =
       __$LoggedInCopyWithImpl<$Res>;
-  $Res call({String apiKey});
 }
 
 /// @nodoc
-class __$LoggedInCopyWithImpl<$Res> extends _$LoginStateCopyWithImpl<$Res>
+class __$LoggedInCopyWithImpl<$Res> extends _$AuthStateCopyWithImpl<$Res>
     implements _$LoggedInCopyWith<$Res> {
   __$LoggedInCopyWithImpl(_LoggedIn _value, $Res Function(_LoggedIn) _then)
       : super(_value, (v) => _then(v as _LoggedIn));
 
   @override
   _LoggedIn get _value => super._value as _LoggedIn;
-
-  @override
-  $Res call({
-    Object? apiKey = freezed,
-  }) {
-    return _then(_LoggedIn(
-      apiKey: apiKey == freezed
-          ? _value.apiKey
-          : apiKey // ignore: cast_nullable_to_non_nullable
-              as String,
-    ));
-  }
 }
 
 /// @nodoc
 
 class _$_LoggedIn implements _LoggedIn {
-  _$_LoggedIn({required this.apiKey});
-
-  @override
-  final String apiKey;
+  _$_LoggedIn();
 
   @override
   String toString() {
-    return 'LoginState.loggedIn(apiKey: $apiKey)';
+    return 'AuthState.loggedIn()';
   }
 
   @override
   bool operator ==(dynamic other) {
-    return identical(this, other) ||
-        (other is _LoggedIn &&
-            (identical(other.apiKey, apiKey) ||
-                const DeepCollectionEquality().equals(other.apiKey, apiKey)));
+    return identical(this, other) || (other is _LoggedIn);
   }
 
   @override
-  int get hashCode =>
-      runtimeType.hashCode ^ const DeepCollectionEquality().hash(apiKey);
-
-  @JsonKey(ignore: true)
-  @override
-  _$LoggedInCopyWith<_LoggedIn> get copyWith =>
-      __$LoggedInCopyWithImpl<_LoggedIn>(this, _$identity);
+  int get hashCode => runtimeType.hashCode;
 
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(String apiKey) loggedIn,
+    required TResult Function() loggedIn,
     required TResult Function() loggedOut,
   }) {
-    return loggedIn(apiKey);
+    return loggedIn();
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(String apiKey)? loggedIn,
+    TResult Function()? loggedIn,
     TResult Function()? loggedOut,
     required TResult orElse(),
   }) {
     if (loggedIn != null) {
-      return loggedIn(apiKey);
+      return loggedIn();
     }
     return orElse();
   }
@@ -180,13 +152,8 @@ class _$_LoggedIn implements _LoggedIn {
   }
 }
 
-abstract class _LoggedIn implements LoginState {
-  factory _LoggedIn({required String apiKey}) = _$_LoggedIn;
-
-  String get apiKey => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
-  _$LoggedInCopyWith<_LoggedIn> get copyWith =>
-      throw _privateConstructorUsedError;
+abstract class _LoggedIn implements AuthState {
+  factory _LoggedIn() = _$_LoggedIn;
 }
 
 /// @nodoc
@@ -197,7 +164,7 @@ abstract class _$LoggedOutCopyWith<$Res> {
 }
 
 /// @nodoc
-class __$LoggedOutCopyWithImpl<$Res> extends _$LoginStateCopyWithImpl<$Res>
+class __$LoggedOutCopyWithImpl<$Res> extends _$AuthStateCopyWithImpl<$Res>
     implements _$LoggedOutCopyWith<$Res> {
   __$LoggedOutCopyWithImpl(_LoggedOut _value, $Res Function(_LoggedOut) _then)
       : super(_value, (v) => _then(v as _LoggedOut));
@@ -213,7 +180,7 @@ class _$_LoggedOut implements _LoggedOut {
 
   @override
   String toString() {
-    return 'LoginState.loggedOut()';
+    return 'AuthState.loggedOut()';
   }
 
   @override
@@ -227,7 +194,7 @@ class _$_LoggedOut implements _LoggedOut {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(String apiKey) loggedIn,
+    required TResult Function() loggedIn,
     required TResult Function() loggedOut,
   }) {
     return loggedOut();
@@ -236,7 +203,7 @@ class _$_LoggedOut implements _LoggedOut {
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(String apiKey)? loggedIn,
+    TResult Function()? loggedIn,
     TResult Function()? loggedOut,
     required TResult orElse(),
   }) {
@@ -269,6 +236,6 @@ class _$_LoggedOut implements _LoggedOut {
   }
 }
 
-abstract class _LoggedOut implements LoginState {
+abstract class _LoggedOut implements AuthState {
   factory _LoggedOut() = _$_LoggedOut;
 }

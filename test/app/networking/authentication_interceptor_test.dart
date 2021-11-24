@@ -23,14 +23,12 @@ void main() {
   group('AuthenticationInterceptor', () {
     group('onError', () {
       test('it invokes the callback when a 404 is encountered', () async {
-        bool authenticationFailure = false;
-        final authInterceptor = AuthenticationInterceptor(
+        var authenticationFailure = false;
+        AuthenticationInterceptor(
           onAuthenticationFailure: () {
             authenticationFailure = true;
           },
-        );
-
-        authInterceptor.onError(
+        ).onError(
           DioError(
             requestOptions: RequestOptions(path: 'fake-path'),
             response: Response(

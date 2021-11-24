@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:hydrawise/core/core.dart';
+import 'package:hydrawise/features/auth/auth.dart';
 import 'package:hydrawise/features/customer_details/customer_details.dart';
-import 'package:hydrawise/features/login/login.dart';
 import 'package:hydrawise/features/run_zone/run_zone.dart';
 import 'package:result_type/result_type.dart';
 
@@ -23,14 +23,22 @@ class StopZoneOverNetwork {
     required Zone zone,
   }) async {
     final apiKey = await _getApiKey();
-    final queryParameters = {'api_key': apiKey!, 'action': 'stop', 'relay_id': zone.id};
+    final queryParameters = {
+      'api_key': apiKey!,
+      'action': 'stop',
+      'relay_id': zone.id
+    };
     final response = await _httpClient.get<Map<String, dynamic>>(
       'setzone.php',
       queryParameters: queryParameters,
     );
     return response
-        .map<RunZoneResponse, DioError>((result) => RunZoneResponse.fromJson(result!))
-        .mapError<RunZoneResponse, String>((error) => "Can't stop ${zone.name}");
+        .map<RunZoneResponse, DioError>(
+          (result) => RunZoneResponse.fromJson(result!),
+        )
+        .mapError<RunZoneResponse, String>(
+          (error) => "Can't stop ${zone.name}",
+        );
   }
 }
 
@@ -53,9 +61,11 @@ class StopZoneLocally {
 
     await _repository.updateZone(stoppedZone);
 
-    return Success(RunZoneResponse(
-      message: 'Stopping zones ${zone.name}. ${zone.name} to stop now.',
-      typeOfMessage: 'info',
-    ));
+    return Success(
+      RunZoneResponse(
+        message: 'Stopping zones ${zone.name}. ${zone.name} to stop now.',
+        typeOfMessage: 'info',
+      ),
+    );
   }
 }

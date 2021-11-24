@@ -1,10 +1,12 @@
 import 'dart:async';
 
 import 'package:bloc_test/bloc_test.dart';
+import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
+import 'package:firebase_auth_mocks/firebase_auth_mocks.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hydrawise/core/core.dart';
+import 'package:hydrawise/features/auth/auth.dart';
 import 'package:hydrawise/features/customer_details/customer_details.dart';
-import 'package:hydrawise/features/login/login.dart';
 
 void main() {
   group('CustomerDetailsCubit', () {
@@ -17,29 +19,38 @@ void main() {
     final GetCustomerDetails getCustomerDetails = GetFakeCustomerDetails(
       repository: repository,
     );
-    final clearCustomerDetails = ClearCustomerDetailsFromStorage(
-      dataStorage: dataStorage,
+
+    final setApiKey = SetApiKey(dataStorage);
+    final getAuthFailures = GetAuthFailures(
+      authFailuresController: StreamController(),
+    );
+    final setFirebaseUid = SetFirebaseUid(dataStorage);
+    final getFirebaseUid = GetFirebaseUid(dataStorage);
+    final clearCustomerDetails = ClearCustomerDetails(
+      setApiKey: setApiKey,
+      setFirebaseUid: setFirebaseUid,
       customerDetailsRepository: repository,
     );
 
-    final SetApiKey setApiKey = SetApiKeyInStorage(dataStorage);
-    final GetAuthFailures getAuthFailures = GetNetworkAuthFailures(
-      authFailuresController: StreamController(),
-    );
-
-    final LoginCubit loginCubit = LoginCubit(
-      getApiKey: GetApiKeyFromStorage(dataStorage),
+    final authCubit = AuthCubit(
+      getApiKey: GetApiKey(dataStorage),
       setApiKey: setApiKey,
       getCustomerDetails: getCustomerDetails,
       clearCustomerDetails: clearCustomerDetails,
       getAuthFailures: getAuthFailures,
+      authenticateWithFirebase: AuthenticateWithFirebase(
+        firestore: FakeFirebaseFirestore(),
+        auth: MockFirebaseAuth(),
+      ),
+      setFirebaseUid: setFirebaseUid,
+      getFirebaseUid: getFirebaseUid,
     );
 
     CustomerDetailsCubit _buildSubject() {
       return CustomerDetailsCubit(
         getCustomerDetails: getCustomerDetails,
         getCustomerStatus: getCustomerStatus,
-        loginCubit: loginCubit,
+        authCubit: authCubit,
       );
     }
 
@@ -51,7 +62,7 @@ void main() {
       group('when logged out', () {
         blocTest<CustomerDetailsCubit, CustomerDetailsState>(
           'it emits nothing',
-          build: () => _buildSubject(),
+          build: _buildSubject,
           act: (cubit) => cubit.start(),
           expect: () => <CustomerDetailsState>[],
         );
@@ -61,9 +72,9 @@ void main() {
         blocTest<CustomerDetailsCubit, CustomerDetailsState>(
           'it emits Complete',
           setUp: () async {
-            await loginCubit.login('fake-api-key');
+            await authCubit.login('fake-api-key');
           },
-          build: () => _buildSubject(),
+          build: _buildSubject,
           act: (cubit) => cubit.start(),
           expect: () => <CustomerDetailsState>[
             CustomerDetailsState.loading(),

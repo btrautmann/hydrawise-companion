@@ -74,7 +74,7 @@ class ProgramsPageView extends StatelessWidget {
                   children: [
                     const Text('No programs'),
                     Padding(
-                      padding: const EdgeInsets.all(8.0),
+                      padding: const EdgeInsets.all(8),
                       child: ElevatedButton(
                         onPressed: () {
                           GoRouter.of(context).push('/create_program');
@@ -103,7 +103,7 @@ class ProgramsPageView extends StatelessWidget {
                               background: ColoredBox(
                                 color: Theme.of(context).errorColor,
                                 child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
+                                  padding: const EdgeInsets.all(8),
                                   child: Align(
                                     alignment: Alignment.centerLeft,
                                     child: Text(
@@ -167,12 +167,13 @@ class ProgramsPageView extends StatelessWidget {
 }
 
 class ProgramDetailsDialog extends StatelessWidget {
-  final Program _program;
   const ProgramDetailsDialog({
     Key? key,
     required Program program,
   })  : _program = program,
         super(key: key);
+
+  final Program _program;
 
   @override
   Widget build(BuildContext context) {

@@ -7,11 +7,11 @@ import 'package:hydrawise/features/home/home.dart';
 import 'package:hydrawise/features/programs/programs.dart';
 
 class HomePage extends StatelessWidget {
-  final int _selectedTabIndex;
-
   const HomePage({Key? key, required int selectedTabIndex})
       : _selectedTabIndex = selectedTabIndex,
         super(key: key);
+
+  final int _selectedTabIndex;
 
   @override
   Widget build(BuildContext context) {
@@ -66,13 +66,13 @@ class HomeView extends StatelessWidget {
 }
 
 class HomeBody extends StatelessWidget {
-  final int _selectedTabIndex;
-
   const HomeBody({
     Key? key,
     required int selectedTabIndex,
   })  : _selectedTabIndex = selectedTabIndex,
         super(key: key);
+
+  final int _selectedTabIndex;
 
   @override
   Widget build(BuildContext context) {

@@ -5,21 +5,23 @@ import 'package:hydrawise/features/customer_details/models/zone.dart';
 import 'package:hydrawise/features/programs/programs.dart';
 
 class CreateProgramPage extends StatelessWidget {
-  /// If present, represents the ID of the
-  /// program being modified
-  final String? existingProgramId;
-
   const CreateProgramPage({
     Key? key,
     this.existingProgramId,
   }) : super(key: key);
 
+  /// If present, represents the ID of the
+  /// program being modified
+  final String? existingProgramId;
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ProgramsCubit, ProgramsState>(
       builder: (context, state) {
-        final Program? existingProgram =
-            existingProgramId != null ? state.programs.singleWhere((program) => program.id == existingProgramId) : null;
+        final existingProgram = existingProgramId != null
+            ? state.programs
+                .singleWhere((program) => program.id == existingProgramId)
+            : null;
         return Scaffold(
           appBar: AppBar(
             title: Text(
@@ -39,11 +41,6 @@ class CreateProgramPage extends StatelessWidget {
 }
 
 class CreateProgramView extends StatefulWidget {
-  final String name;
-  final Frequency frequency;
-  final List<RunDraft> runDrafts;
-  final String? existingProgramId;
-
   const CreateProgramView({
     Key? key,
     required this.name,
@@ -52,8 +49,13 @@ class CreateProgramView extends StatefulWidget {
     required this.existingProgramId,
   }) : super(key: key);
 
+  final String name;
+  final Frequency frequency;
+  final List<RunDraft> runDrafts;
+  final String? existingProgramId;
+
   @override
-  _CreateProgramViewState createState() => _CreateProgramViewState();
+  State<CreateProgramView> createState() => _CreateProgramViewState();
 }
 
 class _CreateProgramViewState extends State<CreateProgramView> {
@@ -118,11 +120,12 @@ class _CreateProgramViewState extends State<CreateProgramView> {
             visible: _name.isNotEmpty &&
                 _frequency.hasAtLeastOneDay() &&
                 _runDrafts.isNotEmpty &&
-                !(_runDrafts.any(
-                  (element) => element.duration.inMinutes == 0 || element.zoneIds.isEmpty,
-                )),
+                !_runDrafts.any(
+                  (element) =>
+                      element.duration.inMinutes == 0 ||
+                      element.zoneIds.isEmpty,
+                ),
             child: Align(
-              alignment: Alignment.center,
               child: ElevatedButton(
                 child: const Text('Done'),
                 onPressed: () {
@@ -152,11 +155,14 @@ class _CreateProgramViewState extends State<CreateProgramView> {
 }
 
 class _FrequencySelection extends StatefulWidget {
+  const _FrequencySelection({
+    Key? key,
+    required this.initialFrequency,
+    required this.onFrequencyChanged,
+  }) : super(key: key);
+
   final ValueSetter<Frequency> onFrequencyChanged;
   final Frequency initialFrequency;
-
-  const _FrequencySelection({Key? key, required this.initialFrequency, required this.onFrequencyChanged})
-      : super(key: key);
 
   @override
   _FrequencySelectionState createState() {
@@ -203,35 +209,42 @@ class _FrequencySelectionState extends State<_FrequencySelection> {
                   widget.onFrequencyChanged(_frequency);
                 },
                 text: 'M',
-                colorResolver: (states) =>
-                    _frequency.monday ? Theme.of(context).colorScheme.secondary : Colors.transparent,
+                colorResolver: (states) => _frequency.monday
+                    ? Theme.of(context).colorScheme.secondary
+                    : Colors.transparent,
               ),
               _DayButton(
                 onTapped: () {
-                  _frequency = _frequency.copyWith(tuesday: !_frequency.tuesday);
+                  _frequency =
+                      _frequency.copyWith(tuesday: !_frequency.tuesday);
                   widget.onFrequencyChanged(_frequency);
                 },
                 text: 'T',
-                colorResolver: (states) =>
-                    _frequency.tuesday ? Theme.of(context).colorScheme.secondary : Colors.transparent,
+                colorResolver: (states) => _frequency.tuesday
+                    ? Theme.of(context).colorScheme.secondary
+                    : Colors.transparent,
               ),
               _DayButton(
                 onTapped: () {
-                  _frequency = _frequency.copyWith(wednesday: !_frequency.wednesday);
+                  _frequency =
+                      _frequency.copyWith(wednesday: !_frequency.wednesday);
                   widget.onFrequencyChanged(_frequency);
                 },
                 text: 'W',
-                colorResolver: (states) =>
-                    _frequency.wednesday ? Theme.of(context).colorScheme.secondary : Colors.transparent,
+                colorResolver: (states) => _frequency.wednesday
+                    ? Theme.of(context).colorScheme.secondary
+                    : Colors.transparent,
               ),
               _DayButton(
                 onTapped: () {
-                  _frequency = _frequency.copyWith(thursday: !_frequency.thursday);
+                  _frequency =
+                      _frequency.copyWith(thursday: !_frequency.thursday);
                   widget.onFrequencyChanged(_frequency);
                 },
                 text: 'R',
-                colorResolver: (states) =>
-                    _frequency.thursday ? Theme.of(context).colorScheme.secondary : Colors.transparent,
+                colorResolver: (states) => _frequency.thursday
+                    ? Theme.of(context).colorScheme.secondary
+                    : Colors.transparent,
               ),
               _DayButton(
                 onTapped: () {
@@ -239,17 +252,20 @@ class _FrequencySelectionState extends State<_FrequencySelection> {
                   widget.onFrequencyChanged(_frequency);
                 },
                 text: 'F',
-                colorResolver: (friday) =>
-                    _frequency.friday ? Theme.of(context).colorScheme.secondary : Colors.transparent,
+                colorResolver: (friday) => _frequency.friday
+                    ? Theme.of(context).colorScheme.secondary
+                    : Colors.transparent,
               ),
               _DayButton(
                 onTapped: () {
-                  _frequency = _frequency.copyWith(saturday: !_frequency.saturday);
+                  _frequency =
+                      _frequency.copyWith(saturday: !_frequency.saturday);
                   widget.onFrequencyChanged(_frequency);
                 },
                 text: 'S',
-                colorResolver: (states) =>
-                    _frequency.saturday ? Theme.of(context).colorScheme.secondary : Colors.transparent,
+                colorResolver: (states) => _frequency.saturday
+                    ? Theme.of(context).colorScheme.secondary
+                    : Colors.transparent,
               ),
               _DayButton(
                 onTapped: () {
@@ -257,8 +273,9 @@ class _FrequencySelectionState extends State<_FrequencySelection> {
                   widget.onFrequencyChanged(_frequency);
                 },
                 text: 'Su',
-                colorResolver: (states) =>
-                    _frequency.sunday ? Theme.of(context).colorScheme.secondary : Colors.transparent,
+                colorResolver: (states) => _frequency.sunday
+                    ? Theme.of(context).colorScheme.secondary
+                    : Colors.transparent,
               ),
             ],
           ),
@@ -269,16 +286,16 @@ class _FrequencySelectionState extends State<_FrequencySelection> {
 }
 
 class _DayButton extends StatelessWidget {
-  final VoidCallback onTapped;
-  final String text;
-  final MaterialPropertyResolver<Color> colorResolver;
-
   const _DayButton({
     Key? key,
     required this.onTapped,
     required this.text,
     required this.colorResolver,
   }) : super(key: key);
+
+  final VoidCallback onTapped;
+  final String text;
+  final MaterialPropertyResolver<Color> colorResolver;
 
   @override
   Widget build(BuildContext context) {
@@ -295,7 +312,7 @@ class _DayButton extends StatelessWidget {
       ),
       onPressed: onTapped,
       child: Padding(
-        padding: const EdgeInsets.all(4.0),
+        padding: const EdgeInsets.all(4),
         // TODO(brandon): Dynamically color text based on
         // selection
         child: Text(text),
@@ -305,14 +322,14 @@ class _DayButton extends StatelessWidget {
 }
 
 class _RunsConfiguration extends StatefulWidget {
-  final List<RunDraft> initialRunDrafts;
-  final ValueSetter<List<RunDraft>> onRunsChanged;
-
   const _RunsConfiguration({
     Key? key,
     required this.initialRunDrafts,
     required this.onRunsChanged,
   }) : super(key: key);
+
+  final List<RunDraft> initialRunDrafts;
+  final ValueSetter<List<RunDraft>> onRunsChanged;
 
   @override
   _RunsConfigurationState createState() => _RunsConfigurationState();
@@ -331,7 +348,7 @@ class _RunsConfigurationState extends State<_RunsConfiguration> {
   Widget build(BuildContext context) {
     return BlocBuilder<CustomerDetailsCubit, CustomerDetailsState>(
       builder: (context, state) {
-        final List<Zone> zones = state.map(
+        final zones = state.map(
           loading: (_) => List<Zone>.empty(),
           complete: (state) => state.customerStatus.zones,
         );
@@ -377,7 +394,6 @@ class _RunsConfigurationState extends State<_RunsConfiguration> {
                 },
               ),
             Align(
-              alignment: Alignment.center,
               child: Padding(
                 padding: const EdgeInsets.all(16),
                 child: TextButton(
@@ -405,11 +421,6 @@ class _RunsConfigurationState extends State<_RunsConfiguration> {
 }
 
 class _RunCreationView extends StatefulWidget {
-  final RunDraft runCreation;
-  final List<Zone> availableZones;
-  final ValueSetter<RunDraft> onChanged;
-  final ValueSetter<RunDraft> onRemoved;
-
   const _RunCreationView({
     Key? key,
     required this.runCreation,
@@ -417,6 +428,11 @@ class _RunCreationView extends StatefulWidget {
     required this.onChanged,
     required this.onRemoved,
   }) : super(key: key);
+
+  final RunDraft runCreation;
+  final List<Zone> availableZones;
+  final ValueSetter<RunDraft> onChanged;
+  final ValueSetter<RunDraft> onRemoved;
 
   @override
   _RunCreationViewState createState() => _RunCreationViewState();
@@ -444,9 +460,10 @@ class _RunCreationViewState extends State<_RunCreationView> {
     if (minutes.isNotEmpty) {
       setState(() {
         _runDraft = _runDraft.copyWith(
-            duration: Duration(
-          minutes: int.parse(minutes),
-        ));
+          duration: Duration(
+            minutes: int.parse(minutes),
+          ),
+        );
         widget.onChanged(_runDraft);
       });
     }
@@ -489,6 +506,9 @@ class _RunCreationViewState extends State<_RunCreationView> {
                     context: context,
                     initialTime: TimeOfDay.now(),
                   );
+                  // TODO(brandon): Address this by passing
+                  // a param `onChosen`
+                  // ignore: use_build_context_synchronously
                   _changeTime(time, context);
                 },
               ),
@@ -500,12 +520,13 @@ class _RunCreationViewState extends State<_RunCreationView> {
                 child: Text(_runDraft.duration.inMinutes.toString()),
                 onPressed: () async {
                   await showDialog(
-                      context: context,
-                      builder: (_) {
-                        return _DurationTimeInputDialog(onSubmit: (value) {
-                          _changeDuration(value);
-                        });
-                      });
+                    context: context,
+                    builder: (_) {
+                      return _DurationTimeInputDialog(
+                        onSubmit: _changeDuration,
+                      );
+                    },
+                  );
                 },
               ),
               const Padding(
@@ -533,7 +554,9 @@ class _RunCreationViewState extends State<_RunCreationView> {
                   key: ValueKey(zone.id),
                   label: Text(
                     zone.name,
-                    style: TextStyle(color: Theme.of(context).colorScheme.onSecondary),
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.onSecondary,
+                    ),
                   ),
                   checkmarkColor: Theme.of(context).colorScheme.onSecondary,
                   selectedColor: Theme.of(context).colorScheme.secondary,
@@ -553,12 +576,12 @@ class _RunCreationViewState extends State<_RunCreationView> {
 }
 
 class _DurationTimeInputDialog extends StatelessWidget {
-  final ValueSetter<String> onSubmit;
-
   const _DurationTimeInputDialog({
     Key? key,
     required this.onSubmit,
   }) : super(key: key);
+
+  final ValueSetter<String> onSubmit;
 
   @override
   Widget build(BuildContext context) {

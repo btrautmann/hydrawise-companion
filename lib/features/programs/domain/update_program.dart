@@ -5,11 +5,11 @@ import 'package:hydrawise/features/programs/programs.dart';
 import 'package:uuid/uuid.dart';
 
 class UpdateProgram {
-  final CustomerDetailsRepository _repository;
-
   UpdateProgram({
     required CustomerDetailsRepository repository,
   }) : _repository = repository;
+
+  final CustomerDetailsRepository _repository;
 
   Future<void> call({
     required String programId,
@@ -39,7 +39,7 @@ class UpdateProgram {
       ),
     );
     for (final run in deletedRuns) {
-      await _repository.deleteRun(runId: run.id);
+      await _repository.deleteRun(runId: run.id, programId: programId);
     }
 
     final runsToInsert = <Run>[];
@@ -59,17 +59,17 @@ class UpdateProgram {
           );
           // TODO(brandon): Create GetUniqueId to abstract the usage
           // of Uuid
-          return matchingRun?.id ?? const Uuid().v4().toString();
+          return matchingRun?.id ?? const Uuid().v4();
         }
 
-        final Future<String> id = runDraft.map(
+        final id = runDraft.map(
           // TODO(brandon): Create GetUniqueId to abstract the usage
           // of Uuid
-          creation: (_) async => const Uuid().v4().toString(),
+          creation: (_) async => const Uuid().v4(),
           modification: (r) => modificationId(),
         );
 
-        final String runId = await id;
+        final runId = await id;
 
         final run = Run(
           id: runId,

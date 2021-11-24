@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:hydrawise/features/login/login.dart';
+import 'package:hydrawise/features/auth/auth.dart';
 
 /// Initial page of the app places as the `home` of the
 /// MaterialApp. The sole responsibility is to determine
@@ -14,9 +14,10 @@ class SplashPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final state = context.read<LoginCubit>().state;
+    final state = context.read<AuthCubit>().state;
+    // ignore: cascade_invocations
     state.when(
-      loggedIn: (_) => GoRouter.of(context).go('/home'),
+      loggedIn: () => GoRouter.of(context).go('/home'),
       loggedOut: () => GoRouter.of(context).go('/login'),
     );
     return const Scaffold();
