@@ -1,5 +1,6 @@
 import {firestore, initializeApp} from "firebase-admin";
 import * as functions from "firebase-functions";
+// const axios = require('axios').default;
 
 initializeApp();
 
@@ -57,6 +58,14 @@ export const scheduledFunction = functions.pubsub.schedule("every 5 minutes")
                             console.log(`Run for zone ${runData.z_id} already happened or we missed it`);
                         } else if (timeDifference < 300000) {
                             console.log(`Need to run zone ${runData.z_id} now`);
+                            // TODO(brandon): Actually run the zone?
+                            // const userApiKey = userData.api_key;
+                            // try {
+                            //     const { data } = await axios.get(`http://api.hydrawise.com/api/v1/statusschedule.php?api_key=${userApiKey}`);
+                            //     console.log(data);
+                            // } catch (error) {
+                            //     console.log(error);
+                            // }
                         } else {
                             console.log(`Will run zone ${runData.z_id} in ${timeDifference / 1000} seconds`);
                         }
