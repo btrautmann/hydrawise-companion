@@ -75,7 +75,9 @@ class FirebaseBackedCustomerDetailsRepository
   }
 
   @override
-  Future<void> clearAllData() async {}
+  Future<void> clearAllData() async {
+    // TODO(brandon): Need to do this
+  }
 
   @override
   Future<String> createProgram({

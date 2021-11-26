@@ -58,6 +58,7 @@ class AuthCubit extends Cubit<AuthState> {
 
   Future<void> logOut() async {
     await _clearCustomerDetails();
+    // TODO(brandon): Un-authenticate with Firebase
     emit(AuthState.loggedOut());
   }
 
