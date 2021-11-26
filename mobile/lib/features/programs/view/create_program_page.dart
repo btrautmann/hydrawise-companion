@@ -30,8 +30,8 @@ class CreateProgramPage extends StatelessWidget {
           ),
           body: CreateProgramView(
             name: existingProgram?.name ?? '',
-            frequency: existingProgram?.frequency ?? FrequencyX.none(),
-            runDrafts: existingProgram?.runs.toRunModifications() ?? [],
+            frequency: existingProgram?.frequency ?? [],
+            runDrafts: existingProgram?.runs?.toRunModifications() ?? [],
             existingProgramId: existingProgramId,
           ),
         );
@@ -50,7 +50,7 @@ class CreateProgramView extends StatefulWidget {
   }) : super(key: key);
 
   final String name;
-  final Frequency frequency;
+  final List<int> frequency;
   final List<RunDraft> runDrafts;
   final String? existingProgramId;
 
@@ -60,7 +60,7 @@ class CreateProgramView extends StatefulWidget {
 
 class _CreateProgramViewState extends State<CreateProgramView> {
   late String _name;
-  late Frequency _frequency;
+  late List<int> _frequency;
   late List<RunDraft> _runDrafts;
   late TextEditingController _nameController;
 
@@ -118,7 +118,7 @@ class _CreateProgramViewState extends State<CreateProgramView> {
           ),
           Visibility(
             visible: _name.isNotEmpty &&
-                _frequency.hasAtLeastOneDay() &&
+                _frequency.isNotEmpty &&
                 _runDrafts.isNotEmpty &&
                 !_runDrafts.any(
                   (element) =>
@@ -161,8 +161,8 @@ class _FrequencySelection extends StatefulWidget {
     required this.onFrequencyChanged,
   }) : super(key: key);
 
-  final ValueSetter<Frequency> onFrequencyChanged;
-  final Frequency initialFrequency;
+  final ValueSetter<List<int>> onFrequencyChanged;
+  final List<int> initialFrequency;
 
   @override
   _FrequencySelectionState createState() {
@@ -171,7 +171,7 @@ class _FrequencySelection extends StatefulWidget {
 }
 
 class _FrequencySelectionState extends State<_FrequencySelection> {
-  late Frequency _frequency;
+  late List<int> _frequency;
 
   @override
   void initState() {
@@ -205,75 +205,74 @@ class _FrequencySelectionState extends State<_FrequencySelection> {
             children: [
               _DayButton(
                 onTapped: () {
-                  _frequency = _frequency.copyWith(monday: !_frequency.monday);
+                  _frequency.add(DateTime.monday);
                   widget.onFrequencyChanged(_frequency);
                 },
                 text: 'M',
-                colorResolver: (states) => _frequency.monday
+                colorResolver: (states) => _frequency.contains(DateTime.monday)
                     ? Theme.of(context).colorScheme.secondary
                     : Colors.transparent,
               ),
               _DayButton(
                 onTapped: () {
-                  _frequency =
-                      _frequency.copyWith(tuesday: !_frequency.tuesday);
+                  _frequency.add(DateTime.tuesday);
                   widget.onFrequencyChanged(_frequency);
                 },
                 text: 'T',
-                colorResolver: (states) => _frequency.tuesday
+                colorResolver: (states) => _frequency.contains(DateTime.tuesday)
                     ? Theme.of(context).colorScheme.secondary
                     : Colors.transparent,
               ),
               _DayButton(
                 onTapped: () {
-                  _frequency =
-                      _frequency.copyWith(wednesday: !_frequency.wednesday);
+                  _frequency.add(DateTime.wednesday);
                   widget.onFrequencyChanged(_frequency);
                 },
                 text: 'W',
-                colorResolver: (states) => _frequency.wednesday
-                    ? Theme.of(context).colorScheme.secondary
-                    : Colors.transparent,
+                colorResolver: (states) =>
+                    _frequency.contains(DateTime.wednesday)
+                        ? Theme.of(context).colorScheme.secondary
+                        : Colors.transparent,
               ),
               _DayButton(
                 onTapped: () {
-                  _frequency =
-                      _frequency.copyWith(thursday: !_frequency.thursday);
+                  _frequency.add(DateTime.thursday);
                   widget.onFrequencyChanged(_frequency);
                 },
                 text: 'R',
-                colorResolver: (states) => _frequency.thursday
-                    ? Theme.of(context).colorScheme.secondary
-                    : Colors.transparent,
+                colorResolver: (states) =>
+                    _frequency.contains(DateTime.thursday)
+                        ? Theme.of(context).colorScheme.secondary
+                        : Colors.transparent,
               ),
               _DayButton(
                 onTapped: () {
-                  _frequency = _frequency.copyWith(friday: !_frequency.friday);
+                  _frequency.add(DateTime.friday);
                   widget.onFrequencyChanged(_frequency);
                 },
                 text: 'F',
-                colorResolver: (friday) => _frequency.friday
+                colorResolver: (friday) => _frequency.contains(DateTime.friday)
                     ? Theme.of(context).colorScheme.secondary
                     : Colors.transparent,
               ),
               _DayButton(
                 onTapped: () {
-                  _frequency =
-                      _frequency.copyWith(saturday: !_frequency.saturday);
+                  _frequency.add(DateTime.saturday);
                   widget.onFrequencyChanged(_frequency);
                 },
                 text: 'S',
-                colorResolver: (states) => _frequency.saturday
-                    ? Theme.of(context).colorScheme.secondary
-                    : Colors.transparent,
+                colorResolver: (states) =>
+                    _frequency.contains(DateTime.saturday)
+                        ? Theme.of(context).colorScheme.secondary
+                        : Colors.transparent,
               ),
               _DayButton(
                 onTapped: () {
-                  _frequency = _frequency.copyWith(sunday: !_frequency.sunday);
+                  _frequency.add(DateTime.sunday);
                   widget.onFrequencyChanged(_frequency);
                 },
                 text: 'Su',
-                colorResolver: (states) => _frequency.sunday
+                colorResolver: (states) => _frequency.contains(DateTime.sunday)
                     ? Theme.of(context).colorScheme.secondary
                     : Colors.transparent,
               ),

@@ -14,13 +14,13 @@ void main() {
     test('it updates the program name', () async {
       final programId = await repository.createProgram(
         name: 'Original',
-        frequency: FrequencyX.none(),
+        frequency: [],
       );
 
       await updateProgram(
         programId: programId,
         name: 'New',
-        frequency: FrequencyX.none(),
+        frequency: [],
         runDrafts: [],
       );
 
@@ -35,28 +35,20 @@ void main() {
     test('it updates the program frequency', () async {
       final programId = await repository.createProgram(
         name: 'Original',
-        frequency: FrequencyX.none(),
+        frequency: [],
       );
 
       await updateProgram(
         programId: programId,
         name: 'New',
-        frequency: Frequency(
-          monday: true,
-          tuesday: false,
-          wednesday: false,
-          thursday: false,
-          friday: false,
-          saturday: false,
-          sunday: false,
-        ),
+        frequency: [DateTime.monday],
         runDrafts: [],
       );
 
       expect(
         await repository
             .getProgram(programId: programId)
-            .then((value) => value.frequency.monday),
+            .then((value) => value.frequency.contains(DateTime.monday)),
         isTrue,
       );
     });
@@ -64,7 +56,7 @@ void main() {
     test('it adds a run when a zone is added', () async {
       final programId = await repository.createProgram(
         name: 'Original',
-        frequency: FrequencyX.none(),
+        frequency: [],
       );
 
       final runsBefore =
@@ -74,15 +66,7 @@ void main() {
       await updateProgram(
         programId: programId,
         name: 'New',
-        frequency: Frequency(
-          monday: true,
-          tuesday: false,
-          wednesday: false,
-          thursday: false,
-          friday: false,
-          saturday: false,
-          sunday: false,
-        ),
+        frequency: [DateTime.monday],
         runDrafts: [
           RunDraft.creation(
             timeOfDay: TimeOfDay.now(),
@@ -102,7 +86,7 @@ void main() {
     test('it removes a run when a zone is removed', () async {
       final programId = await repository.createProgram(
         name: 'Original',
-        frequency: FrequencyX.none(),
+        frequency: [],
       );
       await repository.insertRuns(
         programId: programId,
@@ -131,7 +115,7 @@ void main() {
       await updateProgram(
         programId: programId,
         name: 'New',
-        frequency: FrequencyX.none(),
+        frequency: [],
         runDrafts: [
           RunDraft.modification(
             timeOfDay: TimeOfDay.now(),
@@ -151,7 +135,7 @@ void main() {
     test('it updates start time and duration of existing zones', () async {
       final programId = await repository.createProgram(
         name: 'Original',
-        frequency: FrequencyX.none(),
+        frequency: [],
       );
       await repository.insertRuns(
         programId: programId,
@@ -174,7 +158,7 @@ void main() {
       await updateProgram(
         programId: programId,
         name: 'New',
-        frequency: FrequencyX.none(),
+        frequency: [],
         runDrafts: [
           RunDraft.modification(
             timeOfDay: const TimeOfDay(hour: 5, minute: 5),

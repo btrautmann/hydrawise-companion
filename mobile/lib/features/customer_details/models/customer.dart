@@ -1,19 +1,20 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-part 'customer_identification.freezed.dart';
-part 'customer_identification.g.dart';
+part 'customer.freezed.dart';
+part 'customer.g.dart';
 
 @freezed
-class CustomerIdentification with _$CustomerIdentification {
-  factory CustomerIdentification({
+class Customer with _$Customer {
+  factory Customer({
     @JsonKey(name: 'controller_id') required int activeControllerId,
     @JsonKey(name: 'customer_id') required int customerId,
     @JsonKey(name: 'api_key') required String apiKey,
     @JsonKey(name: 'last_status_update') required int lastStatusUpdate,
-  }) = _CustomerIdentification;
+    @Default(0) @JsonKey(name: 'time_zone_offset') int timeZoneOffsetMillis,
+  }) = _Customer;
 
-  factory CustomerIdentification.fromJson(
+  factory Customer.fromJson(
     Map<String, dynamic> json,
   ) =>
-      _$CustomerIdentificationFromJson(json);
+      _$CustomerFromJson(json);
 }

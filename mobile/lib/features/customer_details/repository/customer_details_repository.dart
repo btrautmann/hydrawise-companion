@@ -7,10 +7,10 @@ import 'package:uuid/uuid.dart';
 
 abstract class CustomerDetailsRepository {
   // Customer
-  Future<void> insertCustomer(CustomerIdentification customer);
+  Future<void> insertCustomer(Customer customer);
   Future<void> updateCustomer(CustomerStatus customerStatus);
-  Future<List<CustomerIdentification>> getCustomers();
-  Future<CustomerIdentification> getCustomer();
+  Future<List<Customer>> getCustomers();
+  Future<Customer> getCustomer();
 
   // Zone
   Future<void> insertZone(Zone zone);
@@ -20,7 +20,7 @@ abstract class CustomerDetailsRepository {
   // Program
   Future<String> createProgram({
     required String name,
-    required Frequency frequency,
+    required List<int> frequency,
   });
   Future<Program> getProgram({
     required String programId,
@@ -29,7 +29,7 @@ abstract class CustomerDetailsRepository {
   Future<void> updateProgram({
     required String programId,
     required String name,
-    required Frequency frequency,
+    required List<int> frequency,
   });
   Future<void> deleteProgram({
     required String programId,
@@ -80,7 +80,7 @@ class FirebaseBackedCustomerDetailsRepository
   @override
   Future<String> createProgram({
     required String name,
-    required Frequency frequency,
+    required List<int> frequency,
   }) async {
     final program = Program(
       id: const Uuid().v4(),
@@ -92,9 +92,7 @@ class FirebaseBackedCustomerDetailsRepository
       runs: [],
     );
     await _getUserDocument().then(
-      (d) => d.collection('programs').doc(program.id).set(
-            ProgramX.toJson(program),
-          ),
+      (d) => d.collection('programs').doc(program.id).set(program.toJson()),
     );
     return program.id;
   }
@@ -122,20 +120,20 @@ class FirebaseBackedCustomerDetailsRepository
   }
 
   @override
-  Future<CustomerIdentification> getCustomer() {
+  Future<Customer> getCustomer() {
     return _getUserDocument().then(
       (d) => d.get().then(
         (s) {
           // ignore: cast_nullable_to_non_nullable
           final json = s.data() as Map<String, dynamic>;
-          return CustomerIdentification.fromJson(json);
+          return Customer.fromJson(json);
         },
       ),
     );
   }
 
   @override
-  Future<List<CustomerIdentification>> getCustomers() async {
+  Future<List<Customer>> getCustomers() async {
     final customer = await getCustomer();
     return [customer];
   }
@@ -147,7 +145,7 @@ class FirebaseBackedCustomerDetailsRepository
         (s) {
           // ignore: cast_nullable_to_non_nullable
           final json = s.data() as Map<String, dynamic>;
-          return ProgramX.fromJson(json);
+          return Program.fromJson(json);
         },
       ),
     );
@@ -158,7 +156,7 @@ class FirebaseBackedCustomerDetailsRepository
     final programs = await _getUserDocument().then(
       (d) => d.collection('programs').get().then(
         (s) {
-          return s.docs.map((e) => ProgramX.fromJson(e.data())).toList();
+          return s.docs.map((e) => Program.fromJson(e.data())).toList();
         },
       ),
     );
@@ -206,9 +204,13 @@ class FirebaseBackedCustomerDetailsRepository
   }
 
   @override
-  Future<void> insertCustomer(CustomerIdentification customer) {
-    return _getUserDocument()
-        .then((d) => d.set(customer.toJson(), SetOptions(merge: true)));
+  Future<void> insertCustomer(Customer customer) {
+    return _getUserDocument().then(
+      (d) => d.set(
+        customer.toJson(),
+        SetOptions(merge: true),
+      ),
+    );
   }
 
   @override
@@ -264,21 +266,19 @@ class FirebaseBackedCustomerDetailsRepository
   Future<void> updateProgram({
     required String programId,
     required String name,
-    required Frequency frequency,
+    required List<int> frequency,
   }) {
     return _getUserDocument().then(
       (d) => d.collection('programs').doc(programId).set(
-            ProgramX.toJson(
-              Program(
-                id: programId,
-                name: name,
-                frequency: frequency,
-                // Runs aren't serialized, so pass empty list
-                // TODO(brandon): This isn't great, possibly
-                // introduce ProgramDraft
-                runs: [],
-              ),
-            ),
+            Program(
+              id: programId,
+              name: name,
+              frequency: frequency,
+              // Runs aren't serialized, so pass empty list
+              // TODO(brandon): This isn't great, possibly
+              // introduce ProgramDraft
+              runs: [],
+            ).toJson(),
           ),
     );
   }
@@ -323,7 +323,7 @@ class DatabaseBackedCustomerDetailsRepository
   final Database _database;
 
   @override
-  Future<void> insertCustomer(CustomerIdentification customer) {
+  Future<void> insertCustomer(Customer customer) {
     return _database.insert(
       'customers',
       customer.toJson(),
@@ -344,7 +344,7 @@ class DatabaseBackedCustomerDetailsRepository
     });
 
     final customers = await _database.query('customers');
-    final customer = CustomerIdentification.fromJson(customers.first);
+    final customer = Customer.fromJson(customers.first);
 
     batch.update(
       'customers',
@@ -371,15 +371,15 @@ class DatabaseBackedCustomerDetailsRepository
   }
 
   @override
-  Future<List<CustomerIdentification>> getCustomers() async {
+  Future<List<Customer>> getCustomers() async {
     final customers = await _database.query('customers');
-    return customers.map((e) => CustomerIdentification.fromJson(e)).toList();
+    return customers.map((e) => Customer.fromJson(e)).toList();
   }
 
   @override
-  Future<CustomerIdentification> getCustomer() async {
+  Future<Customer> getCustomer() async {
     final customers = await _database.query('customers');
-    return CustomerIdentification.fromJson(customers.first);
+    return Customer.fromJson(customers.first);
   }
 
   @override
@@ -396,7 +396,7 @@ class DatabaseBackedCustomerDetailsRepository
   @override
   Future<String> createProgram({
     required String name,
-    required Frequency frequency,
+    required List<int> frequency,
   }) async {
     final program = Program(
       id: const Uuid().v4(),
@@ -409,7 +409,7 @@ class DatabaseBackedCustomerDetailsRepository
     );
     await _database.insert(
       'programs',
-      ProgramX.toJson(program),
+      program.toJson(),
     );
     return program.id;
   }
@@ -418,21 +418,19 @@ class DatabaseBackedCustomerDetailsRepository
   Future<void> updateProgram({
     required String programId,
     required String name,
-    required Frequency frequency,
+    required List<int> frequency,
   }) {
     return _database.update(
       'programs',
-      ProgramX.toJson(
-        Program(
-          id: programId,
-          name: name,
-          frequency: frequency,
-          // Runs aren't serialized, so pass empty list
-          // TODO(brandon): This isn't great, possibly
-          // introduce ProgramDraft
-          runs: [],
-        ),
-      ),
+      Program(
+        id: programId,
+        name: name,
+        frequency: frequency,
+        // Runs aren't serialized, so pass empty list
+        // TODO(brandon): This isn't great, possibly
+        // introduce ProgramDraft
+        runs: [],
+      ).toJson(),
       where: 'id = ?',
       whereArgs: [programId],
     );
@@ -453,7 +451,7 @@ class DatabaseBackedCustomerDetailsRepository
       'programs',
       where: 'id = ?',
       whereArgs: [programId],
-    ).then((value) => value.map(ProgramX.fromJson).single);
+    ).then((value) => value.map((p) => Program.fromJson(p)).single);
   }
 
   @override
@@ -461,7 +459,7 @@ class DatabaseBackedCustomerDetailsRepository
     final programsRaw = await _database.query('programs');
     final programs = <Program>[];
     for (var i = 0; i < programsRaw.length; i++) {
-      final program = ProgramX.fromJson(programsRaw[i]);
+      final program = Program.fromJson(programsRaw[i]);
       final runs = await _database.query(
         'runs',
         where: 'p_id = ?',
@@ -532,18 +530,18 @@ class DatabaseBackedCustomerDetailsRepository
 }
 
 class InMemoryCustomerDetailsRepository implements CustomerDetailsRepository {
-  final customers = <CustomerIdentification>[];
+  final customers = <Customer>[];
   final zones = <Zone>[];
   final programs = <Program>[];
   final runs = <Run>[];
 
   @override
-  Future<CustomerIdentification> getCustomer() async {
+  Future<Customer> getCustomer() async {
     return customers.first;
   }
 
   @override
-  Future<List<CustomerIdentification>> getCustomers() async {
+  Future<List<Customer>> getCustomers() async {
     return customers;
   }
 
@@ -553,7 +551,7 @@ class InMemoryCustomerDetailsRepository implements CustomerDetailsRepository {
   }
 
   @override
-  Future<void> insertCustomer(CustomerIdentification customer) async {
+  Future<void> insertCustomer(Customer customer) async {
     customers.add(customer);
   }
 
@@ -587,7 +585,7 @@ class InMemoryCustomerDetailsRepository implements CustomerDetailsRepository {
   @override
   Future<String> createProgram({
     required String name,
-    required Frequency frequency,
+    required List<int> frequency,
   }) async {
     final program = Program(
       id: const Uuid().v4(),
@@ -608,7 +606,7 @@ class InMemoryCustomerDetailsRepository implements CustomerDetailsRepository {
   Future<void> updateProgram({
     required String programId,
     required String name,
-    required Frequency frequency,
+    required List<int> frequency,
   }) async {
     final index = programs.indexWhere((element) => element.id == programId);
     programs[index] = programs[index].copyWith(

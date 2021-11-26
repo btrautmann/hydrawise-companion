@@ -31,7 +31,7 @@ void main() {
         lengthOfNextRunTimeOrTimeRemaining: 500,
       );
       await repository.insertZone(zone);
-      final customer = CustomerIdentification(
+      final customer = Customer(
         activeControllerId: 1,
         customerId: 1,
         apiKey: 'fake-api-key',

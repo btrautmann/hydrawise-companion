@@ -1,6 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hydrawise/features/customer_details/models/controller.dart';
-import 'package:hydrawise/features/customer_details/models/customer_identification.dart';
+import 'package:hydrawise/features/customer_details/models/customer.dart';
 
 part 'customer_details.freezed.dart';
 part 'customer_details.g.dart';
@@ -20,14 +20,15 @@ class CustomerDetails with _$CustomerDetails {
 }
 
 extension CustomerDetailsX on CustomerDetails {
-  CustomerIdentification toCustomerIdentification(String apiKey) {
-    return CustomerIdentification(
+  Customer toCustomer(String apiKey) {
+    return Customer(
       activeControllerId: activeControllerId,
       customerId: customerId,
       apiKey: apiKey,
       // TODO(brandon): Use a framework we can
       // modify under test for time
       lastStatusUpdate: DateTime.now().millisecondsSinceEpoch,
+      timeZoneOffsetMillis: DateTime.now().timeZoneOffset.inMilliseconds,
     );
   }
 }

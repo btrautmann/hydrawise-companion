@@ -44,6 +44,17 @@ class CustomerDetailsCubit extends Cubit<CustomerDetailsState> {
     });
   }
 
+  void stopPolling() {
+    _timer?.cancel();
+    _timer = null;
+  }
+
+  void resumePolling() {
+    if (_authCubit.state.isLoggedIn()) {
+      _poll();
+    }
+  }
+
   Future<void> _loadCustomerDetails() async {
     emit(CustomerDetailsState.loading());
     final customerDetails = await _getCustomerDetails();

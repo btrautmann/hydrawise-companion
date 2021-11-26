@@ -1,11 +1,14 @@
 // ignore_for_file: avoid_redundant_argument_values
 
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hydrawise/app/app.dart';
+import 'package:hydrawise/core-ui/core_ui.dart';
 import 'package:hydrawise/features/app_theme_mode/app_theme_mode.dart';
 import 'package:hydrawise/features/auth/auth.dart';
 import 'package:hydrawise/features/customer_details/customer_details.dart';
@@ -76,15 +79,25 @@ class App extends StatelessWidget {
           },
           child: BlocBuilder<AppCubit, AppState>(
             builder: (context, state) {
-              return MaterialApp.router(
-                theme: _buildLightTheme(context),
-                darkTheme: _buildDarkTheme(context),
-                localizationsDelegates: const [
-                  GlobalMaterialLocalizations.delegate,
-                ],
-                themeMode: state.themeMode,
-                routeInformationParser: _router.routeInformationParser,
-                routerDelegate: _router.routerDelegate,
+              return AppLifecycleStateObserver(
+                onForeground: () {
+                  log('onForegroundInvoked');
+                  context.read<CustomerDetailsCubit>().resumePolling();
+                },
+                onBackground: () {
+                  log('onBackgroundInvoked');
+                  context.read<CustomerDetailsCubit>().stopPolling();
+                },
+                child: MaterialApp.router(
+                  theme: _buildLightTheme(context),
+                  darkTheme: _buildDarkTheme(context),
+                  localizationsDelegates: const [
+                    GlobalMaterialLocalizations.delegate,
+                  ],
+                  themeMode: state.themeMode,
+                  routeInformationParser: _router.routeInformationParser,
+                  routerDelegate: _router.routerDelegate,
+                ),
               );
             },
           ),

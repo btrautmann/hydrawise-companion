@@ -37,7 +37,7 @@ class GetCustomerDetailsFromHydrawise {
       final customerDetails = CustomerDetails.fromJson(response.success!);
 
       final customerIdentification =
-          customerDetails.toCustomerIdentification(apiKey);
+          customerDetails.toCustomer(apiKey);
 
       await _repository.insertCustomer(customerIdentification);
 
@@ -60,7 +60,7 @@ class GetFakeCustomerDetails {
 
     if (customers.isEmpty) {
       // Insert a dummy customer
-      final fakeCustomer = CustomerIdentification(
+      final fakeCustomer = Customer(
         activeControllerId: 1234,
         customerId: 5678,
         apiKey: '1212',

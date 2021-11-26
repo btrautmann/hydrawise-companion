@@ -11,7 +11,7 @@ class CreateProgram {
 
   Future<void> call({
     required String name,
-    required Frequency frequency,
+    required List<int> frequency,
     required List<RunDraft> runDrafts,
   }) async {
     final programId = await _repository.createProgram(

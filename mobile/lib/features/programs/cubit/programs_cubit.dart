@@ -31,7 +31,7 @@ class ProgramsCubit extends Cubit<ProgramsState> {
 
   Future<void> createProgram({
     required String name,
-    required Frequency frequency,
+    required List<int> frequency,
     required List<RunDraft> runs,
   }) async {
     await _createProgram(
@@ -77,7 +77,7 @@ class ProgramsCubit extends Cubit<ProgramsState> {
   Future<void> updateProgram({
     required String programId,
     required String name,
-    required Frequency frequency,
+    required List<int> frequency,
     required List<RunDraft> runs,
   }) async {
     await _updateProgram(

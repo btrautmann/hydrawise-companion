@@ -12,6 +12,10 @@ T _$identity<T>(T value) => value;
 final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more informations: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
 
+Program _$ProgramFromJson(Map<String, dynamic> json) {
+  return _Program.fromJson(json);
+}
+
 /// @nodoc
 class _$ProgramTearOff {
   const _$ProgramTearOff();
@@ -19,14 +23,18 @@ class _$ProgramTearOff {
   _Program call(
       {required String id,
       required String name,
-      required Frequency frequency,
-      required List<Run> runs}) {
+      required List<int> frequency,
+      @JsonKey(ignore: true) List<Run>? runs}) {
     return _Program(
       id: id,
       name: name,
       frequency: frequency,
       runs: runs,
     );
+  }
+
+  Program fromJson(Map<String, Object> json) {
+    return Program.fromJson(json);
   }
 }
 
@@ -37,9 +45,11 @@ const $Program = _$ProgramTearOff();
 mixin _$Program {
   String get id => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
-  Frequency get frequency => throw _privateConstructorUsedError;
-  List<Run> get runs => throw _privateConstructorUsedError;
+  List<int> get frequency => throw _privateConstructorUsedError;
+  @JsonKey(ignore: true)
+  List<Run>? get runs => throw _privateConstructorUsedError;
 
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
   $ProgramCopyWith<Program> get copyWith => throw _privateConstructorUsedError;
 }
@@ -48,9 +58,11 @@ mixin _$Program {
 abstract class $ProgramCopyWith<$Res> {
   factory $ProgramCopyWith(Program value, $Res Function(Program) then) =
       _$ProgramCopyWithImpl<$Res>;
-  $Res call({String id, String name, Frequency frequency, List<Run> runs});
-
-  $FrequencyCopyWith<$Res> get frequency;
+  $Res call(
+      {String id,
+      String name,
+      List<int> frequency,
+      @JsonKey(ignore: true) List<Run>? runs});
 }
 
 /// @nodoc
@@ -80,19 +92,12 @@ class _$ProgramCopyWithImpl<$Res> implements $ProgramCopyWith<$Res> {
       frequency: frequency == freezed
           ? _value.frequency
           : frequency // ignore: cast_nullable_to_non_nullable
-              as Frequency,
+              as List<int>,
       runs: runs == freezed
           ? _value.runs
           : runs // ignore: cast_nullable_to_non_nullable
-              as List<Run>,
+              as List<Run>?,
     ));
-  }
-
-  @override
-  $FrequencyCopyWith<$Res> get frequency {
-    return $FrequencyCopyWith<$Res>(_value.frequency, (value) {
-      return _then(_value.copyWith(frequency: value));
-    });
   }
 }
 
@@ -101,10 +106,11 @@ abstract class _$ProgramCopyWith<$Res> implements $ProgramCopyWith<$Res> {
   factory _$ProgramCopyWith(_Program value, $Res Function(_Program) then) =
       __$ProgramCopyWithImpl<$Res>;
   @override
-  $Res call({String id, String name, Frequency frequency, List<Run> runs});
-
-  @override
-  $FrequencyCopyWith<$Res> get frequency;
+  $Res call(
+      {String id,
+      String name,
+      List<int> frequency,
+      @JsonKey(ignore: true) List<Run>? runs});
 }
 
 /// @nodoc
@@ -135,32 +141,36 @@ class __$ProgramCopyWithImpl<$Res> extends _$ProgramCopyWithImpl<$Res>
       frequency: frequency == freezed
           ? _value.frequency
           : frequency // ignore: cast_nullable_to_non_nullable
-              as Frequency,
+              as List<int>,
       runs: runs == freezed
           ? _value.runs
           : runs // ignore: cast_nullable_to_non_nullable
-              as List<Run>,
+              as List<Run>?,
     ));
   }
 }
 
 /// @nodoc
-
+@JsonSerializable()
 class _$_Program implements _Program {
   _$_Program(
       {required this.id,
       required this.name,
       required this.frequency,
-      required this.runs});
+      @JsonKey(ignore: true) this.runs});
+
+  factory _$_Program.fromJson(Map<String, dynamic> json) =>
+      _$_$_ProgramFromJson(json);
 
   @override
   final String id;
   @override
   final String name;
   @override
-  final Frequency frequency;
+  final List<int> frequency;
   @override
-  final List<Run> runs;
+  @JsonKey(ignore: true)
+  final List<Run>? runs;
 
   @override
   String toString() {
@@ -194,23 +204,31 @@ class _$_Program implements _Program {
   @override
   _$ProgramCopyWith<_Program> get copyWith =>
       __$ProgramCopyWithImpl<_Program>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$_$_ProgramToJson(this);
+  }
 }
 
 abstract class _Program implements Program {
   factory _Program(
       {required String id,
       required String name,
-      required Frequency frequency,
-      required List<Run> runs}) = _$_Program;
+      required List<int> frequency,
+      @JsonKey(ignore: true) List<Run>? runs}) = _$_Program;
+
+  factory _Program.fromJson(Map<String, dynamic> json) = _$_Program.fromJson;
 
   @override
   String get id => throw _privateConstructorUsedError;
   @override
   String get name => throw _privateConstructorUsedError;
   @override
-  Frequency get frequency => throw _privateConstructorUsedError;
+  List<int> get frequency => throw _privateConstructorUsedError;
   @override
-  List<Run> get runs => throw _privateConstructorUsedError;
+  @JsonKey(ignore: true)
+  List<Run>? get runs => throw _privateConstructorUsedError;
   @override
   @JsonKey(ignore: true)
   _$ProgramCopyWith<_Program> get copyWith =>
