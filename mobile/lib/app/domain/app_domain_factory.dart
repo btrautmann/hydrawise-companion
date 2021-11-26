@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:hydrawise/core/core.dart';
 import 'package:hydrawise/features/app_theme_mode/app_theme_mode.dart';
 import 'package:hydrawise/features/auth/domain/domain.dart';
+import 'package:hydrawise/features/auth/domain/validate_api_key.dart';
 import 'package:hydrawise/features/customer_details/customer_details.dart';
 import 'package:hydrawise/features/programs/programs.dart';
 import 'package:hydrawise/features/run_zone/run_zone.dart';
@@ -26,13 +27,27 @@ abstract class ProductionDomainFactory {
     final setApiKey = SetApiKey(dataStorage);
     final getFirebaseUid = GetFirebaseUid(dataStorage);
     final setFirebaseUid = SetFirebaseUid(dataStorage);
-    final clearCustomerDetails = ClearCustomerDetails(
+    final validateApiKey = ValidateApiKey(
+      httpClient: client,
       setApiKey: setApiKey,
-      setFirebaseUid: setFirebaseUid,
-      customerDetailsRepository: repository,
     );
     final authenticateWithFirebase = AuthenticateWithFirebase(
       firestore: firebaseFirestore,
+      auth: firebaseAuth,
+      setFirebaseUid: setFirebaseUid,
+    );
+    final isLoggedIn = IsLoggedIn(
+      getApiKey: getApiKey,
+      getFirebaseUid: getFirebaseUid,
+    );
+    final logIn = LogIn(
+      validateApiKey: validateApiKey,
+      authenticateWithFirebase: authenticateWithFirebase,
+    );
+    final logOut = LogOut(
+      setApiKey: setApiKey,
+      setFirebaseUid: setFirebaseUid,
+      customerDetailsRepository: repository,
       auth: firebaseAuth,
     );
     final getWeather = GetWeather();
@@ -88,7 +103,9 @@ abstract class ProductionDomainFactory {
       Provider<GetFirebaseUid>.value(value: getFirebaseUid),
       Provider<SetFirebaseUid>.value(value: setFirebaseUid),
       Provider<AuthenticateWithFirebase>.value(value: authenticateWithFirebase),
-      Provider<ClearCustomerDetails>.value(value: clearCustomerDetails),
+      Provider<LogOut>.value(value: logOut),
+      Provider<LogIn>.value(value: logIn),
+      Provider<IsLoggedIn>.value(value: isLoggedIn),
       Provider<RunZone>.value(value: runZone),
       Provider<StopZone>.value(value: stopZone),
       Provider<GetLocation>.value(value: getLocation),
@@ -111,12 +128,25 @@ abstract class DevelopmentDomainFactory {
     final setApiKey = SetApiKey(dataStorage);
     final getFirebaseUid = GetFirebaseUid(dataStorage);
     final setFirebaseUid = SetFirebaseUid(dataStorage);
-    final clearCustomerDetails = ClearCustomerDetails(
+    final validateApiKey = FakeValidateApiKey(
+      setApiKey: setApiKey,
+    );
+    final authenticateWithFirebase = FakeAuthenticateWithFirebase(
+      setFirebaseUid: setFirebaseUid,
+    );
+    final isLoggedIn = IsLoggedIn(
+      getApiKey: getApiKey,
+      getFirebaseUid: getFirebaseUid,
+    );
+    final logIn = LogIn(
+      validateApiKey: validateApiKey,
+      authenticateWithFirebase: authenticateWithFirebase,
+    );
+    final logOut = FakeLogOut(
       setApiKey: setApiKey,
       setFirebaseUid: setFirebaseUid,
       customerDetailsRepository: repository,
     );
-    final authenticateWithFirebase = FakeAuthenticateWithFirebase();
     final getWeather = GetWeather();
     final getLocation = GetLocation(dataStorage);
     final setLocation = SetLocation(dataStorage);
@@ -150,7 +180,9 @@ abstract class DevelopmentDomainFactory {
       Provider<GetFirebaseUid>.value(value: getFirebaseUid),
       Provider<SetFirebaseUid>.value(value: setFirebaseUid),
       Provider<AuthenticateWithFirebase>.value(value: authenticateWithFirebase),
-      Provider<ClearCustomerDetails>.value(value: clearCustomerDetails),
+      Provider<LogOut>.value(value: logOut),
+      Provider<LogIn>.value(value: logIn),
+      Provider<IsLoggedIn>.value(value: isLoggedIn),
       Provider<RunZone>.value(value: runZone),
       Provider<StopZone>.value(value: stopZone),
       Provider<GetLocation>.value(value: getLocation),

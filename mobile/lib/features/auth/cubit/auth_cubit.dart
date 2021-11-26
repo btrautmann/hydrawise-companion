@@ -8,34 +8,22 @@ part 'auth_state.dart';
 
 class AuthCubit extends Cubit<AuthState> {
   AuthCubit({
-    required GetApiKey getApiKey,
-    required SetApiKey setApiKey,
-    required GetFirebaseUid getFirebaseUid,
-    required SetFirebaseUid setFirebaseUid,
-    required AuthenticateWithFirebase authenticateWithFirebase,
-    required GetCustomerDetails getCustomerDetails,
-    required ClearCustomerDetails clearCustomerDetails,
+    required IsLoggedIn isLoggedIn,
+    required LogIn logIn,
+    required LogOut logOut,
     required GetAuthFailures getAuthFailures,
-  })  : _getApiKey = getApiKey,
-        _setApiKey = setApiKey,
-        _getFirebaseUid = getFirebaseUid,
-        _setFirebaseUid = setFirebaseUid,
-        _authenticateWithFirebase = authenticateWithFirebase,
-        _getCustomerDetails = getCustomerDetails,
-        _clearCustomerDetails = clearCustomerDetails,
+  })  : _isLoggedIn = isLoggedIn,
+        _logIn = logIn,
+        _logOut = logOut,
         _getAuthFailures = getAuthFailures,
         super(AuthState.loggedOut()) {
     _checkAuthenticationStatus();
     _listenForAuthFailures();
   }
 
-  final GetApiKey _getApiKey;
-  final SetApiKey _setApiKey;
-  final GetFirebaseUid _getFirebaseUid;
-  final SetFirebaseUid _setFirebaseUid;
-  final AuthenticateWithFirebase _authenticateWithFirebase;
-  final GetCustomerDetails _getCustomerDetails;
-  final ClearCustomerDetails _clearCustomerDetails;
+  final IsLoggedIn _isLoggedIn;
+  final LogIn _logIn;
+  final LogOut _logOut;
   final GetAuthFailures _getAuthFailures;
 
   Future<void> _listenForAuthFailures() async {
@@ -47,9 +35,7 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   Future<void> _checkAuthenticationStatus() async {
-    final apiKey = await _getApiKey();
-    final uId = await _getFirebaseUid();
-    if (apiKey != null && apiKey.isNotEmpty && uId != null && uId.isNotEmpty) {
+    if (await _isLoggedIn()) {
       emit(AuthState.loggedIn());
     } else {
       await logOut();
@@ -57,21 +43,15 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   Future<void> logOut() async {
-    await _clearCustomerDetails();
-    // TODO(brandon): Un-authenticate with Firebase
+    await _logOut();
     emit(AuthState.loggedOut());
   }
 
   Future<void> login(String apiKey) async {
-    final uId = await _authenticateWithFirebase();
-    if (uId != null) {
-      await _setFirebaseUid(uId);
-      await _setApiKey(apiKey);
-      final detailsResult = await _getCustomerDetails();
-      if (detailsResult.isSuccess) {
-        emit(AuthState.loggedIn());
-        return;
-      }
+    final isLoggedIn = await _logIn(apiKey);
+    if (isLoggedIn) {
+      emit(AuthState.loggedIn());
+      return;
     }
     // If we got here, either we failed to authenticate
     // with Hydrawise or Firebase

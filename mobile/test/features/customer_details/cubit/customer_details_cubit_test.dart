@@ -1,11 +1,11 @@
 import 'dart:async';
 
 import 'package:bloc_test/bloc_test.dart';
-import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
 import 'package:firebase_auth_mocks/firebase_auth_mocks.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hydrawise/core/core.dart';
 import 'package:hydrawise/features/auth/auth.dart';
+import 'package:hydrawise/features/auth/domain/validate_api_key.dart';
 import 'package:hydrawise/features/customer_details/customer_details.dart';
 
 void main() {
@@ -20,30 +20,35 @@ void main() {
       repository: repository,
     );
 
+    final getApiKey = GetApiKey(dataStorage);
     final setApiKey = SetApiKey(dataStorage);
     final getAuthFailures = GetAuthFailures(
       authFailuresController: StreamController(),
     );
     final setFirebaseUid = SetFirebaseUid(dataStorage);
     final getFirebaseUid = GetFirebaseUid(dataStorage);
-    final clearCustomerDetails = ClearCustomerDetails(
+    final logOut = LogOut(
       setApiKey: setApiKey,
       setFirebaseUid: setFirebaseUid,
       customerDetailsRepository: repository,
+      auth: MockFirebaseAuth(),
     );
 
     final authCubit = AuthCubit(
-      getApiKey: GetApiKey(dataStorage),
-      setApiKey: setApiKey,
-      getCustomerDetails: getCustomerDetails,
-      clearCustomerDetails: clearCustomerDetails,
+      logOut: logOut,
       getAuthFailures: getAuthFailures,
-      authenticateWithFirebase: AuthenticateWithFirebase(
-        firestore: FakeFirebaseFirestore(),
-        auth: MockFirebaseAuth(),
+      logIn: LogIn(
+        validateApiKey: FakeValidateApiKey(
+          setApiKey: setApiKey,
+        ),
+        authenticateWithFirebase: FakeAuthenticateWithFirebase(
+          setFirebaseUid: setFirebaseUid,
+        ),
       ),
-      setFirebaseUid: setFirebaseUid,
-      getFirebaseUid: getFirebaseUid,
+      isLoggedIn: IsLoggedIn(
+        getApiKey: getApiKey,
+        getFirebaseUid: getFirebaseUid,
+      ),
     );
 
     CustomerDetailsCubit _buildSubject() {

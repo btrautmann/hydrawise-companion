@@ -41,15 +41,10 @@ class App extends StatelessWidget {
           ),
           BlocProvider(
             create: (context) => AuthCubit(
-              clearCustomerDetails: context.read<ClearCustomerDetails>(),
-              getApiKey: context.read<GetApiKey>(),
-              getFirebaseUid: context.read<GetFirebaseUid>(),
-              setFirebaseUid: context.read<SetFirebaseUid>(),
-              authenticateWithFirebase:
-                  context.read<AuthenticateWithFirebase>(),
-              getCustomerDetails: context.read<GetCustomerDetails>(),
-              setApiKey: context.read<SetApiKey>(),
+              logOut: context.read<LogOut>(),
               getAuthFailures: context.read<GetAuthFailures>(),
+              isLoggedIn: context.read<IsLoggedIn>(),
+              logIn: context.read<LogIn>(),
             ),
             lazy: false,
           ),

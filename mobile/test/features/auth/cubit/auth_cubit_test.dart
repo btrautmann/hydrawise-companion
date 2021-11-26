@@ -6,6 +6,7 @@ import 'package:firebase_auth_mocks/firebase_auth_mocks.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hydrawise/core/core.dart';
 import 'package:hydrawise/features/auth/auth.dart';
+import 'package:hydrawise/features/auth/domain/validate_api_key.dart';
 import 'package:hydrawise/features/customer_details/customer_details.dart';
 
 void main() {
@@ -18,12 +19,10 @@ void main() {
     final authenticateWithFirebase = AuthenticateWithFirebase(
       firestore: FakeFirebaseFirestore(),
       auth: MockFirebaseAuth(),
+      setFirebaseUid: setFirebaseUid,
     );
 
     final repository = InMemoryCustomerDetailsRepository();
-    final GetCustomerDetails getCustomerDetails = GetFakeCustomerDetails(
-      repository: repository,
-    );
     late GetAuthFailures getAuthFailures;
 
     setUp(() {
@@ -34,18 +33,23 @@ void main() {
 
     AuthCubit _buildSubject() {
       return AuthCubit(
-        getApiKey: getApiKey,
-        setApiKey: setApiKey,
-        getCustomerDetails: getCustomerDetails,
-        clearCustomerDetails: ClearCustomerDetails(
+        isLoggedIn: IsLoggedIn(
+          getApiKey: getApiKey,
+          getFirebaseUid: getFirebaseUid,
+        ),
+        logOut: LogOut(
           setApiKey: setApiKey,
           setFirebaseUid: setFirebaseUid,
           customerDetailsRepository: repository,
+          auth: MockFirebaseAuth(),
         ),
         getAuthFailures: getAuthFailures,
-        authenticateWithFirebase: authenticateWithFirebase,
-        setFirebaseUid: setFirebaseUid,
-        getFirebaseUid: getFirebaseUid,
+        logIn: LogIn(
+          validateApiKey: FakeValidateApiKey(
+            setApiKey: setApiKey,
+          ),
+          authenticateWithFirebase: authenticateWithFirebase,
+        ),
       );
     }
 

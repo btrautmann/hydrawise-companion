@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:hydrawise/features/auth/auth.dart';
 import 'package:hydrawise/features/customer_details/customer_details.dart';
@@ -76,7 +78,11 @@ class FirebaseBackedCustomerDetailsRepository
 
   @override
   Future<void> clearAllData() async {
-    // TODO(brandon): Need to do this
+    final uId = await _getFirebaseUid();
+    if (uId == null) {
+      log('clearAllData invoked when uId was null');
+    }
+    log('Need to clearAllData for uId $uId');
   }
 
   @override
