@@ -35,7 +35,7 @@ jobs:
           APP_STORE_CONNECT_API_KEY_KEY: ${{secrets.APP_STORE_CONNECT_API_KEY}}
           APP_STORE_CONNECT_API_KEY_KEY_ID: ${{secrets.APP_STORE_CONNECT_API_KEY_ID}}
           APP_STORE_CONNECT_API_KEY_ISSUER_ID: ${{secrets.APP_STORE_CONNECT_API_KEY_ISSUER}}
-        run: cd ios && bundle exec fastlane deploy
+        run: cd mobile/ios && bundle exec fastlane deploy
 
       - name: Decode keystore file
         run: echo "${{secrets.ANDROID_UPLOAD_KEYSTORE_FILE}}" | base64 --decode > ${{secrets.ANDROID_KEYSTORE_PATH}}
@@ -49,4 +49,4 @@ jobs:
           ANDROID_KEYSTORE_PASSWORD: ${{secrets.ANDROID_KEYSTORE_PASSWORD}}
           ANDROID_SECRET_JSON_FILE: ${{secrets.ANDROID_SECRET_JSON_FILE}}
           OPEN_WEATHER_MAP_API_KEY: ${{secrets.OPEN_WEATHER_MAP_API_KEY}}
-        run: cd android && bundle exec fastlane deploy
+        run: cd mobile/android && bundle exec fastlane deploy

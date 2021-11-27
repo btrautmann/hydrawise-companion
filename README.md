@@ -56,11 +56,5 @@ $ open coverage/index.html
 
 ---
 
-## Programs Architecture
-
-In order to run programs, a backend must be used to process run schedules and inform the device when it is time to trigger a run.
-
-1. 
-
 [license_badge]: https://img.shields.io/badge/license-MIT-blue.svg
 [license_link]: https://opensource.org/licenses/MIT
