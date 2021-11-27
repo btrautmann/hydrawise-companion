@@ -24,7 +24,7 @@ jobs:
           xcode-version: latest-stable
       
       - name: Bundle install
-        run: bundle install
+        run: cd mobile && bundle install
     
       - name: Deploy iOS to TestFlight
         env:
