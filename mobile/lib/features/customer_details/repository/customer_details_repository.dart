@@ -13,6 +13,8 @@ abstract class CustomerDetailsRepository {
   Future<void> updateCustomer(CustomerStatus customerStatus);
   Future<List<Customer>> getCustomers();
   Future<Customer> getCustomer();
+  Future<void> addFcmToken(String token);
+  Future<List<String>> getRegisteredFcmTokens();
 
   // Zone
   Future<void> insertZone(Zone zone);
@@ -83,6 +85,26 @@ class FirebaseBackedCustomerDetailsRepository
       log('clearAllData invoked when uId was null');
     }
     log('Need to clearAllData for uId $uId');
+  }
+
+  @override
+  Future<void> addFcmToken(String token) async {
+    return _getUserDocument().then(
+      (value) => value.update({
+        'fcm_tokens': FieldValue.arrayUnion([token])
+      }),
+    );
+  }
+
+  @override
+  Future<List<String>> getRegisteredFcmTokens() {
+    return _getUserDocument().then(
+      (d) => d.get().then((user) {
+        // ignore: cast_nullable_to_non_nullable
+        final data = user.data() as Map<String, dynamic>;
+        return List<String>.from(data['fcm_tokens']);
+      }),
+    );
   }
 
   @override
@@ -251,21 +273,19 @@ class FirebaseBackedCustomerDetailsRepository
   Future<void> updateCustomer(CustomerStatus customerStatus) async {
     for (final zone in customerStatus.zones) {
       await _getUserDocument().then(
-        (d) => d.collection('zones').doc(zone.id.toString()).set(
+        (d) => d.collection('zones').doc(zone.id.toString()).update(
               zone.toJson(),
-              SetOptions(merge: true),
             ),
       );
     }
     final customer = await getCustomer();
     return _getUserDocument().then(
-      (d) => d.set(
+      (d) => d.update(
         customer
             .copyWith(
               lastStatusUpdate: customerStatus.timeOfLastStatusUnixEpoch,
             )
             .toJson(),
-        SetOptions(merge: true),
       ),
     );
   }
@@ -304,9 +324,8 @@ class FirebaseBackedCustomerDetailsRepository
             .doc(programId)
             .collection('runs')
             .doc(run.id)
-            .set(
+            .update(
               run.toJson(),
-              SetOptions(merge: true),
             ),
       );
       return batch.commit();
@@ -316,9 +335,8 @@ class FirebaseBackedCustomerDetailsRepository
   @override
   Future<void> updateZone(Zone zone) {
     return _getUserDocument().then(
-      (d) => d.collection('zones').doc(zone.id.toString()).set(
+      (d) => d.collection('zones').doc(zone.id.toString()).update(
             zone.toJson(),
-            SetOptions(merge: true),
           ),
     );
   }
@@ -329,6 +347,16 @@ class DatabaseBackedCustomerDetailsRepository
   DatabaseBackedCustomerDetailsRepository(this._database);
 
   final Database _database;
+
+  @override
+  Future<void> addFcmToken(String token) {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<List<String>> getRegisteredFcmTokens() {
+    throw UnimplementedError();
+  }
 
   @override
   Future<void> insertCustomer(Customer customer) {
@@ -542,6 +570,17 @@ class InMemoryCustomerDetailsRepository implements CustomerDetailsRepository {
   final zones = <Zone>[];
   final programs = <Program>[];
   final runs = <Run>[];
+  final fcmTokens = <String>[];
+
+  @override
+  Future<void> addFcmToken(String token) async {
+    fcmTokens.add(token);
+  }
+
+  @override
+  Future<List<String>> getRegisteredFcmTokens() async {
+    return fcmTokens;
+  }
 
   @override
   Future<Customer> getCustomer() async {

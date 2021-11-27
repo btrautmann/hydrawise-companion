@@ -13,6 +13,7 @@ import 'package:hydrawise/features/app_theme_mode/app_theme_mode.dart';
 import 'package:hydrawise/features/auth/auth.dart';
 import 'package:hydrawise/features/customer_details/customer_details.dart';
 import 'package:hydrawise/features/programs/programs.dart';
+import 'package:hydrawise/features/push_notifications/push_notifications.dart';
 import 'package:provider/provider.dart';
 
 class App extends StatelessWidget {
@@ -61,6 +62,14 @@ class App extends StatelessWidget {
               createProgram: context.read<CreateProgram>(),
               updateProgram: context.read<UpdateProgram>(),
               deleteProgram: context.read<DeleteProgram>(),
+            ),
+          ),
+          BlocProvider(
+            create: (context) => PushNotificationsCubit(
+              getPushNotificationsEnabled:
+                  context.read<GetPushNotificationsEnabled>(),
+              registerForPushNotifications:
+                  context.read<RegisterForPushNotifications>(),
             ),
           ),
         ],

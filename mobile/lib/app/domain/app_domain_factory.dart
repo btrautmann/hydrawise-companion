@@ -2,12 +2,14 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:hydrawise/core/core.dart';
 import 'package:hydrawise/features/app_theme_mode/app_theme_mode.dart';
 import 'package:hydrawise/features/auth/domain/domain.dart';
 import 'package:hydrawise/features/auth/domain/validate_api_key.dart';
 import 'package:hydrawise/features/customer_details/customer_details.dart';
 import 'package:hydrawise/features/programs/programs.dart';
+import 'package:hydrawise/features/push_notifications/push_notifications.dart';
 import 'package:hydrawise/features/run_zone/run_zone.dart';
 import 'package:hydrawise/features/weather/weather.dart';
 import 'package:provider/provider.dart';
@@ -20,6 +22,7 @@ abstract class ProductionDomainFactory {
     required CustomerDetailsRepository repository,
     required FirebaseFirestore firebaseFirestore,
     required FirebaseAuth firebaseAuth,
+    required FirebaseMessaging firebaseMessaging,
     // ignore: prefer_void_to_null
     required StreamController<Null> authFailures,
   }) {
@@ -91,6 +94,16 @@ abstract class ProductionDomainFactory {
       authFailuresController: authFailures,
     );
 
+    final getPushNotificationsEnabled = GetPushNotificationsEnabled(
+      firebaseMessaging: firebaseMessaging,
+      repository: repository,
+    );
+
+    final registerForPushNotifications = RegisterForPushNotifications(
+      firebaseMessaging: firebaseMessaging,
+      repository: repository,
+    );
+
     return [
       Provider<GetCustomerDetails>.value(value: getCustomerDetails),
       Provider<GetCustomerStatus>.value(value: getCustomerStatus),
@@ -114,6 +127,12 @@ abstract class ProductionDomainFactory {
       Provider<SetAppThemeMode>.value(value: setAppThemeMode),
       Provider<GetAppThemeMode>.value(value: getAppThemeMode),
       Provider<GetAuthFailures>.value(value: getAuthFailures),
+      Provider<GetPushNotificationsEnabled>.value(
+        value: getPushNotificationsEnabled,
+      ),
+      Provider<RegisterForPushNotifications>.value(
+        value: registerForPushNotifications,
+      ),
     ];
   }
 }
@@ -167,6 +186,13 @@ abstract class DevelopmentDomainFactory {
       // mode
       authFailuresController: StreamController(),
     );
+    final getPushNotificationsEnabled = FakeGetPushNotificationsEnabled(
+      repository: repository,
+    );
+
+    final registerForPushNotifications = FakeRegisterForPushNotifications(
+      repository: repository,
+    );
 
     return [
       Provider<GetCustomerDetails>.value(value: getCustomerDetails),
@@ -191,6 +217,12 @@ abstract class DevelopmentDomainFactory {
       Provider<SetAppThemeMode>.value(value: setAppThemeMode),
       Provider<GetAppThemeMode>.value(value: getAppThemeMode),
       Provider<GetAuthFailures>.value(value: getAuthFailures),
+      Provider<GetPushNotificationsEnabled>.value(
+        value: getPushNotificationsEnabled,
+      ),
+      Provider<RegisterForPushNotifications>.value(
+        value: registerForPushNotifications,
+      ),
     ];
   }
 }

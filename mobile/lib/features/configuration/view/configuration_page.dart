@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hydrawise/app/cubit/app_cubit.dart';
 import 'package:hydrawise/core-ui/core_ui.dart';
 import 'package:hydrawise/features/customer_details/customer_details.dart';
+import 'package:hydrawise/features/push_notifications/push_notifications.dart';
 
 class ConfigurationPage extends StatelessWidget {
   const ConfigurationPage({Key? key}) : super(key: key);
@@ -79,6 +80,26 @@ class ConfigurationView extends StatelessWidget {
         ),
         const Divider(
           indent: 16,
+        ),
+        BlocBuilder<PushNotificationsCubit, PushNotificationsState>(
+          builder: (context, state) {
+            final title = state.pushNotificationsEnabled
+                ? 'Tap to turn off push notifications'
+                : 'Tap to turn on push notifications';
+            return ListRow(
+              leadingIcon: const CircleBackground(
+                child: Icon(
+                  Icons.vibration_sharp,
+                ),
+              ),
+              title: Text(title),
+              onTapped: () {
+                context
+                    .read<PushNotificationsCubit>()
+                    .registerForPushNotifications();
+              },
+            );
+          },
         ),
       ],
     );
