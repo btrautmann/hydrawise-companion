@@ -273,9 +273,12 @@ class FirebaseBackedCustomerDetailsRepository
   Future<void> updateCustomer(CustomerStatus customerStatus) async {
     for (final zone in customerStatus.zones) {
       await _getUserDocument().then(
-        (d) => d.collection('zones').doc(zone.id.toString()).update(
-              zone.toJson(),
-            ),
+        (d) => d
+            .collection('zones')
+            .doc(zone.id.toString())
+            // Use `set` instead of `update` because this gets called
+            // when first fetching a customer status and inserting zones
+            .set(zone.toJson(), SetOptions(merge: true)),
       );
     }
     final customer = await getCustomer();
