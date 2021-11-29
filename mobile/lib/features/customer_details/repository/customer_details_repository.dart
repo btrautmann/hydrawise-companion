@@ -102,7 +102,7 @@ class FirebaseBackedCustomerDetailsRepository
       (d) => d.get().then((user) {
         // ignore: cast_nullable_to_non_nullable
         final data = user.data() as Map<String, dynamic>;
-        return List<String>.from(data['fcm_tokens']);
+        return List<String>.from(data['fcm_tokens'] ?? List<String>.empty());
       }),
     );
   }
