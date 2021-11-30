@@ -5,7 +5,7 @@ Third party, modern support for the Hydrawise API
 [![License: MIT][license_badge]][license_link]
 
 <p align="center">
-  <img width="300" height="300" src="https://github.com/btrautmann/hydrawise-companion/blob/main/assets/app_logo.png">
+  <img width="300" height="349" src="https://github.com/btrautmann/hydrawise-companion/blob/main/assets/app_logo.png">
 </p>
 
 
