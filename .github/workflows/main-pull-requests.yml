@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  deploy-mobile:
+  verify:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v2
