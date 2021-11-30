@@ -1,7 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:irri/features/auth/auth.dart';
-import 'package:pedantic/pedantic.dart';
 
 part 'auth_cubit.freezed.dart';
 part 'auth_state.dart';
