@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:hydrawise/features/customer_details/customer_details.dart';
-import 'package:hydrawise/features/customer_details/models/zone.dart';
-import 'package:hydrawise/features/programs/programs.dart';
+import 'package:irri/features/customer_details/customer_details.dart';
+import 'package:irri/features/customer_details/models/zone.dart';
+import 'package:irri/features/programs/programs.dart';
 
 class CreateProgramPage extends StatelessWidget {
   const CreateProgramPage({

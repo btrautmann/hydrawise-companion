@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:hydrawise/features/programs/models/run_draft.dart';
+import 'package:irri/features/programs/models/run_draft.dart';
 
 part 'run.freezed.dart';
 part 'run.g.dart';

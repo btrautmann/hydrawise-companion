@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:hydrawise/features/push_notifications/push_notifications.dart';
+import 'package:irri/features/push_notifications/push_notifications.dart';
 
 part 'push_notifications_state.dart';
 part 'push_notifications_cubit.freezed.dart';

@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:hydrawise/features/customer_details/customer_details.dart';
+import 'package:irri/features/customer_details/customer_details.dart';
 
 /// An [Interceptor] that intercepts requests and checks for the
 /// existence of a `demo` API key. If that key is present, we're

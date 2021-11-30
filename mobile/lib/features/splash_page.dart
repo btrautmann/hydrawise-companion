@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:hydrawise/features/auth/auth.dart';
+import 'package:irri/features/auth/auth.dart';
 
 /// Initial page of the app places as the `home` of the
 /// MaterialApp. The sole responsibility is to determine

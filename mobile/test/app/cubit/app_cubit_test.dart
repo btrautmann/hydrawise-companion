@@ -1,10 +1,10 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:hydrawise/app/cubit/app_cubit.dart';
-import 'package:hydrawise/core/core.dart';
-import 'package:hydrawise/features/app_theme_mode/domain/get_app_theme_mode.dart';
-import 'package:hydrawise/features/app_theme_mode/domain/set_app_theme_mode.dart';
+import 'package:irri/app/cubit/app_cubit.dart';
+import 'package:irri/core/core.dart';
+import 'package:irri/features/app_theme_mode/domain/get_app_theme_mode.dart';
+import 'package:irri/features/app_theme_mode/domain/set_app_theme_mode.dart';
 
 void main() {
   group('AppCubit', () {

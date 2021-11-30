@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:hydrawise/core/core.dart';
-import 'package:hydrawise/features/auth/auth.dart';
+import 'package:irri/core/core.dart';
+import 'package:irri/features/auth/auth.dart';
 
 void main() {
   group('GetApiKeyFromStorage', () {

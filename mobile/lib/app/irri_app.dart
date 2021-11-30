@@ -7,17 +7,17 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:hydrawise/app/app.dart';
-import 'package:hydrawise/core-ui/core_ui.dart';
-import 'package:hydrawise/features/app_theme_mode/app_theme_mode.dart';
-import 'package:hydrawise/features/auth/auth.dart';
-import 'package:hydrawise/features/customer_details/customer_details.dart';
-import 'package:hydrawise/features/programs/programs.dart';
-import 'package:hydrawise/features/push_notifications/push_notifications.dart';
+import 'package:irri/app/app.dart';
+import 'package:irri/core-ui/core_ui.dart';
+import 'package:irri/features/app_theme_mode/app_theme_mode.dart';
+import 'package:irri/features/auth/auth.dart';
+import 'package:irri/features/customer_details/customer_details.dart';
+import 'package:irri/features/programs/programs.dart';
+import 'package:irri/features/push_notifications/push_notifications.dart';
 import 'package:provider/provider.dart';
 
-class App extends StatelessWidget {
-  const App({
+class IrriApp extends StatelessWidget {
+  const IrriApp({
     Key? key,
     required GoRouter router,
     required List<Provider> providers,

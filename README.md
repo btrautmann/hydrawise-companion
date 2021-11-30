@@ -1,6 +1,25 @@
-# Hydrawise Companion
+# Irri
+
+Third party, modern support for the Hydrawise API
 
 [![License: MIT][license_badge]][license_link]
+
+<p align="center">
+  <img width="300" height="300" src="https://github.com/btrautmann/hydrawise-companion/blob/main/assets/app_icon.svg">
+</p>
+
+
+### Welcome to Irri
+
+Irri is a passion project that aims to bring a bit of modernization to the experience of interacting with your Hydrawise irrigation system. It offers a clean, minimalistic UI and takes full advantage of the public Hydrawise API, while also layering on its own capabilities.
+
+### Features included:
+- Ability to create and update programs in supersonic speed
+- Push notifications when runs begin
+- Dark mode
+- Integration with OpenWeatherMap API
+- Quickly rename zones while maintaining original names in the first-party Hydrawise app (coming soon)
+- and more! (coming soon)
 
 ---
 

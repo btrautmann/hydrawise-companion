@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:hydrawise/features/auth/auth.dart';
-import 'package:hydrawise/features/customer_details/customer_details.dart';
+import 'package:irri/features/auth/auth.dart';
+import 'package:irri/features/customer_details/customer_details.dart';
 
 part 'auth_cubit.freezed.dart';
 part 'auth_state.dart';

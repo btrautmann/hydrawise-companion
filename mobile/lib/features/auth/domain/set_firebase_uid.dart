@@ -1,4 +1,4 @@
-import 'package:hydrawise/core/core.dart';
+import 'package:irri/core/core.dart';
 
 class SetFirebaseUid {
   SetFirebaseUid(this._dataStorage);

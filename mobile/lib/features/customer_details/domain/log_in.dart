@@ -1,5 +1,5 @@
-import 'package:hydrawise/features/auth/auth.dart';
-import 'package:hydrawise/features/auth/domain/validate_api_key.dart';
+import 'package:irri/features/auth/auth.dart';
+import 'package:irri/features/auth/domain/validate_api_key.dart';
 
 class LogIn {
   LogIn({

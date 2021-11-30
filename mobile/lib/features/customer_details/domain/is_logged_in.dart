@@ -1,4 +1,4 @@
-import 'package:hydrawise/features/auth/auth.dart';
+import 'package:irri/features/auth/auth.dart';
 
 class IsLoggedIn {
   IsLoggedIn({

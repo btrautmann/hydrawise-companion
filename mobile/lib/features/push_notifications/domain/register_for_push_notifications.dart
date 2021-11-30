@@ -1,6 +1,6 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:hydrawise/features/customer_details/customer_details.dart';
-import 'package:hydrawise/features/push_notifications/push_notifications.dart';
+import 'package:irri/features/customer_details/customer_details.dart';
+import 'package:irri/features/push_notifications/push_notifications.dart';
 import 'package:uuid/uuid.dart';
 
 class RegisterForPushNotifications {

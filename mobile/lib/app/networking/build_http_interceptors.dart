@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:hydrawise/app/networking/authentication_interceptor.dart';
-import 'package:hydrawise/app/networking/demo_mode_interceptor.dart';
+import 'package:irri/app/networking/authentication_interceptor.dart';
+import 'package:irri/app/networking/demo_mode_interceptor.dart';
 
 /// Contract for building the interceptors that will be
 /// added to the HttpClient

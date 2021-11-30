@@ -2,8 +2,8 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:hydrawise/app/app.dart';
-import 'package:hydrawise/features/run_zone/run_zone.dart';
+import 'package:irri/app/app.dart';
+import 'package:irri/features/run_zone/run_zone.dart';
 
 void main() {
   group('HydrawiseApiDecoder.decode', () {

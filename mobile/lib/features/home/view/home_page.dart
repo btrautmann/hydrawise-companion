@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:hydrawise/features/configuration/configuration.dart';
-import 'package:hydrawise/features/customer_details/customer_details.dart';
-import 'package:hydrawise/features/home/home.dart';
-import 'package:hydrawise/features/programs/programs.dart';
+import 'package:irri/features/configuration/configuration.dart';
+import 'package:irri/features/customer_details/customer_details.dart';
+import 'package:irri/features/home/home.dart';
+import 'package:irri/features/programs/programs.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({Key? key, required int selectedTabIndex})

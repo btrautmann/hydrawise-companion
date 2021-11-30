@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hydrawise/core/core.dart';
+import 'package:irri/core/core.dart';
 
 /// Obtains the current app [ThemeMode] from the provided
 /// [DataStorage]. If no mode has been set previously,

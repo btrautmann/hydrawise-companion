@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:hydrawise/features/programs/models/run.dart';
+import 'package:irri/features/programs/models/run.dart';
 
 part 'program.freezed.dart';
 part 'program.g.dart';

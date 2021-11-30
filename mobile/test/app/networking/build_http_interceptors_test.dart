@@ -1,8 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:hydrawise/app/networking/authentication_interceptor.dart';
-import 'package:hydrawise/app/networking/build_http_interceptors.dart';
-import 'package:hydrawise/app/networking/demo_mode_interceptor.dart';
+import 'package:irri/app/networking/authentication_interceptor.dart';
+import 'package:irri/app/networking/build_http_interceptors.dart';
+import 'package:irri/app/networking/demo_mode_interceptor.dart';
 
 void main() {
   group('BuildHttpInterceptors', () {

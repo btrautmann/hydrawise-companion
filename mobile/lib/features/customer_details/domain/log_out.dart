@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:hydrawise/features/auth/auth.dart';
-import 'package:hydrawise/features/customer_details/repository/customer_details_repository.dart';
+import 'package:irri/features/auth/auth.dart';
+import 'package:irri/features/customer_details/repository/customer_details_repository.dart';
 
 class LogOut {
   LogOut({
