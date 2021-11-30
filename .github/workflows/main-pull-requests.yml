@@ -23,5 +23,8 @@ jobs:
         with:
           xcode-version: latest-stable
       
+      - name: flutter doctor -v
+        run: cd mobile && flutter doctor -v
+            
       - name: verify flutter
         run: cd mobile && flutter test && flutter analyze
