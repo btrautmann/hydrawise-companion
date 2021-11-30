@@ -3,15 +3,15 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:hydrawise/core/core.dart';
-import 'package:hydrawise/features/app_theme_mode/app_theme_mode.dart';
-import 'package:hydrawise/features/auth/domain/domain.dart';
-import 'package:hydrawise/features/auth/domain/validate_api_key.dart';
-import 'package:hydrawise/features/customer_details/customer_details.dart';
-import 'package:hydrawise/features/programs/programs.dart';
-import 'package:hydrawise/features/push_notifications/push_notifications.dart';
-import 'package:hydrawise/features/run_zone/run_zone.dart';
-import 'package:hydrawise/features/weather/weather.dart';
+import 'package:irri/core/core.dart';
+import 'package:irri/features/app_theme_mode/app_theme_mode.dart';
+import 'package:irri/features/auth/domain/domain.dart';
+import 'package:irri/features/auth/domain/validate_api_key.dart';
+import 'package:irri/features/customer_details/customer_details.dart';
+import 'package:irri/features/programs/programs.dart';
+import 'package:irri/features/push_notifications/push_notifications.dart';
+import 'package:irri/features/run_zone/run_zone.dart';
+import 'package:irri/features/weather/weather.dart';
 import 'package:provider/provider.dart';
 
 // ignore: avoid_classes_with_only_static_members

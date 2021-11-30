@@ -1,6 +1,6 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:hydrawise/features/home/home.dart';
+import 'package:irri/features/home/home.dart';
 
 void main() {
   group('HomeCubit', () {

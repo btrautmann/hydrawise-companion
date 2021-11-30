@@ -1,6 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:hydrawise/features/customer_details/models/controller.dart';
-import 'package:hydrawise/features/customer_details/models/customer.dart';
+import 'package:irri/features/customer_details/models/controller.dart';
+import 'package:irri/features/customer_details/models/customer.dart';
 
 part 'customer_details.freezed.dart';
 part 'customer_details.g.dart';

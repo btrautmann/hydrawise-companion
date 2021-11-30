@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:hydrawise/features/auth/auth.dart';
+import 'package:irri/features/auth/auth.dart';
 
 /// Authenticates with Firebase anonymously and returns
 /// the user's uid if successful

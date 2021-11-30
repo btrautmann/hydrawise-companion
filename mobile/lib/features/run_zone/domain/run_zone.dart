@@ -1,8 +1,8 @@
 import 'package:dio/dio.dart';
-import 'package:hydrawise/core/core.dart';
-import 'package:hydrawise/features/auth/auth.dart';
-import 'package:hydrawise/features/customer_details/customer_details.dart';
-import 'package:hydrawise/features/run_zone/run_zone.dart';
+import 'package:irri/core/core.dart';
+import 'package:irri/features/auth/auth.dart';
+import 'package:irri/features/customer_details/customer_details.dart';
+import 'package:irri/features/run_zone/run_zone.dart';
 import 'package:pedantic/pedantic.dart';
 import 'package:result_type/result_type.dart';
 

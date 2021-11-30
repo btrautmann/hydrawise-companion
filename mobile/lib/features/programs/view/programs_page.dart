@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:hydrawise/core-ui/core_ui.dart';
-import 'package:hydrawise/features/programs/programs.dart';
+import 'package:irri/core-ui/core_ui.dart';
+import 'package:irri/features/programs/programs.dart';
 
 class ProgramsPage extends StatelessWidget {
   const ProgramsPage({Key? key}) : super(key: key);

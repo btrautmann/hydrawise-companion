@@ -1,10 +1,10 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:hydrawise/app/domain/app_domain_factory.dart';
-import 'package:hydrawise/app/domain/build_router.dart';
-import 'package:hydrawise/app/hydrawise_companion_app.dart';
-import 'package:hydrawise/core/core.dart';
-import 'package:hydrawise/features/customer_details/customer_details.dart';
-import 'package:hydrawise/features/splash_page.dart';
+import 'package:irri/app/domain/app_domain_factory.dart';
+import 'package:irri/app/domain/build_router.dart';
+import 'package:irri/app/irri_app.dart';
+import 'package:irri/core/core.dart';
+import 'package:irri/features/customer_details/customer_details.dart';
+import 'package:irri/features/splash_page.dart';
 
 void main() {
   group('App', () {
@@ -18,7 +18,7 @@ void main() {
       );
 
       await tester.pumpWidget(
-        App(
+        IrriApp(
           router: router,
           providers: providers,
         ),

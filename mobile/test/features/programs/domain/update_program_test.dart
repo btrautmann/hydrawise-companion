@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:hydrawise/features/customer_details/customer_details.dart';
-import 'package:hydrawise/features/programs/programs.dart';
+import 'package:irri/features/customer_details/customer_details.dart';
+import 'package:irri/features/programs/programs.dart';
 
 void main() {
   group('UpdateProgram', () {

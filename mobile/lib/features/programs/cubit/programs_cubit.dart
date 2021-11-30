@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:hydrawise/features/programs/programs.dart';
+import 'package:irri/features/programs/programs.dart';
 
 part 'programs_state.dart';
 part 'programs_cubit.freezed.dart';

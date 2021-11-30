@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hydrawise/core/core.dart';
+import 'package:irri/core/core.dart';
 
 /// Sets the new [ThemeMode] in provided
 /// [DataStorage]. Uses the toString() of the [ThemeMode].

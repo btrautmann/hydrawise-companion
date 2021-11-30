@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:hydrawise/core-ui/widgets/h_stretch.dart';
-import 'package:hydrawise/features/weather/weather.dart';
+import 'package:irri/core-ui/widgets/h_stretch.dart';
+import 'package:irri/features/weather/weather.dart';
 
 class WeatherDetailsCard extends StatelessWidget {
   const WeatherDetailsCard({Key? key}) : super(key: key);

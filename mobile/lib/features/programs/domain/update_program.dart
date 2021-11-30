@@ -1,7 +1,7 @@
 // ignore: implementation_imports
 import 'package:collection/src/iterable_extensions.dart';
-import 'package:hydrawise/features/customer_details/repository/customer_details_repository.dart';
-import 'package:hydrawise/features/programs/programs.dart';
+import 'package:irri/features/customer_details/repository/customer_details_repository.dart';
+import 'package:irri/features/programs/programs.dart';
 import 'package:uuid/uuid.dart';
 
 class UpdateProgram {

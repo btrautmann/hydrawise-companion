@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:hydrawise/features/auth/auth.dart';
-import 'package:hydrawise/features/error_page.dart';
-import 'package:hydrawise/features/home/home.dart';
-import 'package:hydrawise/features/programs/programs.dart';
-import 'package:hydrawise/features/run_zone/run_zone.dart';
-import 'package:hydrawise/features/splash_page.dart';
+import 'package:irri/features/auth/auth.dart';
+import 'package:irri/features/error_page.dart';
+import 'package:irri/features/home/home.dart';
+import 'package:irri/features/programs/programs.dart';
+import 'package:irri/features/run_zone/run_zone.dart';
+import 'package:irri/features/splash_page.dart';
 
 class BuildAppRouter {
   BuildAppRouter();

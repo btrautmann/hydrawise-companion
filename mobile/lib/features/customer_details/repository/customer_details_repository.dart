@@ -1,9 +1,9 @@
 import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:hydrawise/features/auth/auth.dart';
-import 'package:hydrawise/features/customer_details/customer_details.dart';
-import 'package:hydrawise/features/programs/programs.dart';
+import 'package:irri/features/auth/auth.dart';
+import 'package:irri/features/customer_details/customer_details.dart';
+import 'package:irri/features/programs/programs.dart';
 import 'package:sqflite/sqlite_api.dart';
 import 'package:uuid/uuid.dart';
 

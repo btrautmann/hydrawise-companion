@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:hydrawise/core/core.dart';
-import 'package:hydrawise/features/customer_details/customer_details.dart';
+import 'package:irri/core/core.dart';
+import 'package:irri/features/customer_details/customer_details.dart';
 
 void main() {
   group('GetNextPollTimeFromStorage', () {

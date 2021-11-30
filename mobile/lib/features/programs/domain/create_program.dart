@@ -1,5 +1,5 @@
-import 'package:hydrawise/features/customer_details/customer_details.dart';
-import 'package:hydrawise/features/programs/programs.dart';
+import 'package:irri/features/customer_details/customer_details.dart';
+import 'package:irri/features/programs/programs.dart';
 import 'package:uuid/uuid.dart';
 
 class CreateProgram {

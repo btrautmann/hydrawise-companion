@@ -1,8 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:hydrawise/app/networking/demo_mode_interceptor.dart';
-import 'package:hydrawise/features/customer_details/customer_details.dart';
+import 'package:irri/app/networking/demo_mode_interceptor.dart';
+import 'package:irri/features/customer_details/customer_details.dart';
 
 class FakeRequestInterceptorHandler extends RequestInterceptorHandler {
   FakeRequestInterceptorHandler({

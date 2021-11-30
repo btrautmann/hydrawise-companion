@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:hydrawise/features/customer_details/customer_details.dart';
-import 'package:hydrawise/features/run_zone/run_zone.dart';
+import 'package:irri/features/customer_details/customer_details.dart';
+import 'package:irri/features/run_zone/run_zone.dart';
 
 class RunZonesPage extends StatelessWidget {
   const RunZonesPage({

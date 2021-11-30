@@ -4,10 +4,10 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
 import 'package:firebase_auth_mocks/firebase_auth_mocks.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:hydrawise/core/core.dart';
-import 'package:hydrawise/features/auth/auth.dart';
-import 'package:hydrawise/features/auth/domain/validate_api_key.dart';
-import 'package:hydrawise/features/customer_details/customer_details.dart';
+import 'package:irri/core/core.dart';
+import 'package:irri/features/auth/auth.dart';
+import 'package:irri/features/auth/domain/validate_api_key.dart';
+import 'package:irri/features/customer_details/customer_details.dart';
 
 void main() {
   group('AuthCubit', () {

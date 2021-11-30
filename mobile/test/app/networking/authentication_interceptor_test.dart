@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:hydrawise/app/networking/authentication_interceptor.dart';
+import 'package:irri/app/networking/authentication_interceptor.dart';
 
 class FakeErrorInterceptorHandler extends ErrorInterceptorHandler {
   @override

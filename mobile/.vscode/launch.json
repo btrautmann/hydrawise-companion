@@ -5,7 +5,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "hydrawise-companion (prod)",
+            "name": "irri (prod)",
             "request": "launch",
             "type": "dart",
             "program": "lib/main_production.dart",
@@ -18,7 +18,7 @@
             ]
         },
         {
-            "name": "hydrawise-companion (dev)",
+            "name": "irri (dev)",
             "request": "launch",
             "type": "dart",
             "program": "lib/main_development.dart",
@@ -31,7 +31,7 @@
             ]
         },
         {
-            "name": "hydrawise-companion (staging)",
+            "name": "irri (staging)",
             "request": "launch",
             "type": "dart",
             "program": "lib/main_staging.dart",
@@ -44,7 +44,7 @@
             ]
         },
         {
-            "name": "hydrawise-companion (profile mode)",
+            "name": "irri (profile mode)",
             "request": "launch",
             "type": "dart",
             "flutterMode": "profile",

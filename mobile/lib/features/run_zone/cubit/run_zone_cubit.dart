@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:hydrawise/features/customer_details/customer_details.dart';
-import 'package:hydrawise/features/run_zone/run_zone.dart';
+import 'package:irri/features/customer_details/customer_details.dart';
+import 'package:irri/features/run_zone/run_zone.dart';
 
 part 'run_zone_state.dart';
 part 'run_zone_cubit.freezed.dart';
