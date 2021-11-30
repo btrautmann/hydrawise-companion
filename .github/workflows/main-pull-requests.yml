@@ -1,8 +1,11 @@
-name: main pull request
+name: mobile verification
 
 on:
   pull_request:
-    branches: [ main ]
+    branches:
+      - main
+    paths:
+      - mobile/**
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
