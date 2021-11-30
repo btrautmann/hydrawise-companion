@@ -19,12 +19,6 @@ jobs:
         with:
           flutter-version: '2.5.3'
           channel: stable
-      - uses: maxim-lobanov/setup-xcode@v1
-        with:
-          xcode-version: latest-stable
-      
-      - name: flutter doctor -v
-        run: cd mobile && flutter doctor -v
             
       - name: verify flutter
         run: cd mobile && flutter test && flutter analyze
