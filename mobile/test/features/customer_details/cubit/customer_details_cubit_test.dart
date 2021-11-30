@@ -10,51 +10,46 @@ import 'package:irri/features/customer_details/customer_details.dart';
 
 void main() {
   group('CustomerDetailsCubit', () {
-    final repository = InMemoryCustomerDetailsRepository();
     final DataStorage dataStorage = InMemoryStorage();
 
-    final GetCustomerStatus getCustomerStatus = GetFakeCustomerStatus(
-      repository: repository,
-    );
-    final GetCustomerDetails getCustomerDetails = GetFakeCustomerDetails(
-      repository: repository,
-    );
-
-    final getApiKey = GetApiKey(dataStorage);
-    final setApiKey = SetApiKey(dataStorage);
-    final getAuthFailures = GetAuthFailures(
-      authFailuresController: StreamController(),
-    );
-    final setFirebaseUid = SetFirebaseUid(dataStorage);
-    final getFirebaseUid = GetFirebaseUid(dataStorage);
-    final logOut = LogOut(
-      setApiKey: setApiKey,
-      setFirebaseUid: setFirebaseUid,
-      customerDetailsRepository: repository,
-      auth: MockFirebaseAuth(),
-    );
-
-    final authCubit = AuthCubit(
-      logOut: logOut,
-      getAuthFailures: getAuthFailures,
-      logIn: LogIn(
-        validateApiKey: FakeValidateApiKey(
-          setApiKey: setApiKey,
-        ),
-        authenticateWithFirebase: FakeAuthenticateWithFirebase(
-          setFirebaseUid: setFirebaseUid,
-        ),
-      ),
-      isLoggedIn: IsLoggedIn(
-        getApiKey: getApiKey,
-        getFirebaseUid: getFirebaseUid,
-      ),
-    );
+    late AuthCubit authCubit;
 
     CustomerDetailsCubit _buildSubject() {
+      final repository = InMemoryCustomerDetailsRepository();
+      final setApiKey = SetApiKey(dataStorage);
+      final setFirebaseUid = SetFirebaseUid(dataStorage);
+
+      authCubit = AuthCubit(
+        logOut: LogOut(
+          setApiKey: setApiKey,
+          setFirebaseUid: setFirebaseUid,
+          customerDetailsRepository: repository,
+          auth: MockFirebaseAuth(),
+        ),
+        getAuthFailures: GetAuthFailures(
+          authFailuresController: StreamController(),
+        ),
+        logIn: LogIn(
+          validateApiKey: FakeValidateApiKey(
+            setApiKey: setApiKey,
+          ),
+          authenticateWithFirebase: FakeAuthenticateWithFirebase(
+            setFirebaseUid: setFirebaseUid,
+          ),
+        ),
+        isLoggedIn: IsLoggedIn(
+          getApiKey: GetApiKey(dataStorage),
+          getFirebaseUid: GetFirebaseUid(dataStorage),
+        ),
+      );
+
       return CustomerDetailsCubit(
-        getCustomerDetails: getCustomerDetails,
-        getCustomerStatus: getCustomerStatus,
+        getCustomerDetails: GetFakeCustomerDetails(
+          repository: repository,
+        ),
+        getCustomerStatus: GetFakeCustomerStatus(
+          repository: repository,
+        ),
         authCubit: authCubit,
       );
     }

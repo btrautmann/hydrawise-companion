@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:irri/features/auth/auth.dart';
-import 'package:irri/features/customer_details/customer_details.dart';
+import 'package:pedantic/pedantic.dart';
 
 part 'auth_cubit.freezed.dart';
 part 'auth_state.dart';
@@ -26,20 +26,20 @@ class AuthCubit extends Cubit<AuthState> {
   final LogOut _logOut;
   final GetAuthFailures _getAuthFailures;
 
+  Future<void> _checkAuthenticationStatus() async {
+    if (await _isLoggedIn()) {
+      emit(AuthState.loggedIn());
+    } else {
+      emit(AuthState.loggedOut());
+    }
+  }
+
   Future<void> _listenForAuthFailures() async {
     await _getAuthFailures().then(
       (stream) => stream.listen((event) {
         emit(AuthState.loggedOut());
       }),
     );
-  }
-
-  Future<void> _checkAuthenticationStatus() async {
-    if (await _isLoggedIn()) {
-      emit(AuthState.loggedIn());
-    } else {
-      await logOut();
-    }
   }
 
   Future<void> logOut() async {

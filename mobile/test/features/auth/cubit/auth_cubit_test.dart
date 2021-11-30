@@ -1,8 +1,6 @@
 import 'dart:async';
 
 import 'package:bloc_test/bloc_test.dart';
-import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
-import 'package:firebase_auth_mocks/firebase_auth_mocks.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:irri/core/core.dart';
 import 'package:irri/features/auth/auth.dart';
@@ -12,43 +10,30 @@ import 'package:irri/features/customer_details/customer_details.dart';
 void main() {
   group('AuthCubit', () {
     final DataStorage dataStorage = InMemoryStorage();
-    final getApiKey = GetApiKey(dataStorage);
     final setApiKey = SetApiKey(dataStorage);
     final setFirebaseUid = SetFirebaseUid(dataStorage);
-    final getFirebaseUid = GetFirebaseUid(dataStorage);
-    final authenticateWithFirebase = AuthenticateWithFirebase(
-      firestore: FakeFirebaseFirestore(),
-      auth: MockFirebaseAuth(),
-      setFirebaseUid: setFirebaseUid,
-    );
-
-    final repository = InMemoryCustomerDetailsRepository();
-    late GetAuthFailures getAuthFailures;
-
-    setUp(() {
-      getAuthFailures = GetAuthFailures(
-        authFailuresController: StreamController(),
-      );
-    });
 
     AuthCubit _buildSubject() {
       return AuthCubit(
         isLoggedIn: IsLoggedIn(
-          getApiKey: getApiKey,
-          getFirebaseUid: getFirebaseUid,
+          getApiKey: GetApiKey(dataStorage),
+          getFirebaseUid: GetFirebaseUid(dataStorage),
         ),
-        logOut: LogOut(
+        logOut: FakeLogOut(
+          customerDetailsRepository: InMemoryCustomerDetailsRepository(),
           setApiKey: setApiKey,
           setFirebaseUid: setFirebaseUid,
-          customerDetailsRepository: repository,
-          auth: MockFirebaseAuth(),
         ),
-        getAuthFailures: getAuthFailures,
+        getAuthFailures: GetAuthFailures(
+          authFailuresController: StreamController(),
+        ),
         logIn: LogIn(
           validateApiKey: FakeValidateApiKey(
             setApiKey: setApiKey,
           ),
-          authenticateWithFirebase: authenticateWithFirebase,
+          authenticateWithFirebase: FakeAuthenticateWithFirebase(
+            setFirebaseUid: setFirebaseUid,
+          ),
         ),
       );
     }
@@ -88,7 +73,7 @@ void main() {
         'it emits [loggedIn]',
         build: _buildSubject,
         act: (cubit) async => cubit.login('1234'),
-        skip: 1, // Initial check
+        skip: 1,
         expect: () => <AuthState>[
           AuthState.loggedIn(),
         ],
