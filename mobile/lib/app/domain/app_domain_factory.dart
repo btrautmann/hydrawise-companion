@@ -49,9 +49,10 @@ abstract class ProductionDomainFactory {
     );
     final logOut = LogOut(
       setApiKey: setApiKey,
-      setFirebaseUid: setFirebaseUid,
+      unauthenticateWithFirebase: FakeUnauthenticateWithFirebase(
+        setFirebaseUid: setFirebaseUid,
+      ),
       customerDetailsRepository: repository,
-      auth: firebaseAuth,
     );
     final getWeather = GetWeather();
     final getLocation = GetLocation(dataStorage);
@@ -161,9 +162,11 @@ abstract class DevelopmentDomainFactory {
       validateApiKey: validateApiKey,
       authenticateWithFirebase: authenticateWithFirebase,
     );
-    final logOut = FakeLogOut(
+    final logOut = LogOut(
       setApiKey: setApiKey,
-      setFirebaseUid: setFirebaseUid,
+      unauthenticateWithFirebase: FakeUnauthenticateWithFirebase(
+        setFirebaseUid: setFirebaseUid,
+      ),
       customerDetailsRepository: repository,
     );
     final getWeather = GetWeather();

@@ -19,10 +19,12 @@ void main() {
           getApiKey: GetApiKey(dataStorage),
           getFirebaseUid: GetFirebaseUid(dataStorage),
         ),
-        logOut: FakeLogOut(
-          customerDetailsRepository: InMemoryCustomerDetailsRepository(),
+        logOut: LogOut(
           setApiKey: setApiKey,
-          setFirebaseUid: setFirebaseUid,
+          unauthenticateWithFirebase: FakeUnauthenticateWithFirebase(
+            setFirebaseUid: setFirebaseUid,
+          ),
+          customerDetailsRepository: InMemoryCustomerDetailsRepository(),
         ),
         getAuthFailures: GetAuthFailures(
           authFailuresController: StreamController(),

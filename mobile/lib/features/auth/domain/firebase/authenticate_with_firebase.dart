@@ -32,24 +32,3 @@ class AuthenticateWithFirebase {
     return false;
   }
 }
-
-class FakeAuthenticateWithFirebase implements AuthenticateWithFirebase {
-  FakeAuthenticateWithFirebase({
-    required SetFirebaseUid setFirebaseUid,
-  }) : _setFirebaseUid = setFirebaseUid;
-
-  @override
-  final SetFirebaseUid _setFirebaseUid;
-
-  @override
-  FirebaseAuth get _auth => throw UnimplementedError();
-
-  @override
-  FirebaseFirestore get _firestore => throw UnimplementedError();
-
-  @override
-  Future<bool> call() async {
-    await _setFirebaseUid('fake-user-uid');
-    return true;
-  }
-}

@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:bloc_test/bloc_test.dart';
-import 'package:firebase_auth_mocks/firebase_auth_mocks.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:irri/core/core.dart';
 import 'package:irri/features/auth/auth.dart';
@@ -22,9 +21,10 @@ void main() {
       authCubit = AuthCubit(
         logOut: LogOut(
           setApiKey: setApiKey,
-          setFirebaseUid: setFirebaseUid,
+          unauthenticateWithFirebase: FakeUnauthenticateWithFirebase(
+            setFirebaseUid: setFirebaseUid,
+          ),
           customerDetailsRepository: repository,
-          auth: MockFirebaseAuth(),
         ),
         getAuthFailures: GetAuthFailures(
           authFailuresController: StreamController(),
