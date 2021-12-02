@@ -1,4 +1,3 @@
-import 'package:firebase_auth_mocks/firebase_auth_mocks.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:irri/core/core.dart';
 import 'package:irri/features/auth/auth.dart';
@@ -12,9 +11,10 @@ void main() {
     final setFirebaseUid = SetFirebaseUid(storage);
     final clearCustomerDetails = LogOut(
       setApiKey: setApiKey,
-      setFirebaseUid: setFirebaseUid,
+      unauthenticateWithFirebase: FakeUnauthenticateWithFirebase(
+        setFirebaseUid: setFirebaseUid,
+      ),
       customerDetailsRepository: repository,
-      auth: MockFirebaseAuth(),
     );
     test('it sets api_key to an empty string', () async {
       await storage.setString('api_key', '1234');

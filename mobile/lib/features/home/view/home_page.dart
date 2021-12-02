@@ -39,17 +39,14 @@ class HomeView extends StatelessWidget {
             items: const [
               BottomNavigationBarItem(
                 icon: Icon(Icons.home),
-                activeIcon: Icon(Icons.home_filled),
                 label: 'Home',
               ),
               BottomNavigationBarItem(
-                icon: Icon(Icons.play_circle),
-                activeIcon: Icon(Icons.play_circle_filled),
-                label: 'Programs',
+                icon: Icon(Icons.water),
+                label: 'Irrigation',
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.settings),
-                activeIcon: Icon(Icons.settings),
                 label: 'Configuration',
               )
             ],

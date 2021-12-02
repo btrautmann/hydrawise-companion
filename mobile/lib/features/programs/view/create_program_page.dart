@@ -179,6 +179,15 @@ class _FrequencySelectionState extends State<_FrequencySelection> {
     super.initState();
   }
 
+  void _updateFrequency(int day) {
+    if (_frequency.contains(day)) {
+      _frequency.remove(day);
+    } else {
+      _frequency.add(day);
+    }
+    widget.onFrequencyChanged(_frequency);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -205,8 +214,7 @@ class _FrequencySelectionState extends State<_FrequencySelection> {
             children: [
               _DayButton(
                 onTapped: () {
-                  _frequency.add(DateTime.monday);
-                  widget.onFrequencyChanged(_frequency);
+                  _updateFrequency(DateTime.monday);
                 },
                 text: 'M',
                 colorResolver: (states) => _frequency.contains(DateTime.monday)
@@ -215,8 +223,7 @@ class _FrequencySelectionState extends State<_FrequencySelection> {
               ),
               _DayButton(
                 onTapped: () {
-                  _frequency.add(DateTime.tuesday);
-                  widget.onFrequencyChanged(_frequency);
+                  _updateFrequency(DateTime.tuesday);
                 },
                 text: 'T',
                 colorResolver: (states) => _frequency.contains(DateTime.tuesday)
@@ -225,8 +232,7 @@ class _FrequencySelectionState extends State<_FrequencySelection> {
               ),
               _DayButton(
                 onTapped: () {
-                  _frequency.add(DateTime.wednesday);
-                  widget.onFrequencyChanged(_frequency);
+                  _updateFrequency(DateTime.wednesday);
                 },
                 text: 'W',
                 colorResolver: (states) =>
@@ -236,8 +242,7 @@ class _FrequencySelectionState extends State<_FrequencySelection> {
               ),
               _DayButton(
                 onTapped: () {
-                  _frequency.add(DateTime.thursday);
-                  widget.onFrequencyChanged(_frequency);
+                  _updateFrequency(DateTime.thursday);
                 },
                 text: 'R',
                 colorResolver: (states) =>
@@ -247,8 +252,7 @@ class _FrequencySelectionState extends State<_FrequencySelection> {
               ),
               _DayButton(
                 onTapped: () {
-                  _frequency.add(DateTime.friday);
-                  widget.onFrequencyChanged(_frequency);
+                  _updateFrequency(DateTime.friday);
                 },
                 text: 'F',
                 colorResolver: (friday) => _frequency.contains(DateTime.friday)
@@ -257,8 +261,7 @@ class _FrequencySelectionState extends State<_FrequencySelection> {
               ),
               _DayButton(
                 onTapped: () {
-                  _frequency.add(DateTime.saturday);
-                  widget.onFrequencyChanged(_frequency);
+                  _updateFrequency(DateTime.saturday);
                 },
                 text: 'S',
                 colorResolver: (states) =>
@@ -268,8 +271,7 @@ class _FrequencySelectionState extends State<_FrequencySelection> {
               ),
               _DayButton(
                 onTapped: () {
-                  _frequency.add(DateTime.sunday);
-                  widget.onFrequencyChanged(_frequency);
+                  _updateFrequency(DateTime.sunday);
                 },
                 text: 'Su',
                 colorResolver: (states) => _frequency.contains(DateTime.sunday)

@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:irri/core-ui/core_ui.dart';
 import 'package:irri/core-ui/widgets/h_stretch.dart';
-import 'package:irri/features/auth/auth.dart';
 import 'package:irri/features/customer_details/customer_details.dart';
 import 'package:irri/features/programs/cubit/programs_cubit.dart';
 import 'package:irri/features/programs/programs.dart';
@@ -63,23 +62,9 @@ class _AllCustomerContent extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
-            padding: const EdgeInsets.only(bottom: 16),
-            child: Row(
-              children: [
-                const _Greeting(),
-                const Spacer(),
-                IconButton(
-                  onPressed: () {
-                    context.read<AuthCubit>().logOut();
-                  },
-                  icon: const Tooltip(
-                    message: 'Log out',
-                    child: Icon(Icons.logout),
-                  ),
-                )
-              ],
-            ),
+          const Padding(
+            padding: EdgeInsets.only(bottom: 16),
+            child: _Greeting(),
           ),
           _RunsList(
             programs: programs,
