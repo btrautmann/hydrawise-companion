@@ -35,15 +35,11 @@ class AuthCubit extends Cubit<AuthState> {
 
   Future<void> _listenForAuthFailures() async {
     await _getAuthFailures().then(
-      (stream) => stream.listen((event) {
+      (stream) => stream.listen((event) async {
+        await _logOut();
         emit(AuthState.loggedOut());
       }),
     );
-  }
-
-  Future<void> logOut() async {
-    await _logOut();
-    emit(AuthState.loggedOut());
   }
 
   Future<void> login(String apiKey) async {
@@ -55,6 +51,6 @@ class AuthCubit extends Cubit<AuthState> {
     // If we got here, either we failed to authenticate
     // with Hydrawise or Firebase
     // TODO(brandon): Handle auth failures
-    await logOut();
+    await _logOut();
   }
 }

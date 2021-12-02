@@ -13,7 +13,9 @@ void main() {
     final setApiKey = SetApiKey(dataStorage);
     final setFirebaseUid = SetFirebaseUid(dataStorage);
 
-    AuthCubit _buildSubject() {
+    AuthCubit _buildSubject({
+      StreamController? authFailures,
+    }) {
       return AuthCubit(
         isLoggedIn: IsLoggedIn(
           getApiKey: GetApiKey(dataStorage),
@@ -27,7 +29,7 @@ void main() {
           customerDetailsRepository: InMemoryCustomerDetailsRepository(),
         ),
         getAuthFailures: GetAuthFailures(
-          authFailuresController: StreamController(),
+          authFailuresController: authFailures ?? StreamController(),
         ),
         logIn: LogIn(
           validateApiKey: FakeValidateApiKey(
@@ -45,26 +47,40 @@ void main() {
     });
 
     group('init', () {
-      group('when not logged in', () {
+      group('checkAuthenticationStatus', () {
+        group('when not logged in', () {
+          blocTest<AuthCubit, AuthState>(
+            'it emits [loggedOut]',
+            build: _buildSubject,
+            expect: () => <AuthState>[
+              AuthState.loggedOut(),
+            ],
+          );
+        });
+
+        group('when logged in', () {
+          blocTest<AuthCubit, AuthState>(
+            'it emits [loggedIn]',
+            setUp: () async {
+              await setApiKey('1234');
+              await setFirebaseUid('1');
+            },
+            build: _buildSubject,
+            expect: () => <AuthState>[
+              AuthState.loggedIn(),
+            ],
+          );
+        });
+      });
+      group('listenForAuthFailures', () {
+        // ignore: close_sinks, prefer_void_to_null
+        final authFailures = StreamController<Null>();
         blocTest<AuthCubit, AuthState>(
-          'it emits [loggedOut]',
-          build: _buildSubject,
+          'it logs out and emits [loggedOut]',
+          build: () => _buildSubject(authFailures: authFailures),
+          act: (cubit) => authFailures.add(null),
           expect: () => <AuthState>[
             AuthState.loggedOut(),
-          ],
-        );
-      });
-
-      group('when logged in', () {
-        blocTest<AuthCubit, AuthState>(
-          'it emits [loggedIn]',
-          setUp: () async {
-            await setApiKey('1234');
-            await setFirebaseUid('1');
-          },
-          build: _buildSubject,
-          expect: () => <AuthState>[
-            AuthState.loggedIn(),
           ],
         );
       });
@@ -78,22 +94,6 @@ void main() {
         skip: 1,
         expect: () => <AuthState>[
           AuthState.loggedIn(),
-        ],
-      );
-    });
-
-    group('logOut', () {
-      blocTest<AuthCubit, AuthState>(
-        'it emits [loggedOut]',
-        setUp: () async {
-          await setApiKey('1234');
-          await setFirebaseUid('1');
-        },
-        build: _buildSubject,
-        act: (cubit) async => cubit.logOut(),
-        skip: 1, // Initial check
-        expect: () => <AuthState>[
-          AuthState.loggedOut(),
         ],
       );
     });
