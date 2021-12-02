@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:irri/core-ui/core_ui.dart';
+import 'package:irri/features/customer_details/customer_details.dart';
 import 'package:irri/features/programs/programs.dart';
 
 class ProgramsPage extends StatelessWidget {
@@ -58,10 +59,28 @@ class ProgramsPageView extends StatelessWidget {
               child: Row(
                 children: [
                   Text(
-                    'Programs',
+                    'Irrigation',
                     style: Theme.of(context).textTheme.headline5,
                   ),
                 ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 16),
+              child: BlocBuilder<CustomerDetailsCubit, CustomerDetailsState>(
+                builder: (context, state) {
+                  return state.maybeWhen(
+                    complete: (details, status) {
+                      return _ZoneList(
+                        zones: status.zones,
+                        onZoneTapped: (zone) {},
+                      );
+                    },
+                    orElse: () => const Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                  );
+                },
               ),
             ),
             Visibility(visible: state.programs.isEmpty, child: const Spacer()),
@@ -189,6 +208,69 @@ class ProgramDetailsDialog extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class _ZoneList extends StatelessWidget {
+  const _ZoneList({
+    Key? key,
+    required this.zones,
+    required this.onZoneTapped,
+  }) : super(key: key);
+
+  final List<Zone> zones;
+  final ValueSetter<Zone> onZoneTapped;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        ListView.builder(
+          primary: false,
+          physics: const NeverScrollableScrollPhysics(),
+          shrinkWrap: true,
+          itemCount: zones.length,
+          itemBuilder: (_, index) {
+            return _ZoneCell(
+              zone: zones[index],
+              onZoneTapped: onZoneTapped,
+            );
+          },
+        ),
+      ],
+    );
+  }
+}
+
+class _ZoneCell extends StatelessWidget {
+  const _ZoneCell({
+    Key? key,
+    required this.zone,
+    required this.onZoneTapped,
+  }) : super(key: key);
+
+  final Zone zone;
+  final ValueSetter<Zone> onZoneTapped;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        ListRow(
+          leadingIcon: CircleBackground(
+            child: Text(zone.physicalNumber.toString()),
+          ),
+          title: Text(zone.name),
+          onTapped: () => onZoneTapped(zone),
+        ),
+        const Divider(
+          indent: 16,
+        ),
+      ],
     );
   }
 }

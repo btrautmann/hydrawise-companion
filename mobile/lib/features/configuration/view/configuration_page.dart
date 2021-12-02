@@ -34,24 +34,6 @@ class ConfigurationView extends StatelessWidget {
         ),
         Padding(
           padding: const EdgeInsets.only(top: 16),
-          child: BlocBuilder<CustomerDetailsCubit, CustomerDetailsState>(
-            builder: (context, state) {
-              return state.maybeWhen(
-                complete: (details, status) {
-                  return _ZoneList(
-                    zones: status.zones,
-                    onZoneTapped: (zone) {},
-                  );
-                },
-                orElse: () => const Center(
-                  child: CircularProgressIndicator(),
-                ),
-              );
-            },
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(top: 16),
           child: BlocBuilder<AppCubit, AppState>(
             builder: (context, state) {
               final currentThemeMode = state.themeMode;
@@ -154,69 +136,6 @@ class ChooseThemeModeDialog extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
-}
-
-class _ZoneList extends StatelessWidget {
-  const _ZoneList({
-    Key? key,
-    required this.zones,
-    required this.onZoneTapped,
-  }) : super(key: key);
-
-  final List<Zone> zones;
-  final ValueSetter<Zone> onZoneTapped;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        ListView.builder(
-          primary: false,
-          physics: const NeverScrollableScrollPhysics(),
-          shrinkWrap: true,
-          itemCount: zones.length,
-          itemBuilder: (_, index) {
-            return _ZoneCell(
-              zone: zones[index],
-              onZoneTapped: onZoneTapped,
-            );
-          },
-        ),
-      ],
-    );
-  }
-}
-
-class _ZoneCell extends StatelessWidget {
-  const _ZoneCell({
-    Key? key,
-    required this.zone,
-    required this.onZoneTapped,
-  }) : super(key: key);
-
-  final Zone zone;
-  final ValueSetter<Zone> onZoneTapped;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        ListRow(
-          leadingIcon: CircleBackground(
-            child: Text(zone.physicalNumber.toString()),
-          ),
-          title: Text(zone.name),
-          onTapped: () => onZoneTapped(zone),
-        ),
-        const Divider(
-          indent: 16,
-        ),
-      ],
     );
   }
 }
