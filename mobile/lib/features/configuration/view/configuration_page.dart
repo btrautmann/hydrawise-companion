@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:irri/app/cubit/app_cubit.dart';
 import 'package:irri/core-ui/core_ui.dart';
-import 'package:irri/features/customer_details/customer_details.dart';
 import 'package:irri/features/push_notifications/push_notifications.dart';
 
 class ConfigurationPage extends StatelessWidget {

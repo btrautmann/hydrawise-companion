@@ -1,6 +1,6 @@
 name: irri
 description: Third party, modern support for the Hydrawise API
-version: 0.0.21+24
+version: 0.0.22+25
 publish_to: none
 
 environment:
