@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:irri/features/customer_details/customer_details.dart';
 import 'package:irri/features/customer_details/models/zone.dart';
@@ -589,6 +590,9 @@ class _DurationTimeInputDialog extends StatelessWidget {
     return Dialog(
       child: TextField(
         autofocus: true,
+        inputFormatters: [
+          FilteringTextInputFormatter.digitsOnly,
+        ],
         onSubmitted: (value) {
           onSubmit(value);
           Navigator.pop(context);

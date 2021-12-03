@@ -29,9 +29,11 @@ extension ListProgramX on List<Program> {
         where((element) => element.frequency.contains(dayOfWeek));
     return todayPrograms
         .expand(
-          (element) => element.runs?.where(
-            (element) => element.startTime.isAfter(now),
-          ) ?? List<Run>.empty(),
+          (element) =>
+              element.runs?.where(
+                (element) => element.startTime.isAfter(now),
+              ) ??
+              List<Run>.empty(),
         )
         .toList();
   }

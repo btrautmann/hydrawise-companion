@@ -13,7 +13,9 @@ class AuthenticationInterceptor extends Interceptor {
 
   @override
   void onError(DioError err, ErrorInterceptorHandler handler) {
-    if (err.response?.statusCode == 404) {
+    final allowAuthErrors =
+        err.requestOptions.extra['allow_auth_errors'] as bool? ?? false;
+    if (err.response?.statusCode == 404 && !allowAuthErrors) {
       _onAuthenticationFailure();
     }
     super.onError(err, handler);

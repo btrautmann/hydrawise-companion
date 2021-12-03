@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:irri/core/core.dart';
 import 'package:irri/features/auth/auth.dart';
 
@@ -20,6 +21,9 @@ class ValidateApiKey {
     final response = await _httpClient.get<Map<String, dynamic>>(
       'customerdetails.php',
       queryParameters: queryParameters,
+      options: Options(
+        extra: {'allow_auth_errors': true},
+      ),
     );
 
     if (response.isSuccess) {

@@ -36,8 +36,7 @@ class GetCustomerDetailsFromHydrawise {
     if (response.isSuccess) {
       final customerDetails = CustomerDetails.fromJson(response.success!);
 
-      final customerIdentification =
-          customerDetails.toCustomer(apiKey);
+      final customerIdentification = customerDetails.toCustomer(apiKey);
 
       await _repository.insertCustomer(customerIdentification);
 

@@ -7,6 +7,7 @@ import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:irri/app/app.dart';
 import 'package:irri/app/app_bloc_observer.dart';
@@ -67,6 +68,7 @@ Future<void> main() async {
         firebaseAuth: firebaseAuth,
         firebaseMessaging: firebaseMessaging,
         authFailures: authFailures,
+        inDeveloperMode: kDebugMode,
       );
 
       final router = await BuildAppRouter().call();

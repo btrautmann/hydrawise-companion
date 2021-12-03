@@ -8,6 +8,7 @@ import 'package:irri/features/app_theme_mode/app_theme_mode.dart';
 import 'package:irri/features/auth/domain/domain.dart';
 import 'package:irri/features/auth/domain/validate_api_key.dart';
 import 'package:irri/features/customer_details/customer_details.dart';
+import 'package:irri/features/developer/developer.dart';
 import 'package:irri/features/programs/programs.dart';
 import 'package:irri/features/push_notifications/push_notifications.dart';
 import 'package:irri/features/run_zone/run_zone.dart';
@@ -25,6 +26,7 @@ abstract class ProductionDomainFactory {
     required FirebaseMessaging firebaseMessaging,
     // ignore: prefer_void_to_null
     required StreamController<Null> authFailures,
+    required bool inDeveloperMode,
   }) {
     final getApiKey = GetApiKey(dataStorage);
     final setApiKey = SetApiKey(dataStorage);
@@ -105,6 +107,10 @@ abstract class ProductionDomainFactory {
       repository: repository,
     );
 
+    final shouldShowDeveloperUi = ShouldShowDeveloperEntryPoint(
+      inDeveloperMode,
+    );
+
     return [
       Provider<GetCustomerDetails>.value(value: getCustomerDetails),
       Provider<GetCustomerStatus>.value(value: getCustomerStatus),
@@ -134,6 +140,14 @@ abstract class ProductionDomainFactory {
       Provider<RegisterForPushNotifications>.value(
         value: registerForPushNotifications,
       ),
+      Provider<ShouldShowDeveloperEntryPoint>.value(
+        value: shouldShowDeveloperUi,
+      ),
+      if (inDeveloperMode) ...[
+        Provider<GetAllStorage>.value(
+          value: GetAllStorage(dataStorage),
+        ),
+      ]
     ];
   }
 }
@@ -197,6 +211,8 @@ abstract class DevelopmentDomainFactory {
       repository: repository,
     );
 
+    final shouldShowDeveloperUi = ShouldShowDeveloperEntryPoint(true);
+
     return [
       Provider<GetCustomerDetails>.value(value: getCustomerDetails),
       Provider<GetCustomerStatus>.value(value: getCustomerStatus),
@@ -225,6 +241,12 @@ abstract class DevelopmentDomainFactory {
       ),
       Provider<RegisterForPushNotifications>.value(
         value: registerForPushNotifications,
+      ),
+      Provider<ShouldShowDeveloperEntryPoint>.value(
+        value: shouldShowDeveloperUi,
+      ),
+      Provider<GetAllStorage>.value(
+        value: GetAllStorage(dataStorage),
       ),
     ];
   }

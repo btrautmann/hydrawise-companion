@@ -119,7 +119,7 @@ ThemeData _buildLightTheme(BuildContext context) {
       iconTheme: const IconThemeData(
         color: AppColors.white50,
       ),
-      textTheme: _buildDarkTextTheme(base.textTheme),
+      textTheme: _buildLightTextTheme(base.textTheme),
       color: AppColors.blue700,
       elevation: 0,
     ),
