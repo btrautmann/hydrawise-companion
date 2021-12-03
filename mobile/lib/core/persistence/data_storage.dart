@@ -5,6 +5,7 @@ abstract class DataStorage {
   Future<void> setString(String key, String value);
   Future<void> setInt(String key, int value);
   Future<int?> getInt(String key);
+  Future<Map<String, dynamic>> getAll();
   Future<bool> clearAll();
 }
 
@@ -34,6 +35,16 @@ class SharedPreferencesStorage implements DataStorage {
   }
 
   @override
+  Future<Map<String, dynamic>> getAll() async {
+    final keys = _sharedPreferences.getKeys();
+    final map = <String, dynamic>{};
+    for (final k in keys) {
+      map[k] = _sharedPreferences.get(k);
+    }
+    return map;
+  }
+
+  @override
   Future<bool> clearAll() async {
     return _sharedPreferences.clear();
   }
@@ -60,6 +71,11 @@ class InMemoryStorage implements DataStorage {
   @override
   Future<int?> getInt(String key) async {
     return storage[key] as int?;
+  }
+
+  @override
+  Future<Map<String, dynamic>> getAll() async {
+    return storage;
   }
 
   @override

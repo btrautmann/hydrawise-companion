@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:irri/features/auth/auth.dart';
+import 'package:irri/features/developer/developer.dart';
 import 'package:irri/features/error_page.dart';
 import 'package:irri/features/home/home.dart';
 import 'package:irri/features/programs/programs.dart';
@@ -69,6 +70,13 @@ class BuildAppRouter {
               child: CreateProgramPage(
                 existingProgramId: state.params['pid'],
               ),
+            ),
+          ),
+          GoRoute(
+            path: '/developer',
+            pageBuilder: (context, state) => MaterialPage<void>(
+              key: state.pageKey,
+              child: const DeveloperPage(),
             ),
           ),
         ],

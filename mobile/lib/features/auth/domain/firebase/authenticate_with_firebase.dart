@@ -25,6 +25,7 @@ class AuthenticateWithFirebase {
         <String, dynamic>{
           'authentication_time': DateTime.now().toString(),
         },
+        SetOptions(merge: true),
       );
       await _setFirebaseUid(uId);
       return true;

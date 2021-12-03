@@ -42,6 +42,10 @@ class AuthCubit extends Cubit<AuthState> {
     );
   }
 
+  Future<bool> validateApiKey(String apiKey) {
+    return _logIn(apiKey);
+  }
+
   Future<void> login(String apiKey) async {
     final isLoggedIn = await _logIn(apiKey);
     if (isLoggedIn) {
