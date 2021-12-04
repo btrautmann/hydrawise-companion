@@ -1,5 +1,8 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_native_timezone/flutter_native_timezone.dart';
 import 'package:irri/app/cubit/app_cubit.dart';
 import 'package:irri/core-ui/core_ui.dart';
 import 'package:irri/features/auth/auth.dart';
@@ -37,6 +40,10 @@ class ConfigurationView extends StatelessWidget {
           indent: 16,
         ),
         _PushNotificationsRow(),
+        const Divider(
+          indent: 16,
+        ),
+        _ChangeTimeZoneRow(),
         const Divider(
           indent: 16,
         ),
@@ -224,6 +231,86 @@ class _ChangeApiKeyDialogState extends State<_ChangeApiKeyDialog> {
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ChangeTimeZoneRow extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return ListRow(
+      leadingIcon: const CircleBackground(
+        child: Icon(Icons.map),
+      ),
+      title: const Text('Change timezone'),
+      onTapped: () => showDialog<void>(
+        context: context,
+        builder: (_) => _ChangeTimeZoneDialog(),
+      ),
+    );
+  }
+}
+
+class _ChangeTimeZoneDialog extends StatefulWidget {
+  @override
+  State<_ChangeTimeZoneDialog> createState() => _ChangeTimeZoneDialogState();
+}
+
+class _ChangeTimeZoneDialogState extends State<_ChangeTimeZoneDialog> {
+  late String _timezone;
+  List<String> _availableTimezones = <String>[];
+
+  @override
+  void initState() {
+    super.initState();
+    _initData();
+  }
+
+  // TODO(brandon): This is yuck, make a Cubit later
+  Future<void> _initData() async {
+    try {
+      _timezone = await FlutterNativeTimezone.getLocalTimezone();
+    } on Exception catch (e) {
+      log(e.toString());
+    }
+    try {
+      _availableTimezones = await FlutterNativeTimezone.getAvailableTimezones();
+      _availableTimezones.sort();
+    } on Exception catch (e) {
+      log(e.toString());
+    }
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      child: Scrollbar(
+        child: ListView.builder(
+          padding: const EdgeInsets.all(8),
+          shrinkWrap: true,
+          itemCount: _availableTimezones.length,
+          itemBuilder: (context, index) {
+            final timeZone = _availableTimezones[index];
+            final isUserTimeZone = _timezone == timeZone;
+            return Padding(
+              padding: const EdgeInsets.all(8),
+              child: Row(
+                children: [
+                  Text(timeZone),
+                  const Spacer(),
+                  Visibility(
+                    visible: isUserTimeZone,
+                    child: const Icon(Icons.check),
+                  ),
+                ],
+              ),
+            );
+          },
         ),
       ),
     );
