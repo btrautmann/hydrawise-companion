@@ -24,4 +24,4 @@ jobs:
           channel: stable
             
       - name: verify flutter
-        run: cd mobile && flutter test && flutter analyze
+        run: cd mobile && flutter test --test-randomization-seed random && flutter analyze
