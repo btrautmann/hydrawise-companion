@@ -317,30 +317,48 @@ class _ChangeTimeZoneDialogState extends State<_ChangeTimeZoneDialog> {
   Widget build(BuildContext context) {
     return Dialog(
       child: Scrollbar(
-        child: ListView.builder(
-          padding: const EdgeInsets.all(8),
-          shrinkWrap: true,
-          itemCount: _availableTimezones.length,
-          itemBuilder: (context, index) {
-            final timeZone = _availableTimezones[index];
-            final isUserTimeZone = _timezone == timeZone;
-            return InkWell(
-              onTap: () => widget._onTimezoneSelected(timeZone),
-              child: Padding(
-                padding: const EdgeInsets.all(8),
-                child: Row(
-                  children: [
-                    Text(timeZone),
-                    const Spacer(),
-                    Visibility(
-                      visible: isUserTimeZone,
-                      child: const Icon(Icons.check),
-                    ),
-                  ],
-                ),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // TODO(brandon): Move this out of the scrolling portion
+              ButtonBar(
+                children: [
+                  IconButton(
+                    onPressed: () => Navigator.pop(context),
+                    icon: const Icon(Icons.close),
+                  )
+                ],
               ),
-            );
-          },
+              ListView.builder(
+                physics: const NeverScrollableScrollPhysics(),
+                primary: false,
+                padding: const EdgeInsets.all(8),
+                shrinkWrap: true,
+                itemCount: _availableTimezones.length,
+                itemBuilder: (context, index) {
+                  final timeZone = _availableTimezones[index];
+                  final isUserTimeZone = _timezone == timeZone;
+                  return InkWell(
+                    onTap: () => widget._onTimezoneSelected(timeZone),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: Row(
+                        children: [
+                          Text(timeZone),
+                          const Spacer(),
+                          Visibility(
+                            visible: isUserTimeZone,
+                            child: const Icon(Icons.check),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );
