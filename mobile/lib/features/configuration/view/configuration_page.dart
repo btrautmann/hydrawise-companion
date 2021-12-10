@@ -297,17 +297,19 @@ class _ChangeTimeZoneDialogState extends State<_ChangeTimeZoneDialog> {
           itemBuilder: (context, index) {
             final timeZone = _availableTimezones[index];
             final isUserTimeZone = _timezone == timeZone;
-            return Padding(
-              padding: const EdgeInsets.all(8),
-              child: Row(
-                children: [
-                  Text(timeZone),
-                  const Spacer(),
-                  Visibility(
-                    visible: isUserTimeZone,
-                    child: const Icon(Icons.check),
-                  ),
-                ],
+            return InkWell(
+              child: Padding(
+                padding: const EdgeInsets.all(8),
+                child: Row(
+                  children: [
+                    Text(timeZone),
+                    const Spacer(),
+                    Visibility(
+                      visible: isUserTimeZone,
+                      child: const Icon(Icons.check),
+                    ),
+                  ],
+                ),
               ),
             );
           },
