@@ -6,15 +6,26 @@ import 'package:flutter_native_timezone/flutter_native_timezone.dart';
 import 'package:irri/app/cubit/app_cubit.dart';
 import 'package:irri/core-ui/core_ui.dart';
 import 'package:irri/features/auth/auth.dart';
+import 'package:irri/features/configuration/configuration.dart';
 import 'package:irri/features/push_notifications/push_notifications.dart';
 
 class ConfigurationPage extends StatelessWidget {
   const ConfigurationPage({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
       body: SafeArea(
-        child: ConfigurationView(),
+        child: BlocProvider(
+          create: (context) => ConfigurationCubit(
+            getPushNotificationsEnabled:
+                context.read<GetPushNotificationsEnabled>(),
+            registerForPushNotifications:
+                context.read<RegisterForPushNotifications>(),
+            getUserTimezone: context.read<GetUserTimezone>(),
+            updateUserTimeZone: context.read<UpdateUserTimeZone>(),
+          ),
+          child: const ConfigurationView(),
+        ),
       ),
     );
   }
@@ -142,7 +153,7 @@ class ChooseThemeModeDialog extends StatelessWidget {
 class _PushNotificationsRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<PushNotificationsCubit, PushNotificationsState>(
+    return BlocBuilder<ConfigurationCubit, ConfigurationState>(
       builder: (context, state) {
         final title = state.pushNotificationsEnabled
             ? 'Tap to turn off push notifications'
@@ -155,9 +166,7 @@ class _PushNotificationsRow extends StatelessWidget {
           ),
           title: Text(title),
           onTapped: () {
-            context
-                .read<PushNotificationsCubit>()
-                .registerForPushNotifications();
+            context.read<ConfigurationCubit>().registerForPushNotifications();
           },
         );
       },
@@ -240,20 +249,38 @@ class _ChangeApiKeyDialogState extends State<_ChangeApiKeyDialog> {
 class _ChangeTimeZoneRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return ListRow(
-      leadingIcon: const CircleBackground(
-        child: Icon(Icons.map),
-      ),
-      title: const Text('Change timezone'),
-      onTapped: () => showDialog<void>(
-        context: context,
-        builder: (_) => _ChangeTimeZoneDialog(),
-      ),
+    return BlocBuilder<ConfigurationCubit, ConfigurationState>(
+      builder: (context, state) {
+        final rowText = state.timeZone ?? 'Set timezone';
+        return ListRow(
+          leadingIcon: const CircleBackground(
+            child: Icon(Icons.map),
+          ),
+          title: Text(rowText),
+          onTapped: () => showDialog<void>(
+            context: context,
+            builder: (_) => _ChangeTimeZoneDialog(
+              onTimezoneSelected: (timezone) {
+                context.read<ConfigurationCubit>().updateUserTimezone(timezone);
+                Navigator.pop(context);
+              },
+            ),
+          ),
+        );
+      },
     );
   }
 }
 
 class _ChangeTimeZoneDialog extends StatefulWidget {
+  const _ChangeTimeZoneDialog({
+    Key? key,
+    required ValueSetter<String> onTimezoneSelected,
+  })  : _onTimezoneSelected = onTimezoneSelected,
+        super(key: key);
+
+  final ValueSetter<String> _onTimezoneSelected;
+
   @override
   State<_ChangeTimeZoneDialog> createState() => _ChangeTimeZoneDialogState();
 }
@@ -298,6 +325,7 @@ class _ChangeTimeZoneDialogState extends State<_ChangeTimeZoneDialog> {
             final timeZone = _availableTimezones[index];
             final isUserTimeZone = _timezone == timeZone;
             return InkWell(
+              onTap: () => widget._onTimezoneSelected(timeZone),
               child: Padding(
                 padding: const EdgeInsets.all(8),
                 child: Row(

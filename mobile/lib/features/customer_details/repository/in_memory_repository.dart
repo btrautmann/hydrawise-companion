@@ -8,6 +8,7 @@ class InMemoryCustomerDetailsRepository implements CustomerDetailsRepository {
   final programs = <Program>[];
   final runs = <Run>[];
   final fcmTokens = <String>[];
+  String? _timeZone;
 
   @override
   Future<void> addFcmToken(String token) async {
@@ -20,13 +21,18 @@ class InMemoryCustomerDetailsRepository implements CustomerDetailsRepository {
   }
 
   @override
-  Future<Customer> getCustomer() async {
-    return customers.first;
+  Future<void> updateTimeZone(String timeZone) async {
+    _timeZone = timeZone;
   }
 
   @override
-  Future<List<Customer>> getCustomers() async {
-    return customers;
+  Future<String?> getUserTimeZone() async {
+    return _timeZone;
+  }
+
+  @override
+  Future<Customer> getCustomer() async {
+    return customers.first;
   }
 
   @override

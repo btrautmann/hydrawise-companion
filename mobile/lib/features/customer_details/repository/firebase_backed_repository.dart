@@ -56,6 +56,29 @@ class FirebaseBackedCustomerDetailsRepository
   }
 
   @override
+  Future<void> updateTimeZone(String timeZone) {
+    return _getUserDocument().then(
+      (d) => d.set(
+        {
+          'time_zone': timeZone,
+        },
+        SetOptions(merge: true),
+      ),
+    );
+  }
+
+  @override
+  Future<String?> getUserTimeZone() {
+    return _getUserDocument().then(
+      (d) => d.get().then((user) {
+        // ignore: cast_nullable_to_non_nullable
+        final data = user.data() as Map<String, dynamic>;
+        return data['time_zone'] as String?;
+      }),
+    );
+  }
+
+  @override
   Future<String> createProgram({
     required String name,
     required List<int> frequency,
@@ -108,12 +131,6 @@ class FirebaseBackedCustomerDetailsRepository
         },
       ),
     );
-  }
-
-  @override
-  Future<List<Customer>> getCustomers() async {
-    final customer = await getCustomer();
-    return [customer];
   }
 
   @override

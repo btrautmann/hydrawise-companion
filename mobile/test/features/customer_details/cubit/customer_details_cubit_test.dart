@@ -44,9 +44,7 @@ void main() {
       );
 
       return CustomerDetailsCubit(
-        getCustomerDetails: GetFakeCustomerDetails(
-          repository: repository,
-        ),
+        getCustomerDetails: GetFakeCustomerDetails(),
         getCustomerStatus: GetFakeCustomerStatus(
           repository: repository,
         ),

@@ -42,10 +42,8 @@ void main() {
       await repository.insertCustomer(customer);
 
       expect(await repository.getZones(), isNotEmpty);
-      expect(await repository.getCustomers(), isNotEmpty);
       await clearCustomerDetails();
       expect(await repository.getZones(), isEmpty);
-      expect(await repository.getCustomers(), isEmpty);
     });
   });
 }

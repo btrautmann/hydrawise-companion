@@ -48,33 +48,13 @@ class GetCustomerDetailsFromHydrawise {
 }
 
 class GetFakeCustomerDetails {
-  GetFakeCustomerDetails({
-    required CustomerDetailsRepository repository,
-  }) : _repository = repository;
-
-  final CustomerDetailsRepository _repository;
+  GetFakeCustomerDetails();
 
   Future<UseCaseResult<CustomerDetails, String>> call() async {
-    final customers = await _repository.getCustomers();
-
-    if (customers.isEmpty) {
-      // Insert a dummy customer
-      final fakeCustomer = Customer(
-        activeControllerId: 1234,
-        customerId: 5678,
-        apiKey: '1212',
-        lastStatusUpdate: 1631330889,
-      );
-      await _repository.insertCustomer(fakeCustomer);
-    }
-
-    // Query again for simplicity
-    final customer = await _repository.getCustomer();
-
     return Success(
       CustomerDetails(
-        activeControllerId: customer.activeControllerId,
-        customerId: customer.customerId,
+        activeControllerId: 1,
+        customerId: 1,
         controllers: [
           Controller(
             name: 'Fake Controller',

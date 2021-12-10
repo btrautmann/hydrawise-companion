@@ -4,10 +4,11 @@ import 'package:irri/features/programs/programs.dart';
 abstract class CustomerDetailsRepository {
   Future<void> insertCustomer(Customer customer);
   Future<void> updateCustomer(CustomerStatus customerStatus);
-  Future<List<Customer>> getCustomers();
   Future<Customer> getCustomer();
   Future<void> addFcmToken(String token);
   Future<List<String>> getRegisteredFcmTokens();
+  Future<void> updateTimeZone(String timeZone);
+  Future<String?> getUserTimeZone();
   Future<void> insertZone(Zone zone);
   Future<void> updateZone(Zone zone);
   Future<List<Zone>> getZones();

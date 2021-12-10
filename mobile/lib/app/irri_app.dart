@@ -13,7 +13,6 @@ import 'package:irri/features/app_theme_mode/app_theme_mode.dart';
 import 'package:irri/features/auth/auth.dart';
 import 'package:irri/features/customer_details/customer_details.dart';
 import 'package:irri/features/programs/programs.dart';
-import 'package:irri/features/push_notifications/push_notifications.dart';
 import 'package:provider/provider.dart';
 
 class IrriApp extends StatelessWidget {
@@ -62,14 +61,6 @@ class IrriApp extends StatelessWidget {
               createProgram: context.read<CreateProgram>(),
               updateProgram: context.read<UpdateProgram>(),
               deleteProgram: context.read<DeleteProgram>(),
-            ),
-          ),
-          BlocProvider(
-            create: (context) => PushNotificationsCubit(
-              getPushNotificationsEnabled:
-                  context.read<GetPushNotificationsEnabled>(),
-              registerForPushNotifications:
-                  context.read<RegisterForPushNotifications>(),
             ),
           ),
         ],

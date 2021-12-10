@@ -28,7 +28,6 @@ extension CustomerDetailsX on CustomerDetails {
       // TODO(brandon): Use a framework we can
       // modify under test for time
       lastStatusUpdate: DateTime.now().millisecondsSinceEpoch,
-      timeZoneOffsetMillis: DateTime.now().timeZoneOffset.inMilliseconds,
     );
   }
 }
