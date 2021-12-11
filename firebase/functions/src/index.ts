@@ -1,4 +1,4 @@
-import {firestore, initializeApp} from "firebase-admin";
+import {firestore, initializeApp, messaging} from "firebase-admin";
 import * as functions from "firebase-functions";
 import {utcToZonedTime} from "date-fns-tz";
 // const axios = require('axios').default;
@@ -49,9 +49,11 @@ export const scheduledFunction = functions.pubsub.schedule("every 5 minutes")
                             runTime.setHours(splits[0]);
                             runTime.setMinutes(splits[1]);
                             const timeDifference = runTime.getTime() - userTime.getTime();
+                            let message;
                             if (timeDifference < 0) {
                                 // TODO(brandon): Need to check field for `last_run`
                                 console.log(`Run for zone ${runData.z_id} already happened or we missed it`);
+                                message = `Run for zone ${runData.z_id} already happened or we missed it`;
                             } else if (timeDifference < 300000) {
                                 console.log(`Need to run zone ${runData.z_id} now`);
                                 // TODO(brandon): Actually run the zone?
@@ -62,10 +64,42 @@ export const scheduledFunction = functions.pubsub.schedule("every 5 minutes")
                                 // } catch (error) {
                                 //     console.log(error);
                                 // }
+                                message = `Need to run zone ${runData.z_id} now`;
                             } else {
                                 console.log(`Will run zone ${runData.z_id} in ${timeDifference / 1000} seconds`);
+                                message = `Will run zone ${runData.z_id} in ${timeDifference / 1000} seconds`;
+                                
                             }
-
+                            const tokens = userData.fcm_tokens;
+                                if (tokens != null && tokens != undefined) {
+                                    const payload = {
+                                        notification: {
+                                            title: 'Irri',
+                                            body: message,
+                                        }
+                                    }
+                                    const response = await messaging().sendToDevice(tokens, payload);
+                                    console.log(response);
+                                    const tokensToRemove = <Promise<any>[]>[];
+                                    response.results.forEach((result, index) => {
+                                        const error = result.error;
+                                        if (error) {
+                                        functions.logger.error(
+                                            'Failure sending notification to',
+                                            tokens[index],
+                                            error
+                                        );
+                                        // Cleanup the tokens who are not registered anymore.
+                                        if (error.code === 'messaging/invalid-registration-token' ||
+                                            error.code === 'messaging/registration-token-not-registered') {
+                                            tokensToRemove.push(user.ref.update({
+                                                fcm_tokens: tokens.filter(token => token != tokens)
+                                            }));
+                                        }
+                                        }
+                                    });
+                                    return Promise.all(tokensToRemove);
+                                }
                         }
                     }
                 }
