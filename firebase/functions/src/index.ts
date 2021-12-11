@@ -1,4 +1,4 @@
-import {firestore, initializeApp, messaging} from "firebase-admin";
+import {firestore, initializeApp} from "firebase-admin";
 import * as functions from "firebase-functions";
 import {utcToZonedTime} from "date-fns-tz";
 // const axios = require('axios').default;
@@ -78,27 +78,28 @@ export const scheduledFunction = functions.pubsub.schedule("every 5 minutes")
                                             body: message,
                                         }
                                     }
-                                    const response = await messaging().sendToDevice(tokens, payload);
-                                    console.log(response);
-                                    const tokensToRemove = <Promise<any>[]>[];
-                                    response.results.forEach((result, index) => {
-                                        const error = result.error;
-                                        if (error) {
-                                        functions.logger.error(
-                                            'Failure sending notification to',
-                                            tokens[index],
-                                            error
-                                        );
-                                        // Cleanup the tokens who are not registered anymore.
-                                        if (error.code === 'messaging/invalid-registration-token' ||
-                                            error.code === 'messaging/registration-token-not-registered') {
-                                            tokensToRemove.push(user.ref.update({
-                                                fcm_tokens: tokens.filter(token => token != tokens)
-                                            }));
-                                        }
-                                        }
-                                    });
-                                    return Promise.all(tokensToRemove);
+                                    console.log(payload);
+                                    // const response = await messaging().sendToDevice(tokens, payload);
+                                    // console.log(response);
+                                    // const tokensToRemove = <Promise<any>[]>[];
+                                    // response.results.forEach((result, index) => {
+                                    //     const error = result.error;
+                                    //     if (error) {
+                                    //     functions.logger.error(
+                                    //         'Failure sending notification to',
+                                    //         tokens[index],
+                                    //         error
+                                    //     );
+                                    //     // Cleanup the tokens who are not registered anymore.
+                                    //     if (error.code === 'messaging/invalid-registration-token' ||
+                                    //         error.code === 'messaging/registration-token-not-registered') {
+                                    //         tokensToRemove.push(user.ref.update({
+                                    //             fcm_tokens: tokens.filter(token => token != tokens)
+                                    //         }));
+                                    //     }
+                                    //     }
+                                    // });
+                                    // return Promise.all(tokensToRemove);
                                 }
                         }
                     }
