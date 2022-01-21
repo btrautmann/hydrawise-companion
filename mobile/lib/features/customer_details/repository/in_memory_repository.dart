@@ -153,5 +153,6 @@ class InMemoryCustomerDetailsRepository implements CustomerDetailsRepository {
     customer = null;
     programs.clear();
     runs.clear();
+    fcmTokens.clear();
   }
 }

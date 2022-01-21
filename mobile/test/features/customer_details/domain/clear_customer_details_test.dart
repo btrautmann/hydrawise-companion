@@ -9,7 +9,7 @@ void main() {
     final repository = InMemoryCustomerDetailsRepository();
     final setApiKey = SetApiKey(storage);
     final setFirebaseUid = SetFirebaseUid(storage);
-    final clearCustomerDetails = LogOut(
+    final logOut = LogOut(
       setApiKey: setApiKey,
       unauthenticateWithFirebase: FakeUnauthenticateWithFirebase(
         setFirebaseUid: setFirebaseUid,
@@ -19,7 +19,7 @@ void main() {
     test('it sets api_key to an empty string', () async {
       await storage.setString('api_key', '1234');
       expect(await storage.getString('api_key'), '1234');
-      await clearCustomerDetails();
+      await logOut();
       expect(await storage.getString('api_key'), '');
     });
 
@@ -40,11 +40,13 @@ void main() {
         lastStatusUpdate: 60,
       );
       await repository.insertCustomer(customer);
+      await repository.createProgram(name: 'fake-program', frequency: [1]);
+      await repository.addFcmToken('fake-token');
 
       expect(await repository.getZones(), isNotEmpty);
       expect(await repository.getPrograms(), isNotEmpty);
       expect(await repository.getRegisteredFcmTokens(), isNotEmpty);
-      await clearCustomerDetails();
+      await logOut();
       expect(await repository.getZones(), isEmpty);
       expect(await repository.getPrograms(), isEmpty);
       expect(await repository.getRegisteredFcmTokens(), isEmpty);
