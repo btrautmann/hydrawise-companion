@@ -111,12 +111,6 @@ class FirebaseBackedCustomerDetailsRepository
   }
 
   @override
-  Future<List<Customer>> getCustomers() async {
-    final customer = await getCustomer();
-    return [customer];
-  }
-
-  @override
   Future<Program> getProgram({required String programId}) {
     return _getUserDocument().then(
       (d) => d.collection('programs').doc(programId).get().then(
@@ -186,6 +180,18 @@ class FirebaseBackedCustomerDetailsRepository
     return _getUserDocument().then(
       (d) => d.set(
         customer.toJson(),
+        SetOptions(merge: true),
+      ),
+    );
+  }
+
+  @override
+  Future<void> updateCustomerTimeZone(String timeZone) {
+    return _getUserDocument().then(
+      (d) => d.set(
+        {
+          'time_zone': timeZone,
+        },
         SetOptions(merge: true),
       ),
     );

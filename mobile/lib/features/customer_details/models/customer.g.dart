@@ -12,7 +12,7 @@ _$_Customer _$_$_CustomerFromJson(Map json) {
     customerId: json['customer_id'] as int,
     apiKey: json['api_key'] as String,
     lastStatusUpdate: json['last_status_update'] as int,
-    timeZoneOffsetMillis: json['time_zone_offset'] as int,
+    timeZone: json['time_zone'] as String?,
   );
 }
 
@@ -22,5 +22,5 @@ Map<String, dynamic> _$_$_CustomerToJson(_$_Customer instance) =>
       'customer_id': instance.customerId,
       'api_key': instance.apiKey,
       'last_status_update': instance.lastStatusUpdate,
-      'time_zone_offset': instance.timeZoneOffsetMillis,
+      'time_zone': instance.timeZone,
     };

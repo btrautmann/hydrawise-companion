@@ -62,7 +62,7 @@ abstract class ProductionDomainFactory {
     final getNextPollTime = GetNextPollTimeFromStorage(dataStorage);
     final setNextPollTime = SetNextPollTimeInStorage(dataStorage);
 
-    final getCustomerDetails = GetCustomerDetailsFromHydrawise(
+    final getCustomerDetails = GetCustomerDetails(
       httpClient: client,
       repository: repository,
       getApiKey: getApiKey,
@@ -188,7 +188,7 @@ abstract class DevelopmentDomainFactory {
     final setLocation = SetLocation(dataStorage);
     final runZone = RunZoneLocally(repository: repository);
     final stopZone = StopZoneLocally(repository: repository);
-    final getCustomerDetails = GetFakeCustomerDetails(repository: repository);
+    final getCustomerDetails = GetFakeCustomerDetails();
     final getCustomerStatus = GetFakeCustomerStatus(repository: repository);
     final getPrograms = GetPrograms(repository: repository);
     final createProgram = CreateProgram(repository: repository);

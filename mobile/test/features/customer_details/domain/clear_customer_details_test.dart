@@ -42,10 +42,12 @@ void main() {
       await repository.insertCustomer(customer);
 
       expect(await repository.getZones(), isNotEmpty);
-      expect(await repository.getCustomers(), isNotEmpty);
+      expect(await repository.getPrograms(), isNotEmpty);
+      expect(await repository.getRegisteredFcmTokens(), isNotEmpty);
       await clearCustomerDetails();
       expect(await repository.getZones(), isEmpty);
-      expect(await repository.getCustomers(), isEmpty);
+      expect(await repository.getPrograms(), isEmpty);
+      expect(await repository.getRegisteredFcmTokens(), isEmpty);
     });
   });
 }

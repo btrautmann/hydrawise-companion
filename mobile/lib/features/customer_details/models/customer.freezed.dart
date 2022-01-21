@@ -25,13 +25,13 @@ class _$CustomerTearOff {
       @JsonKey(name: 'customer_id') required int customerId,
       @JsonKey(name: 'api_key') required String apiKey,
       @JsonKey(name: 'last_status_update') required int lastStatusUpdate,
-      @JsonKey(name: 'time_zone_offset') int timeZoneOffsetMillis = 0}) {
+      @JsonKey(name: 'time_zone') String? timeZone = 'America/New_York'}) {
     return _Customer(
       activeControllerId: activeControllerId,
       customerId: customerId,
       apiKey: apiKey,
       lastStatusUpdate: lastStatusUpdate,
-      timeZoneOffsetMillis: timeZoneOffsetMillis,
+      timeZone: timeZone,
     );
   }
 
@@ -53,8 +53,8 @@ mixin _$Customer {
   String get apiKey => throw _privateConstructorUsedError;
   @JsonKey(name: 'last_status_update')
   int get lastStatusUpdate => throw _privateConstructorUsedError;
-  @JsonKey(name: 'time_zone_offset')
-  int get timeZoneOffsetMillis => throw _privateConstructorUsedError;
+  @JsonKey(name: 'time_zone')
+  String? get timeZone => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -71,7 +71,7 @@ abstract class $CustomerCopyWith<$Res> {
       @JsonKey(name: 'customer_id') int customerId,
       @JsonKey(name: 'api_key') String apiKey,
       @JsonKey(name: 'last_status_update') int lastStatusUpdate,
-      @JsonKey(name: 'time_zone_offset') int timeZoneOffsetMillis});
+      @JsonKey(name: 'time_zone') String? timeZone});
 }
 
 /// @nodoc
@@ -88,7 +88,7 @@ class _$CustomerCopyWithImpl<$Res> implements $CustomerCopyWith<$Res> {
     Object? customerId = freezed,
     Object? apiKey = freezed,
     Object? lastStatusUpdate = freezed,
-    Object? timeZoneOffsetMillis = freezed,
+    Object? timeZone = freezed,
   }) {
     return _then(_value.copyWith(
       activeControllerId: activeControllerId == freezed
@@ -107,10 +107,10 @@ class _$CustomerCopyWithImpl<$Res> implements $CustomerCopyWith<$Res> {
           ? _value.lastStatusUpdate
           : lastStatusUpdate // ignore: cast_nullable_to_non_nullable
               as int,
-      timeZoneOffsetMillis: timeZoneOffsetMillis == freezed
-          ? _value.timeZoneOffsetMillis
-          : timeZoneOffsetMillis // ignore: cast_nullable_to_non_nullable
-              as int,
+      timeZone: timeZone == freezed
+          ? _value.timeZone
+          : timeZone // ignore: cast_nullable_to_non_nullable
+              as String?,
     ));
   }
 }
@@ -125,7 +125,7 @@ abstract class _$CustomerCopyWith<$Res> implements $CustomerCopyWith<$Res> {
       @JsonKey(name: 'customer_id') int customerId,
       @JsonKey(name: 'api_key') String apiKey,
       @JsonKey(name: 'last_status_update') int lastStatusUpdate,
-      @JsonKey(name: 'time_zone_offset') int timeZoneOffsetMillis});
+      @JsonKey(name: 'time_zone') String? timeZone});
 }
 
 /// @nodoc
@@ -143,7 +143,7 @@ class __$CustomerCopyWithImpl<$Res> extends _$CustomerCopyWithImpl<$Res>
     Object? customerId = freezed,
     Object? apiKey = freezed,
     Object? lastStatusUpdate = freezed,
-    Object? timeZoneOffsetMillis = freezed,
+    Object? timeZone = freezed,
   }) {
     return _then(_Customer(
       activeControllerId: activeControllerId == freezed
@@ -162,10 +162,10 @@ class __$CustomerCopyWithImpl<$Res> extends _$CustomerCopyWithImpl<$Res>
           ? _value.lastStatusUpdate
           : lastStatusUpdate // ignore: cast_nullable_to_non_nullable
               as int,
-      timeZoneOffsetMillis: timeZoneOffsetMillis == freezed
-          ? _value.timeZoneOffsetMillis
-          : timeZoneOffsetMillis // ignore: cast_nullable_to_non_nullable
-              as int,
+      timeZone: timeZone == freezed
+          ? _value.timeZone
+          : timeZone // ignore: cast_nullable_to_non_nullable
+              as String?,
     ));
   }
 }
@@ -178,7 +178,7 @@ class _$_Customer implements _Customer {
       @JsonKey(name: 'customer_id') required this.customerId,
       @JsonKey(name: 'api_key') required this.apiKey,
       @JsonKey(name: 'last_status_update') required this.lastStatusUpdate,
-      @JsonKey(name: 'time_zone_offset') this.timeZoneOffsetMillis = 0});
+      @JsonKey(name: 'time_zone') this.timeZone = 'America/New_York'});
 
   factory _$_Customer.fromJson(Map<String, dynamic> json) =>
       _$_$_CustomerFromJson(json);
@@ -196,12 +196,12 @@ class _$_Customer implements _Customer {
   @JsonKey(name: 'last_status_update')
   final int lastStatusUpdate;
   @override
-  @JsonKey(name: 'time_zone_offset')
-  final int timeZoneOffsetMillis;
+  @JsonKey(name: 'time_zone')
+  final String? timeZone;
 
   @override
   String toString() {
-    return 'Customer(activeControllerId: $activeControllerId, customerId: $customerId, apiKey: $apiKey, lastStatusUpdate: $lastStatusUpdate, timeZoneOffsetMillis: $timeZoneOffsetMillis)';
+    return 'Customer(activeControllerId: $activeControllerId, customerId: $customerId, apiKey: $apiKey, lastStatusUpdate: $lastStatusUpdate, timeZone: $timeZone)';
   }
 
   @override
@@ -219,9 +219,9 @@ class _$_Customer implements _Customer {
             (identical(other.lastStatusUpdate, lastStatusUpdate) ||
                 const DeepCollectionEquality()
                     .equals(other.lastStatusUpdate, lastStatusUpdate)) &&
-            (identical(other.timeZoneOffsetMillis, timeZoneOffsetMillis) ||
+            (identical(other.timeZone, timeZone) ||
                 const DeepCollectionEquality()
-                    .equals(other.timeZoneOffsetMillis, timeZoneOffsetMillis)));
+                    .equals(other.timeZone, timeZone)));
   }
 
   @override
@@ -231,7 +231,7 @@ class _$_Customer implements _Customer {
       const DeepCollectionEquality().hash(customerId) ^
       const DeepCollectionEquality().hash(apiKey) ^
       const DeepCollectionEquality().hash(lastStatusUpdate) ^
-      const DeepCollectionEquality().hash(timeZoneOffsetMillis);
+      const DeepCollectionEquality().hash(timeZone);
 
   @JsonKey(ignore: true)
   @override
@@ -246,12 +246,11 @@ class _$_Customer implements _Customer {
 
 abstract class _Customer implements Customer {
   factory _Customer(
-          {@JsonKey(name: 'controller_id') required int activeControllerId,
-          @JsonKey(name: 'customer_id') required int customerId,
-          @JsonKey(name: 'api_key') required String apiKey,
-          @JsonKey(name: 'last_status_update') required int lastStatusUpdate,
-          @JsonKey(name: 'time_zone_offset') int timeZoneOffsetMillis}) =
-      _$_Customer;
+      {@JsonKey(name: 'controller_id') required int activeControllerId,
+      @JsonKey(name: 'customer_id') required int customerId,
+      @JsonKey(name: 'api_key') required String apiKey,
+      @JsonKey(name: 'last_status_update') required int lastStatusUpdate,
+      @JsonKey(name: 'time_zone') String? timeZone}) = _$_Customer;
 
   factory _Customer.fromJson(Map<String, dynamic> json) = _$_Customer.fromJson;
 
@@ -268,8 +267,8 @@ abstract class _Customer implements Customer {
   @JsonKey(name: 'last_status_update')
   int get lastStatusUpdate => throw _privateConstructorUsedError;
   @override
-  @JsonKey(name: 'time_zone_offset')
-  int get timeZoneOffsetMillis => throw _privateConstructorUsedError;
+  @JsonKey(name: 'time_zone')
+  String? get timeZone => throw _privateConstructorUsedError;
   @override
   @JsonKey(ignore: true)
   _$CustomerCopyWith<_Customer> get copyWith =>

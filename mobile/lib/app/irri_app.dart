@@ -1,7 +1,4 @@
 // ignore_for_file: avoid_redundant_argument_values
-
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -85,11 +82,9 @@ class IrriApp extends StatelessWidget {
             builder: (context, state) {
               return AppLifecycleStateObserver(
                 onForeground: () {
-                  log('onForegroundInvoked');
                   context.read<CustomerDetailsCubit>().resumePolling();
                 },
                 onBackground: () {
-                  log('onBackgroundInvoked');
                   context.read<CustomerDetailsCubit>().stopPolling();
                 },
                 child: MaterialApp.router(

@@ -3,7 +3,7 @@ import 'package:irri/features/programs/programs.dart';
 import 'package:uuid/uuid.dart';
 
 class InMemoryCustomerDetailsRepository implements CustomerDetailsRepository {
-  final customers = <Customer>[];
+  late Customer? customer;
   final zones = <Zone>[];
   final programs = <Program>[];
   final runs = <Run>[];
@@ -21,12 +21,7 @@ class InMemoryCustomerDetailsRepository implements CustomerDetailsRepository {
 
   @override
   Future<Customer> getCustomer() async {
-    return customers.first;
-  }
-
-  @override
-  Future<List<Customer>> getCustomers() async {
-    return customers;
+    return customer!;
   }
 
   @override
@@ -36,7 +31,12 @@ class InMemoryCustomerDetailsRepository implements CustomerDetailsRepository {
 
   @override
   Future<void> insertCustomer(Customer customer) async {
-    customers.add(customer);
+    this.customer = customer;
+  }
+
+  @override
+  Future<void> updateCustomerTimeZone(String timeZone) {
+    throw UnimplementedError();
   }
 
   @override
@@ -49,14 +49,9 @@ class InMemoryCustomerDetailsRepository implements CustomerDetailsRepository {
     zones
       ..clear()
       ..addAll(customerStatus.zones);
-    final customer = await getCustomer();
-    customers
-      ..clear()
-      ..add(
-        customer.copyWith(
-          lastStatusUpdate: customerStatus.timeOfLastStatusUnixEpoch,
-        ),
-      );
+    customer = customer!.copyWith(
+      lastStatusUpdate: customerStatus.timeOfLastStatusUnixEpoch,
+    );
   }
 
   @override
@@ -144,7 +139,7 @@ class InMemoryCustomerDetailsRepository implements CustomerDetailsRepository {
   @override
   Future<void> clearAllData() async {
     zones.clear();
-    customers.clear();
+    customer = null;
     programs.clear();
     runs.clear();
   }
