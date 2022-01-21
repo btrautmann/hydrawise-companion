@@ -1,5 +1,4 @@
 import 'package:irri/core/core.dart';
-import 'package:irri/core/networking/http_client.dart';
 import 'package:irri/features/auth/auth.dart';
 import 'package:irri/features/customer_details/customer_details.dart';
 import 'package:result_type/result_type.dart';

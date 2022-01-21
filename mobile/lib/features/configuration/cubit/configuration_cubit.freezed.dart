@@ -16,8 +16,12 @@ final _privateConstructorUsedError = UnsupportedError(
 class _$ConfigurationStateTearOff {
   const _$ConfigurationStateTearOff();
 
-  _Initial initial() {
-    return const _Initial();
+  _ConfigurationState call(
+      {bool pushNotificationsEnabled = false, String? timeZone}) {
+    return _ConfigurationState(
+      pushNotificationsEnabled: pushNotificationsEnabled,
+      timeZone: timeZone,
+    );
   }
 }
 
@@ -26,27 +30,11 @@ const $ConfigurationState = _$ConfigurationStateTearOff();
 
 /// @nodoc
 mixin _$ConfigurationState {
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() initial,
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? initial,
-    required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(_Initial value) initial,
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(_Initial value)? initial,
-    required TResult orElse(),
-  }) =>
+  bool get pushNotificationsEnabled => throw _privateConstructorUsedError;
+  String? get timeZone => throw _privateConstructorUsedError;
+
+  @JsonKey(ignore: true)
+  $ConfigurationStateCopyWith<ConfigurationState> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
@@ -55,6 +43,7 @@ abstract class $ConfigurationStateCopyWith<$Res> {
   factory $ConfigurationStateCopyWith(
           ConfigurationState value, $Res Function(ConfigurationState) then) =
       _$ConfigurationStateCopyWithImpl<$Res>;
+  $Res call({bool pushNotificationsEnabled, String? timeZone});
 }
 
 /// @nodoc
@@ -65,84 +54,117 @@ class _$ConfigurationStateCopyWithImpl<$Res>
   final ConfigurationState _value;
   // ignore: unused_field
   final $Res Function(ConfigurationState) _then;
-}
-
-/// @nodoc
-abstract class _$InitialCopyWith<$Res> {
-  factory _$InitialCopyWith(_Initial value, $Res Function(_Initial) then) =
-      __$InitialCopyWithImpl<$Res>;
-}
-
-/// @nodoc
-class __$InitialCopyWithImpl<$Res>
-    extends _$ConfigurationStateCopyWithImpl<$Res>
-    implements _$InitialCopyWith<$Res> {
-  __$InitialCopyWithImpl(_Initial _value, $Res Function(_Initial) _then)
-      : super(_value, (v) => _then(v as _Initial));
 
   @override
-  _Initial get _value => super._value as _Initial;
+  $Res call({
+    Object? pushNotificationsEnabled = freezed,
+    Object? timeZone = freezed,
+  }) {
+    return _then(_value.copyWith(
+      pushNotificationsEnabled: pushNotificationsEnabled == freezed
+          ? _value.pushNotificationsEnabled
+          : pushNotificationsEnabled // ignore: cast_nullable_to_non_nullable
+              as bool,
+      timeZone: timeZone == freezed
+          ? _value.timeZone
+          : timeZone // ignore: cast_nullable_to_non_nullable
+              as String?,
+    ));
+  }
+}
+
+/// @nodoc
+abstract class _$ConfigurationStateCopyWith<$Res>
+    implements $ConfigurationStateCopyWith<$Res> {
+  factory _$ConfigurationStateCopyWith(
+          _ConfigurationState value, $Res Function(_ConfigurationState) then) =
+      __$ConfigurationStateCopyWithImpl<$Res>;
+  @override
+  $Res call({bool pushNotificationsEnabled, String? timeZone});
+}
+
+/// @nodoc
+class __$ConfigurationStateCopyWithImpl<$Res>
+    extends _$ConfigurationStateCopyWithImpl<$Res>
+    implements _$ConfigurationStateCopyWith<$Res> {
+  __$ConfigurationStateCopyWithImpl(
+      _ConfigurationState _value, $Res Function(_ConfigurationState) _then)
+      : super(_value, (v) => _then(v as _ConfigurationState));
+
+  @override
+  _ConfigurationState get _value => super._value as _ConfigurationState;
+
+  @override
+  $Res call({
+    Object? pushNotificationsEnabled = freezed,
+    Object? timeZone = freezed,
+  }) {
+    return _then(_ConfigurationState(
+      pushNotificationsEnabled: pushNotificationsEnabled == freezed
+          ? _value.pushNotificationsEnabled
+          : pushNotificationsEnabled // ignore: cast_nullable_to_non_nullable
+              as bool,
+      timeZone: timeZone == freezed
+          ? _value.timeZone
+          : timeZone // ignore: cast_nullable_to_non_nullable
+              as String?,
+    ));
+  }
 }
 
 /// @nodoc
 
-class _$_Initial implements _Initial {
-  const _$_Initial();
+class _$_ConfigurationState implements _ConfigurationState {
+  _$_ConfigurationState({this.pushNotificationsEnabled = false, this.timeZone});
+
+  @JsonKey(defaultValue: false)
+  @override
+  final bool pushNotificationsEnabled;
+  @override
+  final String? timeZone;
 
   @override
   String toString() {
-    return 'ConfigurationState.initial()';
+    return 'ConfigurationState(pushNotificationsEnabled: $pushNotificationsEnabled, timeZone: $timeZone)';
   }
 
   @override
   bool operator ==(dynamic other) {
-    return identical(this, other) || (other is _Initial);
+    return identical(this, other) ||
+        (other is _ConfigurationState &&
+            (identical(
+                    other.pushNotificationsEnabled, pushNotificationsEnabled) ||
+                const DeepCollectionEquality().equals(
+                    other.pushNotificationsEnabled,
+                    pushNotificationsEnabled)) &&
+            (identical(other.timeZone, timeZone) ||
+                const DeepCollectionEquality()
+                    .equals(other.timeZone, timeZone)));
   }
 
   @override
-  int get hashCode => runtimeType.hashCode;
+  int get hashCode =>
+      runtimeType.hashCode ^
+      const DeepCollectionEquality().hash(pushNotificationsEnabled) ^
+      const DeepCollectionEquality().hash(timeZone);
 
+  @JsonKey(ignore: true)
   @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() initial,
-  }) {
-    return initial();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? initial,
-    required TResult orElse(),
-  }) {
-    if (initial != null) {
-      return initial();
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(_Initial value) initial,
-  }) {
-    return initial(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(_Initial value)? initial,
-    required TResult orElse(),
-  }) {
-    if (initial != null) {
-      return initial(this);
-    }
-    return orElse();
-  }
+  _$ConfigurationStateCopyWith<_ConfigurationState> get copyWith =>
+      __$ConfigurationStateCopyWithImpl<_ConfigurationState>(this, _$identity);
 }
 
-abstract class _Initial implements ConfigurationState {
-  const factory _Initial() = _$_Initial;
+abstract class _ConfigurationState implements ConfigurationState {
+  factory _ConfigurationState(
+      {bool pushNotificationsEnabled,
+      String? timeZone}) = _$_ConfigurationState;
+
+  @override
+  bool get pushNotificationsEnabled => throw _privateConstructorUsedError;
+  @override
+  String? get timeZone => throw _privateConstructorUsedError;
+  @override
+  @JsonKey(ignore: true)
+  _$ConfigurationStateCopyWith<_ConfigurationState> get copyWith =>
+      throw _privateConstructorUsedError;
 }

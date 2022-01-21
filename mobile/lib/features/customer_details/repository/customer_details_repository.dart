@@ -8,6 +8,8 @@ abstract class CustomerDetailsRepository {
   Future<Customer> getCustomer();
   Future<void> addFcmToken(String token);
   Future<List<String>> getRegisteredFcmTokens();
+  Future<void> updateTimeZone(String timeZone);
+  Future<String?> getUserTimeZone();
   Future<void> insertZone(Zone zone);
   Future<void> updateZone(Zone zone);
   Future<List<Zone>> getZones();
