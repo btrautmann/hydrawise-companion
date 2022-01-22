@@ -64,21 +64,6 @@ void main() {
         );
       });
 
-      group('random', () {
-        test('random test', () {
-          final fixed = Clock.fixed(DateTime(2020));
-          withClock(fixed, () {
-            final customer = CustomerDetails(
-              activeControllerId: 1,
-              customerId: 1,
-              controllers: [],
-            );
-            final x = customer.toCustomer('fake');
-            expect(x.lastStatusUpdate, clock.now().millisecondsSinceEpoch);
-          });
-        });
-      });
-
       group('when logged in', () {
         // Uses a fixed wall-clock because customer status
         // uses the current time for `timeOfLastStatusUnixEpoch`
