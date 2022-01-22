@@ -32,9 +32,9 @@ class GetCustomerDetails {
     if (response.isSuccess) {
       final customerDetails = CustomerDetails.fromJson(response.success!);
 
-      final customerIdentification = customerDetails.toCustomer(apiKey);
+      final customer = customerDetails.toCustomer(apiKey);
 
-      await _repository.insertCustomer(customerIdentification);
+      await _repository.insertCustomer(customer);
 
       return Success(customerDetails);
     }

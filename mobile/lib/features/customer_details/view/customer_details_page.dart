@@ -102,8 +102,6 @@ class _Greeting extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    // TODO(brandon): Use a framework we can
-    // modify under test for time
     final dateTime = clock.now();
     String text;
     if (dateTime.hour < 12) {

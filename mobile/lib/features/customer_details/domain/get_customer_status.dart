@@ -33,8 +33,6 @@ class GetCustomerStatusFromHydrawise {
   }) async {
     final nextPollTime = await _getNextPollTime();
 
-    // TODO(brandon): Use a framework we can
-    // modify under test for time
     if (clock.now().isAfter(nextPollTime)) {
       final apiKey = await _getApiKey();
       final queryParameters = {
@@ -69,8 +67,6 @@ class GetCustomerStatusFromHydrawise {
 
     return Success(
       CustomerStatus(
-        // TODO(brandon): Use a framework we can
-        // modify under test for time
         numberOfSecondsUntilNextRequest:
             clock.now().difference(nextPollTime).inSeconds.abs(),
         timeOfLastStatusUnixEpoch: customer.lastStatusUpdate,

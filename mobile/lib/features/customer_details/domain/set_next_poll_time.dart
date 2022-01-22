@@ -12,8 +12,6 @@ class SetNextPollTimeInStorage {
 
   Future<void> call({required int secondsUntilNextPoll}) {
     // Store nextPollTime as millisecondsSinceEpoch
-    // TODO(brandon): Use a framework we can
-    // modify under test for time
     final nextPollTime =
         clock.now().millisecondsSinceEpoch + (secondsUntilNextPoll * 1000);
 
