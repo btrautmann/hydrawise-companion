@@ -3,21 +3,21 @@ import 'package:irri/features/programs/programs.dart';
 import 'package:uuid/uuid.dart';
 
 class InMemoryCustomerDetailsRepository implements CustomerDetailsRepository {
-  late Customer? customer;
-  final zones = <Zone>[];
-  final programs = <Program>[];
-  final runs = <Run>[];
-  final fcmTokens = <String>[];
+  Customer? _customer;
+  final _zones = <Zone>[];
+  final _programs = <Program>[];
+  final _runs = <Run>[];
+  final _fcmTokens = <String>[];
   String? _timeZone;
 
   @override
   Future<void> addFcmToken(String token) async {
-    fcmTokens.add(token);
+    _fcmTokens.add(token);
   }
 
   @override
   Future<List<String>> getRegisteredFcmTokens() async {
-    return fcmTokens;
+    return _fcmTokens;
   }
 
   @override
@@ -31,18 +31,18 @@ class InMemoryCustomerDetailsRepository implements CustomerDetailsRepository {
   }
 
   @override
-  Future<Customer> getCustomer() async {
-    return customer!;
+  Future<Customer?> getCustomer() async {
+    return _customer;
   }
 
   @override
   Future<List<Zone>> getZones() async {
-    return zones;
+    return _zones;
   }
 
   @override
   Future<void> insertCustomer(Customer customer) async {
-    this.customer = customer;
+    _customer = customer;
   }
 
   @override
@@ -52,22 +52,22 @@ class InMemoryCustomerDetailsRepository implements CustomerDetailsRepository {
 
   @override
   Future<void> insertZone(Zone zone) async {
-    zones.add(zone);
+    _zones.add(zone);
   }
 
   @override
   Future<void> updateCustomer(CustomerStatus customerStatus) async {
-    zones
+    _zones
       ..clear()
       ..addAll(customerStatus.zones);
-    customer = customer!.copyWith(
+    _customer = _customer!.copyWith(
       lastStatusUpdate: customerStatus.timeOfLastStatusUnixEpoch,
     );
   }
 
   @override
   Future<void> updateZone(Zone zone) async {
-    zones
+    _zones
       ..retainWhere((element) => element.id != zone.id)
       ..add(zone);
   }
@@ -83,13 +83,13 @@ class InMemoryCustomerDetailsRepository implements CustomerDetailsRepository {
       frequency: frequency,
       runs: [],
     );
-    programs.add(program);
+    _programs.add(program);
     return program.id;
   }
 
   @override
   Future<void> deleteProgram({required String programId}) async {
-    programs.removeWhere((element) => element.id == programId);
+    _programs.removeWhere((element) => element.id == programId);
   }
 
   @override
@@ -98,8 +98,8 @@ class InMemoryCustomerDetailsRepository implements CustomerDetailsRepository {
     required String name,
     required List<int> frequency,
   }) async {
-    final index = programs.indexWhere((element) => element.id == programId);
-    programs[index] = programs[index].copyWith(
+    final index = _programs.indexWhere((element) => element.id == programId);
+    _programs[index] = _programs[index].copyWith(
       name: name,
       frequency: frequency,
     );
@@ -107,12 +107,12 @@ class InMemoryCustomerDetailsRepository implements CustomerDetailsRepository {
 
   @override
   Future<List<Program>> getPrograms() async {
-    return programs;
+    return _programs;
   }
 
   @override
   Future<Program> getProgram({required String programId}) async {
-    return programs.singleWhere((element) => element.id == programId);
+    return _programs.singleWhere((element) => element.id == programId);
   }
 
   @override
@@ -120,7 +120,7 @@ class InMemoryCustomerDetailsRepository implements CustomerDetailsRepository {
     required String programId,
     required List<Run> runs,
   }) async {
-    this.runs.addAll(runs);
+    _runs.addAll(runs);
   }
 
   @override
@@ -130,13 +130,13 @@ class InMemoryCustomerDetailsRepository implements CustomerDetailsRepository {
   }) async {
     for (final run in runs) {
       final index = runs.indexWhere((element) => run.id == element.id);
-      this.runs[index] = run;
+      _runs[index] = run;
     }
   }
 
   @override
   Future<List<Run>> getRunsForProgram({required String programId}) async {
-    return runs.where((element) => element.programId == programId).toList();
+    return _runs.where((element) => element.programId == programId).toList();
   }
 
   @override
@@ -144,15 +144,15 @@ class InMemoryCustomerDetailsRepository implements CustomerDetailsRepository {
     required String runId,
     required String programId,
   }) async {
-    runs.removeWhere((element) => element.id == runId);
+    _runs.removeWhere((element) => element.id == runId);
   }
 
   @override
   Future<void> clearAllData() async {
-    zones.clear();
-    customer = null;
-    programs.clear();
-    runs.clear();
-    fcmTokens.clear();
+    _zones.clear();
+    _customer = null;
+    _programs.clear();
+    _runs.clear();
+    _fcmTokens.clear();
   }
 }

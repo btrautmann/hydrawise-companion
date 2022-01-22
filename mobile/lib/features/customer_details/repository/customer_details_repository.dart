@@ -5,7 +5,7 @@ abstract class CustomerDetailsRepository {
   Future<void> insertCustomer(Customer customer);
   Future<void> updateCustomer(CustomerStatus customerStatus);
   Future<void> updateCustomerTimeZone(String timeZone);
-  Future<Customer> getCustomer();
+  Future<Customer?> getCustomer();
   Future<void> addFcmToken(String token);
   Future<List<String>> getRegisteredFcmTokens();
   Future<void> updateTimeZone(String timeZone);

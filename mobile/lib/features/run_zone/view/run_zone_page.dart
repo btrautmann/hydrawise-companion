@@ -359,8 +359,8 @@ class _NextWaterText extends StatelessWidget {
     }
     if (zone.isRunning) {
       final endOfRun = clock.now().add(
-        Duration(seconds: zone.lengthOfNextRunTimeOrTimeRemaining),
-      );
+            Duration(seconds: zone.lengthOfNextRunTimeOrTimeRemaining),
+          );
       final difference = clock.now().difference(endOfRun).abs();
       if (difference.inHours > 1) {
         return Text('Running for ${difference.inHours} more hours');

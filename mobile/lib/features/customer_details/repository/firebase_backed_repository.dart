@@ -121,7 +121,7 @@ class FirebaseBackedCustomerDetailsRepository
   }
 
   @override
-  Future<Customer> getCustomer() {
+  Future<Customer?> getCustomer() {
     return _getUserDocument().then(
       (d) => d.get().then(
         (s) {
@@ -259,15 +259,17 @@ class FirebaseBackedCustomerDetailsRepository
       );
     }
     final customer = await getCustomer();
-    return _getUserDocument().then(
-      (d) => d.update(
-        customer
-            .copyWith(
-              lastStatusUpdate: customerStatus.timeOfLastStatusUnixEpoch,
-            )
-            .toJson(),
-      ),
-    );
+    if (customer != null) {
+      return _getUserDocument().then(
+        (d) => d.update(
+          customer
+              .copyWith(
+                lastStatusUpdate: customerStatus.timeOfLastStatusUnixEpoch,
+              )
+              .toJson(),
+        ),
+      );
+    }
   }
 
   @override

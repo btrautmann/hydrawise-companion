@@ -58,21 +58,23 @@ class GetCustomerStatusFromHydrawise {
 
         return Success(customerStatus);
       }
-
-      return Failure("Can't fetch customer status");
     }
 
     final zones = await _repository.getZones();
     final customer = await _repository.getCustomer();
 
-    return Success(
-      CustomerStatus(
-        numberOfSecondsUntilNextRequest:
-            clock.now().difference(nextPollTime).inSeconds.abs(),
-        timeOfLastStatusUnixEpoch: customer.lastStatusUpdate,
-        zones: zones,
-      ),
-    );
+    if (customer != null) {
+      return Success(
+        CustomerStatus(
+          numberOfSecondsUntilNextRequest:
+              clock.now().difference(nextPollTime).inSeconds.abs(),
+          timeOfLastStatusUnixEpoch: customer.lastStatusUpdate,
+          zones: zones,
+        ),
+      );
+    }
+
+    return Failure("Can't fetch customer status");
   }
 }
 
@@ -104,12 +106,16 @@ class GetFakeCustomerStatus {
       zones.addAll(queriedZones);
     }
 
-    return Success(
-      CustomerStatus(
-        numberOfSecondsUntilNextRequest: 5,
-        timeOfLastStatusUnixEpoch: customer.lastStatusUpdate,
-        zones: zones,
-      ),
-    );
+    if (customer != null) {
+      return Success(
+        CustomerStatus(
+          numberOfSecondsUntilNextRequest: 5,
+          timeOfLastStatusUnixEpoch: customer.lastStatusUpdate,
+          zones: zones,
+        ),
+      );
+    }
+
+    return Failure("Can't fetch customer status");
   }
 }
