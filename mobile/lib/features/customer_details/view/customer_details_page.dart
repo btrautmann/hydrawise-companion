@@ -1,3 +1,4 @@
+import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -103,7 +104,7 @@ class _Greeting extends StatelessWidget {
     final theme = Theme.of(context);
     // TODO(brandon): Use a framework we can
     // modify under test for time
-    final dateTime = DateTime.now();
+    final dateTime = clock.now();
     String text;
     if (dateTime.hour < 12) {
       text = 'Good morning';

@@ -1,3 +1,4 @@
+import 'package:clock/clock.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'zone.freezed.dart';
@@ -24,9 +25,7 @@ class Zone with _$Zone {
 
 extension ZoneX on Zone {
   int get nextRunMillisecondsSinceEpoch {
-    // TODO(brandon): Use a framework we can
-    // modify under test for time
-    final currentTimeEpochMillis = DateTime.now().millisecondsSinceEpoch;
+    final currentTimeEpochMillis = clock.now().millisecondsSinceEpoch;
     final millisUntilNextRun = secondsUntilNextRun * 1000;
     return currentTimeEpochMillis + millisUntilNextRun;
   }

@@ -1,3 +1,4 @@
+import 'package:clock/clock.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:irri/features/customer_details/models/controller.dart';
 import 'package:irri/features/customer_details/models/customer.dart';
@@ -27,7 +28,7 @@ extension CustomerDetailsX on CustomerDetails {
       apiKey: apiKey,
       // TODO(brandon): Use a framework we can
       // modify under test for time
-      lastStatusUpdate: DateTime.now().millisecondsSinceEpoch,
+      lastStatusUpdate: clock.now().millisecondsSinceEpoch,
     );
   }
 }

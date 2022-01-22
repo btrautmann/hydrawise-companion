@@ -1,3 +1,4 @@
+import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:irri/features/programs/models/run_draft.dart';
@@ -41,7 +42,7 @@ extension TimeOfDayX on TimeOfDay {
   }
 
   bool isBefore(DateTime dateTime) {
-    final now = DateTime.now();
+    final now = clock.now();
     final time = DateTime(
       now.year,
       now.month,

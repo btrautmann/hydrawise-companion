@@ -1,3 +1,4 @@
+import 'package:clock/clock.dart';
 import 'package:irri/core/core.dart';
 import 'package:irri/features/auth/auth.dart';
 import 'package:irri/features/customer_details/customer_details.dart';
@@ -34,7 +35,7 @@ class GetCustomerStatusFromHydrawise {
 
     // TODO(brandon): Use a framework we can
     // modify under test for time
-    if (DateTime.now().isAfter(nextPollTime)) {
+    if (clock.now().isAfter(nextPollTime)) {
       final apiKey = await _getApiKey();
       final queryParameters = {
         'api_key': apiKey!,
@@ -71,7 +72,7 @@ class GetCustomerStatusFromHydrawise {
         // TODO(brandon): Use a framework we can
         // modify under test for time
         numberOfSecondsUntilNextRequest:
-            DateTime.now().difference(nextPollTime).inSeconds.abs(),
+            clock.now().difference(nextPollTime).inSeconds.abs(),
         timeOfLastStatusUnixEpoch: customer.lastStatusUpdate,
         zones: zones,
       ),

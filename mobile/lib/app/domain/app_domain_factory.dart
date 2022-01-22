@@ -194,7 +194,7 @@ abstract class DevelopmentDomainFactory {
     final setLocation = SetLocation(dataStorage);
     final runZone = RunZoneLocally(repository: repository);
     final stopZone = StopZoneLocally(repository: repository);
-    final getCustomerDetails = GetFakeCustomerDetails();
+    final getCustomerDetails = GetFakeCustomerDetails(repository: repository);
     final getCustomerStatus = GetFakeCustomerStatus(repository: repository);
     final getPrograms = GetPrograms(repository: repository);
     final createProgram = CreateProgram(repository: repository);

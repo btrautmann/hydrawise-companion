@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:bloc_test/bloc_test.dart';
+import 'package:clock/clock.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:irri/core/core.dart';
 import 'package:irri/features/auth/auth.dart';
@@ -11,12 +12,21 @@ void main() {
   group('CustomerDetailsCubit', () {
     final DataStorage dataStorage = InMemoryStorage();
 
+    final repository = InMemoryCustomerDetailsRepository();
+    final setApiKey = SetApiKey(dataStorage);
+    final setFirebaseUid = SetFirebaseUid(dataStorage);
     late AuthCubit authCubit;
 
     CustomerDetailsCubit _buildSubject() {
-      final repository = InMemoryCustomerDetailsRepository();
-      final setApiKey = SetApiKey(dataStorage);
-      final setFirebaseUid = SetFirebaseUid(dataStorage);
+      return CustomerDetailsCubit(
+        getCustomerDetails: GetFakeCustomerDetails(repository: repository),
+        getCustomerStatus: GetFakeCustomerStatus(repository: repository),
+        authCubit: authCubit,
+      );
+    }
+
+    setUp(() async {
+      await dataStorage.clearAll();
 
       authCubit = AuthCubit(
         logOut: LogOut(
@@ -42,18 +52,6 @@ void main() {
           getFirebaseUid: GetFirebaseUid(dataStorage),
         ),
       );
-
-      return CustomerDetailsCubit(
-        getCustomerDetails: GetFakeCustomerDetails(),
-        getCustomerStatus: GetFakeCustomerStatus(
-          repository: repository,
-        ),
-        authCubit: authCubit,
-      );
-    }
-
-    setUp(() async {
-      await dataStorage.clearAll();
     });
 
     group('start', () {
@@ -66,20 +64,43 @@ void main() {
         );
       });
 
+      group('random', () {
+        test('random test', () {
+          final fixed = Clock.fixed(DateTime(2020));
+          withClock(fixed, () {
+            final customer = CustomerDetails(
+              activeControllerId: 1,
+              customerId: 1,
+              controllers: [],
+            );
+            final x = customer.toCustomer('fake');
+            expect(x.lastStatusUpdate, clock.now().millisecondsSinceEpoch);
+          });
+        });
+      });
+
       group('when logged in', () {
+        // Uses a fixed wall-clock because customer status
+        // uses the current time for `timeOfLastStatusUnixEpoch`
+        final fixedWallClock = Clock.fixed(DateTime(2020));
         blocTest<CustomerDetailsCubit, CustomerDetailsState>(
           'it emits Complete',
           setUp: () async {
             await authCubit.login('fake-api-key');
           },
           build: _buildSubject,
-          act: (cubit) => cubit.start(),
+          act: (cubit) {
+            // Use fixed clock for the `act` zone
+            withClock(fixedWallClock, () {
+              cubit.start();
+            });
+          },
           expect: () => <CustomerDetailsState>[
             CustomerDetailsState.loading(),
             CustomerDetailsState.complete(
               customerDetails: CustomerDetails(
-                activeControllerId: 1234,
-                customerId: 5678,
+                activeControllerId: 1,
+                customerId: 1,
                 controllers: [
                   Controller(
                     name: 'Fake Controller',
@@ -92,7 +113,8 @@ void main() {
               ),
               customerStatus: CustomerStatus(
                 numberOfSecondsUntilNextRequest: 5,
-                timeOfLastStatusUnixEpoch: 1631330889,
+                timeOfLastStatusUnixEpoch:
+                    fixedWallClock.now().millisecondsSinceEpoch,
                 zones: [],
               ),
             ),
