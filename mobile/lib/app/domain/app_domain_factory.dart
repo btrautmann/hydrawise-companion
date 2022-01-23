@@ -68,7 +68,7 @@ abstract class ProductionDomainFactory {
       repository: repository,
       getApiKey: getApiKey,
     );
-    final getCustomerStatus = GetCustomerStatusFromHydrawise(
+    final getCustomerStatus = GetCustomerStatus(
       httpClient: client,
       repository: repository,
       getApiKey: getApiKey,
