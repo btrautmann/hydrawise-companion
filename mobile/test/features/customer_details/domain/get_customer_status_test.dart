@@ -14,6 +14,8 @@ void main() {
     final repository = InMemoryCustomerDetailsRepository();
     final setApiKey = SetApiKey(storage);
     final setPollTime = SetNextPollTimeInStorage(storage);
+    final getPollTime = GetNextPollTimeFromStorage(storage);
+    final fixedTime = DateTime(2020);
 
     Future<void> _buildSubject(Charlatan charlatan) async {
       final client = FakeHttpClient(charlatan);
@@ -21,7 +23,7 @@ void main() {
         httpClient: client,
         getApiKey: GetApiKey(storage),
         repository: repository,
-        getNextPollTime: GetNextPollTimeFromStorage(storage),
+        getNextPollTime: getPollTime,
         setNextPollTime: setPollTime,
       );
     }
@@ -36,7 +38,7 @@ void main() {
           activeControllerId: 1,
           customerId: 1,
           apiKey: 'fake-api-key',
-          lastStatusUpdate: clock.now().millisecondsSinceEpoch,
+          lastStatusUpdate: 0,
         ),
       );
     });
@@ -55,7 +57,7 @@ void main() {
               queryParameters = request.queryParameters;
               return CustomerStatus(
                 numberOfSecondsUntilNextRequest: 5,
-                timeOfLastStatusUnixEpoch: clock.now().millisecondsSinceEpoch,
+                timeOfLastStatusUnixEpoch: fixedTime.millisecondsSinceEpoch,
                 zones: [],
               );
             },
@@ -67,14 +69,14 @@ void main() {
         expect(apiPolled, isTrue);
       });
 
-      test('is passes the api key in query parameters', () async {
+      test('it passes the api key in query parameters', () async {
         await subject.call();
         expect(queryParameters, isNotEmpty);
         expect(queryParameters['api_key'], 'fake-api-key');
       });
 
       group('when activeControllerId is provided', () {
-        test('is passes the controller id in query parameters', () async {
+        test('it passes the controller id in query parameters', () async {
           await subject.call(activeControllerId: 1);
           expect(queryParameters, isNotEmpty);
           expect(queryParameters['controller_id'], '1');
@@ -82,51 +84,78 @@ void main() {
       });
 
       group('when api call succeeds', () {
-        final fixedTime = DateTime(2020);
-
         test('it returns customer status', () async {
-          await withClock(Clock.fixed(fixedTime), () async {
-            final result = await subject.call();
-            expect(result.isSuccess, isTrue);
-            expect(
-              result.success,
-              CustomerStatus(
-                numberOfSecondsUntilNextRequest: 65110146,
-                timeOfLastStatusUnixEpoch: 1642964946792,
-                zones: [],
-              ),
-            );
-          });
+          final result = await subject.call();
+          expect(result.isSuccess, isTrue);
+          expect(
+            result.success,
+            CustomerStatus(
+              numberOfSecondsUntilNextRequest: 5,
+              timeOfLastStatusUnixEpoch: fixedTime.millisecondsSinceEpoch,
+              zones: [],
+            ),
+          );
         });
 
-        // test('it updates customer', () async {
-        //   final customerBefore = await repository.getCustomer();
-        //   expect(customerBefore?.lastStatusUpdate, 0);
-        //   await subject.call();
-        //   final customerAfter = await repository.getCustomer();
-        //   expect(customerAfter, isNotNull);
-        // });
+        test('it updates customer', () async {
+          final customerBefore = await repository.getCustomer();
+          expect(customerBefore?.lastStatusUpdate, 0);
+          await subject.call();
+          final customerAfter = await repository.getCustomer();
+          expect(
+            customerAfter?.lastStatusUpdate,
+            fixedTime.millisecondsSinceEpoch,
+          );
+        });
+
+        test('it sets next poll time', () async {
+          final nextPollTimeBefore = await getPollTime();
+          await subject.call();
+          final nextPollTimeAfter = await getPollTime();
+          expect(nextPollTimeAfter.isAfter(nextPollTimeBefore), isTrue);
+        });
+      });
+
+      group('when api call fails', () {
+        setUp(() async {
+          final charlatan = Charlatan()
+            ..whenGet(
+              'statusschedule.php',
+              (request) => CharlatanHttpResponse(statusCode: 500),
+            );
+          await _buildSubject(charlatan);
+        });
+
+        group('when it hits the cache', () {
+          group('when cache hit succeeds', () {
+            test('it returns a success with customer status', () async {
+              await withClock(Clock.fixed(DateTime(2020)), () async {
+                // Set the poll time based on a fixed time
+                await setPollTime(secondsUntilNextPoll: 0);
+                final result = await subject.call();
+                expect(result.isSuccess, isTrue);
+                expect(
+                  result.success,
+                  CustomerStatus(
+                    numberOfSecondsUntilNextRequest: 0,
+                    timeOfLastStatusUnixEpoch: 0,
+                    zones: [],
+                  ),
+                );
+              });
+            });
+          });
+
+          group('when cache hit fails', () {
+            test('it returns a failure', () async {
+              await repository.clearAllData();
+              final result = await subject.call();
+              expect(result.isFailure, isTrue);
+              expect(result.failure, "Can't fetch customer status");
+            });
+          });
+        });
       });
     });
-
-    //   group('when api call fails', () {
-    //     setUp(() async {
-    //       final charlatan = Charlatan()
-    //         ..whenGet(
-    //           'customerdetails.php',
-    //           (request) => CharlatanHttpResponse(statusCode: 500),
-    //         );
-    //       await _buildSubject(charlatan);
-    //     });
-
-    //     test('it returns customer details', () async {
-    //       final result = await subject.call();
-    //       expect(result.isFailure, isTrue);
-    //       expect(
-    //         result.failure,
-    //         "Can't fetch customer details",
-    //       );
-    //     });
-    //   });
   });
 }
