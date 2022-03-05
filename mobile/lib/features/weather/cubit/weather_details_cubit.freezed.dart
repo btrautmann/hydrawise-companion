@@ -1,5 +1,6 @@
+// coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
-// ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides
+// ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target
 
 part of 'weather_details_cubit.dart';
 
@@ -51,6 +52,14 @@ mixin _$WeatherDetailsState {
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult Function()? noLocationInformation,
+    TResult Function()? loading,
+    TResult Function(String message)? error,
+    TResult Function(List<Weather> fiveDayForecast)? complete,
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? noLocationInformation,
     TResult Function()? loading,
@@ -66,6 +75,14 @@ mixin _$WeatherDetailsState {
     required TResult Function(_Loading value) loading,
     required TResult Function(_Error value) error,
     required TResult Function(_Complete value) complete,
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult Function(_NoLocationInformation value)? noLocationInformation,
+    TResult Function(_Loading value)? loading,
+    TResult Function(_Error value)? error,
+    TResult Function(_Complete value)? complete,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -146,6 +163,17 @@ class _$_NoLocationInformation implements _NoLocationInformation {
 
   @override
   @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult Function()? noLocationInformation,
+    TResult Function()? loading,
+    TResult Function(String message)? error,
+    TResult Function(List<Weather> fiveDayForecast)? complete,
+  }) {
+    return noLocationInformation?.call();
+  }
+
+  @override
+  @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? noLocationInformation,
     TResult Function()? loading,
@@ -169,6 +197,17 @@ class _$_NoLocationInformation implements _NoLocationInformation {
     required TResult Function(_Complete value) complete,
   }) {
     return noLocationInformation(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult Function(_NoLocationInformation value)? noLocationInformation,
+    TResult Function(_Loading value)? loading,
+    TResult Function(_Error value)? error,
+    TResult Function(_Complete value)? complete,
+  }) {
+    return noLocationInformation?.call(this);
   }
 
   @override
@@ -239,6 +278,17 @@ class _$_Loading implements _Loading {
 
   @override
   @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult Function()? noLocationInformation,
+    TResult Function()? loading,
+    TResult Function(String message)? error,
+    TResult Function(List<Weather> fiveDayForecast)? complete,
+  }) {
+    return loading?.call();
+  }
+
+  @override
+  @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? noLocationInformation,
     TResult Function()? loading,
@@ -262,6 +312,17 @@ class _$_Loading implements _Loading {
     required TResult Function(_Complete value) complete,
   }) {
     return loading(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult Function(_NoLocationInformation value)? noLocationInformation,
+    TResult Function(_Loading value)? loading,
+    TResult Function(_Error value)? error,
+    TResult Function(_Complete value)? complete,
+  }) {
+    return loading?.call(this);
   }
 
   @override
@@ -356,6 +417,17 @@ class _$_Error implements _Error {
 
   @override
   @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult Function()? noLocationInformation,
+    TResult Function()? loading,
+    TResult Function(String message)? error,
+    TResult Function(List<Weather> fiveDayForecast)? complete,
+  }) {
+    return error?.call(message);
+  }
+
+  @override
+  @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? noLocationInformation,
     TResult Function()? loading,
@@ -379,6 +451,17 @@ class _$_Error implements _Error {
     required TResult Function(_Complete value) complete,
   }) {
     return error(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult Function(_NoLocationInformation value)? noLocationInformation,
+    TResult Function(_Loading value)? loading,
+    TResult Function(_Error value)? error,
+    TResult Function(_Complete value)? complete,
+  }) {
+    return error?.call(this);
   }
 
   @override
@@ -480,6 +563,17 @@ class _$_Complete implements _Complete {
 
   @override
   @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult Function()? noLocationInformation,
+    TResult Function()? loading,
+    TResult Function(String message)? error,
+    TResult Function(List<Weather> fiveDayForecast)? complete,
+  }) {
+    return complete?.call(fiveDayForecast);
+  }
+
+  @override
+  @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? noLocationInformation,
     TResult Function()? loading,
@@ -503,6 +597,17 @@ class _$_Complete implements _Complete {
     required TResult Function(_Complete value) complete,
   }) {
     return complete(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult Function(_NoLocationInformation value)? noLocationInformation,
+    TResult Function(_Loading value)? loading,
+    TResult Function(_Error value)? error,
+    TResult Function(_Complete value)? complete,
+  }) {
+    return complete?.call(this);
   }
 
   @override

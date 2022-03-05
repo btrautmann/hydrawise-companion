@@ -305,16 +305,14 @@ ChipThemeData _buildChipTheme(
               ? AppColors.white50
               : AppColors.black900,
         ),
-    secondaryLabelStyle: GoogleFonts.workSansTextTheme().bodyText2!,
+    secondaryLabelStyle: GoogleFonts.workSansTextTheme().bodyText2,
     brightness: brightness,
   );
 }
 
 const ColorScheme _lightColorScheme = ColorScheme.light(
   primary: AppColors.blue700,
-  primaryVariant: AppColors.blue800,
   secondary: AppColors.orange500,
-  secondaryVariant: AppColors.orange400,
   surface: AppColors.white50,
   error: AppColors.red400,
   onPrimary: AppColors.white50,
@@ -327,9 +325,7 @@ const ColorScheme _lightColorScheme = ColorScheme.light(
 
 const ColorScheme _darkColorScheme = ColorScheme.dark(
   primary: AppColors.blue200,
-  primaryVariant: AppColors.blue300,
   secondary: AppColors.orange300,
-  secondaryVariant: AppColors.orange300,
   surface: AppColors.black800,
   error: AppColors.red200,
   onPrimary: AppColors.black900,

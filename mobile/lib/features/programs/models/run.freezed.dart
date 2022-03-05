@@ -1,5 +1,6 @@
+// coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
-// ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides
+// ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target
 
 part of 'run.dart';
 
@@ -202,7 +203,7 @@ class _$_Run implements _Run {
       @JsonKey(name: 'z_id')
           required this.zoneId});
 
-  factory _$_Run.fromJson(Map<String, dynamic> json) => _$_$_RunFromJson(json);
+  factory _$_Run.fromJson(Map<String, dynamic> json) => _$$_RunFromJson(json);
 
   @override
   @JsonKey(name: 'id')
@@ -263,7 +264,7 @@ class _$_Run implements _Run {
 
   @override
   Map<String, dynamic> toJson() {
-    return _$_$_RunToJson(this);
+    return _$$_RunToJson(this);
   }
 }
 

@@ -1,5 +1,6 @@
+// coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
-// ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides
+// ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target
 
 part of 'run_zone_cubit.dart';
 
@@ -39,6 +40,12 @@ mixin _$RunZoneState {
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult Function(String? message)? resting,
+    TResult Function()? loading,
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(String? message)? resting,
     TResult Function()? loading,
@@ -49,6 +56,12 @@ mixin _$RunZoneState {
   TResult map<TResult extends Object?>({
     required TResult Function(_Resting value) resting,
     required TResult Function(_Loading value) loading,
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult Function(_Resting value)? resting,
+    TResult Function(_Loading value)? loading,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -146,6 +159,15 @@ class _$_Resting implements _Resting {
 
   @override
   @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult Function(String? message)? resting,
+    TResult Function()? loading,
+  }) {
+    return resting?.call(message);
+  }
+
+  @override
+  @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(String? message)? resting,
     TResult Function()? loading,
@@ -164,6 +186,15 @@ class _$_Resting implements _Resting {
     required TResult Function(_Loading value) loading,
   }) {
     return resting(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult Function(_Resting value)? resting,
+    TResult Function(_Loading value)? loading,
+  }) {
+    return resting?.call(this);
   }
 
   @override
@@ -234,6 +265,15 @@ class _$_Loading implements _Loading {
 
   @override
   @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult Function(String? message)? resting,
+    TResult Function()? loading,
+  }) {
+    return loading?.call();
+  }
+
+  @override
+  @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(String? message)? resting,
     TResult Function()? loading,
@@ -252,6 +292,15 @@ class _$_Loading implements _Loading {
     required TResult Function(_Loading value) loading,
   }) {
     return loading(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult Function(_Resting value)? resting,
+    TResult Function(_Loading value)? loading,
+  }) {
+    return loading?.call(this);
   }
 
   @override

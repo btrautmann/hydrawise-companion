@@ -21,7 +21,6 @@ import 'package:irri/features/customer_details/customer_details.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 Future<void> main() async {
-  Bloc.observer = AppBlocObserver();
   FlutterError.onError = (details) {
     log(details.exceptionAsString(), stackTrace: details.stack);
     FirebaseCrashlytics.instance.recordError(details.exception, details.stack);
@@ -29,58 +28,63 @@ Future<void> main() async {
 
   await runZonedGuarded(
     () async {
-      WidgetsFlutterBinding.ensureInitialized();
-      await Firebase.initializeApp();
+      await BlocOverrides.runZoned(
+        () async {
+          WidgetsFlutterBinding.ensureInitialized();
+          await Firebase.initializeApp();
 
-      final firebaseFirestore = FirebaseFirestore.instance;
-      final firebaseAuth = FirebaseAuth.instance;
-      final firebaseMessaging = FirebaseMessaging.instance;
+          final firebaseFirestore = FirebaseFirestore.instance;
+          final firebaseAuth = FirebaseAuth.instance;
+          final firebaseMessaging = FirebaseMessaging.instance;
 
-      final sharedPreferences = await SharedPreferences.getInstance();
-      final dataStorage = SharedPreferencesStorage(sharedPreferences);
-      final repository = FirebaseBackedCustomerDetailsRepository(
-        firestore: FirebaseFirestore.instance,
-        // TODO(brandon): This is the only use case utilized outside
-        // of the widget tree -- see how we can refactor this
-        getFirebaseUid: GetFirebaseUid(dataStorage),
-      );
+          final sharedPreferences = await SharedPreferences.getInstance();
+          final dataStorage = SharedPreferencesStorage(sharedPreferences);
+          final repository = FirebaseBackedCustomerDetailsRepository(
+            firestore: FirebaseFirestore.instance,
+            // TODO(brandon): This is the only use case utilized outside
+            // of the widget tree -- see how we can refactor this
+            getFirebaseUid: GetFirebaseUid(dataStorage),
+          );
 
-      // ignore: prefer_void_to_null, close_sinks
-      final authFailures = StreamController<Null>();
-      void onAuthenticationFailure() {
-        authFailures.add(null);
-      }
+          // ignore: prefer_void_to_null, close_sinks
+          final authFailures = StreamController<Null>();
+          void onAuthenticationFailure() {
+            authFailures.add(null);
+          }
 
-      final interceptors = await BuildProductionHttpInterceptors(
-        onAuthenticationFailure: onAuthenticationFailure,
-      ).call();
+          final interceptors = await BuildProductionHttpInterceptors(
+            onAuthenticationFailure: onAuthenticationFailure,
+          ).call();
 
-      final httpClient = HttpClient(
-        dio: Dio(),
-        baseUrl: 'http://api.hydrawise.com/api/v1/',
-        interceptors: interceptors,
-      );
+          final httpClient = HttpClient(
+            dio: Dio(),
+            baseUrl: 'http://api.hydrawise.com/api/v1/',
+            interceptors: interceptors,
+          );
 
-      final providers = ProductionDomainFactory.build(
-        client: httpClient,
-        dataStorage: dataStorage,
-        repository: repository,
-        firebaseFirestore: firebaseFirestore,
-        firebaseAuth: firebaseAuth,
-        firebaseMessaging: firebaseMessaging,
-        authFailures: authFailures,
-        inDeveloperMode: kDebugMode,
-      );
+          final providers = ProductionDomainFactory.build(
+            client: httpClient,
+            dataStorage: dataStorage,
+            repository: repository,
+            firebaseFirestore: firebaseFirestore,
+            firebaseAuth: firebaseAuth,
+            firebaseMessaging: firebaseMessaging,
+            authFailures: authFailures,
+            inDeveloperMode: kDebugMode,
+          );
 
-      final router = await BuildAppRouter().call();
+          final router = await BuildAppRouter().call();
 
-      runApp(
-        IrriApp(
-          router: router,
-          providers: providers,
-        ),
+          runApp(
+            IrriApp(
+              router: router,
+              providers: providers,
+            ),
+          );
+        },
+        blocObserver: AppBlocObserver(),
       );
     },
-    (error, stackTrace) => log(error.toString(), stackTrace: stackTrace),
+    (error, stackTrace) => log(error.toString()),
   );
 }
