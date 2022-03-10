@@ -1,5 +1,6 @@
 import {firestore, initializeApp} from "firebase-admin";
 import * as functions from "firebase-functions";
+import {utcToZonedTime} from "date-fns-tz";
 // const axios = require('axios').default;
 
 initializeApp();
@@ -19,57 +20,88 @@ export const scheduledFunction = functions.pubsub.schedule("every 5 minutes")
                 continue;
             }
             console.log(`Checking user ${userData.customer_id}`);
-            const userTimezoneOffset = userData.time_zone_offset;
-            let adjustedTime = new Date(serverTime.getTime());
-            let adjustedDayOfWeek = adjustedTime.getUTCDay();
-            if (userTimezoneOffset != null && userTimezoneOffset != undefined) {
-                console.log(`Found user timezone offset of ${userTimezoneOffset}`);
-                adjustedTime = new Date(adjustedTime.getTime() + userTimezoneOffset);
-                adjustedDayOfWeek = adjustedTime.getDay();
-                console.log(`Adjusted date and time is ${adjustedTime}`);
-                console.log(`Adjusted day of week is ${adjustedDayOfWeek}`);
-            }
-            const programs = await user.ref.collection('programs').get();
-            for (let j = 0; j < programs.size; j++) {
-                const program = await programs.docs[j].ref.get();
-                const programData = program.data();
-                if (programData == undefined) {
-                    continue;
-                }
-                const programName = programData.name;
-                const programShouldRun = programData.frequency.includes(adjustedDayOfWeek);
-                console.log(`${programName} should run: ${programShouldRun}`);
-                if (programShouldRun) {
-                    const runs = await program.ref.collection("runs").get();
-                    for (let k = 0; k < runs.size; k++) {
-                        const run = await runs.docs[k].ref.get();
-                        const runData = run.data();
-                        if (runData == undefined) {
-                            continue;
+            const userTimezone = userData.time_zone;
+            if (userTimezone != null && userTimezone != undefined) {
+                console.log(`Found user timezone of ${userTimezone}`);
+                const userTime = utcToZonedTime(serverTime, userTimezone);
+                console.log(`User time is ${userTime}`);
+                const programs = await user.ref.collection('programs').get();
+                for (let j = 0; j < programs.size; j++) {
+                    const program = await programs.docs[j].ref.get();
+                    const programData = program.data();
+                    if (programData == undefined) {
+                        continue;
+                    }
+                    const programName = programData.name;
+                    const programShouldRun = programData.frequency.includes(userTime.getDay());
+                    console.log(`${programName} should run: ${programShouldRun}`);
+                    if (programShouldRun) {
+                        const runs = await program.ref.collection("runs").get();
+                        for (let k = 0; k < runs.size; k++) {
+                            const run = await runs.docs[k].ref.get();
+                            const runData = run.data();
+                            if (runData == undefined) {
+                                continue;
+                            }
+                            const startTime = runData.start_time;
+                            const splits = startTime.split(":", 2);
+                            const runTime = new Date(userTime.getTime());
+                            runTime.setHours(splits[0]);
+                            runTime.setMinutes(splits[1]);
+                            const timeDifference = runTime.getTime() - userTime.getTime();
+                            let message;
+                            if (timeDifference < 0) {
+                                // TODO(brandon): Need to check field for `last_run`
+                                console.log(`Run for zone ${runData.z_id} already happened or we missed it`);
+                                message = `Run for zone ${runData.z_id} already happened or we missed it`;
+                            } else if (timeDifference < 300000) {
+                                console.log(`Need to run zone ${runData.z_id} now`);
+                                // TODO(brandon): Actually run the zone?
+                                // const userApiKey = userData.api_key;
+                                // try {
+                                //     const { data } = await axios.get(`http://api.hydrawise.com/api/v1/statusschedule.php?api_key=${userApiKey}`);
+                                //     console.log(data);
+                                // } catch (error) {
+                                //     console.log(error);
+                                // }
+                                message = `Need to run zone ${runData.z_id} now`;
+                            } else {
+                                console.log(`Will run zone ${runData.z_id} in ${timeDifference / 1000} seconds`);
+                                message = `Will run zone ${runData.z_id} in ${timeDifference / 1000} seconds`;
+                                
+                            }
+                            const tokens = userData.fcm_tokens;
+                                if (tokens != null && tokens != undefined) {
+                                    const payload = {
+                                        notification: {
+                                            title: 'Irri',
+                                            body: message,
+                                        }
+                                    }
+                                    console.log(payload);
+                                    // const response = await messaging().sendToDevice(tokens, payload);
+                                    // console.log(response);
+                                    // const tokensToRemove = <Promise<any>[]>[];
+                                    // response.results.forEach((result, index) => {
+                                    //     const error = result.error;
+                                    //     if (error) {
+                                    //     functions.logger.error(
+                                    //         'Failure sending notification to',
+                                    //         tokens[index],
+                                    //         error
+                                    //     );
+                                    //     // Cleanup the tokens who are not registered anymore.
+                                    //     if (error.code === 'messaging/invalid-registration-token' ||
+                                    //         error.code === 'messaging/registration-token-not-registered') {
+                                    //         tokensToRemove.push(user.ref.update({
+                                    //             fcm_tokens: tokens.filter(token => token != tokens)
+                                    //         }));
+                                    //     }
+                                    //     }
+                                    // });
+                                    // return Promise.all(tokensToRemove);
+                                }
                         }
-                        const startTime = runData.start_time;
-                        const splits = startTime.split(":", 2);
-                        const runTime = new Date(adjustedTime.getTime());
-                        runTime.setHours(splits[0]);
-                        runTime.setMinutes(splits[1]);
-                        const timeDifference = runTime.getTime() - adjustedTime.getTime();
-                        if (timeDifference < 0) {
-                            // TODO(brandon): Need to check field for `last_run`
-                            console.log(`Run for zone ${runData.z_id} already happened or we missed it`);
-                        } else if (timeDifference < 300000) {
-                            console.log(`Need to run zone ${runData.z_id} now`);
-                            // TODO(brandon): Actually run the zone?
-                            // const userApiKey = userData.api_key;
-                            // try {
-                            //     const { data } = await axios.get(`http://api.hydrawise.com/api/v1/statusschedule.php?api_key=${userApiKey}`);
-                            //     console.log(data);
-                            // } catch (error) {
-                            //     console.log(error);
-                            // }
-                        } else {
-                            console.log(`Will run zone ${runData.z_id} in ${timeDifference / 1000} seconds`);
-                        }
-
                     }
                 }
             }

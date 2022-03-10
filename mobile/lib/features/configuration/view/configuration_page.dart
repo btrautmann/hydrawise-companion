@@ -1,17 +1,31 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_native_timezone/flutter_native_timezone.dart';
 import 'package:irri/app/cubit/app_cubit.dart';
 import 'package:irri/core-ui/core_ui.dart';
 import 'package:irri/features/auth/auth.dart';
+import 'package:irri/features/configuration/configuration.dart';
 import 'package:irri/features/push_notifications/push_notifications.dart';
 
 class ConfigurationPage extends StatelessWidget {
   const ConfigurationPage({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
       body: SafeArea(
-        child: ConfigurationView(),
+        child: BlocProvider(
+          create: (context) => ConfigurationCubit(
+            getPushNotificationsEnabled:
+                context.read<GetPushNotificationsEnabled>(),
+            registerForPushNotifications:
+                context.read<RegisterForPushNotifications>(),
+            getUserTimezone: context.read<GetUserTimezone>(),
+            updateUserTimeZone: context.read<UpdateUserTimeZone>(),
+          ),
+          child: const ConfigurationView(),
+        ),
       ),
     );
   }
@@ -37,6 +51,10 @@ class ConfigurationView extends StatelessWidget {
           indent: 16,
         ),
         _PushNotificationsRow(),
+        const Divider(
+          indent: 16,
+        ),
+        _ChangeTimeZoneRow(),
         const Divider(
           indent: 16,
         ),
@@ -135,7 +153,7 @@ class ChooseThemeModeDialog extends StatelessWidget {
 class _PushNotificationsRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<PushNotificationsCubit, PushNotificationsState>(
+    return BlocBuilder<ConfigurationCubit, ConfigurationState>(
       builder: (context, state) {
         final title = state.pushNotificationsEnabled
             ? 'Tap to turn off push notifications'
@@ -148,9 +166,7 @@ class _PushNotificationsRow extends StatelessWidget {
           ),
           title: Text(title),
           onTapped: () {
-            context
-                .read<PushNotificationsCubit>()
-                .registerForPushNotifications();
+            context.read<ConfigurationCubit>().registerForPushNotifications();
           },
         );
       },
@@ -224,6 +240,125 @@ class _ChangeApiKeyDialogState extends State<_ChangeApiKeyDialog> {
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ChangeTimeZoneRow extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<ConfigurationCubit, ConfigurationState>(
+      builder: (context, state) {
+        final rowText = state.timeZone ?? 'Set timezone';
+        return ListRow(
+          leadingIcon: const CircleBackground(
+            child: Icon(Icons.map),
+          ),
+          title: Text(rowText),
+          onTapped: () => showDialog<void>(
+            context: context,
+            builder: (_) => _ChangeTimeZoneDialog(
+              onTimezoneSelected: (timezone) {
+                context.read<ConfigurationCubit>().updateUserTimezone(timezone);
+                Navigator.pop(context);
+              },
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _ChangeTimeZoneDialog extends StatefulWidget {
+  const _ChangeTimeZoneDialog({
+    Key? key,
+    required ValueSetter<String> onTimezoneSelected,
+  })  : _onTimezoneSelected = onTimezoneSelected,
+        super(key: key);
+
+  final ValueSetter<String> _onTimezoneSelected;
+
+  @override
+  State<_ChangeTimeZoneDialog> createState() => _ChangeTimeZoneDialogState();
+}
+
+class _ChangeTimeZoneDialogState extends State<_ChangeTimeZoneDialog> {
+  late String _timezone;
+  List<String> _availableTimezones = <String>[];
+
+  @override
+  void initState() {
+    super.initState();
+    _initData();
+  }
+
+  // TODO(brandon): This is yuck, make a Cubit later
+  Future<void> _initData() async {
+    try {
+      _timezone = await FlutterNativeTimezone.getLocalTimezone();
+    } on Exception catch (e) {
+      log(e.toString());
+    }
+    try {
+      _availableTimezones = await FlutterNativeTimezone.getAvailableTimezones();
+      _availableTimezones.sort();
+    } on Exception catch (e) {
+      log(e.toString());
+    }
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      child: Scrollbar(
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // TODO(brandon): Move this out of the scrolling portion
+              ButtonBar(
+                children: [
+                  IconButton(
+                    onPressed: () => Navigator.pop(context),
+                    icon: const Icon(Icons.close),
+                  )
+                ],
+              ),
+              ListView.builder(
+                physics: const NeverScrollableScrollPhysics(),
+                primary: false,
+                padding: const EdgeInsets.all(8),
+                shrinkWrap: true,
+                itemCount: _availableTimezones.length,
+                itemBuilder: (context, index) {
+                  final timeZone = _availableTimezones[index];
+                  final isUserTimeZone = _timezone == timeZone;
+                  return InkWell(
+                    onTap: () => widget._onTimezoneSelected(timeZone),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: Row(
+                        children: [
+                          Text(timeZone),
+                          const Spacer(),
+                          Visibility(
+                            visible: isUserTimeZone,
+                            child: const Icon(Icons.check),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );

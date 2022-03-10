@@ -1,3 +1,4 @@
+import 'package:clock/clock.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:irri/features/programs/models/run.dart';
 
@@ -23,7 +24,7 @@ extension ListProgramX on List<Program> {
   /// Returns the runs that will run today,
   /// if any
   List<Run> todayRuns() {
-    final now = DateTime.now();
+    final now = clock.now();
     final dayOfWeek = now.weekday;
     final todayPrograms =
         where((element) => element.frequency.contains(dayOfWeek));

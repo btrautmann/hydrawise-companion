@@ -1,5 +1,6 @@
+// coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
-// ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides
+// ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target
 
 part of 'customer_details_cubit.dart';
 
@@ -44,6 +45,14 @@ mixin _$CustomerDetailsState {
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult Function()? loading,
+    TResult Function(
+            CustomerDetails customerDetails, CustomerStatus customerStatus)?
+        complete,
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? loading,
     TResult Function(
@@ -56,6 +65,12 @@ mixin _$CustomerDetailsState {
   TResult map<TResult extends Object?>({
     required TResult Function(_Loading value) loading,
     required TResult Function(_Complete value) complete,
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult Function(_Loading value)? loading,
+    TResult Function(_Complete value)? complete,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -132,6 +147,17 @@ class _$_Loading implements _Loading {
 
   @override
   @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult Function()? loading,
+    TResult Function(
+            CustomerDetails customerDetails, CustomerStatus customerStatus)?
+        complete,
+  }) {
+    return loading?.call();
+  }
+
+  @override
+  @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? loading,
     TResult Function(
@@ -152,6 +178,15 @@ class _$_Loading implements _Loading {
     required TResult Function(_Complete value) complete,
   }) {
     return loading(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult Function(_Loading value)? loading,
+    TResult Function(_Complete value)? complete,
+  }) {
+    return loading?.call(this);
   }
 
   @override
@@ -275,6 +310,17 @@ class _$_Complete implements _Complete {
 
   @override
   @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult Function()? loading,
+    TResult Function(
+            CustomerDetails customerDetails, CustomerStatus customerStatus)?
+        complete,
+  }) {
+    return complete?.call(customerDetails, customerStatus);
+  }
+
+  @override
+  @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? loading,
     TResult Function(
@@ -295,6 +341,15 @@ class _$_Complete implements _Complete {
     required TResult Function(_Complete value) complete,
   }) {
     return complete(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult Function(_Loading value)? loading,
+    TResult Function(_Complete value)? complete,
+  }) {
+    return complete?.call(this);
   }
 
   @override

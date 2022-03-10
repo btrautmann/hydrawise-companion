@@ -1,3 +1,4 @@
+import 'package:clock/clock.dart';
 import 'package:dio/dio.dart';
 import 'package:irri/features/customer_details/customer_details.dart';
 
@@ -22,9 +23,7 @@ class DemoModeInterceptor extends Interceptor {
                 Controller(
                   id: 1,
                   name: 'Fake Controller',
-                  // TODO(brandon): Use a framework we can
-                  // modify under test for time
-                  lastContact: DateTime.now().millisecondsSinceEpoch,
+                  lastContact: clock.now().millisecondsSinceEpoch,
                   serialNumber: 'fake-serial-number',
                   status: 'All good!',
                 )

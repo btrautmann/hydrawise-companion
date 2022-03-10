@@ -1,7 +1,4 @@
 // ignore_for_file: avoid_redundant_argument_values
-
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -13,7 +10,6 @@ import 'package:irri/features/app_theme_mode/app_theme_mode.dart';
 import 'package:irri/features/auth/auth.dart';
 import 'package:irri/features/customer_details/customer_details.dart';
 import 'package:irri/features/programs/programs.dart';
-import 'package:irri/features/push_notifications/push_notifications.dart';
 import 'package:provider/provider.dart';
 
 class IrriApp extends StatelessWidget {
@@ -64,14 +60,6 @@ class IrriApp extends StatelessWidget {
               deleteProgram: context.read<DeleteProgram>(),
             ),
           ),
-          BlocProvider(
-            create: (context) => PushNotificationsCubit(
-              getPushNotificationsEnabled:
-                  context.read<GetPushNotificationsEnabled>(),
-              registerForPushNotifications:
-                  context.read<RegisterForPushNotifications>(),
-            ),
-          ),
         ],
         child: BlocListener<AuthCubit, AuthState>(
           listener: (context, state) {
@@ -85,11 +73,9 @@ class IrriApp extends StatelessWidget {
             builder: (context, state) {
               return AppLifecycleStateObserver(
                 onForeground: () {
-                  log('onForegroundInvoked');
                   context.read<CustomerDetailsCubit>().resumePolling();
                 },
                 onBackground: () {
-                  log('onBackgroundInvoked');
                   context.read<CustomerDetailsCubit>().stopPolling();
                 },
                 child: MaterialApp.router(
@@ -119,7 +105,6 @@ ThemeData _buildLightTheme(BuildContext context) {
       iconTheme: const IconThemeData(
         color: AppColors.white50,
       ),
-      textTheme: _buildLightTextTheme(base.textTheme),
       color: AppColors.blue700,
       elevation: 0,
     ),
@@ -166,7 +151,6 @@ ThemeData _buildDarkTheme(BuildContext context) {
       iconTheme: const IconThemeData(
         color: AppColors.white50,
       ),
-      textTheme: darkTextTheme,
       color: AppColors.darkBottomAppBarBackground,
       elevation: 0,
     ),
@@ -321,16 +305,14 @@ ChipThemeData _buildChipTheme(
               ? AppColors.white50
               : AppColors.black900,
         ),
-    secondaryLabelStyle: GoogleFonts.workSansTextTheme().bodyText2!,
+    secondaryLabelStyle: GoogleFonts.workSansTextTheme().bodyText2,
     brightness: brightness,
   );
 }
 
 const ColorScheme _lightColorScheme = ColorScheme.light(
   primary: AppColors.blue700,
-  primaryVariant: AppColors.blue800,
   secondary: AppColors.orange500,
-  secondaryVariant: AppColors.orange400,
   surface: AppColors.white50,
   error: AppColors.red400,
   onPrimary: AppColors.white50,
@@ -343,9 +325,7 @@ const ColorScheme _lightColorScheme = ColorScheme.light(
 
 const ColorScheme _darkColorScheme = ColorScheme.dark(
   primary: AppColors.blue200,
-  primaryVariant: AppColors.blue300,
   secondary: AppColors.orange300,
-  secondaryVariant: AppColors.orange300,
   surface: AppColors.black800,
   error: AppColors.red200,
   onPrimary: AppColors.black900,

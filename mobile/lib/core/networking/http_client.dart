@@ -10,10 +10,14 @@ class HttpClient {
     required Dio dio,
     required String baseUrl,
     List<Interceptor>? interceptors,
+    HttpClientAdapter? customAdapter,
   }) : _dio = dio {
     _dio.options.baseUrl = baseUrl;
     if (interceptors != null) {
       _dio.interceptors.addAll(interceptors);
+    }
+    if (customAdapter != null) {
+      dio.httpClientAdapter = customAdapter;
     }
     _dio.options.responseDecoder = HydrawiseApiDecoder.decode;
   }

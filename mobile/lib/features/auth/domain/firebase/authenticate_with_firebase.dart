@@ -1,3 +1,4 @@
+import 'package:clock/clock.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:irri/features/auth/auth.dart';
@@ -23,7 +24,7 @@ class AuthenticateWithFirebase {
     if (uId != null) {
       await _firestore.collection('users').doc(uId).set(
         <String, dynamic>{
-          'authentication_time': DateTime.now().toString(),
+          'authentication_time': clock.now().toString(),
         },
         SetOptions(merge: true),
       );

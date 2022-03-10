@@ -1,3 +1,4 @@
+import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:irri/features/customer_details/customer_details.dart';
@@ -357,12 +358,10 @@ class _NextWaterText extends StatelessWidget {
       return const Text('Suspended');
     }
     if (zone.isRunning) {
-      // TODO(brandon): Use a framework we can
-      // modify under test for time
-      final endOfRun = DateTime.now().add(
-        Duration(seconds: zone.lengthOfNextRunTimeOrTimeRemaining),
-      );
-      final difference = DateTime.now().difference(endOfRun).abs();
+      final endOfRun = clock.now().add(
+            Duration(seconds: zone.lengthOfNextRunTimeOrTimeRemaining),
+          );
+      final difference = clock.now().difference(endOfRun).abs();
       if (difference.inHours > 1) {
         return Text('Running for ${difference.inHours} more hours');
       } else if (difference.inMinutes >= 1) {
@@ -372,7 +371,7 @@ class _NextWaterText extends StatelessWidget {
       }
     } else {
       final nextRun = zone.dateTimeOfNextRun;
-      final difference = DateTime.now().difference(nextRun).abs();
+      final difference = clock.now().difference(nextRun).abs();
       if (difference.inDays > 1) {
         return Text('Scheduled to water in ${difference.inDays} days');
       } else if (difference.inHours > 1) {

@@ -6,7 +6,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:irri/core/core.dart';
 import 'package:irri/features/app_theme_mode/app_theme_mode.dart';
 import 'package:irri/features/auth/domain/domain.dart';
-import 'package:irri/features/auth/domain/validate_api_key.dart';
+import 'package:irri/features/configuration/domain/domain.dart';
 import 'package:irri/features/customer_details/customer_details.dart';
 import 'package:irri/features/developer/developer.dart';
 import 'package:irri/features/programs/programs.dart';
@@ -62,12 +62,12 @@ abstract class ProductionDomainFactory {
     final getNextPollTime = GetNextPollTimeFromStorage(dataStorage);
     final setNextPollTime = SetNextPollTimeInStorage(dataStorage);
 
-    final getCustomerDetails = GetCustomerDetailsFromHydrawise(
+    final getCustomerDetails = GetCustomerDetails(
       httpClient: client,
       repository: repository,
       getApiKey: getApiKey,
     );
-    final getCustomerStatus = GetCustomerStatusFromHydrawise(
+    final getCustomerStatus = GetCustomerStatus(
       httpClient: client,
       repository: repository,
       getApiKey: getApiKey,
@@ -107,6 +107,9 @@ abstract class ProductionDomainFactory {
       repository: repository,
     );
 
+    final getUserTimezone = GetUserTimezone(repository: repository);
+    final updateUserTimezone = UpdateUserTimeZone(repository: repository);
+
     final shouldShowDeveloperUi = ShouldShowDeveloperEntryPoint(
       inDeveloperMode,
     );
@@ -140,6 +143,8 @@ abstract class ProductionDomainFactory {
       Provider<RegisterForPushNotifications>.value(
         value: registerForPushNotifications,
       ),
+      Provider<GetUserTimezone>.value(value: getUserTimezone),
+      Provider<UpdateUserTimeZone>.value(value: updateUserTimezone),
       Provider<ShouldShowDeveloperEntryPoint>.value(
         value: shouldShowDeveloperUi,
       ),
@@ -211,6 +216,9 @@ abstract class DevelopmentDomainFactory {
       repository: repository,
     );
 
+    final getUserTimezone = GetUserTimezone(repository: repository);
+    final updateUserTimezone = UpdateUserTimeZone(repository: repository);
+
     final shouldShowDeveloperUi = ShouldShowDeveloperEntryPoint(true);
 
     return [
@@ -242,6 +250,8 @@ abstract class DevelopmentDomainFactory {
       Provider<RegisterForPushNotifications>.value(
         value: registerForPushNotifications,
       ),
+      Provider<GetUserTimezone>.value(value: getUserTimezone),
+      Provider<UpdateUserTimeZone>.value(value: updateUserTimezone),
       Provider<ShouldShowDeveloperEntryPoint>.value(
         value: shouldShowDeveloperUi,
       ),

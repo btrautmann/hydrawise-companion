@@ -1,3 +1,4 @@
+import 'package:clock/clock.dart';
 import 'package:irri/core/core.dart';
 
 typedef SetNextPollTime = Future<void> Function({
@@ -11,10 +12,8 @@ class SetNextPollTimeInStorage {
 
   Future<void> call({required int secondsUntilNextPoll}) {
     // Store nextPollTime as millisecondsSinceEpoch
-    // TODO(brandon): Use a framework we can
-    // modify under test for time
     final nextPollTime =
-        DateTime.now().millisecondsSinceEpoch + (secondsUntilNextPoll * 1000);
+        clock.now().millisecondsSinceEpoch + (secondsUntilNextPoll * 1000);
 
     return _dataStorage.setInt('next_poll_time', nextPollTime);
   }

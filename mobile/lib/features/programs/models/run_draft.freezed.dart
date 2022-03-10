@@ -1,5 +1,6 @@
+// coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
-// ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides
+// ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target
 
 part of 'run_draft.dart';
 
@@ -59,6 +60,14 @@ mixin _$RunDraft {
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult Function(TimeOfDay timeOfDay, List<int> zoneIds, Duration duration)?
+        creation,
+    TResult Function(TimeOfDay timeOfDay, List<int> zoneIds, Duration duration)?
+        modification,
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(TimeOfDay timeOfDay, List<int> zoneIds, Duration duration)?
         creation,
@@ -71,6 +80,12 @@ mixin _$RunDraft {
   TResult map<TResult extends Object?>({
     required TResult Function(_RunCreation value) creation,
     required TResult Function(_RunModification value) modification,
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult Function(_RunCreation value)? creation,
+    TResult Function(_RunModification value)? modification,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -226,6 +241,17 @@ class _$_RunCreation implements _RunCreation {
 
   @override
   @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult Function(TimeOfDay timeOfDay, List<int> zoneIds, Duration duration)?
+        creation,
+    TResult Function(TimeOfDay timeOfDay, List<int> zoneIds, Duration duration)?
+        modification,
+  }) {
+    return creation?.call(timeOfDay, zoneIds, duration);
+  }
+
+  @override
+  @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(TimeOfDay timeOfDay, List<int> zoneIds, Duration duration)?
         creation,
@@ -246,6 +272,15 @@ class _$_RunCreation implements _RunCreation {
     required TResult Function(_RunModification value) modification,
   }) {
     return creation(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult Function(_RunCreation value)? creation,
+    TResult Function(_RunModification value)? modification,
+  }) {
+    return creation?.call(this);
   }
 
   @override
@@ -383,6 +418,17 @@ class _$_RunModification implements _RunModification {
 
   @override
   @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult Function(TimeOfDay timeOfDay, List<int> zoneIds, Duration duration)?
+        creation,
+    TResult Function(TimeOfDay timeOfDay, List<int> zoneIds, Duration duration)?
+        modification,
+  }) {
+    return modification?.call(timeOfDay, zoneIds, duration);
+  }
+
+  @override
+  @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(TimeOfDay timeOfDay, List<int> zoneIds, Duration duration)?
         creation,
@@ -403,6 +449,15 @@ class _$_RunModification implements _RunModification {
     required TResult Function(_RunModification value) modification,
   }) {
     return modification(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult Function(_RunCreation value)? creation,
+    TResult Function(_RunModification value)? modification,
+  }) {
+    return modification?.call(this);
   }
 
   @override

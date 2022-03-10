@@ -1,15 +1,11 @@
+import 'package:clock/clock.dart';
 import 'package:irri/core/core.dart';
 import 'package:irri/features/auth/auth.dart';
 import 'package:irri/features/customer_details/customer_details.dart';
 import 'package:result_type/result_type.dart';
 
-typedef GetCustomerStatus = Future<UseCaseResult<CustomerStatus, String>>
-    Function({
-  int? activeControllerId,
-});
-
-class GetCustomerStatusFromHydrawise {
-  GetCustomerStatusFromHydrawise({
+class GetCustomerStatus {
+  GetCustomerStatus({
     required HttpClient httpClient,
     required CustomerDetailsRepository repository,
     required GetApiKey getApiKey,
@@ -32,9 +28,7 @@ class GetCustomerStatusFromHydrawise {
   }) async {
     final nextPollTime = await _getNextPollTime();
 
-    // TODO(brandon): Use a framework we can
-    // modify under test for time
-    if (DateTime.now().isAfter(nextPollTime)) {
+    if (clock.now().isAfter(nextPollTime)) {
       final apiKey = await _getApiKey();
       final queryParameters = {
         'api_key': apiKey!,
@@ -59,60 +53,22 @@ class GetCustomerStatusFromHydrawise {
 
         return Success(customerStatus);
       }
-
-      return Failure("Can't fetch customer status");
     }
 
     final zones = await _repository.getZones();
     final customer = await _repository.getCustomer();
 
-    return Success(
-      CustomerStatus(
-        // TODO(brandon): Use a framework we can
-        // modify under test for time
-        numberOfSecondsUntilNextRequest:
-            DateTime.now().difference(nextPollTime).inSeconds.abs(),
-        timeOfLastStatusUnixEpoch: customer.lastStatusUpdate,
-        zones: zones,
-      ),
-    );
-  }
-}
-
-class GetFakeCustomerStatus {
-  GetFakeCustomerStatus({
-    required CustomerDetailsRepository repository,
-  }) : _repository = repository;
-
-  final CustomerDetailsRepository _repository;
-
-  Future<UseCaseResult<CustomerStatus, String>> call({
-    int? activeControllerId,
-  }) async {
-    final zones = <Zone>[];
-    final queriedZones = await _repository.getZones();
-    final customer = await _repository.getCustomer();
-    if (queriedZones.isEmpty) {
-      // Insert some dummy zones
-      final fakeZone = Zone(
-        id: 1,
-        physicalNumber: 1,
-        name: 'Fake Zone',
-        nextTimeOfWaterFriendly: '7:00',
-        secondsUntilNextRun: 60,
-        lengthOfNextRunTimeOrTimeRemaining: 60,
+    if (customer != null) {
+      return Success(
+        CustomerStatus(
+          numberOfSecondsUntilNextRequest:
+              clock.now().difference(nextPollTime).inSeconds.abs(),
+          timeOfLastStatusUnixEpoch: customer.lastStatusUpdate,
+          zones: zones,
+        ),
       );
-      await _repository.insertZone(fakeZone);
-    } else {
-      zones.addAll(queriedZones);
     }
 
-    return Success(
-      CustomerStatus(
-        numberOfSecondsUntilNextRequest: 5,
-        timeOfLastStatusUnixEpoch: customer.lastStatusUpdate,
-        zones: zones,
-      ),
-    );
+    return Failure("Can't fetch customer status");
   }
 }

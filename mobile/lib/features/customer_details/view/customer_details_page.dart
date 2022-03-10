@@ -1,11 +1,10 @@
+import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:irri/core-ui/core_ui.dart';
-import 'package:irri/core-ui/widgets/h_stretch.dart';
 import 'package:irri/features/customer_details/customer_details.dart';
 import 'package:irri/features/developer/developer.dart';
-import 'package:irri/features/programs/cubit/programs_cubit.dart';
 import 'package:irri/features/programs/programs.dart';
 import 'package:irri/features/weather/weather.dart';
 
@@ -103,9 +102,7 @@ class _Greeting extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    // TODO(brandon): Use a framework we can
-    // modify under test for time
-    final dateTime = DateTime.now();
+    final dateTime = clock.now();
     String text;
     if (dateTime.hour < 12) {
       text = 'Good morning';

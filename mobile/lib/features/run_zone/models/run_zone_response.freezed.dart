@@ -1,5 +1,6 @@
+// coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
-// ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides
+// ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target
 
 part of 'run_zone_response.dart';
 
@@ -136,7 +137,7 @@ class _$_RunZoneResponse implements _RunZoneResponse {
       @JsonKey(name: 'message_type') required this.typeOfMessage});
 
   factory _$_RunZoneResponse.fromJson(Map<String, dynamic> json) =>
-      _$_$_RunZoneResponseFromJson(json);
+      _$$_RunZoneResponseFromJson(json);
 
   @override
   @JsonKey(name: 'message')
@@ -175,7 +176,7 @@ class _$_RunZoneResponse implements _RunZoneResponse {
 
   @override
   Map<String, dynamic> toJson() {
-    return _$_$_RunZoneResponseToJson(this);
+    return _$$_RunZoneResponseToJson(this);
   }
 }
 

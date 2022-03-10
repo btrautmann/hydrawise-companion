@@ -1,5 +1,4 @@
 import 'package:irri/features/auth/auth.dart';
-import 'package:irri/features/auth/domain/validate_api_key.dart';
 
 class LogIn {
   LogIn({

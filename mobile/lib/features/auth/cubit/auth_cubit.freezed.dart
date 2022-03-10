@@ -1,5 +1,6 @@
+// coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
-// ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides
+// ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target
 
 part of 'auth_cubit.dart';
 
@@ -37,6 +38,12 @@ mixin _$AuthState {
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult Function()? loggedIn,
+    TResult Function()? loggedOut,
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? loggedIn,
     TResult Function()? loggedOut,
@@ -47,6 +54,12 @@ mixin _$AuthState {
   TResult map<TResult extends Object?>({
     required TResult Function(_LoggedIn value) loggedIn,
     required TResult Function(_LoggedOut value) loggedOut,
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult Function(_LoggedIn value)? loggedIn,
+    TResult Function(_LoggedOut value)? loggedOut,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -118,6 +131,15 @@ class _$_LoggedIn implements _LoggedIn {
 
   @override
   @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult Function()? loggedIn,
+    TResult Function()? loggedOut,
+  }) {
+    return loggedIn?.call();
+  }
+
+  @override
+  @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? loggedIn,
     TResult Function()? loggedOut,
@@ -136,6 +158,15 @@ class _$_LoggedIn implements _LoggedIn {
     required TResult Function(_LoggedOut value) loggedOut,
   }) {
     return loggedIn(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult Function(_LoggedIn value)? loggedIn,
+    TResult Function(_LoggedOut value)? loggedOut,
+  }) {
+    return loggedIn?.call(this);
   }
 
   @override
@@ -202,6 +233,15 @@ class _$_LoggedOut implements _LoggedOut {
 
   @override
   @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult Function()? loggedIn,
+    TResult Function()? loggedOut,
+  }) {
+    return loggedOut?.call();
+  }
+
+  @override
+  @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? loggedIn,
     TResult Function()? loggedOut,
@@ -220,6 +260,15 @@ class _$_LoggedOut implements _LoggedOut {
     required TResult Function(_LoggedOut value) loggedOut,
   }) {
     return loggedOut(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult Function(_LoggedIn value)? loggedIn,
+    TResult Function(_LoggedOut value)? loggedOut,
+  }) {
+    return loggedOut?.call(this);
   }
 
   @override

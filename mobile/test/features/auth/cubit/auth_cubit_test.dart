@@ -4,7 +4,6 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:irri/core/core.dart';
 import 'package:irri/features/auth/auth.dart';
-import 'package:irri/features/auth/domain/validate_api_key.dart';
 import 'package:irri/features/customer_details/customer_details.dart';
 
 void main() {

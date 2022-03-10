@@ -33,21 +33,3 @@ class ValidateApiKey {
     return response.isSuccess;
   }
 }
-
-class FakeValidateApiKey implements ValidateApiKey {
-  FakeValidateApiKey({
-    required SetApiKey setApiKey,
-  }) : _setApiKey = setApiKey;
-
-  @override
-  final SetApiKey _setApiKey;
-
-  @override
-  HttpClient get _httpClient => throw UnimplementedError();
-
-  @override
-  Future<bool> call(String apiKey) async {
-    await _setApiKey(apiKey);
-    return true;
-  }
-}
