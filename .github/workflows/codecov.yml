@@ -26,10 +26,16 @@ jobs:
         with:
           channel: ${{ env.FLUTTER_BUILD_CHANNEL }}
           flutter-version: ${{ env.FLUTTER_BUILD_VERSION }}
+          
+      - name: Install remove_from_coverage
+        run: dart pub global activate remove_from_coverage
 
       - name: Run code coverage
         run: flutter test --coverage --test-randomize-ordering-seed random lib
         working-directory: mobile
+        
+      - name: Remove generated files
+        run: remove_from_coverage -f coverage/lcov.info -r '\.g\.dart$' && remove_from_coverage -f coverage/lcov.info -r '\.freezed\.dart$'
 
       - uses: codecov/codecov-action@v2
         with:
