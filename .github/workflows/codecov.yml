@@ -29,9 +29,9 @@ jobs:
 
       - name: Run code coverage
         run: flutter test --coverage --test-randomize-ordering-seed random lib
-        working-directory: mobile/flutter
+        working-directory: mobile
 
       - uses: codecov/codecov-action@v2
         with:
-          files: mobile/flutter/coverage/lcov.info
+          files: mobile/coverage/lcov.info
 
