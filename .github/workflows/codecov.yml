@@ -36,6 +36,7 @@ jobs:
         
       - name: Remove generated files
         run: remove_from_coverage -f coverage/lcov.info -r '\.g\.dart$' && remove_from_coverage -f coverage/lcov.info -r '\.freezed\.dart$'
+        working-directory: mobile
 
       - uses: codecov/codecov-action@v2
         with:
