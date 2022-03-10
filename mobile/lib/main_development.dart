@@ -1,7 +1,7 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/widgets.dart';
 import 'package:irri/app/app_bloc_observer.dart';
 import 'package:irri/app/domain/app_domain_factory.dart';
@@ -12,7 +12,7 @@ import 'package:irri/features/customer_details/customer_details.dart';
 
 Future<void> main() async {
   FlutterError.onError = (details) {
-    print(details.exceptionAsString());
+    log(details.exceptionAsString());
   };
 
   await runZonedGuarded(
@@ -43,6 +43,6 @@ Future<void> main() async {
         blocObserver: AppBlocObserver(),
       );
     },
-    (error, stackTrace) => print(error.toString()),
+    (error, stackTrace) => log(error.toString()),
   );
 }
