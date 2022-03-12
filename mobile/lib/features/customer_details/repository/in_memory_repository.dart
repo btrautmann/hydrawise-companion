@@ -16,6 +16,11 @@ class InMemoryCustomerDetailsRepository implements CustomerDetailsRepository {
   }
 
   @override
+  Future<void> removeFcmToken(String token) async {
+    _fcmTokens.remove(token);
+  }
+
+  @override
   Future<List<String>> getRegisteredFcmTokens() async {
     return _fcmTokens;
   }

@@ -45,6 +45,15 @@ class FirebaseBackedCustomerDetailsRepository
   }
 
   @override
+  Future<void> removeFcmToken(String token) {
+    return _getUserDocument().then(
+      (value) => value.update({
+        'fcm_tokens': FieldValue.arrayRemove([token]),
+      }),
+    );
+  }
+
+  @override
   Future<List<String>> getRegisteredFcmTokens() {
     return _getUserDocument().then(
       (d) => d.get().then((user) {

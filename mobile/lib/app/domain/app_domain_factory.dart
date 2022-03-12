@@ -107,6 +107,11 @@ abstract class ProductionDomainFactory {
       repository: repository,
     );
 
+    final unregisterForPushNotifications = UnregisterForPushNotifications(
+      firebaseMessaging: firebaseMessaging,
+      repository: repository,
+    );
+
     final getUserTimezone = GetUserTimezone(repository: repository);
     final updateUserTimezone = UpdateUserTimeZone(repository: repository);
 
@@ -142,6 +147,9 @@ abstract class ProductionDomainFactory {
       ),
       Provider<RegisterForPushNotifications>.value(
         value: registerForPushNotifications,
+      ),
+      Provider<UnregisterForPushNotifications>.value(
+        value: unregisterForPushNotifications,
       ),
       Provider<GetUserTimezone>.value(value: getUserTimezone),
       Provider<UpdateUserTimeZone>.value(value: updateUserTimezone),
@@ -215,6 +223,9 @@ abstract class DevelopmentDomainFactory {
     final registerForPushNotifications = FakeRegisterForPushNotifications(
       repository: repository,
     );
+    final unregisterForPushNotifications = FakeUnregisterForPushNotifications(
+      repository: repository,
+    );
 
     final getUserTimezone = GetUserTimezone(repository: repository);
     final updateUserTimezone = UpdateUserTimeZone(repository: repository);
@@ -249,6 +260,9 @@ abstract class DevelopmentDomainFactory {
       ),
       Provider<RegisterForPushNotifications>.value(
         value: registerForPushNotifications,
+      ),
+      Provider<UnregisterForPushNotifications>.value(
+        value: unregisterForPushNotifications,
       ),
       Provider<GetUserTimezone>.value(value: getUserTimezone),
       Provider<UpdateUserTimeZone>.value(value: updateUserTimezone),

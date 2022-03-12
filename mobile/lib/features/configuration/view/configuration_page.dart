@@ -21,6 +21,8 @@ class ConfigurationPage extends StatelessWidget {
                 context.read<GetPushNotificationsEnabled>(),
             registerForPushNotifications:
                 context.read<RegisterForPushNotifications>(),
+            unregisterForPushNotifications:
+                context.read<UnregisterForPushNotifications>(),
             getUserTimezone: context.read<GetUserTimezone>(),
             updateUserTimeZone: context.read<UpdateUserTimeZone>(),
           ),
@@ -166,7 +168,13 @@ class _PushNotificationsRow extends StatelessWidget {
           ),
           title: Text(title),
           onTapped: () {
-            context.read<ConfigurationCubit>().registerForPushNotifications();
+            if (state.pushNotificationsEnabled) {
+              context
+                  .read<ConfigurationCubit>()
+                  .unregisterForPushNotifications();
+            } else {
+              context.read<ConfigurationCubit>().registerForPushNotifications();
+            }
           },
         );
       },
