@@ -172,7 +172,7 @@ class ProgramsPageView extends StatelessWidget {
                     onPressed: () {
                       GoRouter.of(context).push('/create_program');
                     },
-                    child: const Text('ADD PROGRAM'),
+                    child: const Text('Add Program'),
                   )
                 ],
               ),

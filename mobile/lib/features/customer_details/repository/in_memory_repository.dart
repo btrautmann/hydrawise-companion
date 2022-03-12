@@ -107,7 +107,10 @@ class InMemoryCustomerDetailsRepository implements CustomerDetailsRepository {
 
   @override
   Future<List<Program>> getPrograms() async {
-    return _programs;
+    return _programs
+        .map((e) => e.copyWith(
+            runs: _runs.where((element) => element.programId == e.id).toList()))
+        .toList();
   }
 
   @override
