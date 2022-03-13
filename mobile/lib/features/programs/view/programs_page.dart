@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -52,37 +54,87 @@ class ProgramsPageView extends StatelessWidget {
         }
       },
       builder: (context, state) {
+        return Center(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: Text(
+                  'Irrigation',
+                  style: Theme.of(context).textTheme.headline5,
+                ),
+              ),
+              const VSpace(spacing: 16),
+              Expanded(
+                flex: 2,
+                child: BlocBuilder<CustomerDetailsCubit, CustomerDetailsState>(
+                  builder: (context, state) {
+                    return state.maybeWhen(
+                      complete: (details, status) {
+                        return Padding(
+                          padding: const EdgeInsets.only(left: 16, right: 16),
+                          child: _ZoneList(
+                            zones: status.zones,
+                            onZoneTapped: (zone) {
+                              log('$zone tapped');
+                            },
+                          ),
+                        );
+                      },
+                      orElse: () => const Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                    );
+                  },
+                ),
+              ),
+              Expanded(
+                flex: 8,
+                child: _Programs(),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
+
+class ProgramDetailsDialog extends StatelessWidget {
+  const ProgramDetailsDialog({
+    Key? key,
+    required Program program,
+  })  : _program = program,
+        super(key: key);
+
+  final Program _program;
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(_program.name),
+            Text(_program.frequency.toString()),
+            Text(_program.runs.toString()),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _Programs extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<ProgramsCubit, ProgramsState>(
+      builder: (context, state) {
         return Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: Row(
-                children: [
-                  Text(
-                    'Irrigation',
-                    style: Theme.of(context).textTheme.headline5,
-                  ),
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 16),
-              child: BlocBuilder<CustomerDetailsCubit, CustomerDetailsState>(
-                builder: (context, state) {
-                  return state.maybeWhen(
-                    complete: (details, status) {
-                      return _ZoneList(
-                        zones: status.zones,
-                        onZoneTapped: (zone) {},
-                      );
-                    },
-                    orElse: () => const Center(
-                      child: CircularProgressIndicator(),
-                    ),
-                  );
-                },
-              ),
-            ),
             Visibility(visible: state.programs.isEmpty, child: const Spacer()),
             Visibility(
               visible: state.programs.isEmpty,
@@ -185,33 +237,6 @@ class ProgramsPageView extends StatelessWidget {
   }
 }
 
-class ProgramDetailsDialog extends StatelessWidget {
-  const ProgramDetailsDialog({
-    Key? key,
-    required Program program,
-  })  : _program = program,
-        super(key: key);
-
-  final Program _program;
-
-  @override
-  Widget build(BuildContext context) {
-    return Dialog(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(_program.name),
-            Text(_program.frequency.toString()),
-            Text(_program.runs.toString()),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
 class _ZoneList extends StatelessWidget {
   const _ZoneList({
     Key? key,
@@ -224,53 +249,16 @@ class _ZoneList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        ListView.builder(
-          primary: false,
-          physics: const NeverScrollableScrollPhysics(),
-          shrinkWrap: true,
-          itemCount: zones.length,
-          itemBuilder: (_, index) {
-            return _ZoneCell(
-              zone: zones[index],
-              onZoneTapped: onZoneTapped,
-            );
-          },
-        ),
-      ],
-    );
-  }
-}
-
-class _ZoneCell extends StatelessWidget {
-  const _ZoneCell({
-    Key? key,
-    required this.zone,
-    required this.onZoneTapped,
-  }) : super(key: key);
-
-  final Zone zone;
-  final ValueSetter<Zone> onZoneTapped;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        ListRow(
-          leadingIcon: CircleBackground(
-            child: Text(zone.physicalNumber.toString()),
-          ),
-          title: Text(zone.name),
-          onTapped: () => onZoneTapped(zone),
-        ),
-        const Divider(
-          indent: 16,
-        ),
-      ],
+    return ListView.builder(
+      scrollDirection: Axis.horizontal,
+      primary: false,
+      itemCount: zones.length,
+      itemBuilder: (_, index) {
+        return ZoneCell(
+          zone: zones[index],
+          onZoneTapped: onZoneTapped,
+        );
+      },
     );
   }
 }
