@@ -1,7 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:irri/features/configuration/domain/get_user_timezone.dart';
-import 'package:irri/features/configuration/domain/update_user_timezone.dart';
+import 'package:irri/features/configuration/configuration.dart';
 import 'package:irri/features/push_notifications/push_notifications.dart';
 
 part 'configuration_state.dart';
@@ -10,11 +9,15 @@ part 'configuration_cubit.freezed.dart';
 class ConfigurationCubit extends Cubit<ConfigurationState> {
   ConfigurationCubit({
     required GetPushNotificationsEnabled getPushNotificationsEnabled,
+    required GetLocalTimezone getLocalTimezone,
+    required GetAvailableTimezones getAvailableTimezones,
     required RegisterForPushNotifications registerForPushNotifications,
     required UnregisterForPushNotifications unregisterForPushNotifications,
     required GetUserTimezone getUserTimezone,
     required UpdateUserTimeZone updateUserTimeZone,
   })  : _getPushNotificationsEnabled = getPushNotificationsEnabled,
+        _getLocalTimezone = getLocalTimezone,
+        _getAvailableTimezones = getAvailableTimezones,
         _registerForPushNotifications = registerForPushNotifications,
         _unregisterForPushNotifications = unregisterForPushNotifications,
         _getUserTimezone = getUserTimezone,
@@ -24,19 +27,20 @@ class ConfigurationCubit extends Cubit<ConfigurationState> {
   }
 
   final GetPushNotificationsEnabled _getPushNotificationsEnabled;
+  final GetLocalTimezone _getLocalTimezone;
+  final GetAvailableTimezones _getAvailableTimezones;
   final RegisterForPushNotifications _registerForPushNotifications;
   final UnregisterForPushNotifications _unregisterForPushNotifications;
   final GetUserTimezone _getUserTimezone;
   final UpdateUserTimeZone _updateUserTimeZone;
 
   Future<void> _initState() async {
-    final pushEnabled = await _getPushNotificationsEnabled();
-    final userTimeZone = await _getUserTimezone();
-
     emit(
       state.copyWith(
-        pushNotificationsEnabled: pushEnabled,
-        timeZone: userTimeZone,
+        pushNotificationsEnabled: await _getPushNotificationsEnabled(),
+        timeZone: await _getUserTimezone(),
+        localTimezone: await _getLocalTimezone(),
+        availableTimezones: await _getAvailableTimezones(),
       ),
     );
   }

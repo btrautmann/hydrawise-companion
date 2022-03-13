@@ -111,16 +111,15 @@ class _$_HomeState implements _HomeState {
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
-        (other is _HomeState &&
-            (identical(other.selectedTabIndex, selectedTabIndex) ||
-                const DeepCollectionEquality()
-                    .equals(other.selectedTabIndex, selectedTabIndex)));
+        (other.runtimeType == runtimeType &&
+            other is _HomeState &&
+            const DeepCollectionEquality()
+                .equals(other.selectedTabIndex, selectedTabIndex));
   }
 
   @override
-  int get hashCode =>
-      runtimeType.hashCode ^
-      const DeepCollectionEquality().hash(selectedTabIndex);
+  int get hashCode => Object.hash(
+      runtimeType, const DeepCollectionEquality().hash(selectedTabIndex));
 
   @JsonKey(ignore: true)
   @override
@@ -132,7 +131,7 @@ abstract class _HomeState implements HomeState {
   factory _HomeState({required int selectedTabIndex}) = _$_HomeState;
 
   @override
-  int get selectedTabIndex => throw _privateConstructorUsedError;
+  int get selectedTabIndex;
   @override
   @JsonKey(ignore: true)
   _$HomeStateCopyWith<_HomeState> get copyWith =>

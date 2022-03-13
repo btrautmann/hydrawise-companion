@@ -32,7 +32,7 @@ class _$CustomerStatusTearOff {
     );
   }
 
-  CustomerStatus fromJson(Map<String, Object> json) {
+  CustomerStatus fromJson(Map<String, Object?> json) {
     return CustomerStatus.fromJson(json);
   }
 }
@@ -176,27 +176,22 @@ class _$_CustomerStatus implements _CustomerStatus {
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
-        (other is _CustomerStatus &&
-            (identical(other.numberOfSecondsUntilNextRequest,
-                    numberOfSecondsUntilNextRequest) ||
-                const DeepCollectionEquality().equals(
-                    other.numberOfSecondsUntilNextRequest,
-                    numberOfSecondsUntilNextRequest)) &&
-            (identical(other.timeOfLastStatusUnixEpoch,
-                    timeOfLastStatusUnixEpoch) ||
-                const DeepCollectionEquality().equals(
-                    other.timeOfLastStatusUnixEpoch,
-                    timeOfLastStatusUnixEpoch)) &&
-            (identical(other.zones, zones) ||
-                const DeepCollectionEquality().equals(other.zones, zones)));
+        (other.runtimeType == runtimeType &&
+            other is _CustomerStatus &&
+            const DeepCollectionEquality().equals(
+                other.numberOfSecondsUntilNextRequest,
+                numberOfSecondsUntilNextRequest) &&
+            const DeepCollectionEquality().equals(
+                other.timeOfLastStatusUnixEpoch, timeOfLastStatusUnixEpoch) &&
+            const DeepCollectionEquality().equals(other.zones, zones));
   }
 
   @override
-  int get hashCode =>
-      runtimeType.hashCode ^
-      const DeepCollectionEquality().hash(numberOfSecondsUntilNextRequest) ^
-      const DeepCollectionEquality().hash(timeOfLastStatusUnixEpoch) ^
-      const DeepCollectionEquality().hash(zones);
+  int get hashCode => Object.hash(
+      runtimeType,
+      const DeepCollectionEquality().hash(numberOfSecondsUntilNextRequest),
+      const DeepCollectionEquality().hash(timeOfLastStatusUnixEpoch),
+      const DeepCollectionEquality().hash(zones));
 
   @JsonKey(ignore: true)
   @override
@@ -220,13 +215,13 @@ abstract class _CustomerStatus implements CustomerStatus {
 
   @override
   @JsonKey(name: 'nextpoll')
-  int get numberOfSecondsUntilNextRequest => throw _privateConstructorUsedError;
+  int get numberOfSecondsUntilNextRequest;
   @override
   @JsonKey(name: 'time')
-  int get timeOfLastStatusUnixEpoch => throw _privateConstructorUsedError;
+  int get timeOfLastStatusUnixEpoch;
   @override
   @JsonKey(name: 'relays')
-  List<Zone> get zones => throw _privateConstructorUsedError;
+  List<Zone> get zones;
   @override
   @JsonKey(ignore: true)
   _$CustomerStatusCopyWith<_CustomerStatus> get copyWith =>

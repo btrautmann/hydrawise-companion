@@ -144,7 +144,8 @@ class _$_NoLocationInformation implements _NoLocationInformation {
 
   @override
   bool operator ==(dynamic other) {
-    return identical(this, other) || (other is _NoLocationInformation);
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType && other is _NoLocationInformation);
   }
 
   @override
@@ -259,7 +260,8 @@ class _$_Loading implements _Loading {
 
   @override
   bool operator ==(dynamic other) {
-    return identical(this, other) || (other is _Loading);
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType && other is _Loading);
   }
 
   @override
@@ -390,14 +392,14 @@ class _$_Error implements _Error {
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
-        (other is _Error &&
-            (identical(other.message, message) ||
-                const DeepCollectionEquality().equals(other.message, message)));
+        (other.runtimeType == runtimeType &&
+            other is _Error &&
+            const DeepCollectionEquality().equals(other.message, message));
   }
 
   @override
   int get hashCode =>
-      runtimeType.hashCode ^ const DeepCollectionEquality().hash(message);
+      Object.hash(runtimeType, const DeepCollectionEquality().hash(message));
 
   @JsonKey(ignore: true)
   @override
@@ -483,7 +485,7 @@ class _$_Error implements _Error {
 abstract class _Error implements WeatherDetailsState {
   factory _Error(String message) = _$_Error;
 
-  String get message => throw _privateConstructorUsedError;
+  String get message;
   @JsonKey(ignore: true)
   _$ErrorCopyWith<_Error> get copyWith => throw _privateConstructorUsedError;
 }
@@ -534,16 +536,15 @@ class _$_Complete implements _Complete {
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
-        (other is _Complete &&
-            (identical(other.fiveDayForecast, fiveDayForecast) ||
-                const DeepCollectionEquality()
-                    .equals(other.fiveDayForecast, fiveDayForecast)));
+        (other.runtimeType == runtimeType &&
+            other is _Complete &&
+            const DeepCollectionEquality()
+                .equals(other.fiveDayForecast, fiveDayForecast));
   }
 
   @override
-  int get hashCode =>
-      runtimeType.hashCode ^
-      const DeepCollectionEquality().hash(fiveDayForecast);
+  int get hashCode => Object.hash(
+      runtimeType, const DeepCollectionEquality().hash(fiveDayForecast));
 
   @JsonKey(ignore: true)
   @override
@@ -629,7 +630,7 @@ class _$_Complete implements _Complete {
 abstract class _Complete implements WeatherDetailsState {
   factory _Complete({required List<Weather> fiveDayForecast}) = _$_Complete;
 
-  List<Weather> get fiveDayForecast => throw _privateConstructorUsedError;
+  List<Weather> get fiveDayForecast;
   @JsonKey(ignore: true)
   _$CompleteCopyWith<_Complete> get copyWith =>
       throw _privateConstructorUsedError;

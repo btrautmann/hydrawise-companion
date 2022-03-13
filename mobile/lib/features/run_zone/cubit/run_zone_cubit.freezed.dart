@@ -134,14 +134,14 @@ class _$_Resting implements _Resting {
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
-        (other is _Resting &&
-            (identical(other.message, message) ||
-                const DeepCollectionEquality().equals(other.message, message)));
+        (other.runtimeType == runtimeType &&
+            other is _Resting &&
+            const DeepCollectionEquality().equals(other.message, message));
   }
 
   @override
   int get hashCode =>
-      runtimeType.hashCode ^ const DeepCollectionEquality().hash(message);
+      Object.hash(runtimeType, const DeepCollectionEquality().hash(message));
 
   @JsonKey(ignore: true)
   @override
@@ -214,7 +214,7 @@ class _$_Resting implements _Resting {
 abstract class _Resting implements RunZoneState {
   factory _Resting({String? message}) = _$_Resting;
 
-  String? get message => throw _privateConstructorUsedError;
+  String? get message;
   @JsonKey(ignore: true)
   _$RestingCopyWith<_Resting> get copyWith =>
       throw _privateConstructorUsedError;
@@ -248,7 +248,8 @@ class _$_Loading implements _Loading {
 
   @override
   bool operator ==(dynamic other) {
-    return identical(this, other) || (other is _Loading);
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType && other is _Loading);
   }
 
   @override

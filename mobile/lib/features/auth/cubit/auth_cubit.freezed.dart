@@ -114,7 +114,8 @@ class _$_LoggedIn implements _LoggedIn {
 
   @override
   bool operator ==(dynamic other) {
-    return identical(this, other) || (other is _LoggedIn);
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType && other is _LoggedIn);
   }
 
   @override
@@ -216,7 +217,8 @@ class _$_LoggedOut implements _LoggedOut {
 
   @override
   bool operator ==(dynamic other) {
-    return identical(this, other) || (other is _LoggedOut);
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType && other is _LoggedOut);
   }
 
   @override

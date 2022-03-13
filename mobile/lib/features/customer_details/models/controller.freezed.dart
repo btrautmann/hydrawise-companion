@@ -36,7 +36,7 @@ class _$ControllerTearOff {
     );
   }
 
-  Controller fromJson(Map<String, Object> json) {
+  Controller fromJson(Map<String, Object?> json) {
     return Controller.fromJson(json);
   }
 }
@@ -211,29 +211,25 @@ class _$_Controller implements _Controller {
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
-        (other is _Controller &&
-            (identical(other.name, name) ||
-                const DeepCollectionEquality().equals(other.name, name)) &&
-            (identical(other.lastContact, lastContact) ||
-                const DeepCollectionEquality()
-                    .equals(other.lastContact, lastContact)) &&
-            (identical(other.serialNumber, serialNumber) ||
-                const DeepCollectionEquality()
-                    .equals(other.serialNumber, serialNumber)) &&
-            (identical(other.id, id) ||
-                const DeepCollectionEquality().equals(other.id, id)) &&
-            (identical(other.status, status) ||
-                const DeepCollectionEquality().equals(other.status, status)));
+        (other.runtimeType == runtimeType &&
+            other is _Controller &&
+            const DeepCollectionEquality().equals(other.name, name) &&
+            const DeepCollectionEquality()
+                .equals(other.lastContact, lastContact) &&
+            const DeepCollectionEquality()
+                .equals(other.serialNumber, serialNumber) &&
+            const DeepCollectionEquality().equals(other.id, id) &&
+            const DeepCollectionEquality().equals(other.status, status));
   }
 
   @override
-  int get hashCode =>
-      runtimeType.hashCode ^
-      const DeepCollectionEquality().hash(name) ^
-      const DeepCollectionEquality().hash(lastContact) ^
-      const DeepCollectionEquality().hash(serialNumber) ^
-      const DeepCollectionEquality().hash(id) ^
-      const DeepCollectionEquality().hash(status);
+  int get hashCode => Object.hash(
+      runtimeType,
+      const DeepCollectionEquality().hash(name),
+      const DeepCollectionEquality().hash(lastContact),
+      const DeepCollectionEquality().hash(serialNumber),
+      const DeepCollectionEquality().hash(id),
+      const DeepCollectionEquality().hash(status));
 
   @JsonKey(ignore: true)
   @override
@@ -259,19 +255,19 @@ abstract class _Controller implements Controller {
 
   @override
   @JsonKey(name: 'name')
-  String get name => throw _privateConstructorUsedError;
+  String get name;
   @override
   @JsonKey(name: 'last_contact')
-  int get lastContact => throw _privateConstructorUsedError;
+  int get lastContact;
   @override
   @JsonKey(name: 'serial_number')
-  String get serialNumber => throw _privateConstructorUsedError;
+  String get serialNumber;
   @override
   @JsonKey(name: 'controller_id')
-  int get id => throw _privateConstructorUsedError;
+  int get id;
   @override
   @JsonKey(name: 'status')
-  String get status => throw _privateConstructorUsedError;
+  String get status;
   @override
   @JsonKey(ignore: true)
   _$ControllerCopyWith<_Controller> get copyWith =>

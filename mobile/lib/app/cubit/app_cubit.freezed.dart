@@ -110,15 +110,14 @@ class _$_AppState implements _AppState {
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
-        (other is _AppState &&
-            (identical(other.themeMode, themeMode) ||
-                const DeepCollectionEquality()
-                    .equals(other.themeMode, themeMode)));
+        (other.runtimeType == runtimeType &&
+            other is _AppState &&
+            const DeepCollectionEquality().equals(other.themeMode, themeMode));
   }
 
   @override
   int get hashCode =>
-      runtimeType.hashCode ^ const DeepCollectionEquality().hash(themeMode);
+      Object.hash(runtimeType, const DeepCollectionEquality().hash(themeMode));
 
   @JsonKey(ignore: true)
   @override
@@ -130,7 +129,7 @@ abstract class _AppState implements AppState {
   factory _AppState({required ThemeMode themeMode}) = _$_AppState;
 
   @override
-  ThemeMode get themeMode => throw _privateConstructorUsedError;
+  ThemeMode get themeMode;
   @override
   @JsonKey(ignore: true)
   _$AppStateCopyWith<_AppState> get copyWith =>

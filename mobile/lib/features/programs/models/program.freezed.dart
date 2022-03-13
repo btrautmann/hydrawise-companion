@@ -34,7 +34,7 @@ class _$ProgramTearOff {
     );
   }
 
-  Program fromJson(Map<String, Object> json) {
+  Program fromJson(Map<String, Object?> json) {
     return Program.fromJson(json);
   }
 }
@@ -181,25 +181,21 @@ class _$_Program implements _Program {
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
-        (other is _Program &&
-            (identical(other.id, id) ||
-                const DeepCollectionEquality().equals(other.id, id)) &&
-            (identical(other.name, name) ||
-                const DeepCollectionEquality().equals(other.name, name)) &&
-            (identical(other.frequency, frequency) ||
-                const DeepCollectionEquality()
-                    .equals(other.frequency, frequency)) &&
-            (identical(other.runs, runs) ||
-                const DeepCollectionEquality().equals(other.runs, runs)));
+        (other.runtimeType == runtimeType &&
+            other is _Program &&
+            const DeepCollectionEquality().equals(other.id, id) &&
+            const DeepCollectionEquality().equals(other.name, name) &&
+            const DeepCollectionEquality().equals(other.frequency, frequency) &&
+            const DeepCollectionEquality().equals(other.runs, runs));
   }
 
   @override
-  int get hashCode =>
-      runtimeType.hashCode ^
-      const DeepCollectionEquality().hash(id) ^
-      const DeepCollectionEquality().hash(name) ^
-      const DeepCollectionEquality().hash(frequency) ^
-      const DeepCollectionEquality().hash(runs);
+  int get hashCode => Object.hash(
+      runtimeType,
+      const DeepCollectionEquality().hash(id),
+      const DeepCollectionEquality().hash(name),
+      const DeepCollectionEquality().hash(frequency),
+      const DeepCollectionEquality().hash(runs));
 
   @JsonKey(ignore: true)
   @override
@@ -222,14 +218,14 @@ abstract class _Program implements Program {
   factory _Program.fromJson(Map<String, dynamic> json) = _$_Program.fromJson;
 
   @override
-  String get id => throw _privateConstructorUsedError;
+  String get id;
   @override
-  String get name => throw _privateConstructorUsedError;
+  String get name;
   @override
-  List<int> get frequency => throw _privateConstructorUsedError;
+  List<int> get frequency;
   @override
   @JsonKey(ignore: true)
-  List<Run>? get runs => throw _privateConstructorUsedError;
+  List<Run>? get runs;
   @override
   @JsonKey(ignore: true)
   _$ProgramCopyWith<_Program> get copyWith =>

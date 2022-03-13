@@ -116,14 +116,14 @@ class _$_DeveloperState implements _DeveloperState {
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
-        (other is _DeveloperState &&
-            (identical(other.storage, storage) ||
-                const DeepCollectionEquality().equals(other.storage, storage)));
+        (other.runtimeType == runtimeType &&
+            other is _DeveloperState &&
+            const DeepCollectionEquality().equals(other.storage, storage));
   }
 
   @override
   int get hashCode =>
-      runtimeType.hashCode ^ const DeepCollectionEquality().hash(storage);
+      Object.hash(runtimeType, const DeepCollectionEquality().hash(storage));
 
   @JsonKey(ignore: true)
   @override
@@ -136,7 +136,7 @@ abstract class _DeveloperState implements DeveloperState {
       _$_DeveloperState;
 
   @override
-  Map<String, dynamic> get storage => throw _privateConstructorUsedError;
+  Map<String, dynamic> get storage;
   @override
   @JsonKey(ignore: true)
   _$DeveloperStateCopyWith<_DeveloperState> get copyWith =>

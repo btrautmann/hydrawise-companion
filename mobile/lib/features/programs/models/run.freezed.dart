@@ -41,7 +41,7 @@ class _$RunTearOff {
     );
   }
 
-  Run fromJson(Map<String, Object> json) {
+  Run fromJson(Map<String, Object?> json) {
     return Run.fromJson(json);
   }
 }
@@ -232,30 +232,23 @@ class _$_Run implements _Run {
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
-        (other is _Run &&
-            (identical(other.id, id) ||
-                const DeepCollectionEquality().equals(other.id, id)) &&
-            (identical(other.programId, programId) ||
-                const DeepCollectionEquality()
-                    .equals(other.programId, programId)) &&
-            (identical(other.startTime, startTime) ||
-                const DeepCollectionEquality()
-                    .equals(other.startTime, startTime)) &&
-            (identical(other.duration, duration) ||
-                const DeepCollectionEquality()
-                    .equals(other.duration, duration)) &&
-            (identical(other.zoneId, zoneId) ||
-                const DeepCollectionEquality().equals(other.zoneId, zoneId)));
+        (other.runtimeType == runtimeType &&
+            other is _Run &&
+            const DeepCollectionEquality().equals(other.id, id) &&
+            const DeepCollectionEquality().equals(other.programId, programId) &&
+            const DeepCollectionEquality().equals(other.startTime, startTime) &&
+            const DeepCollectionEquality().equals(other.duration, duration) &&
+            const DeepCollectionEquality().equals(other.zoneId, zoneId));
   }
 
   @override
-  int get hashCode =>
-      runtimeType.hashCode ^
-      const DeepCollectionEquality().hash(id) ^
-      const DeepCollectionEquality().hash(programId) ^
-      const DeepCollectionEquality().hash(startTime) ^
-      const DeepCollectionEquality().hash(duration) ^
-      const DeepCollectionEquality().hash(zoneId);
+  int get hashCode => Object.hash(
+      runtimeType,
+      const DeepCollectionEquality().hash(id),
+      const DeepCollectionEquality().hash(programId),
+      const DeepCollectionEquality().hash(startTime),
+      const DeepCollectionEquality().hash(duration),
+      const DeepCollectionEquality().hash(zoneId));
 
   @JsonKey(ignore: true)
   @override
@@ -285,22 +278,22 @@ abstract class _Run implements Run {
 
   @override
   @JsonKey(name: 'id')
-  String get id => throw _privateConstructorUsedError;
+  String get id;
   @override
   @JsonKey(name: 'p_id')
-  String get programId => throw _privateConstructorUsedError;
+  String get programId;
   @override
   @JsonKey(
       name: 'start_time',
       toJson: TimeOfDayX.toJson,
       fromJson: TimeOfDayX.fromJson)
-  TimeOfDay get startTime => throw _privateConstructorUsedError;
+  TimeOfDay get startTime;
   @override
   @JsonKey(name: 'duration')
-  int get duration => throw _privateConstructorUsedError;
+  int get duration;
   @override
   @JsonKey(name: 'z_id')
-  int get zoneId => throw _privateConstructorUsedError;
+  int get zoneId;
   @override
   @JsonKey(ignore: true)
   _$RunCopyWith<_Run> get copyWith => throw _privateConstructorUsedError;

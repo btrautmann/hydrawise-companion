@@ -19,6 +19,8 @@ class ConfigurationPage extends StatelessWidget {
           create: (context) => ConfigurationCubit(
             getPushNotificationsEnabled:
                 context.read<GetPushNotificationsEnabled>(),
+            getLocalTimezone: context.read<GetLocalTimezone>(),
+            getAvailableTimezones: context.read<GetAvailableTimezones>(),
             registerForPushNotifications:
                 context.read<RegisterForPushNotifications>(),
             unregisterForPushNotifications:

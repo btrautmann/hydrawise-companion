@@ -36,7 +36,7 @@ class _$CustomerTearOff {
     );
   }
 
-  Customer fromJson(Map<String, Object> json) {
+  Customer fromJson(Map<String, Object?> json) {
     return Customer.fromJson(json);
   }
 }
@@ -208,31 +208,26 @@ class _$_Customer implements _Customer {
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
-        (other is _Customer &&
-            (identical(other.activeControllerId, activeControllerId) ||
-                const DeepCollectionEquality()
-                    .equals(other.activeControllerId, activeControllerId)) &&
-            (identical(other.customerId, customerId) ||
-                const DeepCollectionEquality()
-                    .equals(other.customerId, customerId)) &&
-            (identical(other.apiKey, apiKey) ||
-                const DeepCollectionEquality().equals(other.apiKey, apiKey)) &&
-            (identical(other.lastStatusUpdate, lastStatusUpdate) ||
-                const DeepCollectionEquality()
-                    .equals(other.lastStatusUpdate, lastStatusUpdate)) &&
-            (identical(other.timeZone, timeZone) ||
-                const DeepCollectionEquality()
-                    .equals(other.timeZone, timeZone)));
+        (other.runtimeType == runtimeType &&
+            other is _Customer &&
+            const DeepCollectionEquality()
+                .equals(other.activeControllerId, activeControllerId) &&
+            const DeepCollectionEquality()
+                .equals(other.customerId, customerId) &&
+            const DeepCollectionEquality().equals(other.apiKey, apiKey) &&
+            const DeepCollectionEquality()
+                .equals(other.lastStatusUpdate, lastStatusUpdate) &&
+            const DeepCollectionEquality().equals(other.timeZone, timeZone));
   }
 
   @override
-  int get hashCode =>
-      runtimeType.hashCode ^
-      const DeepCollectionEquality().hash(activeControllerId) ^
-      const DeepCollectionEquality().hash(customerId) ^
-      const DeepCollectionEquality().hash(apiKey) ^
-      const DeepCollectionEquality().hash(lastStatusUpdate) ^
-      const DeepCollectionEquality().hash(timeZone);
+  int get hashCode => Object.hash(
+      runtimeType,
+      const DeepCollectionEquality().hash(activeControllerId),
+      const DeepCollectionEquality().hash(customerId),
+      const DeepCollectionEquality().hash(apiKey),
+      const DeepCollectionEquality().hash(lastStatusUpdate),
+      const DeepCollectionEquality().hash(timeZone));
 
   @JsonKey(ignore: true)
   @override
@@ -257,19 +252,19 @@ abstract class _Customer implements Customer {
 
   @override
   @JsonKey(name: 'controller_id')
-  int get activeControllerId => throw _privateConstructorUsedError;
+  int get activeControllerId;
   @override
   @JsonKey(name: 'customer_id')
-  int get customerId => throw _privateConstructorUsedError;
+  int get customerId;
   @override
   @JsonKey(name: 'api_key')
-  String get apiKey => throw _privateConstructorUsedError;
+  String get apiKey;
   @override
   @JsonKey(name: 'last_status_update')
-  int get lastStatusUpdate => throw _privateConstructorUsedError;
+  int get lastStatusUpdate;
   @override
   @JsonKey(name: 'time_zone')
-  String? get timeZone => throw _privateConstructorUsedError;
+  String? get timeZone;
   @override
   @JsonKey(ignore: true)
   _$CustomerCopyWith<_Customer> get copyWith =>

@@ -18,9 +18,14 @@ class _$ConfigurationStateTearOff {
   const _$ConfigurationStateTearOff();
 
   _ConfigurationState call(
-      {bool pushNotificationsEnabled = false, String? timeZone}) {
+      {bool pushNotificationsEnabled = false,
+      String? localTimezone = null,
+      List<String> availableTimezones = const [],
+      String? timeZone}) {
     return _ConfigurationState(
       pushNotificationsEnabled: pushNotificationsEnabled,
+      localTimezone: localTimezone,
+      availableTimezones: availableTimezones,
       timeZone: timeZone,
     );
   }
@@ -32,6 +37,8 @@ const $ConfigurationState = _$ConfigurationStateTearOff();
 /// @nodoc
 mixin _$ConfigurationState {
   bool get pushNotificationsEnabled => throw _privateConstructorUsedError;
+  String? get localTimezone => throw _privateConstructorUsedError;
+  List<String> get availableTimezones => throw _privateConstructorUsedError;
   String? get timeZone => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
@@ -44,7 +51,11 @@ abstract class $ConfigurationStateCopyWith<$Res> {
   factory $ConfigurationStateCopyWith(
           ConfigurationState value, $Res Function(ConfigurationState) then) =
       _$ConfigurationStateCopyWithImpl<$Res>;
-  $Res call({bool pushNotificationsEnabled, String? timeZone});
+  $Res call(
+      {bool pushNotificationsEnabled,
+      String? localTimezone,
+      List<String> availableTimezones,
+      String? timeZone});
 }
 
 /// @nodoc
@@ -59,6 +70,8 @@ class _$ConfigurationStateCopyWithImpl<$Res>
   @override
   $Res call({
     Object? pushNotificationsEnabled = freezed,
+    Object? localTimezone = freezed,
+    Object? availableTimezones = freezed,
     Object? timeZone = freezed,
   }) {
     return _then(_value.copyWith(
@@ -66,6 +79,14 @@ class _$ConfigurationStateCopyWithImpl<$Res>
           ? _value.pushNotificationsEnabled
           : pushNotificationsEnabled // ignore: cast_nullable_to_non_nullable
               as bool,
+      localTimezone: localTimezone == freezed
+          ? _value.localTimezone
+          : localTimezone // ignore: cast_nullable_to_non_nullable
+              as String?,
+      availableTimezones: availableTimezones == freezed
+          ? _value.availableTimezones
+          : availableTimezones // ignore: cast_nullable_to_non_nullable
+              as List<String>,
       timeZone: timeZone == freezed
           ? _value.timeZone
           : timeZone // ignore: cast_nullable_to_non_nullable
@@ -81,7 +102,11 @@ abstract class _$ConfigurationStateCopyWith<$Res>
           _ConfigurationState value, $Res Function(_ConfigurationState) then) =
       __$ConfigurationStateCopyWithImpl<$Res>;
   @override
-  $Res call({bool pushNotificationsEnabled, String? timeZone});
+  $Res call(
+      {bool pushNotificationsEnabled,
+      String? localTimezone,
+      List<String> availableTimezones,
+      String? timeZone});
 }
 
 /// @nodoc
@@ -98,6 +123,8 @@ class __$ConfigurationStateCopyWithImpl<$Res>
   @override
   $Res call({
     Object? pushNotificationsEnabled = freezed,
+    Object? localTimezone = freezed,
+    Object? availableTimezones = freezed,
     Object? timeZone = freezed,
   }) {
     return _then(_ConfigurationState(
@@ -105,6 +132,14 @@ class __$ConfigurationStateCopyWithImpl<$Res>
           ? _value.pushNotificationsEnabled
           : pushNotificationsEnabled // ignore: cast_nullable_to_non_nullable
               as bool,
+      localTimezone: localTimezone == freezed
+          ? _value.localTimezone
+          : localTimezone // ignore: cast_nullable_to_non_nullable
+              as String?,
+      availableTimezones: availableTimezones == freezed
+          ? _value.availableTimezones
+          : availableTimezones // ignore: cast_nullable_to_non_nullable
+              as List<String>,
       timeZone: timeZone == freezed
           ? _value.timeZone
           : timeZone // ignore: cast_nullable_to_non_nullable
@@ -116,38 +151,50 @@ class __$ConfigurationStateCopyWithImpl<$Res>
 /// @nodoc
 
 class _$_ConfigurationState implements _ConfigurationState {
-  _$_ConfigurationState({this.pushNotificationsEnabled = false, this.timeZone});
+  _$_ConfigurationState(
+      {this.pushNotificationsEnabled = false,
+      this.localTimezone = null,
+      this.availableTimezones = const [],
+      this.timeZone});
 
-  @JsonKey(defaultValue: false)
+  @JsonKey()
   @override
   final bool pushNotificationsEnabled;
+  @JsonKey()
+  @override
+  final String? localTimezone;
+  @JsonKey()
+  @override
+  final List<String> availableTimezones;
   @override
   final String? timeZone;
 
   @override
   String toString() {
-    return 'ConfigurationState(pushNotificationsEnabled: $pushNotificationsEnabled, timeZone: $timeZone)';
+    return 'ConfigurationState(pushNotificationsEnabled: $pushNotificationsEnabled, localTimezone: $localTimezone, availableTimezones: $availableTimezones, timeZone: $timeZone)';
   }
 
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
-        (other is _ConfigurationState &&
-            (identical(
-                    other.pushNotificationsEnabled, pushNotificationsEnabled) ||
-                const DeepCollectionEquality().equals(
-                    other.pushNotificationsEnabled,
-                    pushNotificationsEnabled)) &&
-            (identical(other.timeZone, timeZone) ||
-                const DeepCollectionEquality()
-                    .equals(other.timeZone, timeZone)));
+        (other.runtimeType == runtimeType &&
+            other is _ConfigurationState &&
+            const DeepCollectionEquality().equals(
+                other.pushNotificationsEnabled, pushNotificationsEnabled) &&
+            const DeepCollectionEquality()
+                .equals(other.localTimezone, localTimezone) &&
+            const DeepCollectionEquality()
+                .equals(other.availableTimezones, availableTimezones) &&
+            const DeepCollectionEquality().equals(other.timeZone, timeZone));
   }
 
   @override
-  int get hashCode =>
-      runtimeType.hashCode ^
-      const DeepCollectionEquality().hash(pushNotificationsEnabled) ^
-      const DeepCollectionEquality().hash(timeZone);
+  int get hashCode => Object.hash(
+      runtimeType,
+      const DeepCollectionEquality().hash(pushNotificationsEnabled),
+      const DeepCollectionEquality().hash(localTimezone),
+      const DeepCollectionEquality().hash(availableTimezones),
+      const DeepCollectionEquality().hash(timeZone));
 
   @JsonKey(ignore: true)
   @override
@@ -158,12 +205,18 @@ class _$_ConfigurationState implements _ConfigurationState {
 abstract class _ConfigurationState implements ConfigurationState {
   factory _ConfigurationState(
       {bool pushNotificationsEnabled,
+      String? localTimezone,
+      List<String> availableTimezones,
       String? timeZone}) = _$_ConfigurationState;
 
   @override
-  bool get pushNotificationsEnabled => throw _privateConstructorUsedError;
+  bool get pushNotificationsEnabled;
   @override
-  String? get timeZone => throw _privateConstructorUsedError;
+  String? get localTimezone;
+  @override
+  List<String> get availableTimezones;
+  @override
+  String? get timeZone;
   @override
   @JsonKey(ignore: true)
   _$ConfigurationStateCopyWith<_ConfigurationState> get copyWith =>

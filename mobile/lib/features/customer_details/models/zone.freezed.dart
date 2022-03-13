@@ -38,7 +38,7 @@ class _$ZoneTearOff {
     );
   }
 
-  Zone fromJson(Map<String, Object> json) {
+  Zone fromJson(Map<String, Object?> json) {
     return Zone.fromJson(json);
   }
 }
@@ -231,37 +231,30 @@ class _$_Zone implements _Zone {
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
-        (other is _Zone &&
-            (identical(other.id, id) ||
-                const DeepCollectionEquality().equals(other.id, id)) &&
-            (identical(other.physicalNumber, physicalNumber) ||
-                const DeepCollectionEquality()
-                    .equals(other.physicalNumber, physicalNumber)) &&
-            (identical(other.name, name) ||
-                const DeepCollectionEquality().equals(other.name, name)) &&
-            (identical(
-                    other.nextTimeOfWaterFriendly, nextTimeOfWaterFriendly) ||
-                const DeepCollectionEquality().equals(
-                    other.nextTimeOfWaterFriendly, nextTimeOfWaterFriendly)) &&
-            (identical(other.secondsUntilNextRun, secondsUntilNextRun) ||
-                const DeepCollectionEquality()
-                    .equals(other.secondsUntilNextRun, secondsUntilNextRun)) &&
-            (identical(other.lengthOfNextRunTimeOrTimeRemaining,
-                    lengthOfNextRunTimeOrTimeRemaining) ||
-                const DeepCollectionEquality().equals(
-                    other.lengthOfNextRunTimeOrTimeRemaining,
-                    lengthOfNextRunTimeOrTimeRemaining)));
+        (other.runtimeType == runtimeType &&
+            other is _Zone &&
+            const DeepCollectionEquality().equals(other.id, id) &&
+            const DeepCollectionEquality()
+                .equals(other.physicalNumber, physicalNumber) &&
+            const DeepCollectionEquality().equals(other.name, name) &&
+            const DeepCollectionEquality().equals(
+                other.nextTimeOfWaterFriendly, nextTimeOfWaterFriendly) &&
+            const DeepCollectionEquality()
+                .equals(other.secondsUntilNextRun, secondsUntilNextRun) &&
+            const DeepCollectionEquality().equals(
+                other.lengthOfNextRunTimeOrTimeRemaining,
+                lengthOfNextRunTimeOrTimeRemaining));
   }
 
   @override
-  int get hashCode =>
-      runtimeType.hashCode ^
-      const DeepCollectionEquality().hash(id) ^
-      const DeepCollectionEquality().hash(physicalNumber) ^
-      const DeepCollectionEquality().hash(name) ^
-      const DeepCollectionEquality().hash(nextTimeOfWaterFriendly) ^
-      const DeepCollectionEquality().hash(secondsUntilNextRun) ^
-      const DeepCollectionEquality().hash(lengthOfNextRunTimeOrTimeRemaining);
+  int get hashCode => Object.hash(
+      runtimeType,
+      const DeepCollectionEquality().hash(id),
+      const DeepCollectionEquality().hash(physicalNumber),
+      const DeepCollectionEquality().hash(name),
+      const DeepCollectionEquality().hash(nextTimeOfWaterFriendly),
+      const DeepCollectionEquality().hash(secondsUntilNextRun),
+      const DeepCollectionEquality().hash(lengthOfNextRunTimeOrTimeRemaining));
 
   @JsonKey(ignore: true)
   @override
@@ -293,23 +286,22 @@ abstract class _Zone implements Zone {
 
   @override
   @JsonKey(name: 'relay_id')
-  int get id => throw _privateConstructorUsedError;
+  int get id;
   @override
   @JsonKey(name: 'relay')
-  int get physicalNumber => throw _privateConstructorUsedError;
+  int get physicalNumber;
   @override
   @JsonKey(name: 'name')
-  String get name => throw _privateConstructorUsedError;
+  String get name;
   @override
   @JsonKey(name: 'timestr')
-  String get nextTimeOfWaterFriendly => throw _privateConstructorUsedError;
+  String get nextTimeOfWaterFriendly;
   @override // Value will be 1 if a watering is in progress
   @JsonKey(name: 'time')
-  int get secondsUntilNextRun => throw _privateConstructorUsedError;
+  int get secondsUntilNextRun;
   @override // If run is in progress, indicates time remaining
   @JsonKey(name: 'run')
-  int get lengthOfNextRunTimeOrTimeRemaining =>
-      throw _privateConstructorUsedError;
+  int get lengthOfNextRunTimeOrTimeRemaining;
   @override
   @JsonKey(ignore: true)
   _$ZoneCopyWith<_Zone> get copyWith => throw _privateConstructorUsedError;

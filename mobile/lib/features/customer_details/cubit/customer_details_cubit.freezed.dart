@@ -128,7 +128,8 @@ class _$_Loading implements _Loading {
 
   @override
   bool operator ==(dynamic other) {
-    return identical(this, other) || (other is _Loading);
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType && other is _Loading);
   }
 
   @override
@@ -277,20 +278,19 @@ class _$_Complete implements _Complete {
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
-        (other is _Complete &&
-            (identical(other.customerDetails, customerDetails) ||
-                const DeepCollectionEquality()
-                    .equals(other.customerDetails, customerDetails)) &&
-            (identical(other.customerStatus, customerStatus) ||
-                const DeepCollectionEquality()
-                    .equals(other.customerStatus, customerStatus)));
+        (other.runtimeType == runtimeType &&
+            other is _Complete &&
+            const DeepCollectionEquality()
+                .equals(other.customerDetails, customerDetails) &&
+            const DeepCollectionEquality()
+                .equals(other.customerStatus, customerStatus));
   }
 
   @override
-  int get hashCode =>
-      runtimeType.hashCode ^
-      const DeepCollectionEquality().hash(customerDetails) ^
-      const DeepCollectionEquality().hash(customerStatus);
+  int get hashCode => Object.hash(
+      runtimeType,
+      const DeepCollectionEquality().hash(customerDetails),
+      const DeepCollectionEquality().hash(customerStatus));
 
   @JsonKey(ignore: true)
   @override
@@ -371,8 +371,8 @@ abstract class _Complete implements CustomerDetailsState {
       {required CustomerDetails customerDetails,
       required CustomerStatus customerStatus}) = _$_Complete;
 
-  CustomerDetails get customerDetails => throw _privateConstructorUsedError;
-  CustomerStatus get customerStatus => throw _privateConstructorUsedError;
+  CustomerDetails get customerDetails;
+  CustomerStatus get customerStatus;
   @JsonKey(ignore: true)
   _$CompleteCopyWith<_Complete> get copyWith =>
       throw _privateConstructorUsedError;

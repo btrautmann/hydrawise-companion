@@ -30,7 +30,7 @@ class _$RunZoneResponseTearOff {
     );
   }
 
-  RunZoneResponse fromJson(Map<String, Object> json) {
+  RunZoneResponse fromJson(Map<String, Object?> json) {
     return RunZoneResponse.fromJson(json);
   }
 }
@@ -154,20 +154,18 @@ class _$_RunZoneResponse implements _RunZoneResponse {
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
-        (other is _RunZoneResponse &&
-            (identical(other.message, message) ||
-                const DeepCollectionEquality()
-                    .equals(other.message, message)) &&
-            (identical(other.typeOfMessage, typeOfMessage) ||
-                const DeepCollectionEquality()
-                    .equals(other.typeOfMessage, typeOfMessage)));
+        (other.runtimeType == runtimeType &&
+            other is _RunZoneResponse &&
+            const DeepCollectionEquality().equals(other.message, message) &&
+            const DeepCollectionEquality()
+                .equals(other.typeOfMessage, typeOfMessage));
   }
 
   @override
-  int get hashCode =>
-      runtimeType.hashCode ^
-      const DeepCollectionEquality().hash(message) ^
-      const DeepCollectionEquality().hash(typeOfMessage);
+  int get hashCode => Object.hash(
+      runtimeType,
+      const DeepCollectionEquality().hash(message),
+      const DeepCollectionEquality().hash(typeOfMessage));
 
   @JsonKey(ignore: true)
   @override
@@ -191,10 +189,10 @@ abstract class _RunZoneResponse implements RunZoneResponse {
 
   @override
   @JsonKey(name: 'message')
-  String get message => throw _privateConstructorUsedError;
+  String get message;
   @override
   @JsonKey(name: 'message_type')
-  String get typeOfMessage => throw _privateConstructorUsedError;
+  String get typeOfMessage;
   @override
   @JsonKey(ignore: true)
   _$RunZoneResponseCopyWith<_RunZoneResponse> get copyWith =>

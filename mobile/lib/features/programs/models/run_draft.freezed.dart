@@ -202,24 +202,19 @@ class _$_RunCreation implements _RunCreation {
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
-        (other is _RunCreation &&
-            (identical(other.timeOfDay, timeOfDay) ||
-                const DeepCollectionEquality()
-                    .equals(other.timeOfDay, timeOfDay)) &&
-            (identical(other.zoneIds, zoneIds) ||
-                const DeepCollectionEquality()
-                    .equals(other.zoneIds, zoneIds)) &&
-            (identical(other.duration, duration) ||
-                const DeepCollectionEquality()
-                    .equals(other.duration, duration)));
+        (other.runtimeType == runtimeType &&
+            other is _RunCreation &&
+            const DeepCollectionEquality().equals(other.timeOfDay, timeOfDay) &&
+            const DeepCollectionEquality().equals(other.zoneIds, zoneIds) &&
+            const DeepCollectionEquality().equals(other.duration, duration));
   }
 
   @override
-  int get hashCode =>
-      runtimeType.hashCode ^
-      const DeepCollectionEquality().hash(timeOfDay) ^
-      const DeepCollectionEquality().hash(zoneIds) ^
-      const DeepCollectionEquality().hash(duration);
+  int get hashCode => Object.hash(
+      runtimeType,
+      const DeepCollectionEquality().hash(timeOfDay),
+      const DeepCollectionEquality().hash(zoneIds),
+      const DeepCollectionEquality().hash(duration));
 
   @JsonKey(ignore: true)
   @override
@@ -304,11 +299,11 @@ abstract class _RunCreation implements RunDraft {
       required Duration duration}) = _$_RunCreation;
 
   @override
-  TimeOfDay get timeOfDay => throw _privateConstructorUsedError;
+  TimeOfDay get timeOfDay;
   @override
-  List<int> get zoneIds => throw _privateConstructorUsedError;
+  List<int> get zoneIds;
   @override
-  Duration get duration => throw _privateConstructorUsedError;
+  Duration get duration;
   @override
   @JsonKey(ignore: true)
   _$RunCreationCopyWith<_RunCreation> get copyWith =>
@@ -379,24 +374,19 @@ class _$_RunModification implements _RunModification {
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
-        (other is _RunModification &&
-            (identical(other.timeOfDay, timeOfDay) ||
-                const DeepCollectionEquality()
-                    .equals(other.timeOfDay, timeOfDay)) &&
-            (identical(other.zoneIds, zoneIds) ||
-                const DeepCollectionEquality()
-                    .equals(other.zoneIds, zoneIds)) &&
-            (identical(other.duration, duration) ||
-                const DeepCollectionEquality()
-                    .equals(other.duration, duration)));
+        (other.runtimeType == runtimeType &&
+            other is _RunModification &&
+            const DeepCollectionEquality().equals(other.timeOfDay, timeOfDay) &&
+            const DeepCollectionEquality().equals(other.zoneIds, zoneIds) &&
+            const DeepCollectionEquality().equals(other.duration, duration));
   }
 
   @override
-  int get hashCode =>
-      runtimeType.hashCode ^
-      const DeepCollectionEquality().hash(timeOfDay) ^
-      const DeepCollectionEquality().hash(zoneIds) ^
-      const DeepCollectionEquality().hash(duration);
+  int get hashCode => Object.hash(
+      runtimeType,
+      const DeepCollectionEquality().hash(timeOfDay),
+      const DeepCollectionEquality().hash(zoneIds),
+      const DeepCollectionEquality().hash(duration));
 
   @JsonKey(ignore: true)
   @override
@@ -481,11 +471,11 @@ abstract class _RunModification implements RunDraft {
       required Duration duration}) = _$_RunModification;
 
   @override
-  TimeOfDay get timeOfDay => throw _privateConstructorUsedError;
+  TimeOfDay get timeOfDay;
   @override
-  List<int> get zoneIds => throw _privateConstructorUsedError;
+  List<int> get zoneIds;
   @override
-  Duration get duration => throw _privateConstructorUsedError;
+  Duration get duration;
   @override
   @JsonKey(ignore: true)
   _$RunModificationCopyWith<_RunModification> get copyWith =>

@@ -121,7 +121,7 @@ class _$_ProgramsState implements _ProgramsState {
 
   @override
   final List<Program> programs;
-  @JsonKey(defaultValue: const [])
+  @JsonKey()
   @override
   final List<Program> pendingDeletes;
 
@@ -133,20 +133,18 @@ class _$_ProgramsState implements _ProgramsState {
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
-        (other is _ProgramsState &&
-            (identical(other.programs, programs) ||
-                const DeepCollectionEquality()
-                    .equals(other.programs, programs)) &&
-            (identical(other.pendingDeletes, pendingDeletes) ||
-                const DeepCollectionEquality()
-                    .equals(other.pendingDeletes, pendingDeletes)));
+        (other.runtimeType == runtimeType &&
+            other is _ProgramsState &&
+            const DeepCollectionEquality().equals(other.programs, programs) &&
+            const DeepCollectionEquality()
+                .equals(other.pendingDeletes, pendingDeletes));
   }
 
   @override
-  int get hashCode =>
-      runtimeType.hashCode ^
-      const DeepCollectionEquality().hash(programs) ^
-      const DeepCollectionEquality().hash(pendingDeletes);
+  int get hashCode => Object.hash(
+      runtimeType,
+      const DeepCollectionEquality().hash(programs),
+      const DeepCollectionEquality().hash(pendingDeletes));
 
   @JsonKey(ignore: true)
   @override
@@ -160,9 +158,9 @@ abstract class _ProgramsState implements ProgramsState {
       List<Program> pendingDeletes}) = _$_ProgramsState;
 
   @override
-  List<Program> get programs => throw _privateConstructorUsedError;
+  List<Program> get programs;
   @override
-  List<Program> get pendingDeletes => throw _privateConstructorUsedError;
+  List<Program> get pendingDeletes;
   @override
   @JsonKey(ignore: true)
   _$ProgramsStateCopyWith<_ProgramsState> get copyWith =>

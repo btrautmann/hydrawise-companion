@@ -32,7 +32,7 @@ class _$CustomerDetailsTearOff {
     );
   }
 
-  CustomerDetails fromJson(Map<String, Object> json) {
+  CustomerDetails fromJson(Map<String, Object?> json) {
     return CustomerDetails.fromJson(json);
   }
 }
@@ -174,24 +174,22 @@ class _$_CustomerDetails implements _CustomerDetails {
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
-        (other is _CustomerDetails &&
-            (identical(other.activeControllerId, activeControllerId) ||
-                const DeepCollectionEquality()
-                    .equals(other.activeControllerId, activeControllerId)) &&
-            (identical(other.customerId, customerId) ||
-                const DeepCollectionEquality()
-                    .equals(other.customerId, customerId)) &&
-            (identical(other.controllers, controllers) ||
-                const DeepCollectionEquality()
-                    .equals(other.controllers, controllers)));
+        (other.runtimeType == runtimeType &&
+            other is _CustomerDetails &&
+            const DeepCollectionEquality()
+                .equals(other.activeControllerId, activeControllerId) &&
+            const DeepCollectionEquality()
+                .equals(other.customerId, customerId) &&
+            const DeepCollectionEquality()
+                .equals(other.controllers, controllers));
   }
 
   @override
-  int get hashCode =>
-      runtimeType.hashCode ^
-      const DeepCollectionEquality().hash(activeControllerId) ^
-      const DeepCollectionEquality().hash(customerId) ^
-      const DeepCollectionEquality().hash(controllers);
+  int get hashCode => Object.hash(
+      runtimeType,
+      const DeepCollectionEquality().hash(activeControllerId),
+      const DeepCollectionEquality().hash(customerId),
+      const DeepCollectionEquality().hash(controllers));
 
   @JsonKey(ignore: true)
   @override
@@ -218,13 +216,13 @@ abstract class _CustomerDetails implements CustomerDetails {
 
   @override
   @JsonKey(name: 'controller_id')
-  int get activeControllerId => throw _privateConstructorUsedError;
+  int get activeControllerId;
   @override
   @JsonKey(name: 'customer_id')
-  int get customerId => throw _privateConstructorUsedError;
+  int get customerId;
   @override
   @JsonKey(name: 'controllers')
-  List<Controller> get controllers => throw _privateConstructorUsedError;
+  List<Controller> get controllers;
   @override
   @JsonKey(ignore: true)
   _$CustomerDetailsCopyWith<_CustomerDetails> get copyWith =>
