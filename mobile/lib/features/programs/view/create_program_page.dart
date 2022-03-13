@@ -5,6 +5,7 @@ import 'package:irri/features/customer_details/customer_details.dart';
 import 'package:irri/features/programs/programs.dart';
 
 class CreateProgramPage extends StatelessWidget {
+  
   const CreateProgramPage({
     Key? key,
     this.existingProgramId,
@@ -19,8 +20,9 @@ class CreateProgramPage extends StatelessWidget {
     return BlocBuilder<ProgramsCubit, ProgramsState>(
       builder: (context, state) {
         final existingProgram = existingProgramId != null
-            ? state.programs
-                .singleWhere((program) => program.id == existingProgramId)
+            ? state.programs.singleWhere(
+                (program) => program.id == existingProgramId,
+              )
             : null;
         return Scaffold(
           appBar: AppBar(

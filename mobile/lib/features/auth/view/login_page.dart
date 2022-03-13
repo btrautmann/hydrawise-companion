@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:irri/core-ui/core_ui.dart';
 import 'package:irri/features/auth/auth.dart';
 
 /// Page for the user to enter their API key
@@ -43,6 +44,7 @@ class __ApiKeyInputState extends State<_ApiKeyInput> {
               hintText: 'Enter your Hydrawise API key',
             ),
           ),
+          const VSpace(spacing: 16),
           ElevatedButton(
             onPressed: () {
               context.read<AuthCubit>().login(_controller.text);

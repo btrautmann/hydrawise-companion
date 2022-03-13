@@ -16,6 +16,11 @@ class InMemoryCustomerDetailsRepository implements CustomerDetailsRepository {
   }
 
   @override
+  Future<void> removeFcmToken(String token) async {
+    _fcmTokens.remove(token);
+  }
+
+  @override
   Future<List<String>> getRegisteredFcmTokens() async {
     return _fcmTokens;
   }
@@ -107,7 +112,13 @@ class InMemoryCustomerDetailsRepository implements CustomerDetailsRepository {
 
   @override
   Future<List<Program>> getPrograms() async {
-    return _programs;
+    return _programs
+        .map(
+          (e) => e.copyWith(
+            runs: _runs.where((element) => element.programId == e.id).toList(),
+          ),
+        )
+        .toList();
   }
 
   @override

@@ -11,10 +11,12 @@ class ConfigurationCubit extends Cubit<ConfigurationState> {
   ConfigurationCubit({
     required GetPushNotificationsEnabled getPushNotificationsEnabled,
     required RegisterForPushNotifications registerForPushNotifications,
+    required UnregisterForPushNotifications unregisterForPushNotifications,
     required GetUserTimezone getUserTimezone,
     required UpdateUserTimeZone updateUserTimeZone,
   })  : _getPushNotificationsEnabled = getPushNotificationsEnabled,
         _registerForPushNotifications = registerForPushNotifications,
+        _unregisterForPushNotifications = unregisterForPushNotifications,
         _getUserTimezone = getUserTimezone,
         _updateUserTimeZone = updateUserTimeZone,
         super(ConfigurationState()) {
@@ -23,6 +25,7 @@ class ConfigurationCubit extends Cubit<ConfigurationState> {
 
   final GetPushNotificationsEnabled _getPushNotificationsEnabled;
   final RegisterForPushNotifications _registerForPushNotifications;
+  final UnregisterForPushNotifications _unregisterForPushNotifications;
   final GetUserTimezone _getUserTimezone;
   final UpdateUserTimeZone _updateUserTimeZone;
 
@@ -45,6 +48,11 @@ class ConfigurationCubit extends Cubit<ConfigurationState> {
 
   Future<void> registerForPushNotifications() async {
     await _registerForPushNotifications();
+    return _initState();
+  }
+
+  Future<void> unregisterForPushNotifications() async {
+    await _unregisterForPushNotifications();
     return _initState();
   }
 }
