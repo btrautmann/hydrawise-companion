@@ -1,21 +1,26 @@
 import 'package:irri/features/auth/auth.dart';
 
 /// {@template fake_validate_api_key}
-/// An implementation of [ValidateApiKey] that always
-/// returns true after setting the provided API key
-/// using [SetApiKey].
+/// An implementation of [ValidateApiKey] whose return value
+/// is dependent on its input. If true, sets the provided
+/// API key using [SetApiKey].
 /// {@endtemplate}
 class FakeValidateApiKey implements ValidateApiKey {
   FakeValidateApiKey({
+    bool isValid = true,
     required SetApiKey setApiKey,
-  }) : _setApiKey = setApiKey;
+  })  : _isValid = isValid,
+        _setApiKey = setApiKey;
 
+  final bool _isValid;
   final SetApiKey _setApiKey;
 
   /// {@macro fake_validate_api_key}
   @override
   Future<bool> call(String apiKey) async {
-    await _setApiKey(apiKey);
-    return true;
+    if (_isValid) {
+      await _setApiKey(apiKey);
+    }
+    return _isValid;
   }
 }
