@@ -14,7 +14,7 @@ void main() {
         final repository = InMemoryCustomerDetailsRepository();
         final router = await BuildAppRouter().call();
 
-        final providers = DevelopmentDomainFactory.build(
+        final providers = DevelopmentDependencyFactory.build(
           dataStorage: InMemoryStorage(),
           repository: repository,
         );

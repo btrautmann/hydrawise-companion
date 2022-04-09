@@ -20,13 +20,10 @@ Future<void> main() async {
       await BlocOverrides.runZoned(
         () async {
           WidgetsFlutterBinding.ensureInitialized();
-          // await Firebase.initializeApp();
-          // await FirebaseCrashlytics.instance
-          //     .setCrashlyticsCollectionEnabled(false);
 
           final dataStorage = InMemoryStorage();
           final repository = InMemoryCustomerDetailsRepository();
-          final providers = DevelopmentDomainFactory.build(
+          final providers = DevelopmentDependencyFactory.build(
             dataStorage: dataStorage,
             repository: repository,
           );

@@ -16,7 +16,7 @@ import 'package:irri/features/weather/weather.dart';
 import 'package:provider/provider.dart';
 
 // ignore: avoid_classes_with_only_static_members
-abstract class ProductionDomainFactory {
+abstract class ProductionDependencyFactory {
   static List<Provider> build({
     required HttpClient client,
     required DataStorage dataStorage,
@@ -166,7 +166,7 @@ abstract class ProductionDomainFactory {
 }
 
 // ignore: avoid_classes_with_only_static_members
-abstract class DevelopmentDomainFactory {
+abstract class DevelopmentDependencyFactory {
   static List<Provider> build({
     required DataStorage dataStorage,
     required CustomerDetailsRepository repository,

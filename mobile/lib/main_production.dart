@@ -62,7 +62,7 @@ Future<void> main() async {
             interceptors: interceptors,
           );
 
-          final providers = ProductionDomainFactory.build(
+          final providers = ProductionDependencyFactory.build(
             client: httpClient,
             dataStorage: dataStorage,
             repository: repository,
