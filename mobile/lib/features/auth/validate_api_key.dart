@@ -2,6 +2,12 @@ import 'package:dio/dio.dart';
 import 'package:irri/core/core.dart';
 import 'package:irri/features/auth/auth.dart';
 
+/// {@template validate_api_key}
+/// Validates the provided API key and if valid,
+/// stores it using [SetApiKey] and returns true.
+/// 
+/// If the API key is *not* valid, returns false.
+/// {@endtemplate}
 class ValidateApiKey {
   ValidateApiKey({
     required HttpClient httpClient,
@@ -12,6 +18,7 @@ class ValidateApiKey {
   final HttpClient _httpClient;
   final SetApiKey _setApiKey;
 
+  /// {@macro validate_api_key}
   Future<bool> call(String apiKey) async {
     final queryParameters = {
       'api_key': apiKey,

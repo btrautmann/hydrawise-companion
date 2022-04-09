@@ -5,7 +5,8 @@ import 'package:irri/core/core.dart';
 import 'package:irri/features/auth/auth.dart';
 import 'package:irri/features/customer_details/models/models.dart';
 
-import '../../../core/fakes/fake_http_client.dart';
+import '../../core/fakes/fake_http_client.dart';
+
 
 void main() {
   late ValidateApiKey subject;
