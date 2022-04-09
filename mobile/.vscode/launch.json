@@ -31,19 +31,6 @@
             ]
         },
         {
-            "name": "irri (staging)",
-            "request": "launch",
-            "type": "dart",
-            "program": "lib/main_staging.dart",
-            "flutterMode": "debug",
-            "args": [
-                "--dart-define",
-                "OPEN_WEATHER_MAP_API_KEY=${env:OPEN_WEATHER_MAP_API_KEY}",
-                "--flavor",
-                "staging"
-            ]
-        },
-        {
             "name": "irri (profile mode)",
             "request": "launch",
             "type": "dart",
