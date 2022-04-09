@@ -5,7 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:irri/core/core.dart';
 import 'package:irri/features/app_theme_mode/app_theme_mode.dart';
-import 'package:irri/features/auth/domain/domain.dart';
+import 'package:irri/features/auth/auth.dart';
 import 'package:irri/features/configuration/domain/domain.dart';
 import 'package:irri/features/customer_details/customer_details.dart';
 import 'package:irri/features/developer/developer.dart';

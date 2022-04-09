@@ -1,4 +1,5 @@
-import 'package:irri/features/auth/domain/domain.dart';
+
+import 'package:irri/features/auth/auth.dart';
 
 class FakeValidateApiKey implements ValidateApiKey {
   FakeValidateApiKey({
