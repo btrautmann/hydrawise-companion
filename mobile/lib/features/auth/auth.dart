@@ -1,4 +1,3 @@
-export 'cubit/auth_cubit.dart';
 export 'fake_validate_api_key.dart';
 export 'firebase/firebase.dart';
 export 'firebase/firebase.dart';
@@ -8,5 +7,6 @@ export 'is_logged_in.dart';
 export 'log_in.dart';
 export 'log_out.dart';
 export 'set_api_key.dart';
+export 'state/auth_cubit.dart';
 export 'validate_api_key.dart';
 export 'view/login_page.dart';
