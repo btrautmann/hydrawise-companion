@@ -151,6 +151,8 @@ abstract class ProductionDependencyFactory {
       Provider<UnregisterForPushNotifications>.value(
         value: unregisterForPushNotifications,
       ),
+      Provider<GetAvailableTimezones>.value(value: GetAvailableTimezones()),
+      Provider<GetLocalTimezone>.value(value: GetLocalTimezone()),
       Provider<GetUserTimezone>.value(value: getUserTimezone),
       Provider<UpdateUserTimeZone>.value(value: updateUserTimezone),
       Provider<ShouldShowDeveloperEntryPoint>.value(
@@ -265,6 +267,8 @@ abstract class DevelopmentDependencyFactory {
         value: unregisterForPushNotifications,
       ),
       Provider<GetUserTimezone>.value(value: getUserTimezone),
+      Provider<GetAvailableTimezones>.value(value: GetAvailableTimezones()),
+      Provider<GetLocalTimezone>.value(value: GetLocalTimezone()),
       Provider<UpdateUserTimeZone>.value(value: updateUserTimezone),
       Provider<ShouldShowDeveloperEntryPoint>.value(
         value: shouldShowDeveloperUi,

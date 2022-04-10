@@ -1,6 +1,6 @@
 import 'package:core_ui/core_ui.dart';
 import 'package:flutter/material.dart';
-import 'package:irri/customer_details/customer_details.dart';
+import 'package:hydrawise/hydrawise.dart';
 
 class ZoneCell extends StatelessWidget {
   const ZoneCell({

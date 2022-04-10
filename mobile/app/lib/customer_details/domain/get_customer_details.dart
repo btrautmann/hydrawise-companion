@@ -1,4 +1,5 @@
 import 'package:core/core.dart';
+import 'package:hydrawise/hydrawise.dart';
 import 'package:irri/auth/auth.dart';
 import 'package:irri/customer_details/customer_details.dart';
 import 'package:result_type/result_type.dart';

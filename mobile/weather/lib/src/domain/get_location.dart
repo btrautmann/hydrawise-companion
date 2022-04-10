@@ -1,4 +1,3 @@
-
 import 'package:core/core.dart';
 
 class GetLocation {

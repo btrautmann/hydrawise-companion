@@ -2,8 +2,8 @@ import 'package:charlatan/charlatan.dart';
 import 'package:core/core.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:hydrawise/hydrawise.dart';
 import 'package:irri/auth/auth.dart';
-import 'package:irri/customer_details/models/models.dart';
 
 import '../../core/fakes/fake_http_client.dart';
 

@@ -1,6 +1,6 @@
 import 'package:clock/clock.dart';
 import 'package:dio/dio.dart';
-import 'package:irri/customer_details/customer_details.dart';
+import 'package:hydrawise/hydrawise.dart';
 
 /// An [Interceptor] that intercepts requests and checks for the
 /// existence of a `demo` API key. If that key is present, we're

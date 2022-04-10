@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:irri/customer_details/customer_details.dart';
+import 'package:hydrawise/hydrawise.dart';
 import 'package:irri/run_zone/run_zone.dart';
 
 part 'run_zone_state.dart';

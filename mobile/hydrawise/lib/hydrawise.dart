@@ -3,4 +3,4 @@
 /// More dartdocs go here.
 library hydrawise;
 
-export 'src/hydrawise_base.dart';
+export 'src/hydrawise.dart';

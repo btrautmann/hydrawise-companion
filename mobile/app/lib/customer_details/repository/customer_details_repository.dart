@@ -1,4 +1,4 @@
-import 'package:irri/customer_details/customer_details.dart';
+import 'package:hydrawise/hydrawise.dart';
 import 'package:irri/programs/programs.dart';
 
 abstract class CustomerDetailsRepository {

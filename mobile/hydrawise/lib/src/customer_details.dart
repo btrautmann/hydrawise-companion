@@ -1,7 +1,6 @@
 import 'package:clock/clock.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:irri/customer_details/models/controller.dart';
-import 'package:irri/customer_details/models/customer.dart';
+import 'package:hydrawise/hydrawise.dart';
 
 part 'customer_details.freezed.dart';
 part 'customer_details.g.dart';
