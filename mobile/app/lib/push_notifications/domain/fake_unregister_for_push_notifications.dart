@@ -12,7 +12,8 @@ class FakeUnregisterForPushNotifications
   @override
   Future<void> call() async {
     final tokens = await _repository.getRegisteredFcmTokens();
-    for (final token in tokens) {
+    // Copy tokens to a new list to avoid ConcurrentModificationExceptions
+    for (final token in [...tokens]) {
       await _repository.removeFcmToken(token);
     }
   }
