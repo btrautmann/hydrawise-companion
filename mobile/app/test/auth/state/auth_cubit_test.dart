@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:bloc_test/bloc_test.dart';
 import 'package:core/core.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:irri/auth/auth.dart';
 import 'package:irri/customer_details/customer_details.dart';
@@ -12,32 +13,38 @@ void main() {
     final setApiKey = SetApiKey(dataStorage);
     final setFirebaseUid = SetFirebaseUid(dataStorage);
 
-    AuthCubit _buildSubject({
+    AuthCubit buildSubject({
       StreamController? authFailures,
+      ValidateApiKey? validateApiKey,
+      LogIn? logIn,
+      LogOut? logOut,
     }) {
       return AuthCubit(
         isLoggedIn: IsLoggedIn(
           getApiKey: GetApiKey(dataStorage),
           getFirebaseUid: GetFirebaseUid(dataStorage),
         ),
-        logOut: LogOut(
-          setApiKey: setApiKey,
-          unauthenticateWithFirebase: FakeUnauthenticateWithFirebase(
-            setFirebaseUid: setFirebaseUid,
-          ),
-          customerDetailsRepository: InMemoryCustomerDetailsRepository(),
-        ),
+        logOut: logOut ??
+            LogOut(
+              setApiKey: setApiKey,
+              unauthenticateWithFirebase: FakeUnauthenticateWithFirebase(
+                setFirebaseUid: setFirebaseUid,
+              ),
+              customerDetailsRepository: InMemoryCustomerDetailsRepository(),
+            ),
         getAuthFailures: GetAuthFailures(
           authFailuresController: authFailures ?? StreamController(),
         ),
-        logIn: LogIn(
-          validateApiKey: FakeValidateApiKey(
-            setApiKey: setApiKey,
-          ),
-          authenticateWithFirebase: FakeAuthenticateWithFirebase(
-            setFirebaseUid: setFirebaseUid,
-          ),
-        ),
+        logIn: logIn ??
+            LogIn(
+              validateApiKey: validateApiKey ??
+                  FakeValidateApiKey(
+                    setApiKey: setApiKey,
+                  ),
+              authenticateWithFirebase: FakeAuthenticateWithFirebase(
+                setFirebaseUid: setFirebaseUid,
+              ),
+            ),
       );
     }
 
@@ -50,7 +57,7 @@ void main() {
         group('when not logged in', () {
           blocTest<AuthCubit, AuthState>(
             'it emits [loggedOut]',
-            build: _buildSubject,
+            build: buildSubject,
             expect: () => <AuthState>[
               AuthState.loggedOut(),
             ],
@@ -64,7 +71,7 @@ void main() {
               await setApiKey('1234');
               await setFirebaseUid('1');
             },
-            build: _buildSubject,
+            build: buildSubject,
             expect: () => <AuthState>[
               AuthState.loggedIn(),
             ],
@@ -76,7 +83,7 @@ void main() {
         final authFailures = StreamController<Null>();
         blocTest<AuthCubit, AuthState>(
           'it logs out and emits [loggedOut]',
-          build: () => _buildSubject(authFailures: authFailures),
+          build: () => buildSubject(authFailures: authFailures),
           act: (cubit) => authFailures.add(null),
           expect: () => <AuthState>[
             AuthState.loggedOut(),
@@ -85,16 +92,73 @@ void main() {
       });
     });
 
+    group('validateApiKey', () {
+      test('it calls LogIn', () async {
+        var logInCalled = false;
+        final subject = buildSubject(
+          logIn: _FakeLogIn(() {
+            logInCalled = true;
+          }),
+        );
+
+        await subject.validateApiKey('1234');
+
+        expect(logInCalled, isTrue);
+      });
+    });
+
     group('logIn', () {
       blocTest<AuthCubit, AuthState>(
         'it emits [loggedIn]',
-        build: _buildSubject,
-        act: (cubit) async => cubit.login('1234'),
+        build: buildSubject,
+        // Skip the initial loggedOut emission
         skip: 1,
+        act: (cubit) async => cubit.login('1234'),
         expect: () => <AuthState>[
           AuthState.loggedIn(),
         ],
       );
+
+      test('it calls LogOut if authentication fails', () async {
+        var logOutCalled = false;
+
+        final subject = buildSubject(
+          validateApiKey: FakeValidateApiKey(
+            isValid: false,
+            setApiKey: SetApiKey(dataStorage),
+          ),
+          logOut: _FakeLogOut(() {
+            logOutCalled = true;
+          }),
+        );
+
+        await subject.login('1234');
+
+        expect(logOutCalled, isTrue);
+      });
     });
   });
+}
+
+class _FakeLogOut implements LogOut {
+  _FakeLogOut(this.onCalled);
+
+  final VoidCallback onCalled;
+
+  @override
+  Future<void> call() async {
+    onCalled();
+  }
+}
+
+class _FakeLogIn implements LogIn {
+  _FakeLogIn(this.onCalled);
+
+  final VoidCallback onCalled;
+
+  @override
+  Future<bool> call(String apiKey) async {
+    onCalled();
+    return true;
+  }
 }

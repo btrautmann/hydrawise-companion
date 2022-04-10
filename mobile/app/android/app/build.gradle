@@ -29,8 +29,8 @@ if (keystorePropertiesFile.exists()) {
 
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 apply plugin: 'com.google.gms.google-services'
+apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 apply plugin: 'com.google.firebase.crashlytics'
 
 android {
@@ -80,10 +80,6 @@ android {
             dimension "default"
             applicationIdSuffix ""
         }
-        staging {
-            dimension "default"
-            applicationIdSuffix ".stg"
-        }        
         development {
             dimension "default"
             applicationIdSuffix ".dev"
@@ -99,6 +95,12 @@ android {
         }
         debug {
             signingConfig signingConfigs.debug
+        }
+    }
+
+    android.applicationVariants.all { variant ->
+        if (variant.name == 'developmentDebug') {
+            project.tasks.getByName('process' + variant.name.capitalize() + 'GoogleServices').enabled = false
         }
     }
 }
