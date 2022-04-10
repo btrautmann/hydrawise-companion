@@ -6,7 +6,7 @@ import 'package:hydrawise/hydrawise.dart';
 import 'package:irri/auth/auth.dart';
 import 'package:irri/customer_details/customer_details.dart';
 
-import '../../../core/fakes/fake_http_client.dart';
+import '../../core/fakes/fake_http_client.dart';
 
 void main() {
   group('call()', () {
@@ -130,7 +130,7 @@ void main() {
         group('when it hits the cache', () {
           group('when cache hit succeeds', () {
             test('it returns a success with customer status', () async {
-              await withClock(Clock.fixed(DateTime(2020)), () async {
+              await withClock(Clock.fixed(DateTime.now()), () async {
                 // Set the poll time based on a fixed time
                 await setPollTime(secondsUntilNextPoll: 0);
                 final result = await subject.call();

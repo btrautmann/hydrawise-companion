@@ -5,7 +5,7 @@ import 'package:hydrawise/hydrawise.dart';
 import 'package:irri/auth/auth.dart';
 import 'package:irri/customer_details/customer_details.dart';
 
-import '../../../core/fakes/fake_http_client.dart';
+import '../../core/fakes/fake_http_client.dart';
 
 void main() {
   group('call()', () {
