@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:irri/auth/auth.dart';
 
 void main() {
-  group('SetApiKeyInStorage', () {
+  group('SetApiKey', () {
     final storage = InMemoryStorage();
     final setApiKey = SetApiKey(storage);
 
