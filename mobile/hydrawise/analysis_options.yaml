@@ -1,0 +1,25 @@
+include: ../all_lint_rules.yaml
+analyzer:
+  exclude:
+    - "**.freezed.dart"
+    - "**.g.dart"
+    - "**/generated_plugin_registrant.dart"
+  errors:
+    # Don't flag TODOs - comment this out when wanting to address
+    todo: ignore
+    sized_box_for_whitespace: error
+    avoid_print: error
+    # Causes issues with freezed on CI
+    # TODO(brandon): Figure out why this fails on CI only
+    # Relevant: https://github.com/rrousselGit/freezed/issues/488
+    invalid_annotation_target: ignore
+linter:
+  rules:
+    always_put_required_named_parameters_first: false
+    avoid_annotating_with_dynamic: false
+    # Doesn't work well with things like `context.select`
+    avoid_types_on_closure_parameters: false
+    diagnostic_describe_all_properties: false
+    prefer_expression_function_bodies: false
+    public_member_api_docs: false
+
