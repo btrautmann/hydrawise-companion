@@ -1,13 +1,14 @@
 import 'package:clock/clock.dart';
+import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:irri/programs/models/run_draft.dart';
+import 'package:irri/programs/models/run_group.dart';
 
 part 'run.freezed.dart';
 part 'run.g.dart';
 
 @freezed
-class Run with _$Run {
+class Run extends Equatable with _$Run {
   factory Run({
     @JsonKey(name: 'id')
         required String id,
@@ -26,6 +27,9 @@ class Run with _$Run {
   }) = _Run;
 
   factory Run.fromJson(Map<String, dynamic> json) => _$RunFromJson(json);
+
+  @override
+  List<Object?> get props => [programId, startTime, duration, zoneId];
 }
 
 extension TimeOfDayX on TimeOfDay {
@@ -59,8 +63,8 @@ extension TimeOfDayX on TimeOfDay {
 }
 
 extension ListRunX on List<Run> {
-  List<RunDraft> toRunModifications() {
-    final mods = <RunDraft>[];
+  List<RunGroup> toRunGroups() {
+    final mods = <RunGroup>[];
     forEach((run) {
       final addedMod = mods.singleWhereOrNull(
         (mod) =>
@@ -68,10 +72,11 @@ extension ListRunX on List<Run> {
             mod.duration.inSeconds == run.duration,
       );
       if (addedMod == null) {
-        // A runDraft containing this run has not
+        // A runGroup containing this run has not
         // been created yet
         mods.add(
-          RunDraft.modification(
+          RunGroup(
+            type: RunGroupType.modification,
             timeOfDay: run.startTime,
             zoneIds: [run.zoneId],
             duration: Duration(seconds: run.duration),

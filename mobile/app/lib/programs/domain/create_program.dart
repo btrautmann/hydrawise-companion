@@ -12,21 +12,21 @@ class CreateProgram {
   Future<void> call({
     required String name,
     required List<int> frequency,
-    required List<RunDraft> runDrafts,
+    required List<RunGroup> runGroups,
   }) async {
     final programId = await _repository.createProgram(
       name: name,
       frequency: frequency,
     );
     final runs = <Run>[];
-    for (final draft in runDrafts) {
-      for (final zoneId in draft.zoneIds) {
+    for (final group in runGroups) {
+      for (final zoneId in group.zoneIds) {
         runs.add(
           Run(
             id: const Uuid().v4(),
             programId: programId,
-            startTime: draft.timeOfDay,
-            duration: draft.duration.inSeconds,
+            startTime: group.timeOfDay,
+            duration: group.duration.inSeconds,
             zoneId: zoneId,
           ),
         );

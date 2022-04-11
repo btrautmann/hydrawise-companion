@@ -32,12 +32,12 @@ class ProgramsCubit extends Cubit<ProgramsState> {
   Future<void> createProgram({
     required String name,
     required List<int> frequency,
-    required List<RunDraft> runs,
+    required List<RunGroup> runGroups,
   }) async {
     await _createProgram(
       name: name,
       frequency: frequency,
-      runDrafts: runs,
+      runGroups: runGroups,
     );
     await _initPrograms();
   }
@@ -78,13 +78,13 @@ class ProgramsCubit extends Cubit<ProgramsState> {
     required String programId,
     required String name,
     required List<int> frequency,
-    required List<RunDraft> runs,
+    required List<RunGroup> runs,
   }) async {
     await _updateProgram(
       programId: programId,
       name: name,
       frequency: frequency,
-      runDrafts: runs,
+      runGroups: runs,
     );
     await _initPrograms();
   }

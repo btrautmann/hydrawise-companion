@@ -21,7 +21,7 @@ void main() {
         programId: programId,
         name: 'New',
         frequency: [],
-        runDrafts: [],
+        runGroups: [],
       );
 
       expect(
@@ -42,7 +42,7 @@ void main() {
         programId: programId,
         name: 'New',
         frequency: [DateTime.monday],
-        runDrafts: [],
+        runGroups: [],
       );
 
       expect(
@@ -67,8 +67,9 @@ void main() {
         programId: programId,
         name: 'New',
         frequency: [DateTime.monday],
-        runDrafts: [
-          RunDraft.creation(
+        runGroups: [
+          RunGroup(
+            type: RunGroupType.creation,
             timeOfDay: TimeOfDay.now(),
             zoneIds: [1],
             duration: const Duration(seconds: 5),
@@ -116,8 +117,9 @@ void main() {
         programId: programId,
         name: 'New',
         frequency: [],
-        runDrafts: [
-          RunDraft.modification(
+        runGroups: [
+          RunGroup(
+            type: RunGroupType.modification,
             timeOfDay: TimeOfDay.now(),
             zoneIds: [1],
             duration: const Duration(seconds: 5),
@@ -159,8 +161,9 @@ void main() {
         programId: programId,
         name: 'New',
         frequency: [],
-        runDrafts: [
-          RunDraft.modification(
+        runGroups: [
+          RunGroup(
+            type: RunGroupType.modification,
             timeOfDay: const TimeOfDay(hour: 5, minute: 5),
             zoneIds: [1],
             duration: const Duration(seconds: 25),

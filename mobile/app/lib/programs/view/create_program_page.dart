@@ -33,7 +33,7 @@ class CreateProgramPage extends StatelessWidget {
           body: CreateProgramView(
             name: existingProgram?.name ?? '',
             frequency: existingProgram?.frequency ?? [],
-            runDrafts: existingProgram?.runs?.toRunModifications() ?? [],
+            runGroups: existingProgram?.runs?.toRunGroups() ?? [],
             existingProgramId: existingProgramId,
           ),
         );
@@ -47,13 +47,13 @@ class CreateProgramView extends StatefulWidget {
     Key? key,
     required this.name,
     required this.frequency,
-    required this.runDrafts,
+    required this.runGroups,
     required this.existingProgramId,
   }) : super(key: key);
 
   final String name;
   final List<int> frequency;
-  final List<RunDraft> runDrafts;
+  final List<RunGroup> runGroups;
   final String? existingProgramId;
 
   @override
@@ -63,14 +63,14 @@ class CreateProgramView extends StatefulWidget {
 class _CreateProgramViewState extends State<CreateProgramView> {
   late String _name;
   late List<int> _frequency;
-  late List<RunDraft> _runDrafts;
+  late List<RunGroup> _runGroups;
   late TextEditingController _nameController;
 
   @override
   void initState() {
     _name = widget.name;
     _frequency = widget.frequency;
-    _runDrafts = widget.runDrafts;
+    _runGroups = widget.runGroups;
     _nameController = TextEditingController();
     _nameController.text = _name;
     super.initState();
@@ -111,18 +111,18 @@ class _CreateProgramViewState extends State<CreateProgramView> {
             },
           ),
           _RunsConfiguration(
-            initialRunDrafts: _runDrafts,
+            initialrunGroups: _runGroups,
             onRunsChanged: (runs) {
               setState(() {
-                _runDrafts = runs;
+                _runGroups = runs;
               });
             },
           ),
           Visibility(
             visible: _name.isNotEmpty &&
                 _frequency.isNotEmpty &&
-                _runDrafts.isNotEmpty &&
-                !_runDrafts.any(
+                _runGroups.isNotEmpty &&
+                !_runGroups.any(
                   (element) =>
                       element.duration.inMinutes == 0 ||
                       element.zoneIds.isEmpty,
@@ -136,13 +136,13 @@ class _CreateProgramViewState extends State<CreateProgramView> {
                           programId: widget.existingProgramId!,
                           name: _name,
                           frequency: _frequency,
-                          runs: _runDrafts,
+                          runs: _runGroups,
                         );
                   } else {
                     context.read<ProgramsCubit>().createProgram(
                           name: _name,
                           frequency: _frequency,
-                          runs: _runDrafts,
+                          runGroups: _runGroups,
                         );
                   }
                   Navigator.of(context).pop();
@@ -327,23 +327,23 @@ class _DayButton extends StatelessWidget {
 class _RunsConfiguration extends StatefulWidget {
   const _RunsConfiguration({
     Key? key,
-    required this.initialRunDrafts,
+    required this.initialrunGroups,
     required this.onRunsChanged,
   }) : super(key: key);
 
-  final List<RunDraft> initialRunDrafts;
-  final ValueSetter<List<RunDraft>> onRunsChanged;
+  final List<RunGroup> initialrunGroups;
+  final ValueSetter<List<RunGroup>> onRunsChanged;
 
   @override
   _RunsConfigurationState createState() => _RunsConfigurationState();
 }
 
 class _RunsConfigurationState extends State<_RunsConfiguration> {
-  late List<RunDraft> _runDrafts;
+  late List<RunGroup> _runGroups;
 
   @override
   void initState() {
-    _runDrafts = widget.initialRunDrafts;
+    _runGroups = widget.initialrunGroups;
     super.initState();
   }
 
@@ -371,27 +371,27 @@ class _RunsConfigurationState extends State<_RunsConfiguration> {
                 'Set start times and durations for groups of zones.',
               ),
             ),
-            if (_runDrafts.isNotEmpty)
+            if (_runGroups.isNotEmpty)
               ListView.builder(
                 primary: false,
                 shrinkWrap: true,
-                itemCount: _runDrafts.length,
+                itemCount: _runGroups.length,
                 itemBuilder: (context, rIndex) {
                   return _RunCreationView(
-                    key: ObjectKey(_runDrafts[rIndex]),
-                    runCreation: _runDrafts[rIndex],
+                    key: ObjectKey(_runGroups[rIndex]),
+                    runCreation: _runGroups[rIndex],
                     availableZones: zones,
                     onChanged: (runCreation) {
                       setState(() {
-                        _runDrafts[rIndex] = runCreation;
+                        _runGroups[rIndex] = runCreation;
                       });
-                      widget.onRunsChanged(_runDrafts);
+                      widget.onRunsChanged(_runGroups);
                     },
                     onRemoved: (runCreation) {
                       setState(() {
-                        _runDrafts.remove(runCreation);
+                        _runGroups.remove(runCreation);
                       });
-                      widget.onRunsChanged(_runDrafts);
+                      widget.onRunsChanged(_runGroups);
                     },
                   );
                 },
@@ -402,15 +402,16 @@ class _RunsConfigurationState extends State<_RunsConfiguration> {
                 child: TextButton(
                   onPressed: () {
                     setState(() {
-                      _runDrafts.add(
-                        RunDraft.creation(
+                      _runGroups.add(
+                        RunGroup(
+                          type: RunGroupType.creation,
                           timeOfDay: TimeOfDay.now(),
                           zoneIds: [],
                           duration: Duration.zero,
                         ),
                       );
                     });
-                    widget.onRunsChanged(_runDrafts);
+                    widget.onRunsChanged(_runGroups);
                   },
                   child: const Text('Add Run'),
                 ),
@@ -432,29 +433,29 @@ class _RunCreationView extends StatefulWidget {
     required this.onRemoved,
   }) : super(key: key);
 
-  final RunDraft runCreation;
+  final RunGroup runCreation;
   final List<Zone> availableZones;
-  final ValueSetter<RunDraft> onChanged;
-  final ValueSetter<RunDraft> onRemoved;
+  final ValueSetter<RunGroup> onChanged;
+  final ValueSetter<RunGroup> onRemoved;
 
   @override
   _RunCreationViewState createState() => _RunCreationViewState();
 }
 
 class _RunCreationViewState extends State<_RunCreationView> {
-  late RunDraft _runDraft;
+  late RunGroup _runGroup;
 
   @override
   void initState() {
-    _runDraft = widget.runCreation;
+    _runGroup = widget.runCreation;
     super.initState();
   }
 
   void _changeTime(TimeOfDay? timeOfDay, BuildContext context) {
     if (timeOfDay != null) {
       setState(() {
-        _runDraft = _runDraft.copyWith(timeOfDay: timeOfDay);
-        widget.onChanged(_runDraft);
+        _runGroup = _runGroup.copyWith(timeOfDay: timeOfDay);
+        widget.onChanged(_runGroup);
       });
     }
   }
@@ -462,25 +463,25 @@ class _RunCreationViewState extends State<_RunCreationView> {
   void _changeDuration(String minutes) {
     if (minutes.isNotEmpty) {
       setState(() {
-        _runDraft = _runDraft.copyWith(
+        _runGroup = _runGroup.copyWith(
           duration: Duration(
             minutes: int.parse(minutes),
           ),
         );
-        widget.onChanged(_runDraft);
+        widget.onChanged(_runGroup);
       });
     }
   }
 
   void _changeZoneMembership(bool isSelected, int zoneId) {
-    final zones = _runDraft.zoneIds;
+    final zones = _runGroup.zoneIds;
     if (isSelected) {
       zones.add(zoneId);
     } else {
       zones.remove(zoneId);
     }
-    _runDraft = _runDraft.copyWith(zoneIds: zones);
-    widget.onChanged(_runDraft);
+    _runGroup = _runGroup.copyWith(zoneIds: zones);
+    widget.onChanged(_runGroup);
   }
 
   @override
@@ -497,13 +498,13 @@ class _RunCreationViewState extends State<_RunCreationView> {
                 message: 'Remove run',
                 child: IconButton(
                   onPressed: () {
-                    widget.onRemoved(_runDraft);
+                    widget.onRemoved(_runGroup);
                   },
                   icon: const Icon(Icons.remove_circle),
                 ),
               ),
               OutlinedButton(
-                child: Text(_runDraft.timeOfDay.format(context)),
+                child: Text(_runGroup.timeOfDay.format(context)),
                 onPressed: () async {
                   final time = await showTimePicker(
                     context: context,
@@ -520,7 +521,7 @@ class _RunCreationViewState extends State<_RunCreationView> {
                 child: Text('for'),
               ),
               OutlinedButton(
-                child: Text(_runDraft.duration.inMinutes.toString()),
+                child: Text(_runGroup.duration.inMinutes.toString()),
                 onPressed: () async {
                   await showDialog(
                     context: context,
@@ -563,7 +564,7 @@ class _RunCreationViewState extends State<_RunCreationView> {
                   ),
                   checkmarkColor: Theme.of(context).colorScheme.onSecondary,
                   selectedColor: Theme.of(context).colorScheme.secondary,
-                  selected: _runDraft.zoneIds.contains(zone.id),
+                  selected: _runGroup.zoneIds.contains(zone.id),
                   onSelected: (isSelected) {
                     _changeZoneMembership(isSelected, zone.id);
                   },

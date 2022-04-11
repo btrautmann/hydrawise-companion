@@ -15,7 +15,7 @@ class UpdateProgram {
     required String programId,
     required String name,
     required List<int> frequency,
-    required List<RunDraft> runDrafts,
+    required List<RunGroup> runGroups,
   }) async {
     await _repository.updateProgram(
       programId: programId,
@@ -27,11 +27,11 @@ class UpdateProgram {
       programId: programId,
     );
 
-    final modifiedRunDrafts =
-        runDrafts.where((element) => !element.isNewRunDraft()).toList();
+    final modifiedrunGroups =
+        runGroups.where((element) => !element.isNewRunGroup()).toList();
 
     final deletedRuns = existingRuns.where(
-      (existingRun) => modifiedRunDrafts.none(
+      (existingRun) => modifiedrunGroups.none(
         (element) =>
             element.zoneIds.contains(existingRun.zoneId) &&
             element.timeOfDay == existingRun.startTime &&
@@ -44,41 +44,36 @@ class UpdateProgram {
 
     final runsToInsert = <Run>[];
     final runsToUpdate = <Run>[];
-    for (final runDraft in runDrafts) {
-      for (final zoneId in runDraft.zoneIds) {
-        // If the provided RunDraft is a modification,
+    for (final runGroup in runGroups) {
+      for (final zoneId in runGroup.zoneIds) {
+        // If the provided runGroup is a modification,
         // we may be adding runs OR updating runs,
         // and as such need to assign the correct Id, either
         // a new one or an existing one
         Future<String> modificationId() async {
           final matchingRun = existingRuns.singleWhereOrNull(
             (existingRun) =>
-                existingRun.startTime == runDraft.timeOfDay &&
+                existingRun.startTime == runGroup.timeOfDay &&
                 existingRun.zoneId == zoneId &&
-                existingRun.duration == runDraft.duration.inSeconds,
+                existingRun.duration == runGroup.duration.inSeconds,
           );
           // TODO(brandon): Create GetUniqueId to abstract the usage
           // of Uuid
           return matchingRun?.id ?? const Uuid().v4();
         }
 
-        final id = runDraft.map(
-          // TODO(brandon): Create GetUniqueId to abstract the usage
-          // of Uuid
-          creation: (_) async => const Uuid().v4(),
-          modification: (r) => modificationId(),
-        );
-
-        final runId = await id;
+        final id = runGroup.isNewRunGroup()
+            ? const Uuid().v4()
+            : await modificationId();
 
         final run = Run(
-          id: runId,
+          id: id,
           programId: programId,
-          startTime: runDraft.timeOfDay,
-          duration: runDraft.duration.inSeconds,
+          startTime: runGroup.timeOfDay,
+          duration: runGroup.duration.inSeconds,
           zoneId: zoneId,
         );
-        final isCreating = existingRuns.none((run) => run.id == runId);
+        final isCreating = existingRuns.none((run) => run.id == id);
         if (isCreating) {
           runsToInsert.add(run);
         } else {
