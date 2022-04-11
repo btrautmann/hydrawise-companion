@@ -209,78 +209,84 @@ class _FrequencySelectionState extends State<_FrequencySelection> {
             'Which days of the week should this program run?',
           ),
         ),
-        SingleChildScrollView(
-          padding: const EdgeInsets.all(16),
-          scrollDirection: Axis.horizontal,
-          child: Row(
-            children: [
-              _DayButton(
-                onTapped: () {
-                  _updateFrequency(DateTime.monday);
-                },
-                text: 'M',
-                colorResolver: (states) => _frequency.contains(DateTime.monday)
-                    ? Theme.of(context).colorScheme.secondary
-                    : Colors.transparent,
-              ),
-              _DayButton(
-                onTapped: () {
-                  _updateFrequency(DateTime.tuesday);
-                },
-                text: 'T',
-                colorResolver: (states) => _frequency.contains(DateTime.tuesday)
-                    ? Theme.of(context).colorScheme.secondary
-                    : Colors.transparent,
-              ),
-              _DayButton(
-                onTapped: () {
-                  _updateFrequency(DateTime.wednesday);
-                },
-                text: 'W',
-                colorResolver: (states) =>
-                    _frequency.contains(DateTime.wednesday)
-                        ? Theme.of(context).colorScheme.secondary
-                        : Colors.transparent,
-              ),
-              _DayButton(
-                onTapped: () {
-                  _updateFrequency(DateTime.thursday);
-                },
-                text: 'R',
-                colorResolver: (states) =>
-                    _frequency.contains(DateTime.thursday)
-                        ? Theme.of(context).colorScheme.secondary
-                        : Colors.transparent,
-              ),
-              _DayButton(
-                onTapped: () {
-                  _updateFrequency(DateTime.friday);
-                },
-                text: 'F',
-                colorResolver: (friday) => _frequency.contains(DateTime.friday)
-                    ? Theme.of(context).colorScheme.secondary
-                    : Colors.transparent,
-              ),
-              _DayButton(
-                onTapped: () {
-                  _updateFrequency(DateTime.saturday);
-                },
-                text: 'S',
-                colorResolver: (states) =>
-                    _frequency.contains(DateTime.saturday)
-                        ? Theme.of(context).colorScheme.secondary
-                        : Colors.transparent,
-              ),
-              _DayButton(
-                onTapped: () {
-                  _updateFrequency(DateTime.sunday);
-                },
-                text: 'Su',
-                colorResolver: (states) => _frequency.contains(DateTime.sunday)
-                    ? Theme.of(context).colorScheme.secondary
-                    : Colors.transparent,
-              ),
-            ],
+        Align(
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Wrap(
+              alignment: WrapAlignment.center,
+              children: [
+                _DayButton(
+                  onTapped: () {
+                    _updateFrequency(DateTime.monday);
+                  },
+                  text: 'M',
+                  colorResolver: (states) =>
+                      _frequency.contains(DateTime.monday)
+                          ? Theme.of(context).colorScheme.secondary
+                          : Colors.transparent,
+                ),
+                _DayButton(
+                  onTapped: () {
+                    _updateFrequency(DateTime.tuesday);
+                  },
+                  text: 'T',
+                  colorResolver: (states) =>
+                      _frequency.contains(DateTime.tuesday)
+                          ? Theme.of(context).colorScheme.secondary
+                          : Colors.transparent,
+                ),
+                _DayButton(
+                  onTapped: () {
+                    _updateFrequency(DateTime.wednesday);
+                  },
+                  text: 'W',
+                  colorResolver: (states) =>
+                      _frequency.contains(DateTime.wednesday)
+                          ? Theme.of(context).colorScheme.secondary
+                          : Colors.transparent,
+                ),
+                _DayButton(
+                  onTapped: () {
+                    _updateFrequency(DateTime.thursday);
+                  },
+                  text: 'R',
+                  colorResolver: (states) =>
+                      _frequency.contains(DateTime.thursday)
+                          ? Theme.of(context).colorScheme.secondary
+                          : Colors.transparent,
+                ),
+                _DayButton(
+                  onTapped: () {
+                    _updateFrequency(DateTime.friday);
+                  },
+                  text: 'F',
+                  colorResolver: (friday) =>
+                      _frequency.contains(DateTime.friday)
+                          ? Theme.of(context).colorScheme.secondary
+                          : Colors.transparent,
+                ),
+                _DayButton(
+                  onTapped: () {
+                    _updateFrequency(DateTime.saturday);
+                  },
+                  text: 'S',
+                  colorResolver: (states) =>
+                      _frequency.contains(DateTime.saturday)
+                          ? Theme.of(context).colorScheme.secondary
+                          : Colors.transparent,
+                ),
+                _DayButton(
+                  onTapped: () {
+                    _updateFrequency(DateTime.sunday);
+                  },
+                  text: 'Su',
+                  colorResolver: (states) =>
+                      _frequency.contains(DateTime.sunday)
+                          ? Theme.of(context).colorScheme.secondary
+                          : Colors.transparent,
+                ),
+              ],
+            ),
           ),
         )
       ],
