@@ -215,12 +215,6 @@ class _FrequencySelectionState extends State<_FrequencySelection> {
             child: Wrap(
               alignment: WrapAlignment.center,
               children: [
-                Checkbox(
-                  value: _frequency.contains(DateTime.monday),
-                  onChanged: (_) {
-                    _updateFrequency(DateTime.monday);
-                  },
-                ),
                 _DayButton(
                   onTapped: () {
                     _updateFrequency(DateTime.monday);
