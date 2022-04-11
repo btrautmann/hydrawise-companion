@@ -22,6 +22,9 @@ jobs:
         with:
           flutter-version: '2.10.3'
           channel: stable
+          
+      - name: activate melos
+        run: dart pub global activate melos && melos bs
             
       - name: verify flutter
-        run: cd mobile && flutter test --test-randomize-ordering-seed random && flutter analyze
+        run: cd mobile && melos exec -- flutter test --test-randomize-ordering-seed random && flutter analyze
