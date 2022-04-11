@@ -26,6 +26,8 @@ class Run extends Equatable with _$Run {
         required int zoneId,
   }) = _Run;
 
+  Run._();
+
   factory Run.fromJson(Map<String, dynamic> json) => _$RunFromJson(json);
 
   @override

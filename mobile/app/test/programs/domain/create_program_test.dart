@@ -39,41 +39,29 @@ void main() {
             zoneIds: [0, 1],
             duration: const Duration(minutes: 10),
           ),
-          RunGroup(
-            type: RunGroupType.creation,
-            timeOfDay:
-                TimeOfDay.fromDateTime(time.add(const Duration(hours: 2))),
-            zoneIds: [2, 3],
-            duration: const Duration(minutes: 15),
-          ),
         ],
       );
 
       final programs = await repository.getPrograms();
-      final runs = programs.single.runs!;
+      final runs = programs.single.runs!
+        ..sort(
+          (a, b) => a.zoneId.compareTo(b.zoneId),
+        );
 
-      expect(runs.toRunGroups().length, 2);
-
-      final firstRuns = runs.where(
-        (r) => r.duration == 600 && r.startTime == TimeOfDay.fromDateTime(time),
+      expect(runs.length, 2);
+      expect(runs.first.zoneId, 0);
+      expect(runs.last.zoneId, 1);
+      expect(
+        runs.every(
+          (element) => element.startTime == TimeOfDay.fromDateTime(time),
+        ),
+        isTrue,
       );
       expect(
-        firstRuns.length,
-        2,
-      );
-      final secondRuns = runs.where(
-        (r) =>
-            r.duration == 900 &&
-            r.startTime ==
-                TimeOfDay.fromDateTime(
-                  time.add(
-                    const Duration(hours: 2),
-                  ),
-                ),
-      );
-      expect(
-        secondRuns.length,
-        2,
+        runs.every(
+          (element) => element.duration == 600,
+        ),
+        isTrue,
       );
     });
   });

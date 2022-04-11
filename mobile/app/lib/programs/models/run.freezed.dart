@@ -190,7 +190,7 @@ class __$RunCopyWithImpl<$Res> extends _$RunCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_Run implements _Run {
+class _$_Run extends _Run {
   _$_Run(
       {@JsonKey(name: 'id')
           required this.id,
@@ -201,7 +201,8 @@ class _$_Run implements _Run {
       @JsonKey(name: 'duration')
           required this.duration,
       @JsonKey(name: 'z_id')
-          required this.zoneId});
+          required this.zoneId})
+      : super._();
 
   factory _$_Run.fromJson(Map<String, dynamic> json) => _$$_RunFromJson(json);
 
@@ -224,32 +225,6 @@ class _$_Run implements _Run {
   @JsonKey(name: 'z_id')
   final int zoneId;
 
-  @override
-  String toString() {
-    return 'Run(id: $id, programId: $programId, startTime: $startTime, duration: $duration, zoneId: $zoneId)';
-  }
-
-  @override
-  bool operator ==(dynamic other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _Run &&
-            const DeepCollectionEquality().equals(other.id, id) &&
-            const DeepCollectionEquality().equals(other.programId, programId) &&
-            const DeepCollectionEquality().equals(other.startTime, startTime) &&
-            const DeepCollectionEquality().equals(other.duration, duration) &&
-            const DeepCollectionEquality().equals(other.zoneId, zoneId));
-  }
-
-  @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      const DeepCollectionEquality().hash(id),
-      const DeepCollectionEquality().hash(programId),
-      const DeepCollectionEquality().hash(startTime),
-      const DeepCollectionEquality().hash(duration),
-      const DeepCollectionEquality().hash(zoneId));
-
   @JsonKey(ignore: true)
   @override
   _$RunCopyWith<_Run> get copyWith =>
@@ -261,7 +236,7 @@ class _$_Run implements _Run {
   }
 }
 
-abstract class _Run implements Run {
+abstract class _Run extends Run {
   factory _Run(
       {@JsonKey(name: 'id')
           required String id,
@@ -273,6 +248,7 @@ abstract class _Run implements Run {
           required int duration,
       @JsonKey(name: 'z_id')
           required int zoneId}) = _$_Run;
+  _Run._() : super._();
 
   factory _Run.fromJson(Map<String, dynamic> json) = _$_Run.fromJson;
 
