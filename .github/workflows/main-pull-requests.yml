@@ -12,6 +12,9 @@ on:
 
 jobs:
   verify:
+    defaults:
+      run:
+        working-directory: mobile
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v2
@@ -20,8 +23,17 @@ jobs:
           ssh-private-key: ${{secrets.SSH_PRIVATE_KEY}}
       - uses: subosito/flutter-action@v1
         with:
-          flutter-version: '2.10.3'
+          flutter-version: '2.10.4'
           channel: stable
+          
+      - name: activate melos
+        run: dart pub global activate melos && melos bs
             
-      - name: verify flutter
-        run: cd mobile && flutter test --test-randomize-ordering-seed random && flutter analyze
+      - name: run tests
+        run: melos exec --dir-exists="test" -- flutter test --test-randomize-ordering-seed random
+        
+      - name: analyze flutter
+        run: melos exec --flutter -- flutter analyze
+
+      - name: analyze dart
+        run: melos exec --no-depends-on="flutter"  -- dart analyze

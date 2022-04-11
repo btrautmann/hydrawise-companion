@@ -8,7 +8,7 @@
             "name": "irri (prod)",
             "request": "launch",
             "type": "dart",
-            "program": "lib/main_production.dart",
+            "program": "app/lib/main_production.dart",
             "flutterMode": "debug",
             "args": [
                 "--dart-define",
@@ -21,7 +21,7 @@
             "name": "irri (dev)",
             "request": "launch",
             "type": "dart",
-            "program": "lib/main_development.dart",
+            "program": "app/lib/main_development.dart",
             "flutterMode": "debug",
             "args": [
                 "--dart-define",
@@ -31,24 +31,11 @@
             ]
         },
         {
-            "name": "irri (staging)",
-            "request": "launch",
-            "type": "dart",
-            "program": "lib/main_staging.dart",
-            "flutterMode": "debug",
-            "args": [
-                "--dart-define",
-                "OPEN_WEATHER_MAP_API_KEY=${env:OPEN_WEATHER_MAP_API_KEY}",
-                "--flavor",
-                "staging"
-            ]
-        },
-        {
             "name": "irri (profile mode)",
             "request": "launch",
             "type": "dart",
             "flutterMode": "profile",
-            "program": "lib/main_production.dart",
+            "program": "app/lib/main_production.dart",
             "args": [
                 "--dart-define",
                 "OPEN_WEATHER_MAP_API_KEY=${env:OPEN_WEATHER_MAP_API_KEY}",

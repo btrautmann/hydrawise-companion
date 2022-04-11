@@ -15,7 +15,7 @@ jobs:
     env:
       ACTIONS_ALLOW_UNSECURE_COMMANDS: true
       FLUTTER_BUILD_CHANNEL: stable
-      FLUTTER_BUILD_VERSION: 2.10.3
+      FLUTTER_BUILD_VERSION: 2.10.4
 
     steps:
       - name: Checkout
@@ -32,13 +32,13 @@ jobs:
 
       - name: Run code coverage
         run: flutter test --coverage --test-randomize-ordering-seed random lib
-        working-directory: mobile
+        working-directory: mobile/app
         
       - name: Remove generated files
         run: remove_from_coverage -f coverage/lcov.info -r '\.g\.dart$' && remove_from_coverage -f coverage/lcov.info -r '\.freezed\.dart$'
-        working-directory: mobile
+        working-directory: mobile/app
 
       - uses: codecov/codecov-action@v2
         with:
-          files: mobile/coverage/lcov.info
+          files: mobile/app/coverage/lcov.info
 
