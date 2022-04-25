@@ -27,11 +27,11 @@ class UpdateProgram {
       programId: programId,
     );
 
-    final modifiedrunGroups =
+    final modifiedRunGroups =
         runGroups.where((element) => !element.isNewRunGroup()).toList();
 
     final deletedRuns = existingRuns.where(
-      (existingRun) => modifiedrunGroups.none(
+      (existingRun) => modifiedRunGroups.none(
         (element) =>
             element.zoneIds.contains(existingRun.zoneId) &&
             element.timeOfDay == existingRun.startTime &&

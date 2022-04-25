@@ -5,7 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:hydrawise/hydrawise.dart';
 import 'package:irri/auth/auth.dart';
 
-import '../core/fakes/fake_http_client.dart';
+import '../../core/fakes/fake_http_client.dart';
 
 void main() {
   late ValidateApiKey subject;

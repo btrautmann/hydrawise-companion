@@ -1,12 +1,3 @@
-export 'fake_validate_api_key.dart';
-export 'firebase/firebase.dart';
-export 'firebase/firebase.dart';
-export 'get_api_key.dart';
-export 'get_auth_failures.dart';
-export 'is_logged_in.dart';
-export 'log_in.dart';
-export 'log_out.dart';
-export 'set_api_key.dart';
-export 'state/auth_cubit.dart';
-export 'validate_api_key.dart';
+export 'cubit/auth_cubit.dart';
+export 'domain/domain.dart';
 export 'view/login_page.dart';
