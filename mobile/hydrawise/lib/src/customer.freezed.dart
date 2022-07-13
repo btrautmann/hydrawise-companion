@@ -12,41 +12,14 @@ part of 'customer.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more informations: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
+    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
 
-Customer _$CustomerFromJson(Map<String, dynamic> json) {
-  return _Customer.fromJson(json);
+HCustomer _$HCustomerFromJson(Map<String, dynamic> json) {
+  return _HCustomer.fromJson(json);
 }
 
 /// @nodoc
-class _$CustomerTearOff {
-  const _$CustomerTearOff();
-
-  _Customer call(
-      {@JsonKey(name: 'controller_id') required int activeControllerId,
-      @JsonKey(name: 'customer_id') required int customerId,
-      @JsonKey(name: 'api_key') required String apiKey,
-      @JsonKey(name: 'last_status_update') required int lastStatusUpdate,
-      @JsonKey(name: 'time_zone') String? timeZone = 'America/New_York'}) {
-    return _Customer(
-      activeControllerId: activeControllerId,
-      customerId: customerId,
-      apiKey: apiKey,
-      lastStatusUpdate: lastStatusUpdate,
-      timeZone: timeZone,
-    );
-  }
-
-  Customer fromJson(Map<String, Object?> json) {
-    return Customer.fromJson(json);
-  }
-}
-
-/// @nodoc
-const $Customer = _$CustomerTearOff();
-
-/// @nodoc
-mixin _$Customer {
+mixin _$HCustomer {
   @JsonKey(name: 'controller_id')
   int get activeControllerId => throw _privateConstructorUsedError;
   @JsonKey(name: 'customer_id')
@@ -60,14 +33,14 @@ mixin _$Customer {
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
-  $CustomerCopyWith<Customer> get copyWith =>
+  $HCustomerCopyWith<HCustomer> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class $CustomerCopyWith<$Res> {
-  factory $CustomerCopyWith(Customer value, $Res Function(Customer) then) =
-      _$CustomerCopyWithImpl<$Res>;
+abstract class $HCustomerCopyWith<$Res> {
+  factory $HCustomerCopyWith(HCustomer value, $Res Function(HCustomer) then) =
+      _$HCustomerCopyWithImpl<$Res>;
   $Res call(
       {@JsonKey(name: 'controller_id') int activeControllerId,
       @JsonKey(name: 'customer_id') int customerId,
@@ -77,12 +50,12 @@ abstract class $CustomerCopyWith<$Res> {
 }
 
 /// @nodoc
-class _$CustomerCopyWithImpl<$Res> implements $CustomerCopyWith<$Res> {
-  _$CustomerCopyWithImpl(this._value, this._then);
+class _$HCustomerCopyWithImpl<$Res> implements $HCustomerCopyWith<$Res> {
+  _$HCustomerCopyWithImpl(this._value, this._then);
 
-  final Customer _value;
+  final HCustomer _value;
   // ignore: unused_field
-  final $Res Function(Customer) _then;
+  final $Res Function(HCustomer) _then;
 
   @override
   $Res call({
@@ -118,9 +91,10 @@ class _$CustomerCopyWithImpl<$Res> implements $CustomerCopyWith<$Res> {
 }
 
 /// @nodoc
-abstract class _$CustomerCopyWith<$Res> implements $CustomerCopyWith<$Res> {
-  factory _$CustomerCopyWith(_Customer value, $Res Function(_Customer) then) =
-      __$CustomerCopyWithImpl<$Res>;
+abstract class _$$_HCustomerCopyWith<$Res> implements $HCustomerCopyWith<$Res> {
+  factory _$$_HCustomerCopyWith(
+          _$_HCustomer value, $Res Function(_$_HCustomer) then) =
+      __$$_HCustomerCopyWithImpl<$Res>;
   @override
   $Res call(
       {@JsonKey(name: 'controller_id') int activeControllerId,
@@ -131,13 +105,14 @@ abstract class _$CustomerCopyWith<$Res> implements $CustomerCopyWith<$Res> {
 }
 
 /// @nodoc
-class __$CustomerCopyWithImpl<$Res> extends _$CustomerCopyWithImpl<$Res>
-    implements _$CustomerCopyWith<$Res> {
-  __$CustomerCopyWithImpl(_Customer _value, $Res Function(_Customer) _then)
-      : super(_value, (v) => _then(v as _Customer));
+class __$$_HCustomerCopyWithImpl<$Res> extends _$HCustomerCopyWithImpl<$Res>
+    implements _$$_HCustomerCopyWith<$Res> {
+  __$$_HCustomerCopyWithImpl(
+      _$_HCustomer _value, $Res Function(_$_HCustomer) _then)
+      : super(_value, (v) => _then(v as _$_HCustomer));
 
   @override
-  _Customer get _value => super._value as _Customer;
+  _$_HCustomer get _value => super._value as _$_HCustomer;
 
   @override
   $Res call({
@@ -147,7 +122,7 @@ class __$CustomerCopyWithImpl<$Res> extends _$CustomerCopyWithImpl<$Res>
     Object? lastStatusUpdate = freezed,
     Object? timeZone = freezed,
   }) {
-    return _then(_Customer(
+    return _then(_$_HCustomer(
       activeControllerId: activeControllerId == freezed
           ? _value.activeControllerId
           : activeControllerId // ignore: cast_nullable_to_non_nullable
@@ -174,16 +149,16 @@ class __$CustomerCopyWithImpl<$Res> extends _$CustomerCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_Customer implements _Customer {
-  _$_Customer(
+class _$_HCustomer implements _HCustomer {
+  _$_HCustomer(
       {@JsonKey(name: 'controller_id') required this.activeControllerId,
       @JsonKey(name: 'customer_id') required this.customerId,
       @JsonKey(name: 'api_key') required this.apiKey,
       @JsonKey(name: 'last_status_update') required this.lastStatusUpdate,
       @JsonKey(name: 'time_zone') this.timeZone = 'America/New_York'});
 
-  factory _$_Customer.fromJson(Map<String, dynamic> json) =>
-      _$$_CustomerFromJson(json);
+  factory _$_HCustomer.fromJson(Map<String, dynamic> json) =>
+      _$$_HCustomerFromJson(json);
 
   @override
   @JsonKey(name: 'controller_id')
@@ -203,14 +178,14 @@ class _$_Customer implements _Customer {
 
   @override
   String toString() {
-    return 'Customer(activeControllerId: $activeControllerId, customerId: $customerId, apiKey: $apiKey, lastStatusUpdate: $lastStatusUpdate, timeZone: $timeZone)';
+    return 'HCustomer(activeControllerId: $activeControllerId, customerId: $customerId, apiKey: $apiKey, lastStatusUpdate: $lastStatusUpdate, timeZone: $timeZone)';
   }
 
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _Customer &&
+            other is _$_HCustomer &&
             const DeepCollectionEquality()
                 .equals(other.activeControllerId, activeControllerId) &&
             const DeepCollectionEquality()
@@ -221,6 +196,7 @@ class _$_Customer implements _Customer {
             const DeepCollectionEquality().equals(other.timeZone, timeZone));
   }
 
+  @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(
       runtimeType,
@@ -232,24 +208,25 @@ class _$_Customer implements _Customer {
 
   @JsonKey(ignore: true)
   @override
-  _$CustomerCopyWith<_Customer> get copyWith =>
-      __$CustomerCopyWithImpl<_Customer>(this, _$identity);
+  _$$_HCustomerCopyWith<_$_HCustomer> get copyWith =>
+      __$$_HCustomerCopyWithImpl<_$_HCustomer>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$_CustomerToJson(this);
+    return _$$_HCustomerToJson(this);
   }
 }
 
-abstract class _Customer implements Customer {
-  factory _Customer(
-      {@JsonKey(name: 'controller_id') required int activeControllerId,
-      @JsonKey(name: 'customer_id') required int customerId,
-      @JsonKey(name: 'api_key') required String apiKey,
-      @JsonKey(name: 'last_status_update') required int lastStatusUpdate,
-      @JsonKey(name: 'time_zone') String? timeZone}) = _$_Customer;
+abstract class _HCustomer implements HCustomer {
+  factory _HCustomer(
+      {@JsonKey(name: 'controller_id') required final int activeControllerId,
+      @JsonKey(name: 'customer_id') required final int customerId,
+      @JsonKey(name: 'api_key') required final String apiKey,
+      @JsonKey(name: 'last_status_update') required final int lastStatusUpdate,
+      @JsonKey(name: 'time_zone') final String? timeZone}) = _$_HCustomer;
 
-  factory _Customer.fromJson(Map<String, dynamic> json) = _$_Customer.fromJson;
+  factory _HCustomer.fromJson(Map<String, dynamic> json) =
+      _$_HCustomer.fromJson;
 
   @override
   @JsonKey(name: 'controller_id')
@@ -268,6 +245,6 @@ abstract class _Customer implements Customer {
   String? get timeZone;
   @override
   @JsonKey(ignore: true)
-  _$CustomerCopyWith<_Customer> get copyWith =>
+  _$$_HCustomerCopyWith<_$_HCustomer> get copyWith =>
       throw _privateConstructorUsedError;
 }

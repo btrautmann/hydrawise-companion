@@ -1,9 +1,8 @@
-import 'package:hydrawise/hydrawise.dart';
-import 'package:irri/programs/programs.dart';
+import 'package:api_models/api_models.dart';
 
 abstract class CustomerDetailsRepository {
   Future<void> insertCustomer(Customer customer);
-  Future<void> updateCustomer(CustomerStatus customerStatus);
+  Future<void> updateCustomer(Customer customer, List<Zone> zones);
   Future<void> updateCustomerTimeZone(String timeZone);
   Future<Customer?> getCustomer();
   Future<void> addFcmToken(String token);

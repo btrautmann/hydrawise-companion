@@ -12,69 +12,47 @@ part of 'customer_details.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more informations: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
+    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
 
-CustomerDetails _$CustomerDetailsFromJson(Map<String, dynamic> json) {
-  return _CustomerDetails.fromJson(json);
+HCustomerDetails _$HCustomerDetailsFromJson(Map<String, dynamic> json) {
+  return _HCustomerDetails.fromJson(json);
 }
 
 /// @nodoc
-class _$CustomerDetailsTearOff {
-  const _$CustomerDetailsTearOff();
-
-  _CustomerDetails call(
-      {@JsonKey(name: 'controller_id') required int activeControllerId,
-      @JsonKey(name: 'customer_id') required int customerId,
-      @JsonKey(name: 'controllers') required List<Controller> controllers}) {
-    return _CustomerDetails(
-      activeControllerId: activeControllerId,
-      customerId: customerId,
-      controllers: controllers,
-    );
-  }
-
-  CustomerDetails fromJson(Map<String, Object?> json) {
-    return CustomerDetails.fromJson(json);
-  }
-}
-
-/// @nodoc
-const $CustomerDetails = _$CustomerDetailsTearOff();
-
-/// @nodoc
-mixin _$CustomerDetails {
+mixin _$HCustomerDetails {
   @JsonKey(name: 'controller_id')
   int get activeControllerId => throw _privateConstructorUsedError;
   @JsonKey(name: 'customer_id')
   int get customerId => throw _privateConstructorUsedError;
   @JsonKey(name: 'controllers')
-  List<Controller> get controllers => throw _privateConstructorUsedError;
+  List<HydrawiseController> get controllers =>
+      throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
-  $CustomerDetailsCopyWith<CustomerDetails> get copyWith =>
+  $HCustomerDetailsCopyWith<HCustomerDetails> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class $CustomerDetailsCopyWith<$Res> {
-  factory $CustomerDetailsCopyWith(
-          CustomerDetails value, $Res Function(CustomerDetails) then) =
-      _$CustomerDetailsCopyWithImpl<$Res>;
+abstract class $HCustomerDetailsCopyWith<$Res> {
+  factory $HCustomerDetailsCopyWith(
+          HCustomerDetails value, $Res Function(HCustomerDetails) then) =
+      _$HCustomerDetailsCopyWithImpl<$Res>;
   $Res call(
       {@JsonKey(name: 'controller_id') int activeControllerId,
       @JsonKey(name: 'customer_id') int customerId,
-      @JsonKey(name: 'controllers') List<Controller> controllers});
+      @JsonKey(name: 'controllers') List<HydrawiseController> controllers});
 }
 
 /// @nodoc
-class _$CustomerDetailsCopyWithImpl<$Res>
-    implements $CustomerDetailsCopyWith<$Res> {
-  _$CustomerDetailsCopyWithImpl(this._value, this._then);
+class _$HCustomerDetailsCopyWithImpl<$Res>
+    implements $HCustomerDetailsCopyWith<$Res> {
+  _$HCustomerDetailsCopyWithImpl(this._value, this._then);
 
-  final CustomerDetails _value;
+  final HCustomerDetails _value;
   // ignore: unused_field
-  final $Res Function(CustomerDetails) _then;
+  final $Res Function(HCustomerDetails) _then;
 
   @override
   $Res call({
@@ -94,34 +72,34 @@ class _$CustomerDetailsCopyWithImpl<$Res>
       controllers: controllers == freezed
           ? _value.controllers
           : controllers // ignore: cast_nullable_to_non_nullable
-              as List<Controller>,
+              as List<HydrawiseController>,
     ));
   }
 }
 
 /// @nodoc
-abstract class _$CustomerDetailsCopyWith<$Res>
-    implements $CustomerDetailsCopyWith<$Res> {
-  factory _$CustomerDetailsCopyWith(
-          _CustomerDetails value, $Res Function(_CustomerDetails) then) =
-      __$CustomerDetailsCopyWithImpl<$Res>;
+abstract class _$$_HCustomerDetailsCopyWith<$Res>
+    implements $HCustomerDetailsCopyWith<$Res> {
+  factory _$$_HCustomerDetailsCopyWith(
+          _$_HCustomerDetails value, $Res Function(_$_HCustomerDetails) then) =
+      __$$_HCustomerDetailsCopyWithImpl<$Res>;
   @override
   $Res call(
       {@JsonKey(name: 'controller_id') int activeControllerId,
       @JsonKey(name: 'customer_id') int customerId,
-      @JsonKey(name: 'controllers') List<Controller> controllers});
+      @JsonKey(name: 'controllers') List<HydrawiseController> controllers});
 }
 
 /// @nodoc
-class __$CustomerDetailsCopyWithImpl<$Res>
-    extends _$CustomerDetailsCopyWithImpl<$Res>
-    implements _$CustomerDetailsCopyWith<$Res> {
-  __$CustomerDetailsCopyWithImpl(
-      _CustomerDetails _value, $Res Function(_CustomerDetails) _then)
-      : super(_value, (v) => _then(v as _CustomerDetails));
+class __$$_HCustomerDetailsCopyWithImpl<$Res>
+    extends _$HCustomerDetailsCopyWithImpl<$Res>
+    implements _$$_HCustomerDetailsCopyWith<$Res> {
+  __$$_HCustomerDetailsCopyWithImpl(
+      _$_HCustomerDetails _value, $Res Function(_$_HCustomerDetails) _then)
+      : super(_value, (v) => _then(v as _$_HCustomerDetails));
 
   @override
-  _CustomerDetails get _value => super._value as _CustomerDetails;
+  _$_HCustomerDetails get _value => super._value as _$_HCustomerDetails;
 
   @override
   $Res call({
@@ -129,7 +107,7 @@ class __$CustomerDetailsCopyWithImpl<$Res>
     Object? customerId = freezed,
     Object? controllers = freezed,
   }) {
-    return _then(_CustomerDetails(
+    return _then(_$_HCustomerDetails(
       activeControllerId: activeControllerId == freezed
           ? _value.activeControllerId
           : activeControllerId // ignore: cast_nullable_to_non_nullable
@@ -139,23 +117,27 @@ class __$CustomerDetailsCopyWithImpl<$Res>
           : customerId // ignore: cast_nullable_to_non_nullable
               as int,
       controllers: controllers == freezed
-          ? _value.controllers
+          ? _value._controllers
           : controllers // ignore: cast_nullable_to_non_nullable
-              as List<Controller>,
+              as List<HydrawiseController>,
     ));
   }
 }
 
 /// @nodoc
 @JsonSerializable()
-class _$_CustomerDetails implements _CustomerDetails {
-  _$_CustomerDetails(
-      {@JsonKey(name: 'controller_id') required this.activeControllerId,
-      @JsonKey(name: 'customer_id') required this.customerId,
-      @JsonKey(name: 'controllers') required this.controllers});
+class _$_HCustomerDetails implements _HCustomerDetails {
+  _$_HCustomerDetails(
+      {@JsonKey(name: 'controller_id')
+          required this.activeControllerId,
+      @JsonKey(name: 'customer_id')
+          required this.customerId,
+      @JsonKey(name: 'controllers')
+          required final List<HydrawiseController> controllers})
+      : _controllers = controllers;
 
-  factory _$_CustomerDetails.fromJson(Map<String, dynamic> json) =>
-      _$$_CustomerDetailsFromJson(json);
+  factory _$_HCustomerDetails.fromJson(Map<String, dynamic> json) =>
+      _$$_HCustomerDetailsFromJson(json);
 
   @override
   @JsonKey(name: 'controller_id')
@@ -163,57 +145,63 @@ class _$_CustomerDetails implements _CustomerDetails {
   @override
   @JsonKey(name: 'customer_id')
   final int customerId;
+  final List<HydrawiseController> _controllers;
   @override
   @JsonKey(name: 'controllers')
-  final List<Controller> controllers;
+  List<HydrawiseController> get controllers {
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_controllers);
+  }
 
   @override
   String toString() {
-    return 'CustomerDetails(activeControllerId: $activeControllerId, customerId: $customerId, controllers: $controllers)';
+    return 'HCustomerDetails(activeControllerId: $activeControllerId, customerId: $customerId, controllers: $controllers)';
   }
 
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _CustomerDetails &&
+            other is _$_HCustomerDetails &&
             const DeepCollectionEquality()
                 .equals(other.activeControllerId, activeControllerId) &&
             const DeepCollectionEquality()
                 .equals(other.customerId, customerId) &&
             const DeepCollectionEquality()
-                .equals(other.controllers, controllers));
+                .equals(other._controllers, _controllers));
   }
 
+  @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(
       runtimeType,
       const DeepCollectionEquality().hash(activeControllerId),
       const DeepCollectionEquality().hash(customerId),
-      const DeepCollectionEquality().hash(controllers));
+      const DeepCollectionEquality().hash(_controllers));
 
   @JsonKey(ignore: true)
   @override
-  _$CustomerDetailsCopyWith<_CustomerDetails> get copyWith =>
-      __$CustomerDetailsCopyWithImpl<_CustomerDetails>(this, _$identity);
+  _$$_HCustomerDetailsCopyWith<_$_HCustomerDetails> get copyWith =>
+      __$$_HCustomerDetailsCopyWithImpl<_$_HCustomerDetails>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$_CustomerDetailsToJson(this);
+    return _$$_HCustomerDetailsToJson(this);
   }
 }
 
-abstract class _CustomerDetails implements CustomerDetails {
-  factory _CustomerDetails(
-      {@JsonKey(name: 'controller_id')
-          required int activeControllerId,
-      @JsonKey(name: 'customer_id')
-          required int customerId,
-      @JsonKey(name: 'controllers')
-          required List<Controller> controllers}) = _$_CustomerDetails;
+abstract class _HCustomerDetails implements HCustomerDetails {
+  factory _HCustomerDetails(
+          {@JsonKey(name: 'controller_id')
+              required final int activeControllerId,
+          @JsonKey(name: 'customer_id')
+              required final int customerId,
+          @JsonKey(name: 'controllers')
+              required final List<HydrawiseController> controllers}) =
+      _$_HCustomerDetails;
 
-  factory _CustomerDetails.fromJson(Map<String, dynamic> json) =
-      _$_CustomerDetails.fromJson;
+  factory _HCustomerDetails.fromJson(Map<String, dynamic> json) =
+      _$_HCustomerDetails.fromJson;
 
   @override
   @JsonKey(name: 'controller_id')
@@ -223,9 +211,9 @@ abstract class _CustomerDetails implements CustomerDetails {
   int get customerId;
   @override
   @JsonKey(name: 'controllers')
-  List<Controller> get controllers;
+  List<HydrawiseController> get controllers;
   @override
   @JsonKey(ignore: true)
-  _$CustomerDetailsCopyWith<_CustomerDetails> get copyWith =>
+  _$$_HCustomerDetailsCopyWith<_$_HCustomerDetails> get copyWith =>
       throw _privateConstructorUsedError;
 }

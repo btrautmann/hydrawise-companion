@@ -53,7 +53,7 @@ class RunZone {
       );
       if (statusResponse.statusCode == 200) {
         final status =
-            CustomerStatus.fromJson(json.decode(statusResponse.body));
+            HCustomerStatus.fromJson(json.decode(statusResponse.body));
         await db.transaction((connection) async {
           for (final zone in status.zones) {
             await connection.execute(_updateZoneSql(customerId, zone));
@@ -68,7 +68,7 @@ class RunZone {
   String _findCustomerSql(String apiKey) =>
       'SELECT * FROM customer WHERE api_key=\'$apiKey\' LIMIT 1;';
 
-  String _updateZoneSql(int customerId, Zone zone) => 'UPDATE zone '
+  String _updateZoneSql(int customerId, HZone zone) => 'UPDATE zone '
       'SET time_until_run_sec = ${zone.secondsUntilNextRun}, run_length_sec = ${zone.lengthOfNextRunTimeOrTimeRemaining} '
       'WHERE zone_id = ${zone.id} AND customer_id = $customerId;';
 }

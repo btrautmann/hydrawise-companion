@@ -1,6 +1,6 @@
+import 'package:api_models/api_models.dart';
 import 'package:core/core.dart';
 import 'package:dio/dio.dart';
-import 'package:hydrawise/hydrawise.dart';
 import 'package:irri/auth/auth.dart';
 import 'package:irri/customer_details/customer_details.dart';
 import 'package:irri/run_zone/run_zone.dart';
@@ -54,8 +54,8 @@ class StopZoneLocally {
     required Zone zone,
   }) async {
     final stoppedZone = zone.copyWith(
-      lengthOfNextRunTimeOrTimeRemaining: 60,
-      secondsUntilNextRun: 100,
+      runLengthSec: 60,
+      timeUntilNextRunSec: 100,
     );
 
     await Future<void>.delayed(const Duration(seconds: 3));

@@ -1,5 +1,5 @@
+import 'package:api_models/api_models.dart';
 import 'package:irri/customer_details/repository/customer_details_repository.dart';
-import 'package:irri/programs/programs.dart';
 
 class GetPrograms {
   GetPrograms({

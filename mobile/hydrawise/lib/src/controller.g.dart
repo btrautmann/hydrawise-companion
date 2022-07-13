@@ -6,7 +6,8 @@ part of 'controller.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$_Controller _$$_ControllerFromJson(Map json) => _$_Controller(
+_$_HydrawiseController _$$_HydrawiseControllerFromJson(Map json) =>
+    _$_HydrawiseController(
       name: json['name'] as String,
       lastContact: json['last_contact'] as int,
       serialNumber: json['serial_number'] as String,
@@ -14,7 +15,8 @@ _$_Controller _$$_ControllerFromJson(Map json) => _$_Controller(
       status: json['status'] as String,
     );
 
-Map<String, dynamic> _$$_ControllerToJson(_$_Controller instance) =>
+Map<String, dynamic> _$$_HydrawiseControllerToJson(
+        _$_HydrawiseController instance) =>
     <String, dynamic>{
       'name': instance.name,
       'last_contact': instance.lastContact,

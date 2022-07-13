@@ -1,3 +1,4 @@
+import 'package:api_models/api_models.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:irri/customer_details/customer_details.dart';
@@ -95,15 +96,15 @@ void main() {
           Run(
             id: 'id-1',
             programId: programId,
-            startTime: const TimeOfDay(hour: 9, minute: 9),
-            duration: 55,
+            startTime: '9:9',
+            durationSeconds: 55,
             zoneId: 1,
           ),
           Run(
             id: 'id-2',
             programId: programId,
-            startTime: const TimeOfDay(hour: 9, minute: 9),
-            duration: 55,
+            startTime: '9:9',
+            durationSeconds: 55,
             zoneId: 2,
           ),
         ],
@@ -145,8 +146,8 @@ void main() {
           Run(
             id: 'id-1',
             programId: programId,
-            startTime: const TimeOfDay(hour: 9, minute: 9),
-            duration: 55,
+            startTime: '9:9',
+            durationSeconds: 55,
             zoneId: 1,
           ),
         ],
@@ -155,7 +156,7 @@ void main() {
       final runsBefore =
           await repository.getRunsForProgram(programId: programId);
       expect(runsBefore.single.startTime, const TimeOfDay(hour: 9, minute: 9));
-      expect(runsBefore.single.duration, 55);
+      expect(runsBefore.single.durationSeconds, 55);
 
       await updateProgram(
         programId: programId,
@@ -175,7 +176,7 @@ void main() {
           await repository.getRunsForProgram(programId: programId);
 
       expect(runsAfter.single.startTime, const TimeOfDay(hour: 5, minute: 5));
-      expect(runsAfter.single.duration, 25);
+      expect(runsAfter.single.durationSeconds, 25);
     });
   });
 }

@@ -1,5 +1,6 @@
 // ignore: implementation_imports
-import 'package:collection/src/iterable_extensions.dart';
+import 'package:api_models/api_models.dart';
+import 'package:collection/collection.dart';
 import 'package:irri/customer_details/repository/customer_details_repository.dart';
 import 'package:irri/programs/programs.dart';
 import 'package:uuid/uuid.dart';
@@ -34,8 +35,8 @@ class UpdateProgram {
       (existingRun) => modifiedRunGroups.none(
         (element) =>
             element.zoneIds.contains(existingRun.zoneId) &&
-            element.timeOfDay == existingRun.startTime &&
-            element.duration.inSeconds == existingRun.duration,
+            element.timeOfDay == TimeOfDayX.fromJson(existingRun.startTime) &&
+            element.duration.inSeconds == existingRun.durationSeconds,
       ),
     );
     for (final run in deletedRuns) {
@@ -53,9 +54,10 @@ class UpdateProgram {
         Future<String> modificationId() async {
           final matchingRun = existingRuns.singleWhereOrNull(
             (existingRun) =>
-                existingRun.startTime == runGroup.timeOfDay &&
+                TimeOfDayX.fromJson(existingRun.startTime) ==
+                    runGroup.timeOfDay &&
                 existingRun.zoneId == zoneId &&
-                existingRun.duration == runGroup.duration.inSeconds,
+                existingRun.durationSeconds == runGroup.duration.inSeconds,
           );
           // TODO(brandon): Create GetUniqueId to abstract the usage
           // of Uuid
@@ -69,8 +71,8 @@ class UpdateProgram {
         final run = Run(
           id: id,
           programId: programId,
-          startTime: runGroup.timeOfDay,
-          duration: runGroup.duration.inSeconds,
+          startTime: runGroup.timeOfDay.toString(),
+          durationSeconds: runGroup.duration.inSeconds,
           zoneId: zoneId,
         );
         final isCreating = existingRuns.none((run) => run.id == id);

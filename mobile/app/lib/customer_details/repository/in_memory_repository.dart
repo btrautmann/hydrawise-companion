@@ -1,6 +1,5 @@
-import 'package:hydrawise/hydrawise.dart';
+import 'package:api_models/api_models.dart';
 import 'package:irri/customer_details/customer_details.dart';
-import 'package:irri/programs/programs.dart';
 import 'package:uuid/uuid.dart';
 
 class InMemoryCustomerDetailsRepository implements CustomerDetailsRepository {
@@ -62,13 +61,10 @@ class InMemoryCustomerDetailsRepository implements CustomerDetailsRepository {
   }
 
   @override
-  Future<void> updateCustomer(CustomerStatus customerStatus) async {
+  Future<void> updateCustomer(Customer customer, List<Zone> zones) async {
     _zones
       ..clear()
-      ..addAll(customerStatus.zones);
-    _customer = _customer!.copyWith(
-      lastStatusUpdate: customerStatus.timeOfLastStatusUnixEpoch,
-    );
+      ..addAll(zones);
   }
 
   @override

@@ -6,22 +6,23 @@ part 'customer_details.freezed.dart';
 part 'customer_details.g.dart';
 
 @freezed
-class CustomerDetails with _$CustomerDetails {
-  factory CustomerDetails({
+class HCustomerDetails with _$HCustomerDetails {
+  factory HCustomerDetails({
     @JsonKey(name: 'controller_id') required int activeControllerId,
     @JsonKey(name: 'customer_id') required int customerId,
-    @JsonKey(name: 'controllers') required List<Controller> controllers,
-  }) = _CustomerDetails;
+    @JsonKey(name: 'controllers')
+        required List<HydrawiseController> controllers,
+  }) = _HCustomerDetails;
 
-  factory CustomerDetails.fromJson(
+  factory HCustomerDetails.fromJson(
     Map<String, dynamic> json,
   ) =>
-      _$CustomerDetailsFromJson(json);
+      _$HCustomerDetailsFromJson(json);
 }
 
-extension CustomerDetailsX on CustomerDetails {
-  Customer toCustomer(String apiKey) {
-    return Customer(
+extension CustomerDetailsX on HCustomerDetails {
+  HCustomer toCustomer(String apiKey) {
+    return HCustomer(
       activeControllerId: activeControllerId,
       customerId: customerId,
       apiKey: apiKey,

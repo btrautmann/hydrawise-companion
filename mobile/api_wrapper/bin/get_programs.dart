@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:api_models/api_models.dart';
 import 'package:postgres/postgres.dart';
 import 'package:shelf/shelf.dart';
@@ -56,7 +58,12 @@ class GetPrograms {
         );
       }
     });
-    return Response.ok(GetProgramsResponse(programs: programs).toJson().toString());
+    return Response.ok(
+      jsonEncode(
+        GetProgramsResponse(programs: programs).toJson(),
+      ),
+      headers: {'Content-Type': 'application/json'},
+    );
   }
 }
 

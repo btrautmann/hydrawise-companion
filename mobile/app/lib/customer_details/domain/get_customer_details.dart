@@ -1,5 +1,5 @@
+import 'package:api_models/api_models.dart';
 import 'package:core/core.dart';
-import 'package:hydrawise/hydrawise.dart';
 import 'package:irri/auth/auth.dart';
 import 'package:irri/customer_details/customer_details.dart';
 import 'package:result_type/result_type.dart';
@@ -17,7 +17,7 @@ class GetCustomerDetails {
   final GetApiKey _getApiKey;
   final CustomerDetailsRepository _repository;
 
-  Future<UseCaseResult<CustomerDetails, String>> call() async {
+  Future<UseCaseResult<GetCustomerResponse, String>> call() async {
     final apiKey = await _getApiKey();
 
     final queryParameters = {
@@ -26,18 +26,17 @@ class GetCustomerDetails {
     };
 
     final response = await _httpClient.get<Map<String, dynamic>>(
-      'customerdetails.php',
+      'customer',
       queryParameters: queryParameters,
     );
 
     if (response.isSuccess) {
-      final customerDetails = CustomerDetails.fromJson(response.success!);
+      final getCustomerResponse =
+          GetCustomerResponse.fromJson(response.success!);
 
-      final customer = customerDetails.toCustomer(apiKey);
+      await _repository.insertCustomer(getCustomerResponse.customer);
 
-      await _repository.insertCustomer(customer);
-
-      return Success(customerDetails);
+      return Success(getCustomerResponse);
     }
 
     return Failure("Can't fetch customer details");

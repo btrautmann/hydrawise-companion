@@ -5,15 +5,15 @@ part 'customer_status.freezed.dart';
 part 'customer_status.g.dart';
 
 @freezed
-class CustomerStatus with _$CustomerStatus {
-  factory CustomerStatus({
+class HCustomerStatus with _$HCustomerStatus {
+  factory HCustomerStatus({
     @JsonKey(name: 'nextpoll') required int numberOfSecondsUntilNextRequest,
     @JsonKey(name: 'time') required int timeOfLastStatusUnixEpoch,
-    @JsonKey(name: 'relays') required List<Zone> zones,
-  }) = _CustomerStatus;
+    @JsonKey(name: 'relays') required List<HZone> zones,
+  }) = _HCustomerStatus;
 
-  factory CustomerStatus.fromJson(
+  factory HCustomerStatus.fromJson(
     Map<String, dynamic> json,
   ) =>
-      _$CustomerStatusFromJson(json);
+      _$HCustomerStatusFromJson(json);
 }

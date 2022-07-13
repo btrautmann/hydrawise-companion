@@ -5,23 +5,17 @@ import 'package:irri/auth/auth.dart';
 void main() {
   group('LogIn', () {
     late ValidateApiKey validateApiKey;
-    late AuthenticateWithFirebase authenticateWithFirebase;
     final storage = InMemoryStorage();
-    final setFirebaseUid = SetFirebaseUid(storage);
     final setApiKey = SetApiKey(storage);
     late LogIn subject;
 
     setUp(storage.clearAll);
 
-    group('when api key is valid and firebase authentication succeeds', () {
+    group('when api key is valid', () {
       setUp(() {
         validateApiKey = FakeValidateApiKey(setApiKey: setApiKey);
-        authenticateWithFirebase = FakeAuthenticateWithFirebase(
-          setFirebaseUid: setFirebaseUid,
-        );
         subject = LogIn(
           validateApiKey: validateApiKey,
-          authenticateWithFirebase: authenticateWithFirebase,
         );
       });
 
@@ -37,33 +31,8 @@ void main() {
           isValid: false,
           setApiKey: setApiKey,
         );
-        authenticateWithFirebase = FakeAuthenticateWithFirebase(
-          setFirebaseUid: setFirebaseUid,
-        );
         subject = LogIn(
           validateApiKey: validateApiKey,
-          authenticateWithFirebase: authenticateWithFirebase,
-        );
-      });
-
-      test('it returns false', () async {
-        final isLoggedIn = await subject.call('apiKey');
-        expect(isLoggedIn, isFalse);
-      });
-    });
-
-    group('when firebase authentication fails', () {
-      setUp(() {
-        validateApiKey = FakeValidateApiKey(
-          setApiKey: setApiKey,
-        );
-        authenticateWithFirebase = FakeAuthenticateWithFirebase(
-          isSuccessful: false,
-          setFirebaseUid: setFirebaseUid,
-        );
-        subject = LogIn(
-          validateApiKey: validateApiKey,
-          authenticateWithFirebase: authenticateWithFirebase,
         );
       });
 

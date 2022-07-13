@@ -43,7 +43,7 @@ void main() {
       );
 
       final programs = await repository.getPrograms();
-      final runs = programs.single.runs!
+      final runs = programs.single.runs
         ..sort(
           (a, b) => a.zoneId.compareTo(b.zoneId),
         );
@@ -53,13 +53,15 @@ void main() {
       expect(runs.last.zoneId, 1);
       expect(
         runs.every(
-          (element) => element.startTime == TimeOfDay.fromDateTime(time),
+          (element) =>
+              TimeOfDayX.fromJson(element.startTime) ==
+              TimeOfDay.fromDateTime(time),
         ),
         isTrue,
       );
       expect(
         runs.every(
-          (element) => element.duration == 600,
+          (element) => element.durationSeconds == 600,
         ),
         isTrue,
       );

@@ -12,41 +12,14 @@ part of 'controller.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more informations: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
+    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
 
-Controller _$ControllerFromJson(Map<String, dynamic> json) {
-  return _Controller.fromJson(json);
+HydrawiseController _$HydrawiseControllerFromJson(Map<String, dynamic> json) {
+  return _HydrawiseController.fromJson(json);
 }
 
 /// @nodoc
-class _$ControllerTearOff {
-  const _$ControllerTearOff();
-
-  _Controller call(
-      {@JsonKey(name: 'name') required String name,
-      @JsonKey(name: 'last_contact') required int lastContact,
-      @JsonKey(name: 'serial_number') required String serialNumber,
-      @JsonKey(name: 'controller_id') required int id,
-      @JsonKey(name: 'status') required String status}) {
-    return _Controller(
-      name: name,
-      lastContact: lastContact,
-      serialNumber: serialNumber,
-      id: id,
-      status: status,
-    );
-  }
-
-  Controller fromJson(Map<String, Object?> json) {
-    return Controller.fromJson(json);
-  }
-}
-
-/// @nodoc
-const $Controller = _$ControllerTearOff();
-
-/// @nodoc
-mixin _$Controller {
+mixin _$HydrawiseController {
   @JsonKey(name: 'name')
   String get name => throw _privateConstructorUsedError;
   @JsonKey(name: 'last_contact')
@@ -60,15 +33,15 @@ mixin _$Controller {
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
-  $ControllerCopyWith<Controller> get copyWith =>
+  $HydrawiseControllerCopyWith<HydrawiseController> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class $ControllerCopyWith<$Res> {
-  factory $ControllerCopyWith(
-          Controller value, $Res Function(Controller) then) =
-      _$ControllerCopyWithImpl<$Res>;
+abstract class $HydrawiseControllerCopyWith<$Res> {
+  factory $HydrawiseControllerCopyWith(
+          HydrawiseController value, $Res Function(HydrawiseController) then) =
+      _$HydrawiseControllerCopyWithImpl<$Res>;
   $Res call(
       {@JsonKey(name: 'name') String name,
       @JsonKey(name: 'last_contact') int lastContact,
@@ -78,12 +51,13 @@ abstract class $ControllerCopyWith<$Res> {
 }
 
 /// @nodoc
-class _$ControllerCopyWithImpl<$Res> implements $ControllerCopyWith<$Res> {
-  _$ControllerCopyWithImpl(this._value, this._then);
+class _$HydrawiseControllerCopyWithImpl<$Res>
+    implements $HydrawiseControllerCopyWith<$Res> {
+  _$HydrawiseControllerCopyWithImpl(this._value, this._then);
 
-  final Controller _value;
+  final HydrawiseController _value;
   // ignore: unused_field
-  final $Res Function(Controller) _then;
+  final $Res Function(HydrawiseController) _then;
 
   @override
   $Res call({
@@ -119,10 +93,11 @@ class _$ControllerCopyWithImpl<$Res> implements $ControllerCopyWith<$Res> {
 }
 
 /// @nodoc
-abstract class _$ControllerCopyWith<$Res> implements $ControllerCopyWith<$Res> {
-  factory _$ControllerCopyWith(
-          _Controller value, $Res Function(_Controller) then) =
-      __$ControllerCopyWithImpl<$Res>;
+abstract class _$$_HydrawiseControllerCopyWith<$Res>
+    implements $HydrawiseControllerCopyWith<$Res> {
+  factory _$$_HydrawiseControllerCopyWith(_$_HydrawiseController value,
+          $Res Function(_$_HydrawiseController) then) =
+      __$$_HydrawiseControllerCopyWithImpl<$Res>;
   @override
   $Res call(
       {@JsonKey(name: 'name') String name,
@@ -133,14 +108,15 @@ abstract class _$ControllerCopyWith<$Res> implements $ControllerCopyWith<$Res> {
 }
 
 /// @nodoc
-class __$ControllerCopyWithImpl<$Res> extends _$ControllerCopyWithImpl<$Res>
-    implements _$ControllerCopyWith<$Res> {
-  __$ControllerCopyWithImpl(
-      _Controller _value, $Res Function(_Controller) _then)
-      : super(_value, (v) => _then(v as _Controller));
+class __$$_HydrawiseControllerCopyWithImpl<$Res>
+    extends _$HydrawiseControllerCopyWithImpl<$Res>
+    implements _$$_HydrawiseControllerCopyWith<$Res> {
+  __$$_HydrawiseControllerCopyWithImpl(_$_HydrawiseController _value,
+      $Res Function(_$_HydrawiseController) _then)
+      : super(_value, (v) => _then(v as _$_HydrawiseController));
 
   @override
-  _Controller get _value => super._value as _Controller;
+  _$_HydrawiseController get _value => super._value as _$_HydrawiseController;
 
   @override
   $Res call({
@@ -150,7 +126,7 @@ class __$ControllerCopyWithImpl<$Res> extends _$ControllerCopyWithImpl<$Res>
     Object? id = freezed,
     Object? status = freezed,
   }) {
-    return _then(_Controller(
+    return _then(_$_HydrawiseController(
       name: name == freezed
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
@@ -177,16 +153,16 @@ class __$ControllerCopyWithImpl<$Res> extends _$ControllerCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_Controller implements _Controller {
-  _$_Controller(
+class _$_HydrawiseController implements _HydrawiseController {
+  _$_HydrawiseController(
       {@JsonKey(name: 'name') required this.name,
       @JsonKey(name: 'last_contact') required this.lastContact,
       @JsonKey(name: 'serial_number') required this.serialNumber,
       @JsonKey(name: 'controller_id') required this.id,
       @JsonKey(name: 'status') required this.status});
 
-  factory _$_Controller.fromJson(Map<String, dynamic> json) =>
-      _$$_ControllerFromJson(json);
+  factory _$_HydrawiseController.fromJson(Map<String, dynamic> json) =>
+      _$$_HydrawiseControllerFromJson(json);
 
   @override
   @JsonKey(name: 'name')
@@ -206,14 +182,14 @@ class _$_Controller implements _Controller {
 
   @override
   String toString() {
-    return 'Controller(name: $name, lastContact: $lastContact, serialNumber: $serialNumber, id: $id, status: $status)';
+    return 'HydrawiseController(name: $name, lastContact: $lastContact, serialNumber: $serialNumber, id: $id, status: $status)';
   }
 
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _Controller &&
+            other is _$_HydrawiseController &&
             const DeepCollectionEquality().equals(other.name, name) &&
             const DeepCollectionEquality()
                 .equals(other.lastContact, lastContact) &&
@@ -223,6 +199,7 @@ class _$_Controller implements _Controller {
             const DeepCollectionEquality().equals(other.status, status));
   }
 
+  @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(
       runtimeType,
@@ -234,25 +211,27 @@ class _$_Controller implements _Controller {
 
   @JsonKey(ignore: true)
   @override
-  _$ControllerCopyWith<_Controller> get copyWith =>
-      __$ControllerCopyWithImpl<_Controller>(this, _$identity);
+  _$$_HydrawiseControllerCopyWith<_$_HydrawiseController> get copyWith =>
+      __$$_HydrawiseControllerCopyWithImpl<_$_HydrawiseController>(
+          this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$_ControllerToJson(this);
+    return _$$_HydrawiseControllerToJson(this);
   }
 }
 
-abstract class _Controller implements Controller {
-  factory _Controller(
-      {@JsonKey(name: 'name') required String name,
-      @JsonKey(name: 'last_contact') required int lastContact,
-      @JsonKey(name: 'serial_number') required String serialNumber,
-      @JsonKey(name: 'controller_id') required int id,
-      @JsonKey(name: 'status') required String status}) = _$_Controller;
+abstract class _HydrawiseController implements HydrawiseController {
+  factory _HydrawiseController(
+          {@JsonKey(name: 'name') required final String name,
+          @JsonKey(name: 'last_contact') required final int lastContact,
+          @JsonKey(name: 'serial_number') required final String serialNumber,
+          @JsonKey(name: 'controller_id') required final int id,
+          @JsonKey(name: 'status') required final String status}) =
+      _$_HydrawiseController;
 
-  factory _Controller.fromJson(Map<String, dynamic> json) =
-      _$_Controller.fromJson;
+  factory _HydrawiseController.fromJson(Map<String, dynamic> json) =
+      _$_HydrawiseController.fromJson;
 
   @override
   @JsonKey(name: 'name')
@@ -271,6 +250,6 @@ abstract class _Controller implements Controller {
   String get status;
   @override
   @JsonKey(ignore: true)
-  _$ControllerCopyWith<_Controller> get copyWith =>
+  _$$_HydrawiseControllerCopyWith<_$_HydrawiseController> get copyWith =>
       throw _privateConstructorUsedError;
 }

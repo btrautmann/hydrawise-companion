@@ -1,5 +1,4 @@
 export 'fake_validate_api_key.dart';
-export 'firebase/firebase.dart';
 export 'get_api_key.dart';
 export 'get_auth_failures.dart';
 export 'is_logged_in.dart';

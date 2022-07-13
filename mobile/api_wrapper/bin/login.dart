@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:api_models/api_models.dart';
 import 'package:http/http.dart' as http;
-import 'package:hydrawise/hydrawise.dart';
+import 'package:hydrawise/hydrawise.dart' hide HCustomer;
 import 'package:postgres/postgres.dart';
 import 'package:shelf/shelf.dart';
 
@@ -32,9 +32,8 @@ class Login {
     );
 
     if (detailsResponse.statusCode == 200) {
-      print(detailsResponse.body);
       final details =
-          CustomerDetails.fromJson(json.decode(detailsResponse.body));
+          HCustomerDetails.fromJson(json.decode(detailsResponse.body));
       final statusResponse = await http.get(
         Uri.http(
           'api.hydrawise.com',
@@ -45,7 +44,7 @@ class Login {
       );
       if (statusResponse.statusCode == 200) {
         final status =
-            CustomerStatus.fromJson(json.decode(statusResponse.body));
+            HCustomerStatus.fromJson(json.decode(statusResponse.body));
         await db.transaction((connection) async {
           await connection.execute(
             _insertCustomerSql(details, queryParameters['api_key']!),
@@ -55,19 +54,30 @@ class Login {
           }
         });
 
-        return Response(detailsResponse.statusCode, body: detailsResponse.body);
+        return Response.ok(
+          jsonEncode(
+            LoginResponse(
+              customer: Customer(
+                customerId: details.customerId,
+                apiKey: loginRequest.apiKey,
+                activeControllerId: details.activeControllerId,
+              ),
+            ).toJson(),
+          ),
+          headers: {'Content-Type': 'application/json'},
+        );
       }
     }
     return Response(401);
   }
 
   // TODO(brandon): Add DO UPDATE clause to allow changing API key
-  String _insertCustomerSql(CustomerDetails details, String apiKey) =>
+  String _insertCustomerSql(HCustomerDetails details, String apiKey) =>
       'INSERT INTO customer (customer_id, api_key, active_controller_id) '
       'VALUES (${details.customerId}, \'$apiKey\', ${details.activeControllerId}) '
       'ON CONFLICT (customer_id, api_key) DO NOTHING;';
 
-  String _insertZoneSql(CustomerDetails details, Zone zone) =>
+  String _insertZoneSql(HCustomerDetails details, HZone zone) =>
       'INSERT INTO zone (zone_id, customer_id, time_until_run_sec, run_length_sec, zone_num, zone_name) '
       'VALUES (${zone.id}, ${details.customerId}, ${zone.secondsUntilNextRun}, ${zone.lengthOfNextRunTimeOrTimeRemaining}, ${zone.physicalNumber}, \'${zone.name}\') '
       'ON CONFLICT (zone_id, customer_id) DO NOTHING;';

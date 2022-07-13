@@ -11,7 +11,6 @@ void main() {
   group('AuthCubit', () {
     final DataStorage dataStorage = InMemoryStorage();
     final setApiKey = SetApiKey(dataStorage);
-    final setFirebaseUid = SetFirebaseUid(dataStorage);
 
     AuthCubit buildSubject({
       StreamController? authFailures,
@@ -22,14 +21,10 @@ void main() {
       return AuthCubit(
         isLoggedIn: IsLoggedIn(
           getApiKey: GetApiKey(dataStorage),
-          getFirebaseUid: GetFirebaseUid(dataStorage),
         ),
         logOut: logOut ??
             LogOut(
               setApiKey: setApiKey,
-              unauthenticateWithFirebase: FakeUnauthenticateWithFirebase(
-                setFirebaseUid: setFirebaseUid,
-              ),
               customerDetailsRepository: InMemoryCustomerDetailsRepository(),
             ),
         getAuthFailures: GetAuthFailures(
@@ -41,9 +36,6 @@ void main() {
                   FakeValidateApiKey(
                     setApiKey: setApiKey,
                   ),
-              authenticateWithFirebase: FakeAuthenticateWithFirebase(
-                setFirebaseUid: setFirebaseUid,
-              ),
             ),
       );
     }
@@ -69,7 +61,6 @@ void main() {
             'it emits [loggedIn]',
             setUp: () async {
               await setApiKey('1234');
-              await setFirebaseUid('1');
             },
             build: buildSubject,
             expect: () => <AuthState>[

@@ -1,5 +1,6 @@
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target
 
 part of 'run_zone_cubit.dart';
@@ -11,25 +12,7 @@ part of 'run_zone_cubit.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more informations: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
-
-/// @nodoc
-class _$RunZoneStateTearOff {
-  const _$RunZoneStateTearOff();
-
-  _Resting resting({String? message}) {
-    return _Resting(
-      message: message,
-    );
-  }
-
-  _Loading loading() {
-    return _Loading();
-  }
-}
-
-/// @nodoc
-const $RunZoneState = _$RunZoneStateTearOff();
+    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
 
 /// @nodoc
 mixin _$RunZoneState {
@@ -90,26 +73,27 @@ class _$RunZoneStateCopyWithImpl<$Res> implements $RunZoneStateCopyWith<$Res> {
 }
 
 /// @nodoc
-abstract class _$RestingCopyWith<$Res> {
-  factory _$RestingCopyWith(_Resting value, $Res Function(_Resting) then) =
-      __$RestingCopyWithImpl<$Res>;
+abstract class _$$_RestingCopyWith<$Res> {
+  factory _$$_RestingCopyWith(
+          _$_Resting value, $Res Function(_$_Resting) then) =
+      __$$_RestingCopyWithImpl<$Res>;
   $Res call({String? message});
 }
 
 /// @nodoc
-class __$RestingCopyWithImpl<$Res> extends _$RunZoneStateCopyWithImpl<$Res>
-    implements _$RestingCopyWith<$Res> {
-  __$RestingCopyWithImpl(_Resting _value, $Res Function(_Resting) _then)
-      : super(_value, (v) => _then(v as _Resting));
+class __$$_RestingCopyWithImpl<$Res> extends _$RunZoneStateCopyWithImpl<$Res>
+    implements _$$_RestingCopyWith<$Res> {
+  __$$_RestingCopyWithImpl(_$_Resting _value, $Res Function(_$_Resting) _then)
+      : super(_value, (v) => _then(v as _$_Resting));
 
   @override
-  _Resting get _value => super._value as _Resting;
+  _$_Resting get _value => super._value as _$_Resting;
 
   @override
   $Res call({
     Object? message = freezed,
   }) {
-    return _then(_Resting(
+    return _then(_$_Resting(
       message: message == freezed
           ? _value.message
           : message // ignore: cast_nullable_to_non_nullable
@@ -135,7 +119,7 @@ class _$_Resting implements _Resting {
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _Resting &&
+            other is _$_Resting &&
             const DeepCollectionEquality().equals(other.message, message));
   }
 
@@ -145,8 +129,8 @@ class _$_Resting implements _Resting {
 
   @JsonKey(ignore: true)
   @override
-  _$RestingCopyWith<_Resting> get copyWith =>
-      __$RestingCopyWithImpl<_Resting>(this, _$identity);
+  _$$_RestingCopyWith<_$_Resting> get copyWith =>
+      __$$_RestingCopyWithImpl<_$_Resting>(this, _$identity);
 
   @override
   @optionalTypeArgs
@@ -212,28 +196,29 @@ class _$_Resting implements _Resting {
 }
 
 abstract class _Resting implements RunZoneState {
-  factory _Resting({String? message}) = _$_Resting;
+  factory _Resting({final String? message}) = _$_Resting;
 
   String? get message;
   @JsonKey(ignore: true)
-  _$RestingCopyWith<_Resting> get copyWith =>
+  _$$_RestingCopyWith<_$_Resting> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class _$LoadingCopyWith<$Res> {
-  factory _$LoadingCopyWith(_Loading value, $Res Function(_Loading) then) =
-      __$LoadingCopyWithImpl<$Res>;
+abstract class _$$_LoadingCopyWith<$Res> {
+  factory _$$_LoadingCopyWith(
+          _$_Loading value, $Res Function(_$_Loading) then) =
+      __$$_LoadingCopyWithImpl<$Res>;
 }
 
 /// @nodoc
-class __$LoadingCopyWithImpl<$Res> extends _$RunZoneStateCopyWithImpl<$Res>
-    implements _$LoadingCopyWith<$Res> {
-  __$LoadingCopyWithImpl(_Loading _value, $Res Function(_Loading) _then)
-      : super(_value, (v) => _then(v as _Loading));
+class __$$_LoadingCopyWithImpl<$Res> extends _$RunZoneStateCopyWithImpl<$Res>
+    implements _$$_LoadingCopyWith<$Res> {
+  __$$_LoadingCopyWithImpl(_$_Loading _value, $Res Function(_$_Loading) _then)
+      : super(_value, (v) => _then(v as _$_Loading));
 
   @override
-  _Loading get _value => super._value as _Loading;
+  _$_Loading get _value => super._value as _$_Loading;
 }
 
 /// @nodoc
@@ -249,7 +234,7 @@ class _$_Loading implements _Loading {
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is _Loading);
+        (other.runtimeType == runtimeType && other is _$_Loading);
   }
 
   @override

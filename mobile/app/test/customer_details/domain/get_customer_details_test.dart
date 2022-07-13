@@ -1,7 +1,7 @@
+import 'package:api_models/api_models.dart';
 import 'package:charlatan/charlatan.dart';
 import 'package:core/core.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:hydrawise/hydrawise.dart';
 import 'package:irri/auth/auth.dart';
 import 'package:irri/customer_details/customer_details.dart';
 
@@ -30,10 +30,10 @@ void main() {
         final charlatan = Charlatan()
           ..whenGet(
             'customerdetails.php',
-            (request) => CustomerDetails(
+            (request) => Customer(
               activeControllerId: 1,
               customerId: 1,
-              controllers: [],
+              apiKey: 'fake-api-key',
             ),
           );
         await _buildSubject(charlatan);
@@ -44,10 +44,10 @@ void main() {
         expect(result.isSuccess, isTrue);
         expect(
           result.success,
-          CustomerDetails(
+          Customer(
             activeControllerId: 1,
             customerId: 1,
-            controllers: [],
+            apiKey: 'fake-api-key',
           ),
         );
       });

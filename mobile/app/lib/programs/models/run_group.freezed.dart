@@ -1,5 +1,6 @@
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target
 
 part of 'run_group.dart';
@@ -11,28 +12,7 @@ part of 'run_group.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more informations: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
-
-/// @nodoc
-class _$RunGroupTearOff {
-  const _$RunGroupTearOff();
-
-  _RunGroup call(
-      {required RunGroupType type,
-      required TimeOfDay timeOfDay,
-      required List<int> zoneIds,
-      required Duration duration}) {
-    return _RunGroup(
-      type: type,
-      timeOfDay: timeOfDay,
-      zoneIds: zoneIds,
-      duration: duration,
-    );
-  }
-}
-
-/// @nodoc
-const $RunGroup = _$RunGroupTearOff();
+    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
 
 /// @nodoc
 mixin _$RunGroup {
@@ -94,9 +74,10 @@ class _$RunGroupCopyWithImpl<$Res> implements $RunGroupCopyWith<$Res> {
 }
 
 /// @nodoc
-abstract class _$RunGroupCopyWith<$Res> implements $RunGroupCopyWith<$Res> {
-  factory _$RunGroupCopyWith(_RunGroup value, $Res Function(_RunGroup) then) =
-      __$RunGroupCopyWithImpl<$Res>;
+abstract class _$$_RunGroupCopyWith<$Res> implements $RunGroupCopyWith<$Res> {
+  factory _$$_RunGroupCopyWith(
+          _$_RunGroup value, $Res Function(_$_RunGroup) then) =
+      __$$_RunGroupCopyWithImpl<$Res>;
   @override
   $Res call(
       {RunGroupType type,
@@ -106,13 +87,14 @@ abstract class _$RunGroupCopyWith<$Res> implements $RunGroupCopyWith<$Res> {
 }
 
 /// @nodoc
-class __$RunGroupCopyWithImpl<$Res> extends _$RunGroupCopyWithImpl<$Res>
-    implements _$RunGroupCopyWith<$Res> {
-  __$RunGroupCopyWithImpl(_RunGroup _value, $Res Function(_RunGroup) _then)
-      : super(_value, (v) => _then(v as _RunGroup));
+class __$$_RunGroupCopyWithImpl<$Res> extends _$RunGroupCopyWithImpl<$Res>
+    implements _$$_RunGroupCopyWith<$Res> {
+  __$$_RunGroupCopyWithImpl(
+      _$_RunGroup _value, $Res Function(_$_RunGroup) _then)
+      : super(_value, (v) => _then(v as _$_RunGroup));
 
   @override
-  _RunGroup get _value => super._value as _RunGroup;
+  _$_RunGroup get _value => super._value as _$_RunGroup;
 
   @override
   $Res call({
@@ -121,7 +103,7 @@ class __$RunGroupCopyWithImpl<$Res> extends _$RunGroupCopyWithImpl<$Res>
     Object? zoneIds = freezed,
     Object? duration = freezed,
   }) {
-    return _then(_RunGroup(
+    return _then(_$_RunGroup(
       type: type == freezed
           ? _value.type
           : type // ignore: cast_nullable_to_non_nullable
@@ -131,7 +113,7 @@ class __$RunGroupCopyWithImpl<$Res> extends _$RunGroupCopyWithImpl<$Res>
           : timeOfDay // ignore: cast_nullable_to_non_nullable
               as TimeOfDay,
       zoneIds: zoneIds == freezed
-          ? _value.zoneIds
+          ? _value._zoneIds
           : zoneIds // ignore: cast_nullable_to_non_nullable
               as List<int>,
       duration: duration == freezed
@@ -148,15 +130,21 @@ class _$_RunGroup implements _RunGroup {
   _$_RunGroup(
       {required this.type,
       required this.timeOfDay,
-      required this.zoneIds,
-      required this.duration});
+      required final List<int> zoneIds,
+      required this.duration})
+      : _zoneIds = zoneIds;
 
   @override
   final RunGroupType type;
   @override
   final TimeOfDay timeOfDay;
+  final List<int> _zoneIds;
   @override
-  final List<int> zoneIds;
+  List<int> get zoneIds {
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_zoneIds);
+  }
+
   @override
   final Duration duration;
 
@@ -169,10 +157,10 @@ class _$_RunGroup implements _RunGroup {
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _RunGroup &&
+            other is _$_RunGroup &&
             const DeepCollectionEquality().equals(other.type, type) &&
             const DeepCollectionEquality().equals(other.timeOfDay, timeOfDay) &&
-            const DeepCollectionEquality().equals(other.zoneIds, zoneIds) &&
+            const DeepCollectionEquality().equals(other._zoneIds, _zoneIds) &&
             const DeepCollectionEquality().equals(other.duration, duration));
   }
 
@@ -181,21 +169,21 @@ class _$_RunGroup implements _RunGroup {
       runtimeType,
       const DeepCollectionEquality().hash(type),
       const DeepCollectionEquality().hash(timeOfDay),
-      const DeepCollectionEquality().hash(zoneIds),
+      const DeepCollectionEquality().hash(_zoneIds),
       const DeepCollectionEquality().hash(duration));
 
   @JsonKey(ignore: true)
   @override
-  _$RunGroupCopyWith<_RunGroup> get copyWith =>
-      __$RunGroupCopyWithImpl<_RunGroup>(this, _$identity);
+  _$$_RunGroupCopyWith<_$_RunGroup> get copyWith =>
+      __$$_RunGroupCopyWithImpl<_$_RunGroup>(this, _$identity);
 }
 
 abstract class _RunGroup implements RunGroup {
   factory _RunGroup(
-      {required RunGroupType type,
-      required TimeOfDay timeOfDay,
-      required List<int> zoneIds,
-      required Duration duration}) = _$_RunGroup;
+      {required final RunGroupType type,
+      required final TimeOfDay timeOfDay,
+      required final List<int> zoneIds,
+      required final Duration duration}) = _$_RunGroup;
 
   @override
   RunGroupType get type;
@@ -207,6 +195,6 @@ abstract class _RunGroup implements RunGroup {
   Duration get duration;
   @override
   @JsonKey(ignore: true)
-  _$RunGroupCopyWith<_RunGroup> get copyWith =>
+  _$$_RunGroupCopyWith<_$_RunGroup> get copyWith =>
       throw _privateConstructorUsedError;
 }

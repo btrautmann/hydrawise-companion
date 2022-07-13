@@ -37,7 +37,8 @@ Future<void> main(List<String> args) async {
     ..post('/run_zone', RunZone(db))
     ..post('/stop_zone', StopZone(db))
     ..post('/program', CreateProgram(db))
-    ..get('/program', GetPrograms(db));
+    ..get('/program', GetPrograms(db))
+    ..get('/customer', GetCustomer(db));
 
   // Configure a pipeline that logs requests.
   final handler =

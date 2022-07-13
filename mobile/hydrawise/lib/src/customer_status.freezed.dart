@@ -12,69 +12,46 @@ part of 'customer_status.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more informations: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
+    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
 
-CustomerStatus _$CustomerStatusFromJson(Map<String, dynamic> json) {
-  return _CustomerStatus.fromJson(json);
+HCustomerStatus _$HCustomerStatusFromJson(Map<String, dynamic> json) {
+  return _HCustomerStatus.fromJson(json);
 }
 
 /// @nodoc
-class _$CustomerStatusTearOff {
-  const _$CustomerStatusTearOff();
-
-  _CustomerStatus call(
-      {@JsonKey(name: 'nextpoll') required int numberOfSecondsUntilNextRequest,
-      @JsonKey(name: 'time') required int timeOfLastStatusUnixEpoch,
-      @JsonKey(name: 'relays') required List<Zone> zones}) {
-    return _CustomerStatus(
-      numberOfSecondsUntilNextRequest: numberOfSecondsUntilNextRequest,
-      timeOfLastStatusUnixEpoch: timeOfLastStatusUnixEpoch,
-      zones: zones,
-    );
-  }
-
-  CustomerStatus fromJson(Map<String, Object?> json) {
-    return CustomerStatus.fromJson(json);
-  }
-}
-
-/// @nodoc
-const $CustomerStatus = _$CustomerStatusTearOff();
-
-/// @nodoc
-mixin _$CustomerStatus {
+mixin _$HCustomerStatus {
   @JsonKey(name: 'nextpoll')
   int get numberOfSecondsUntilNextRequest => throw _privateConstructorUsedError;
   @JsonKey(name: 'time')
   int get timeOfLastStatusUnixEpoch => throw _privateConstructorUsedError;
   @JsonKey(name: 'relays')
-  List<Zone> get zones => throw _privateConstructorUsedError;
+  List<HZone> get zones => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
-  $CustomerStatusCopyWith<CustomerStatus> get copyWith =>
+  $HCustomerStatusCopyWith<HCustomerStatus> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class $CustomerStatusCopyWith<$Res> {
-  factory $CustomerStatusCopyWith(
-          CustomerStatus value, $Res Function(CustomerStatus) then) =
-      _$CustomerStatusCopyWithImpl<$Res>;
+abstract class $HCustomerStatusCopyWith<$Res> {
+  factory $HCustomerStatusCopyWith(
+          HCustomerStatus value, $Res Function(HCustomerStatus) then) =
+      _$HCustomerStatusCopyWithImpl<$Res>;
   $Res call(
       {@JsonKey(name: 'nextpoll') int numberOfSecondsUntilNextRequest,
       @JsonKey(name: 'time') int timeOfLastStatusUnixEpoch,
-      @JsonKey(name: 'relays') List<Zone> zones});
+      @JsonKey(name: 'relays') List<HZone> zones});
 }
 
 /// @nodoc
-class _$CustomerStatusCopyWithImpl<$Res>
-    implements $CustomerStatusCopyWith<$Res> {
-  _$CustomerStatusCopyWithImpl(this._value, this._then);
+class _$HCustomerStatusCopyWithImpl<$Res>
+    implements $HCustomerStatusCopyWith<$Res> {
+  _$HCustomerStatusCopyWithImpl(this._value, this._then);
 
-  final CustomerStatus _value;
+  final HCustomerStatus _value;
   // ignore: unused_field
-  final $Res Function(CustomerStatus) _then;
+  final $Res Function(HCustomerStatus) _then;
 
   @override
   $Res call({
@@ -95,34 +72,34 @@ class _$CustomerStatusCopyWithImpl<$Res>
       zones: zones == freezed
           ? _value.zones
           : zones // ignore: cast_nullable_to_non_nullable
-              as List<Zone>,
+              as List<HZone>,
     ));
   }
 }
 
 /// @nodoc
-abstract class _$CustomerStatusCopyWith<$Res>
-    implements $CustomerStatusCopyWith<$Res> {
-  factory _$CustomerStatusCopyWith(
-          _CustomerStatus value, $Res Function(_CustomerStatus) then) =
-      __$CustomerStatusCopyWithImpl<$Res>;
+abstract class _$$_HCustomerStatusCopyWith<$Res>
+    implements $HCustomerStatusCopyWith<$Res> {
+  factory _$$_HCustomerStatusCopyWith(
+          _$_HCustomerStatus value, $Res Function(_$_HCustomerStatus) then) =
+      __$$_HCustomerStatusCopyWithImpl<$Res>;
   @override
   $Res call(
       {@JsonKey(name: 'nextpoll') int numberOfSecondsUntilNextRequest,
       @JsonKey(name: 'time') int timeOfLastStatusUnixEpoch,
-      @JsonKey(name: 'relays') List<Zone> zones});
+      @JsonKey(name: 'relays') List<HZone> zones});
 }
 
 /// @nodoc
-class __$CustomerStatusCopyWithImpl<$Res>
-    extends _$CustomerStatusCopyWithImpl<$Res>
-    implements _$CustomerStatusCopyWith<$Res> {
-  __$CustomerStatusCopyWithImpl(
-      _CustomerStatus _value, $Res Function(_CustomerStatus) _then)
-      : super(_value, (v) => _then(v as _CustomerStatus));
+class __$$_HCustomerStatusCopyWithImpl<$Res>
+    extends _$HCustomerStatusCopyWithImpl<$Res>
+    implements _$$_HCustomerStatusCopyWith<$Res> {
+  __$$_HCustomerStatusCopyWithImpl(
+      _$_HCustomerStatus _value, $Res Function(_$_HCustomerStatus) _then)
+      : super(_value, (v) => _then(v as _$_HCustomerStatus));
 
   @override
-  _CustomerStatus get _value => super._value as _CustomerStatus;
+  _$_HCustomerStatus get _value => super._value as _$_HCustomerStatus;
 
   @override
   $Res call({
@@ -130,7 +107,7 @@ class __$CustomerStatusCopyWithImpl<$Res>
     Object? timeOfLastStatusUnixEpoch = freezed,
     Object? zones = freezed,
   }) {
-    return _then(_CustomerStatus(
+    return _then(_$_HCustomerStatus(
       numberOfSecondsUntilNextRequest: numberOfSecondsUntilNextRequest ==
               freezed
           ? _value.numberOfSecondsUntilNextRequest
@@ -141,23 +118,24 @@ class __$CustomerStatusCopyWithImpl<$Res>
           : timeOfLastStatusUnixEpoch // ignore: cast_nullable_to_non_nullable
               as int,
       zones: zones == freezed
-          ? _value.zones
+          ? _value._zones
           : zones // ignore: cast_nullable_to_non_nullable
-              as List<Zone>,
+              as List<HZone>,
     ));
   }
 }
 
 /// @nodoc
 @JsonSerializable()
-class _$_CustomerStatus implements _CustomerStatus {
-  _$_CustomerStatus(
+class _$_HCustomerStatus implements _HCustomerStatus {
+  _$_HCustomerStatus(
       {@JsonKey(name: 'nextpoll') required this.numberOfSecondsUntilNextRequest,
       @JsonKey(name: 'time') required this.timeOfLastStatusUnixEpoch,
-      @JsonKey(name: 'relays') required this.zones});
+      @JsonKey(name: 'relays') required final List<HZone> zones})
+      : _zones = zones;
 
-  factory _$_CustomerStatus.fromJson(Map<String, dynamic> json) =>
-      _$$_CustomerStatusFromJson(json);
+  factory _$_HCustomerStatus.fromJson(Map<String, dynamic> json) =>
+      _$$_HCustomerStatusFromJson(json);
 
   @override
   @JsonKey(name: 'nextpoll')
@@ -165,54 +143,62 @@ class _$_CustomerStatus implements _CustomerStatus {
   @override
   @JsonKey(name: 'time')
   final int timeOfLastStatusUnixEpoch;
+  final List<HZone> _zones;
   @override
   @JsonKey(name: 'relays')
-  final List<Zone> zones;
+  List<HZone> get zones {
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_zones);
+  }
 
   @override
   String toString() {
-    return 'CustomerStatus(numberOfSecondsUntilNextRequest: $numberOfSecondsUntilNextRequest, timeOfLastStatusUnixEpoch: $timeOfLastStatusUnixEpoch, zones: $zones)';
+    return 'HCustomerStatus(numberOfSecondsUntilNextRequest: $numberOfSecondsUntilNextRequest, timeOfLastStatusUnixEpoch: $timeOfLastStatusUnixEpoch, zones: $zones)';
   }
 
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _CustomerStatus &&
+            other is _$_HCustomerStatus &&
             const DeepCollectionEquality().equals(
                 other.numberOfSecondsUntilNextRequest,
                 numberOfSecondsUntilNextRequest) &&
             const DeepCollectionEquality().equals(
                 other.timeOfLastStatusUnixEpoch, timeOfLastStatusUnixEpoch) &&
-            const DeepCollectionEquality().equals(other.zones, zones));
+            const DeepCollectionEquality().equals(other._zones, _zones));
   }
 
+  @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(
       runtimeType,
       const DeepCollectionEquality().hash(numberOfSecondsUntilNextRequest),
       const DeepCollectionEquality().hash(timeOfLastStatusUnixEpoch),
-      const DeepCollectionEquality().hash(zones));
+      const DeepCollectionEquality().hash(_zones));
 
   @JsonKey(ignore: true)
   @override
-  _$CustomerStatusCopyWith<_CustomerStatus> get copyWith =>
-      __$CustomerStatusCopyWithImpl<_CustomerStatus>(this, _$identity);
+  _$$_HCustomerStatusCopyWith<_$_HCustomerStatus> get copyWith =>
+      __$$_HCustomerStatusCopyWithImpl<_$_HCustomerStatus>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$_CustomerStatusToJson(this);
+    return _$$_HCustomerStatusToJson(this);
   }
 }
 
-abstract class _CustomerStatus implements CustomerStatus {
-  factory _CustomerStatus(
-      {@JsonKey(name: 'nextpoll') required int numberOfSecondsUntilNextRequest,
-      @JsonKey(name: 'time') required int timeOfLastStatusUnixEpoch,
-      @JsonKey(name: 'relays') required List<Zone> zones}) = _$_CustomerStatus;
+abstract class _HCustomerStatus implements HCustomerStatus {
+  factory _HCustomerStatus(
+      {@JsonKey(name: 'nextpoll')
+          required final int numberOfSecondsUntilNextRequest,
+      @JsonKey(name: 'time')
+          required final int timeOfLastStatusUnixEpoch,
+      @JsonKey(name: 'relays')
+          required final List<HZone> zones}) = _$_HCustomerStatus;
 
-  factory _CustomerStatus.fromJson(Map<String, dynamic> json) =
-      _$_CustomerStatus.fromJson;
+  factory _HCustomerStatus.fromJson(Map<String, dynamic> json) =
+      _$_HCustomerStatus.fromJson;
 
   @override
   @JsonKey(name: 'nextpoll')
@@ -222,9 +208,9 @@ abstract class _CustomerStatus implements CustomerStatus {
   int get timeOfLastStatusUnixEpoch;
   @override
   @JsonKey(name: 'relays')
-  List<Zone> get zones;
+  List<HZone> get zones;
   @override
   @JsonKey(ignore: true)
-  _$CustomerStatusCopyWith<_CustomerStatus> get copyWith =>
+  _$$_HCustomerStatusCopyWith<_$_HCustomerStatus> get copyWith =>
       throw _privateConstructorUsedError;
 }

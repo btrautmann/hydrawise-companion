@@ -48,7 +48,8 @@ class IrriApp extends StatelessWidget {
           BlocProvider(
             create: (context) => CustomerDetailsCubit(
               getCustomerDetails: context.read<GetCustomerDetails>(),
-              getCustomerStatus: context.read<GetCustomerStatus>(),
+              setNextPollTime: context.read<SetNextPollTime>(),
+              getNextPollTime: context.read<GetNextPollTime>(),
               authCubit: context.read<AuthCubit>(),
             )..start(),
           ),

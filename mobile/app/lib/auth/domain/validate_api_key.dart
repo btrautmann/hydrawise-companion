@@ -1,3 +1,4 @@
+import 'package:api_models/api_models.dart';
 import 'package:core/core.dart';
 import 'package:dio/dio.dart';
 import 'package:irri/auth/auth.dart';
@@ -20,17 +21,12 @@ class ValidateApiKey {
 
   /// {@macro validate_api_key}
   Future<bool> call(String apiKey) async {
-    final queryParameters = {
-      'api_key': apiKey,
-      'type': 'controllers',
-    };
-
-    final response = await _httpClient.get<Map<String, dynamic>>(
-      'customerdetails.php',
-      queryParameters: queryParameters,
+    final response = await _httpClient.post<Map<String, dynamic>>(
+      'login',
       options: Options(
         extra: {'allow_auth_errors': true},
       ),
+      data: LoginRequest(apiKey: apiKey, type: 'controllers').toJson(),
     );
 
     if (response.isSuccess) {

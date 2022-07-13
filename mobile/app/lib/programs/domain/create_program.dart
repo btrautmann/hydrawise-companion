@@ -1,3 +1,4 @@
+import 'package:api_models/api_models.dart';
 import 'package:irri/customer_details/customer_details.dart';
 import 'package:irri/programs/programs.dart';
 import 'package:uuid/uuid.dart';
@@ -34,8 +35,8 @@ class CreateProgram {
           Run(
             id: const Uuid().v4(),
             programId: programId,
-            startTime: group.timeOfDay,
-            duration: group.duration.inSeconds,
+            startTime: group.timeOfDay.toString(),
+            durationSeconds: group.duration.inSeconds,
             zoneId: zoneId,
           ),
         );

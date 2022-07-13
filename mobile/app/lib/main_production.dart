@@ -2,10 +2,8 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:core/core.dart';
 import 'package:dio/dio.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -16,7 +14,6 @@ import 'package:irri/app/domain/app_domain_factory.dart';
 import 'package:irri/app/domain/build_router.dart';
 import 'package:irri/app/irri_app.dart';
 import 'package:irri/app/networking/networking.dart';
-import 'package:irri/auth/auth.dart';
 import 'package:irri/customer_details/customer_details.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -33,18 +30,11 @@ Future<void> main() async {
           WidgetsFlutterBinding.ensureInitialized();
           await Firebase.initializeApp();
 
-          final firebaseFirestore = FirebaseFirestore.instance;
-          final firebaseAuth = FirebaseAuth.instance;
           final firebaseMessaging = FirebaseMessaging.instance;
 
           final sharedPreferences = await SharedPreferences.getInstance();
           final dataStorage = SharedPreferencesStorage(sharedPreferences);
-          final repository = FirebaseBackedCustomerDetailsRepository(
-            firestore: FirebaseFirestore.instance,
-            // TODO(brandon): This is the only use case utilized outside
-            // of the widget tree -- see how we can refactor this
-            getFirebaseUid: GetFirebaseUid(dataStorage),
-          );
+          final repository = InMemoryCustomerDetailsRepository();
 
           // ignore: prefer_void_to_null, close_sinks
           final authFailures = StreamController<Null>();
@@ -58,7 +48,7 @@ Future<void> main() async {
 
           final httpClient = HttpClient(
             dio: Dio(),
-            baseUrl: 'http://api.hydrawise.com/api/v1/',
+            baseUrl: 'http://10.0.2.2:8080/',
             interceptors: interceptors,
             responseDecoder: HydrawiseApiDecoder.decode,
           );
@@ -67,8 +57,6 @@ Future<void> main() async {
             client: httpClient,
             dataStorage: dataStorage,
             repository: repository,
-            firebaseFirestore: firebaseFirestore,
-            firebaseAuth: firebaseAuth,
             firebaseMessaging: firebaseMessaging,
             authFailures: authFailures,
             inDeveloperMode: kDebugMode,

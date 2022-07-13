@@ -1,38 +1,25 @@
+import 'package:api_models/api_models.dart';
 import 'package:clock/clock.dart';
 import 'package:collection/collection.dart';
-import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:irri/programs/models/run_group.dart';
 
-part 'run.freezed.dart';
-part 'run.g.dart';
-
-@freezed
-class Run extends Equatable with _$Run {
-  factory Run({
-    @JsonKey(name: 'id')
-        required String id,
-    @JsonKey(name: 'p_id')
-        required String programId,
-    @JsonKey(
-      name: 'start_time',
-      toJson: TimeOfDayX.toJson,
-      fromJson: TimeOfDayX.fromJson,
-    )
-        required TimeOfDay startTime,
-    @JsonKey(name: 'duration')
-        required int duration,
-    @JsonKey(name: 'z_id')
-        required int zoneId,
-  }) = _Run;
-
-  Run._();
-
-  factory Run.fromJson(Map<String, dynamic> json) => _$RunFromJson(json);
-
-  @override
-  List<Object?> get props => [programId, startTime, duration, zoneId];
+extension ListProgramX on List<Program> {
+  /// Returns the runs that will run today,
+  /// if any
+  List<Run> todayRuns() {
+    final now = clock.now();
+    final dayOfWeek = now.weekday;
+    final todayPrograms =
+        where((element) => element.frequency.contains(dayOfWeek));
+    return todayPrograms
+        .expand(
+          (element) => element.runs.where(
+            (element) => TimeOfDayX.fromJson(element.startTime).isAfter(now),
+          ),
+        )
+        .toList();
+  }
 }
 
 extension TimeOfDayX on TimeOfDay {
@@ -71,8 +58,8 @@ extension ListRunX on List<Run> {
     forEach((run) {
       final addedMod = mods.singleWhereOrNull(
         (RunGroup mod) =>
-            mod.timeOfDay == run.startTime &&
-            mod.duration.inSeconds == run.duration,
+            mod.timeOfDay == TimeOfDayX.fromJson(run.startTime) &&
+            mod.duration.inSeconds == run.durationSeconds,
       );
       if (addedMod == null) {
         // A runGroup containing this run has not
@@ -80,9 +67,9 @@ extension ListRunX on List<Run> {
         mods.add(
           RunGroup(
             type: RunGroupType.modification,
-            timeOfDay: run.startTime,
+            timeOfDay: TimeOfDayX.fromJson(run.startTime),
             zoneIds: [run.zoneId],
-            duration: Duration(seconds: run.duration),
+            duration: Duration(seconds: run.durationSeconds),
           ),
         );
       } else {
@@ -95,5 +82,17 @@ extension ListRunX on List<Run> {
       }
     });
     return mods;
+  }
+}
+
+extension ZoneX on Zone {
+  int get nextRunMillisecondsSinceEpoch {
+    final currentTimeEpochMillis = clock.now().millisecondsSinceEpoch;
+    final millisUntilNextRun = timeUntilNextRunSec * 1000;
+    return currentTimeEpochMillis + millisUntilNextRun;
+  }
+
+  DateTime get dateTimeOfNextRun {
+    return DateTime.fromMillisecondsSinceEpoch(nextRunMillisecondsSinceEpoch);
   }
 }

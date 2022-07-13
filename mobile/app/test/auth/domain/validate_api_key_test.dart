@@ -1,8 +1,8 @@
+import 'package:api_models/api_models.dart';
 import 'package:charlatan/charlatan.dart';
 import 'package:core/core.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:hydrawise/hydrawise.dart';
 import 'package:irri/auth/auth.dart';
 
 import '../../core/fakes/fake_http_client.dart';
@@ -34,10 +34,10 @@ void main() {
         ..whenGet('customerdetails.php', (request) {
           queryParameters = request.queryParameters;
           options = request.requestOptions;
-          return CustomerDetails(
+          return Customer(
             activeControllerId: 1,
             customerId: 1,
-            controllers: [],
+            apiKey: 'fake-api-key',
           );
         });
       await _buildSubject(charlatan);
@@ -53,10 +53,10 @@ void main() {
       setUp(() async {
         final charlatan = Charlatan()
           ..whenGet('customerdetails.php', (request) {
-            return CustomerDetails(
+            return Customer(
               activeControllerId: 1,
               customerId: 1,
-              controllers: [],
+              apiKey: 'fake-api-key',
             );
           });
         await _buildSubject(charlatan);

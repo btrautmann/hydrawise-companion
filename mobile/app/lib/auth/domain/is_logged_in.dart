@@ -1,28 +1,21 @@
 import 'package:irri/auth/auth.dart';
 
 /// {@template is_logged_in}
-/// Checks both the stored API key and stored Firebase uId
+/// Checks the stored API key
 /// to determine if the user is fully authenticated. Returns
 /// true if they are, and false otherwise.
 /// {@endtemplate}
 class IsLoggedIn {
   IsLoggedIn({
     required GetApiKey getApiKey,
-    required GetFirebaseUid getFirebaseUid,
-  })  : _getApiKey = getApiKey,
-        _getFirebaseUid = getFirebaseUid;
+  }) : _getApiKey = getApiKey;
 
   final GetApiKey _getApiKey;
-  final GetFirebaseUid _getFirebaseUid;
 
   /// {@macro is_logged_in}
   Future<bool> call() async {
     final apiKey = await _getApiKey();
-    final firebaseUid = await _getFirebaseUid();
-    if (apiKey.isNotNullOrEmpty() && firebaseUid.isNotNullOrEmpty()) {
-      return true;
-    }
-    return false;
+    return apiKey.isNotNullOrEmpty();
   }
 }
 

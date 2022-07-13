@@ -52,8 +52,8 @@ class AuthCubit extends Cubit<AuthState> {
       emit(AuthState.loggedIn());
       return;
     }
-    // If we got here, either we failed to authenticate
-    // with Hydrawise or Firebase
+    // If we got here, we failed to authenticate
+    // with Hydrawise
     // TODO(brandon): Handle auth failures
     await _logOut();
   }

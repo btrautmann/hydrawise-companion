@@ -12,43 +12,14 @@ part of 'zone.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more informations: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
+    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
 
-Zone _$ZoneFromJson(Map<String, dynamic> json) {
-  return _Zone.fromJson(json);
+HZone _$HZoneFromJson(Map<String, dynamic> json) {
+  return _HZone.fromJson(json);
 }
 
 /// @nodoc
-class _$ZoneTearOff {
-  const _$ZoneTearOff();
-
-  _Zone call(
-      {@JsonKey(name: 'relay_id') required int id,
-      @JsonKey(name: 'relay') required int physicalNumber,
-      @JsonKey(name: 'name') required String name,
-      @JsonKey(name: 'timestr') required String nextTimeOfWaterFriendly,
-      @JsonKey(name: 'time') required int secondsUntilNextRun,
-      @JsonKey(name: 'run') required int lengthOfNextRunTimeOrTimeRemaining}) {
-    return _Zone(
-      id: id,
-      physicalNumber: physicalNumber,
-      name: name,
-      nextTimeOfWaterFriendly: nextTimeOfWaterFriendly,
-      secondsUntilNextRun: secondsUntilNextRun,
-      lengthOfNextRunTimeOrTimeRemaining: lengthOfNextRunTimeOrTimeRemaining,
-    );
-  }
-
-  Zone fromJson(Map<String, Object?> json) {
-    return Zone.fromJson(json);
-  }
-}
-
-/// @nodoc
-const $Zone = _$ZoneTearOff();
-
-/// @nodoc
-mixin _$Zone {
+mixin _$HZone {
   @JsonKey(name: 'relay_id')
   int get id => throw _privateConstructorUsedError;
   @JsonKey(name: 'relay')
@@ -67,13 +38,13 @@ mixin _$Zone {
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
-  $ZoneCopyWith<Zone> get copyWith => throw _privateConstructorUsedError;
+  $HZoneCopyWith<HZone> get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class $ZoneCopyWith<$Res> {
-  factory $ZoneCopyWith(Zone value, $Res Function(Zone) then) =
-      _$ZoneCopyWithImpl<$Res>;
+abstract class $HZoneCopyWith<$Res> {
+  factory $HZoneCopyWith(HZone value, $Res Function(HZone) then) =
+      _$HZoneCopyWithImpl<$Res>;
   $Res call(
       {@JsonKey(name: 'relay_id') int id,
       @JsonKey(name: 'relay') int physicalNumber,
@@ -84,12 +55,12 @@ abstract class $ZoneCopyWith<$Res> {
 }
 
 /// @nodoc
-class _$ZoneCopyWithImpl<$Res> implements $ZoneCopyWith<$Res> {
-  _$ZoneCopyWithImpl(this._value, this._then);
+class _$HZoneCopyWithImpl<$Res> implements $HZoneCopyWith<$Res> {
+  _$HZoneCopyWithImpl(this._value, this._then);
 
-  final Zone _value;
+  final HZone _value;
   // ignore: unused_field
-  final $Res Function(Zone) _then;
+  final $Res Function(HZone) _then;
 
   @override
   $Res call({
@@ -131,9 +102,9 @@ class _$ZoneCopyWithImpl<$Res> implements $ZoneCopyWith<$Res> {
 }
 
 /// @nodoc
-abstract class _$ZoneCopyWith<$Res> implements $ZoneCopyWith<$Res> {
-  factory _$ZoneCopyWith(_Zone value, $Res Function(_Zone) then) =
-      __$ZoneCopyWithImpl<$Res>;
+abstract class _$$_HZoneCopyWith<$Res> implements $HZoneCopyWith<$Res> {
+  factory _$$_HZoneCopyWith(_$_HZone value, $Res Function(_$_HZone) then) =
+      __$$_HZoneCopyWithImpl<$Res>;
   @override
   $Res call(
       {@JsonKey(name: 'relay_id') int id,
@@ -145,13 +116,13 @@ abstract class _$ZoneCopyWith<$Res> implements $ZoneCopyWith<$Res> {
 }
 
 /// @nodoc
-class __$ZoneCopyWithImpl<$Res> extends _$ZoneCopyWithImpl<$Res>
-    implements _$ZoneCopyWith<$Res> {
-  __$ZoneCopyWithImpl(_Zone _value, $Res Function(_Zone) _then)
-      : super(_value, (v) => _then(v as _Zone));
+class __$$_HZoneCopyWithImpl<$Res> extends _$HZoneCopyWithImpl<$Res>
+    implements _$$_HZoneCopyWith<$Res> {
+  __$$_HZoneCopyWithImpl(_$_HZone _value, $Res Function(_$_HZone) _then)
+      : super(_value, (v) => _then(v as _$_HZone));
 
   @override
-  _Zone get _value => super._value as _Zone;
+  _$_HZone get _value => super._value as _$_HZone;
 
   @override
   $Res call({
@@ -162,7 +133,7 @@ class __$ZoneCopyWithImpl<$Res> extends _$ZoneCopyWithImpl<$Res>
     Object? secondsUntilNextRun = freezed,
     Object? lengthOfNextRunTimeOrTimeRemaining = freezed,
   }) {
-    return _then(_Zone(
+    return _then(_$_HZone(
       id: id == freezed
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
@@ -194,8 +165,8 @@ class __$ZoneCopyWithImpl<$Res> extends _$ZoneCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_Zone implements _Zone {
-  _$_Zone(
+class _$_HZone implements _HZone {
+  _$_HZone(
       {@JsonKey(name: 'relay_id') required this.id,
       @JsonKey(name: 'relay') required this.physicalNumber,
       @JsonKey(name: 'name') required this.name,
@@ -203,7 +174,8 @@ class _$_Zone implements _Zone {
       @JsonKey(name: 'time') required this.secondsUntilNextRun,
       @JsonKey(name: 'run') required this.lengthOfNextRunTimeOrTimeRemaining});
 
-  factory _$_Zone.fromJson(Map<String, dynamic> json) => _$$_ZoneFromJson(json);
+  factory _$_HZone.fromJson(Map<String, dynamic> json) =>
+      _$$_HZoneFromJson(json);
 
   @override
   @JsonKey(name: 'relay_id')
@@ -217,23 +189,25 @@ class _$_Zone implements _Zone {
   @override
   @JsonKey(name: 'timestr')
   final String nextTimeOfWaterFriendly;
-  @override // Value will be 1 if a watering is in progress
+// Value will be 1 if a watering is in progress
+  @override
   @JsonKey(name: 'time')
   final int secondsUntilNextRun;
-  @override // If run is in progress, indicates time remaining
+// If run is in progress, indicates time remaining
+  @override
   @JsonKey(name: 'run')
   final int lengthOfNextRunTimeOrTimeRemaining;
 
   @override
   String toString() {
-    return 'Zone(id: $id, physicalNumber: $physicalNumber, name: $name, nextTimeOfWaterFriendly: $nextTimeOfWaterFriendly, secondsUntilNextRun: $secondsUntilNextRun, lengthOfNextRunTimeOrTimeRemaining: $lengthOfNextRunTimeOrTimeRemaining)';
+    return 'HZone(id: $id, physicalNumber: $physicalNumber, name: $name, nextTimeOfWaterFriendly: $nextTimeOfWaterFriendly, secondsUntilNextRun: $secondsUntilNextRun, lengthOfNextRunTimeOrTimeRemaining: $lengthOfNextRunTimeOrTimeRemaining)';
   }
 
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _Zone &&
+            other is _$_HZone &&
             const DeepCollectionEquality().equals(other.id, id) &&
             const DeepCollectionEquality()
                 .equals(other.physicalNumber, physicalNumber) &&
@@ -247,6 +221,7 @@ class _$_Zone implements _Zone {
                 lengthOfNextRunTimeOrTimeRemaining));
   }
 
+  @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(
       runtimeType,
@@ -259,31 +234,31 @@ class _$_Zone implements _Zone {
 
   @JsonKey(ignore: true)
   @override
-  _$ZoneCopyWith<_Zone> get copyWith =>
-      __$ZoneCopyWithImpl<_Zone>(this, _$identity);
+  _$$_HZoneCopyWith<_$_HZone> get copyWith =>
+      __$$_HZoneCopyWithImpl<_$_HZone>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$_ZoneToJson(this);
+    return _$$_HZoneToJson(this);
   }
 }
 
-abstract class _Zone implements Zone {
-  factory _Zone(
+abstract class _HZone implements HZone {
+  factory _HZone(
       {@JsonKey(name: 'relay_id')
-          required int id,
+          required final int id,
       @JsonKey(name: 'relay')
-          required int physicalNumber,
+          required final int physicalNumber,
       @JsonKey(name: 'name')
-          required String name,
+          required final String name,
       @JsonKey(name: 'timestr')
-          required String nextTimeOfWaterFriendly,
+          required final String nextTimeOfWaterFriendly,
       @JsonKey(name: 'time')
-          required int secondsUntilNextRun,
+          required final int secondsUntilNextRun,
       @JsonKey(name: 'run')
-          required int lengthOfNextRunTimeOrTimeRemaining}) = _$_Zone;
+          required final int lengthOfNextRunTimeOrTimeRemaining}) = _$_HZone;
 
-  factory _Zone.fromJson(Map<String, dynamic> json) = _$_Zone.fromJson;
+  factory _HZone.fromJson(Map<String, dynamic> json) = _$_HZone.fromJson;
 
   @override
   @JsonKey(name: 'relay_id')
@@ -305,5 +280,6 @@ abstract class _Zone implements Zone {
   int get lengthOfNextRunTimeOrTimeRemaining;
   @override
   @JsonKey(ignore: true)
-  _$ZoneCopyWith<_Zone> get copyWith => throw _privateConstructorUsedError;
+  _$$_HZoneCopyWith<_$_HZone> get copyWith =>
+      throw _privateConstructorUsedError;
 }

@@ -1,6 +1,6 @@
+import 'package:api_models/api_models.dart';
 import 'package:core/core.dart';
 import 'package:dio/dio.dart';
-import 'package:hydrawise/hydrawise.dart';
 import 'package:irri/auth/auth.dart';
 import 'package:irri/customer_details/customer_details.dart';
 import 'package:irri/run_zone/run_zone.dart';
@@ -53,8 +53,8 @@ class RunZoneOverNetwork implements RunZone {
       if (result.isSuccess) {
         _repository.updateZone(
           zone.copyWith(
-            secondsUntilNextRun: 1,
-            lengthOfNextRunTimeOrTimeRemaining: runLengthSeconds,
+            timeUntilNextRunSec: 1,
+            runLengthSec: runLengthSeconds,
           ),
         );
         // Push next poll time back to right after the zone is set
@@ -88,8 +88,8 @@ class RunZoneLocally implements RunZone {
     required int runLengthSeconds,
   }) async {
     final runningZone = zone.copyWith(
-      lengthOfNextRunTimeOrTimeRemaining: runLengthSeconds,
-      secondsUntilNextRun: 1,
+      runLengthSec: runLengthSeconds,
+      timeUntilNextRunSec: 1,
     );
 
     await Future<void>.delayed(const Duration(seconds: 3));
@@ -101,8 +101,8 @@ class RunZoneLocally implements RunZone {
       Future.delayed(Duration(seconds: runLengthSeconds), () {
         _repository.updateZone(
           zone.copyWith(
-            secondsUntilNextRun: 60,
-            lengthOfNextRunTimeOrTimeRemaining: 60,
+            timeUntilNextRunSec: 60,
+            runLengthSec: 60,
           ),
         );
       }),

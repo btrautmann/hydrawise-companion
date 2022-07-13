@@ -1,5 +1,5 @@
+import 'package:api_models/api_models.dart';
 import 'package:core/core.dart';
-import 'package:hydrawise/hydrawise.dart';
 import 'package:irri/customer_details/customer_details.dart';
 import 'package:result_type/result_type.dart';
 
@@ -11,23 +11,20 @@ class GetFakeCustomerDetails implements GetCustomerDetails {
   final CustomerDetailsRepository _repository;
 
   @override
-  Future<UseCaseResult<CustomerDetails, String>> call() async {
-    final customer = CustomerDetails(
+  Future<UseCaseResult<GetCustomerResponse, String>> call() async {
+    final customer = Customer(
       activeControllerId: 1,
       customerId: 1,
-      controllers: [
-        Controller(
-          name: 'Fake Controller',
-          lastContact: 1631616496,
-          serialNumber: '123456789',
-          id: 1234,
-          status: 'All good!',
-        ),
-      ],
+      apiKey: 'fake-api-key',
     );
 
-    await _repository.insertCustomer(customer.toCustomer('fake-api-key'));
+    await _repository.insertCustomer(customer);
 
-    return Success(customer);
+    return Success(
+      GetCustomerResponse(
+        customer: customer,
+        zones: List.empty(),
+      ),
+    );
   }
 }

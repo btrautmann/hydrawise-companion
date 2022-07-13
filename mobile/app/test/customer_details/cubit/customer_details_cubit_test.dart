@@ -1,10 +1,10 @@
 import 'dart:async';
 
+import 'package:api_models/api_models.dart';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:clock/clock.dart';
 import 'package:core/core.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:hydrawise/hydrawise.dart';
 import 'package:irri/auth/auth.dart';
 import 'package:irri/customer_details/customer_details.dart';
 
@@ -14,13 +14,13 @@ void main() {
 
     final repository = InMemoryCustomerDetailsRepository();
     final setApiKey = SetApiKey(dataStorage);
-    final setFirebaseUid = SetFirebaseUid(dataStorage);
     late AuthCubit authCubit;
 
     CustomerDetailsCubit _buildSubject() {
       return CustomerDetailsCubit(
         getCustomerDetails: GetFakeCustomerDetails(repository: repository),
-        getCustomerStatus: GetFakeCustomerStatus(repository: repository),
+        setNextPollTime: SetNextPollTimeInStorage(dataStorage),
+        getNextPollTime: GetNextPollTimeFromStorage(dataStorage),
         authCubit: authCubit,
       );
     }
@@ -31,9 +31,6 @@ void main() {
       authCubit = AuthCubit(
         logOut: LogOut(
           setApiKey: setApiKey,
-          unauthenticateWithFirebase: FakeUnauthenticateWithFirebase(
-            setFirebaseUid: setFirebaseUid,
-          ),
           customerDetailsRepository: repository,
         ),
         getAuthFailures: GetAuthFailures(
@@ -43,13 +40,9 @@ void main() {
           validateApiKey: FakeValidateApiKey(
             setApiKey: setApiKey,
           ),
-          authenticateWithFirebase: FakeAuthenticateWithFirebase(
-            setFirebaseUid: setFirebaseUid,
-          ),
         ),
         isLoggedIn: IsLoggedIn(
           getApiKey: GetApiKey(dataStorage),
-          getFirebaseUid: GetFirebaseUid(dataStorage),
         ),
       );
     });
@@ -83,26 +76,12 @@ void main() {
           expect: () => <CustomerDetailsState>[
             CustomerDetailsState.loading(),
             CustomerDetailsState.complete(
-              customerDetails: CustomerDetails(
+              customerDetails: Customer(
                 activeControllerId: 1,
+                apiKey: 'fake-api-key',
                 customerId: 1,
-                controllers: [
-                  Controller(
-                    name: 'Fake Controller',
-                    lastContact: 1631616496,
-                    serialNumber: '123456789',
-                    id: 1234,
-                    status: 'All good!',
-                  )
-                ],
               ),
-              customerStatus: CustomerStatus(
-                numberOfSecondsUntilNextRequest: 5,
-                // ignore: lines_longer_than_80_chars
-                timeOfLastStatusUnixEpoch:
-                    fixedWallClock.now().millisecondsSinceEpoch,
-                zones: [],
-              ),
+              zones: List.empty(),
             ),
           ],
         );

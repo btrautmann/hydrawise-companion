@@ -1,12 +1,13 @@
+import 'package:api_models/api_models.dart';
 import 'package:clock/clock.dart';
 import 'package:core_ui/core_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:hydrawise/hydrawise.dart';
 import 'package:irri/customer_details/customer_details.dart';
 import 'package:irri/developer/developer.dart';
-import 'package:irri/programs/programs.dart';
+import 'package:irri/programs/cubit/programs_cubit.dart';
+import 'package:irri/programs/extensions.dart';
 import 'package:weatherx/weather.dart';
 
 class CustomerDetailsPage extends StatelessWidget {
@@ -161,7 +162,7 @@ class _RunsList extends StatelessWidget {
               child: BlocBuilder<CustomerDetailsCubit, CustomerDetailsState>(
                 builder: (context, state) {
                   return state.maybeWhen(
-                    complete: (_, state) {
+                    complete: (details, zones) {
                       return Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
@@ -181,7 +182,7 @@ class _RunsList extends StatelessWidget {
                               itemCount: todayRuns.length,
                               itemBuilder: (_, index) {
                                 return _RunCell(
-                                  zone: state.zones.singleWhere(
+                                  zone: zones.singleWhere(
                                     (z) => z.id == todayRuns[index].zoneId,
                                   ),
                                   program: programs.singleWhere(
@@ -232,7 +233,7 @@ class _RunCell extends StatelessWidget {
     if (zone.isRunning) {
       return 'Running now';
     }
-    return run.startTime.format(context);
+    return TimeOfDayX.fromJson(run.startTime).format(context);
   }
 
   @override
@@ -253,7 +254,7 @@ class _RunCell extends StatelessWidget {
                   child: Hero(
                     tag: run,
                     child: CircleBackground(
-                      child: Text(zone.physicalNumber.toString()),
+                      child: Text(zone.number.toString()),
                     ),
                   ),
                 ),
