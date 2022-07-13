@@ -9,14 +9,14 @@ import 'package:shelf_router/shelf_router.dart';
 import 'index.dart';
 import 'login.dart';
 
-void main(List<String> args) async {
+Future<void> main(List<String> args) async {
   // Use any available host or container IP (usually `0.0.0.0`).
   final ip = InternetAddress.anyIPv4;
 
   final env = DotEnv(includePlatformEnvironment: true);
-  final List<String> envFiles = env['ENV_FILE'] != null
-      ? List.from([env['ENV_FILE']])
-      : List.from(['.env']);
+  final envFiles = env['ENV_FILE'] != null
+      ? List<String>.from([env['ENV_FILE']])
+      : List<String>.from(['.env']);
   print('Using .env file(s) $envFiles');
   env.load(envFiles);
 
@@ -24,8 +24,8 @@ void main(List<String> args) async {
     env['DATABASE_HOST']!,
     int.parse(env['DATABASE_PORT']!),
     env['DATABASE_NAME']!,
-    username: env['DATABASE_ROLE']!,
-    password: env['DATABASE_PASSWORD']!,
+    username: env['DATABASE_ROLE'],
+    password: env['DATABASE_PASSWORD'],
   );
 
   await connection.open();
@@ -36,7 +36,7 @@ void main(List<String> args) async {
     ..get('/login', Login(connection));
 
   // Configure a pipeline that logs requests.
-  final handler = Pipeline().addMiddleware(logRequests()).addHandler(router);
+  final handler = const Pipeline().addMiddleware(logRequests()).addHandler(router);
 
   // For running in containers, we respect the PORT environment variable.
   final port = int.parse(Platform.environment['PORT'] ?? '8080');
