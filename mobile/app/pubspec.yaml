@@ -16,7 +16,7 @@ dependencies:
     path: ../core
   core_ui:
     path: ../core_ui
-  dio: ^4.0.0
+  dio: ^4.0.6
   equatable: ^2.0.3
   firebase_analytics: ^9.1.2
   firebase_auth: ^3.3.9
