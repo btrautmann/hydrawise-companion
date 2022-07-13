@@ -22,10 +22,11 @@ void main() {
     });
     // Wait for server to start and print to stdout.
     await stream.firstWhere(
-        (element) => utf8.decode(element).contains('Server listening'));
-  });
+      (element) => utf8.decode(element).contains('Server listening'),
+    );
 
-  tearDown(() => p.kill());
+    addTearDown(() => p.kill());
+  });
 
   test('Index', () async {
     final response = await get(Uri.parse('$host/'));
