@@ -1,0 +1,15 @@
+include: ../all_lint_rules.yaml
+analyzer:
+  exclude:
+    - "**.freezed.dart"
+    - "**.g.dart"
+  errors:
+    # Don't flag TODOs - comment this out when wanting to address
+    todo: ignore
+    # Causes issues with freezed on CI
+    # TODO(brandon): Figure out why this fails on CI only
+    # Relevant: https://github.com/rrousselGit/freezed/issues/488
+    invalid_annotation_target: ignore
+linter:
+  rules:
+    public_member_api_docs: false

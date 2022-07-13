@@ -1,4 +1,5 @@
 import 'package:clock/clock.dart';
+import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -69,7 +70,7 @@ extension ListRunX on List<Run> {
     final mods = <RunGroup>[];
     forEach((run) {
       final addedMod = mods.singleWhereOrNull(
-        (mod) =>
+        (RunGroup mod) =>
             mod.timeOfDay == run.startTime &&
             mod.duration.inSeconds == run.duration,
       );

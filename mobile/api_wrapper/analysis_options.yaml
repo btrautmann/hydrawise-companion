@@ -8,10 +8,4 @@ analyzer:
     avoid_escaping_inner_quotes: ignore
 linter:
   rules:
-    always_put_required_named_parameters_first: false
-    avoid_annotating_with_dynamic: false
-    # Doesn't work well with things like `context.select`
-    avoid_types_on_closure_parameters: false
-    diagnostic_describe_all_properties: false
-    prefer_expression_function_bodies: false
     public_member_api_docs: false

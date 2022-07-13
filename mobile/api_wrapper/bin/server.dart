@@ -6,8 +6,8 @@ import 'package:shelf/shelf.dart';
 import 'package:shelf/shelf_io.dart';
 import 'package:shelf_router/shelf_router.dart';
 
-import 'index.dart';
-import 'login.dart';
+import 'get_programs.dart';
+import 'routes.dart';
 
 Future<void> main(List<String> args) async {
   // Use any available host or container IP (usually `0.0.0.0`).
@@ -20,7 +20,7 @@ Future<void> main(List<String> args) async {
   print('Using .env file(s) $envFiles');
   env.load(envFiles);
 
-  final connection = PostgreSQLConnection(
+  final db = PostgreSQLConnection(
     env['DATABASE_HOST']!,
     int.parse(env['DATABASE_PORT']!),
     env['DATABASE_NAME']!,
@@ -28,15 +28,20 @@ Future<void> main(List<String> args) async {
     password: env['DATABASE_PASSWORD'],
   );
 
-  await connection.open();
+  await db.open();
 
   // Configure routes.
   final router = Router()
     ..get('/', Index())
-    ..get('/login', Login(connection));
+    ..post('/login', Login(db))
+    ..post('/run_zone', RunZone(db))
+    ..post('/stop_zone', StopZone(db))
+    ..post('/program', CreateProgram(db))
+    ..get('/program', GetPrograms(db));
 
   // Configure a pipeline that logs requests.
-  final handler = const Pipeline().addMiddleware(logRequests()).addHandler(router);
+  final handler =
+      const Pipeline().addMiddleware(logRequests()).addHandler(router);
 
   // For running in containers, we respect the PORT environment variable.
   final port = int.parse(Platform.environment['PORT'] ?? '8080');
