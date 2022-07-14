@@ -8,7 +8,7 @@ import 'package:irri/auth/auth.dart';
 import '../../core/fakes/fake_http_client.dart';
 
 void main() {
-  late ValidateApiKey subject;
+  late LogIn subject;
   final storage = InMemoryStorage();
   final setApiKey = SetApiKey(storage);
   final getApiKey = GetApiKey(storage);
@@ -16,7 +16,7 @@ void main() {
   group('call(:apiKey)', () {
     Future<void> _buildSubject(Charlatan charlatan) async {
       final client = FakeHttpClient(charlatan);
-      subject = ValidateApiKey(
+      subject = LogIn(
         httpClient: client,
         setApiKey: setApiKey,
       );

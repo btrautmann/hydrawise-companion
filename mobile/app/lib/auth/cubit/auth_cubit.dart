@@ -42,7 +42,7 @@ class AuthCubit extends Cubit<AuthState> {
     );
   }
 
-  Future<bool> validateApiKey(String apiKey) {
+  Future<bool> logIn(String apiKey) {
     return _logIn(apiKey);
   }
 

@@ -34,26 +34,34 @@ void main() {
 
     setUp(() async {
       await dataStorage.clearAll();
-
-      charlatan.whenGet(
-        'customer',
-        (request) => GetCustomerResponse(
-          customer: Customer(
-            activeControllerId: 1,
-            apiKey: 'fake-api-key',
-            customerId: 1,
-          ),
-          zones: [
-            Zone(
-              id: 1,
-              number: 1,
-              name: 'Fake zone',
-              timeUntilNextRunSec: 60,
-              runLengthSec: 600,
-            ),
-          ],
-        ),
+      final customer = Customer(
+        activeControllerId: 1,
+        apiKey: 'fake-api-key',
+        customerId: 1,
       );
+
+      charlatan
+        ..whenGet(
+          'customer',
+          (request) => GetCustomerResponse(
+            customer: customer,
+            zones: [
+              Zone(
+                id: 1,
+                number: 1,
+                name: 'Fake zone',
+                timeUntilNextRunSec: 60,
+                runLengthSec: 600,
+              ),
+            ],
+          ),
+        )
+        ..whenPost(
+          'login',
+          (request) => CharlatanHttpResponse(
+            body: customer,
+          ),
+        );
 
       authCubit = AuthCubit(
         logOut: LogOut(
@@ -64,9 +72,8 @@ void main() {
           authFailuresController: StreamController(),
         ),
         logIn: LogIn(
-          validateApiKey: FakeValidateApiKey(
-            setApiKey: setApiKey,
-          ),
+          httpClient: FakeHttpClient(charlatan),
+          setApiKey: setApiKey,
         ),
         isLoggedIn: IsLoggedIn(
           getApiKey: GetApiKey(dataStorage),

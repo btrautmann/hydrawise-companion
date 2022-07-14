@@ -244,7 +244,7 @@ class _ChangeApiKeyDialogState extends State<_ChangeApiKeyDialog> {
                   ? null
                   : () => context
                       .read<AuthCubit>()
-                      .validateApiKey(_controller.text),
+                      .logIn(_controller.text),
               child: const Text(
                 'Submit',
               ),

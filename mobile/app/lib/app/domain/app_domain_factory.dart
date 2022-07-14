@@ -26,15 +26,12 @@ abstract class ProductionDependencyFactory {
   }) {
     final getApiKey = GetApiKey(dataStorage);
     final setApiKey = SetApiKey(dataStorage);
-    final validateApiKey = ValidateApiKey(
-      httpClient: client,
-      setApiKey: setApiKey,
-    );
     final isLoggedIn = IsLoggedIn(
       getApiKey: getApiKey,
     );
     final logIn = LogIn(
-      validateApiKey: validateApiKey,
+      setApiKey: setApiKey,
+      httpClient: client,
     );
     final logOut = LogOut(
       setApiKey: setApiKey,
