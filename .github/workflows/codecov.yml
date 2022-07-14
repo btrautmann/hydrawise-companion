@@ -43,7 +43,7 @@ jobs:
         working-directory: mobile
 
       - name: Run dart code coverage
-        run: melos exec --no-flutter --dir-exists="test" -- dart test --coverage --coverage-path="../coverage/${PWD##*/}_lcov.info" --test-randomize-ordering-seed random
+        run: melos exec --no-flutter --dir-exists="test" --ignore="api_wrapper" -- dart test --coverage --coverage-path="../coverage/${PWD##*/}_lcov.info" --test-randomize-ordering-seed random
         working-directory: mobile
         
       - uses: codecov/codecov-action@v2
