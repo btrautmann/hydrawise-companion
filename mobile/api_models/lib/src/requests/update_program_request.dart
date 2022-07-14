@@ -15,5 +15,8 @@ class UpdateProgramRequest with _$UpdateProgramRequest {
     @JsonKey(name: 'runs_to_update') required List<Run> runsToUpdate,
   }) = _UpdateProgramRequest;
 
-  factory UpdateProgramRequest.fromJson(Map<String, dynamic> json) => _$UpdateProgramRequestFromJson(json);
+  factory UpdateProgramRequest.fromJson(
+    Map<String, dynamic> json,
+  ) =>
+      _$UpdateProgramRequestFromJson(json);
 }

@@ -20,8 +20,6 @@ class UpdateProgram {
   }) async {
     final existingProgram = await _repository.getProgram(programId: programId);
 
-    print(existingProgram);
-
     final runsToInsert = <Run>[];
     final runsToUpdate = <Run>[];
     for (final runGroup in runGroups) {
@@ -54,17 +52,12 @@ class UpdateProgram {
         );
         final isCreating = existingProgram.runs.none((run) => run.id == id);
         if (isCreating) {
-          print('is creating');
           runsToInsert.add(run);
         } else {
-          print('is updating');
           runsToUpdate.add(run);
         }
       }
     }
-
-    print(runsToInsert);
-    print(runsToUpdate);
 
     await _repository.updateProgram(
       existingProgram.copyWith(
