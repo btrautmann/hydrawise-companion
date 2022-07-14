@@ -20,7 +20,7 @@ jobs:
           ssh-private-key: ${{secrets.SSH_PRIVATE_KEY}}
       - uses: subosito/flutter-action@v1
         with:
-          flutter-version: '2.10.4'
+          flutter-version: '3.0.4'
           channel: stable
       - uses: maxim-lobanov/setup-xcode@v1
         with:
@@ -49,7 +49,7 @@ jobs:
           ssh-private-key: ${{secrets.SSH_PRIVATE_KEY}}
       - uses: subosito/flutter-action@v1
         with:
-          flutter-version: '2.10.4'
+          flutter-version: '3.0.4'
           channel: stable
       
       - name: Bundle install
