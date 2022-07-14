@@ -8,7 +8,7 @@
             "name": "irri",
             "request": "launch",
             "type": "dart",
-            "program": "app/lib/main_production.dart",
+            "program": "app/lib/main.dart",
             "flutterMode": "debug",
             "args": [
                 "--dart-define",

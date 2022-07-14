@@ -20,6 +20,8 @@ class UpdateProgram {
   }) async {
     final existingProgram = await _repository.getProgram(programId: programId);
 
+    print(existingProgram);
+
     final runsToInsert = <Run>[];
     final runsToUpdate = <Run>[];
     for (final runGroup in runGroups) {
@@ -28,7 +30,7 @@ class UpdateProgram {
         // we may be adding runs OR updating runs,
         // and as such need to assign the correct Id, either
         // a new one or an existing one
-        Future<String> modificationId() async {
+        String modificationId() {
           final matchingRun = existingProgram.runs.singleWhereOrNull(
             (existingRun) =>
                 existingRun.startTime == runGroup.timeOfDay &&
@@ -40,7 +42,7 @@ class UpdateProgram {
           return matchingRun?.id ?? const Uuid().v4();
         }
 
-        final id = runGroup.isNewRunGroup() ? const Uuid().v4() : await modificationId();
+        final id = runGroup.isNewRunGroup() ? const Uuid().v4() : modificationId();
 
         final run = Run(
           id: id,
@@ -52,12 +54,17 @@ class UpdateProgram {
         );
         final isCreating = existingProgram.runs.none((run) => run.id == id);
         if (isCreating) {
+          print('is creating');
           runsToInsert.add(run);
         } else {
+          print('is updating');
           runsToUpdate.add(run);
         }
       }
     }
+
+    print(runsToInsert);
+    print(runsToUpdate);
 
     await _repository.updateProgram(
       existingProgram.copyWith(

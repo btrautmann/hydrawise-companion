@@ -32,7 +32,7 @@ class CreateProgramPage extends StatelessWidget {
           ),
           body: CreateProgramView(
             name: existingProgram?.name ?? '',
-            frequency: existingProgram?.frequency ?? [],
+            frequency: List.of(existingProgram?.frequency ?? []),
             runGroups: existingProgram?.runs.toRunGroups() ?? [],
             existingProgramId: existingProgramId,
           ),

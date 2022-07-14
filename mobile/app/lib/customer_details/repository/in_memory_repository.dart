@@ -72,9 +72,8 @@ class InMemoryCustomerDetailsRepository implements CustomerDetailsRepository {
 
   @override
   Future<void> updateProgram(Program program) async {
-    final existingProgram = await getProgram(programId: program.id);
     _programs
-      ..remove(existingProgram)
+      ..retainWhere((element) => element.id != program.id)
       ..add(program);
   }
 

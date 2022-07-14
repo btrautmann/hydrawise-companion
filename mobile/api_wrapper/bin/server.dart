@@ -38,6 +38,7 @@ Future<void> main(List<String> args) async {
     ..post('/stop_zone', StopZone(db))
     ..post('/program', CreateProgram(db))
     ..get('/program', GetPrograms(db))
+    ..put('/program', UpdateProgram(db))
     ..get('/customer', GetCustomer(db));
 
   // Configure a pipeline that logs requests.

@@ -387,7 +387,7 @@ mixin _$Run {
   String get programId => throw _privateConstructorUsedError;
   @JsonKey(name: 'zone_id')
   int get zoneId => throw _privateConstructorUsedError;
-  @JsonKey(name: 'duration_sec')
+  @JsonKey(name: 'duration_seconds')
   int get durationSeconds => throw _privateConstructorUsedError;
   @JsonKey(name: 'start_hour')
   int get startHour => throw _privateConstructorUsedError;
@@ -407,7 +407,7 @@ abstract class $RunCopyWith<$Res> {
       {@JsonKey(name: 'id') String id,
       @JsonKey(name: 'program_id') String programId,
       @JsonKey(name: 'zone_id') int zoneId,
-      @JsonKey(name: 'duration_sec') int durationSeconds,
+      @JsonKey(name: 'duration_seconds') int durationSeconds,
       @JsonKey(name: 'start_hour') int startHour,
       @JsonKey(name: 'start_minute') int startMinute});
 }
@@ -467,7 +467,7 @@ abstract class _$$_RunCopyWith<$Res> implements $RunCopyWith<$Res> {
       {@JsonKey(name: 'id') String id,
       @JsonKey(name: 'program_id') String programId,
       @JsonKey(name: 'zone_id') int zoneId,
-      @JsonKey(name: 'duration_sec') int durationSeconds,
+      @JsonKey(name: 'duration_seconds') int durationSeconds,
       @JsonKey(name: 'start_hour') int startHour,
       @JsonKey(name: 'start_minute') int startMinute});
 }
@@ -526,7 +526,7 @@ class _$_Run implements _Run {
       {@JsonKey(name: 'id') required this.id,
       @JsonKey(name: 'program_id') required this.programId,
       @JsonKey(name: 'zone_id') required this.zoneId,
-      @JsonKey(name: 'duration_sec') required this.durationSeconds,
+      @JsonKey(name: 'duration_seconds') required this.durationSeconds,
       @JsonKey(name: 'start_hour') required this.startHour,
       @JsonKey(name: 'start_minute') required this.startMinute});
 
@@ -542,7 +542,7 @@ class _$_Run implements _Run {
   @JsonKey(name: 'zone_id')
   final int zoneId;
   @override
-  @JsonKey(name: 'duration_sec')
+  @JsonKey(name: 'duration_seconds')
   final int durationSeconds;
   @override
   @JsonKey(name: 'start_hour')
@@ -598,7 +598,7 @@ abstract class _Run implements Run {
       {@JsonKey(name: 'id') required final String id,
       @JsonKey(name: 'program_id') required final String programId,
       @JsonKey(name: 'zone_id') required final int zoneId,
-      @JsonKey(name: 'duration_sec') required final int durationSeconds,
+      @JsonKey(name: 'duration_seconds') required final int durationSeconds,
       @JsonKey(name: 'start_hour') required final int startHour,
       @JsonKey(name: 'start_minute') required final int startMinute}) = _$_Run;
 
@@ -614,7 +614,7 @@ abstract class _Run implements Run {
   @JsonKey(name: 'zone_id')
   int get zoneId;
   @override
-  @JsonKey(name: 'duration_sec')
+  @JsonKey(name: 'duration_seconds')
   int get durationSeconds;
   @override
   @JsonKey(name: 'start_hour')
