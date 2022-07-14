@@ -36,6 +36,7 @@ jobs:
 
       - name: activate melos
         run: dart pub global activate melos && melos bs
+        working-directory: mobile
 
       - name: Run flutter code coverage
         run: melos exec --flutter --dir-exists="test" -- flutter test --coverage --coverage-path="../coverage/${PWD##*/}_lcov.info" --test-randomize-ordering-seed random lib
