@@ -22,8 +22,7 @@ void main() {
       );
     });
 
-    test(
-        'it clears all customer data and clears api key', () async {
+    test('it clears all customer data and clears api key', () async {
       subject = LogOut(
         setApiKey: setApiKey,
         customerDetailsRepository: repository,

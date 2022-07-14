@@ -14,7 +14,7 @@ import '../../core/fakes/fake_http_client.dart';
 void main() {
   group('CustomerDetailsCubit', () {
     final DataStorage dataStorage = InMemoryStorage();
-
+    final charlatan = Charlatan();
     final repository = InMemoryCustomerDetailsRepository();
     final setApiKey = SetApiKey(dataStorage);
     late AuthCubit authCubit;
@@ -22,7 +22,7 @@ void main() {
     CustomerDetailsCubit _buildSubject() {
       return CustomerDetailsCubit(
         getCustomerDetails: GetCustomerDetails(
-          httpClient: FakeHttpClient(Charlatan()),
+          httpClient: FakeHttpClient(charlatan),
           getApiKey: GetApiKey(dataStorage),
           repository: repository,
         ),
@@ -34,6 +34,26 @@ void main() {
 
     setUp(() async {
       await dataStorage.clearAll();
+
+      charlatan.whenGet(
+        'customer',
+        (request) => GetCustomerResponse(
+          customer: Customer(
+            activeControllerId: 1,
+            apiKey: 'fake-api-key',
+            customerId: 1,
+          ),
+          zones: [
+            Zone(
+              id: 1,
+              number: 1,
+              name: 'Fake zone',
+              timeUntilNextRunSec: 60,
+              runLengthSec: 600,
+            ),
+          ],
+        ),
+      );
 
       authCubit = AuthCubit(
         logOut: LogOut(
@@ -74,10 +94,10 @@ void main() {
             await authCubit.login('fake-api-key');
           },
           build: _buildSubject,
-          act: (cubit) {
+          act: (cubit) async {
             // Use fixed clock for the `act` zone
-            withClock(fixedWallClock, () {
-              cubit.start();
+            await withClock(fixedWallClock, () async {
+              await cubit.start();
             });
           },
           expect: () => <CustomerDetailsState>[
@@ -88,7 +108,15 @@ void main() {
                 apiKey: 'fake-api-key',
                 customerId: 1,
               ),
-              zones: List.empty(),
+              zones: [
+                Zone(
+                  id: 1,
+                  number: 1,
+                  name: 'Fake zone',
+                  timeUntilNextRunSec: 60,
+                  runLengthSec: 600,
+                ),
+              ],
             ),
           ],
         );

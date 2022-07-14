@@ -31,10 +31,12 @@ class GetCustomerDetails {
     );
 
     if (response.isSuccess) {
-      final getCustomerResponse =
-          GetCustomerResponse.fromJson(response.success!);
+      final getCustomerResponse = GetCustomerResponse.fromJson(response.success!);
 
       await _repository.insertCustomer(getCustomerResponse.customer);
+      for (final zone in getCustomerResponse.zones) {
+        await _repository.insertZone(zone);
+      }
 
       return Success(getCustomerResponse);
     }

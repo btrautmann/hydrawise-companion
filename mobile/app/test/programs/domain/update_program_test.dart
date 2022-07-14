@@ -30,9 +30,7 @@ void main() {
       );
 
       expect(
-        await repository
-            .getProgram(programId: '12345')
-            .then((value) => value.name),
+        await repository.getProgram(programId: '12345').then((value) => value.name),
         'New',
       );
     });
@@ -55,9 +53,7 @@ void main() {
       );
 
       expect(
-        await repository
-            .getProgram(programId: '12345')
-            .then((value) => value.frequency.contains(DateTime.monday)),
+        await repository.getProgram(programId: '12345').then((value) => value.frequency.contains(DateTime.monday)),
         isTrue,
       );
     });
@@ -72,8 +68,7 @@ void main() {
         ),
       );
 
-      final runsBefore =
-          await repository.getRunsForProgram(programId: '12345');
+      final runsBefore = await repository.getRunsForProgram(programId: '12345');
       expect(runsBefore.length, 0);
 
       await updateProgram(
@@ -90,8 +85,7 @@ void main() {
         ],
       );
 
-      final runsAfter =
-          await repository.getRunsForProgram(programId: '12345');
+      final runsAfter = await repository.getRunsForProgram(programId: '12345');
 
       expect(runsAfter.length, 1);
       expect(runsAfter.single.zoneId, 1);
@@ -103,33 +97,28 @@ void main() {
           id: '12345',
           name: 'Original',
           frequency: [],
-          runs: List.empty(),
+          runs: [
+            Run(
+              id: 'id-1',
+              programId: '12345',
+              startHour: 9,
+              startMinute: 9,
+              durationSeconds: 55,
+              zoneId: 1,
+            ),
+            Run(
+              id: 'id-2',
+              programId: '12345',
+              startHour: 9,
+              startMinute: 9,
+              durationSeconds: 55,
+              zoneId: 2,
+            ),
+          ],
         ),
       );
-      await repository.insertRuns(
-        programId: '12345',
-        runs: [
-          Run(
-            id: 'id-1',
-            programId: '12345',
-            startHour: 9,
-            startMinute: 9,
-            durationSeconds: 55,
-            zoneId: 1,
-          ),
-          Run(
-            id: 'id-2',
-            programId: '12345',
-            startHour: 9,
-            startMinute: 9,
-            durationSeconds: 55,
-            zoneId: 2,
-          ),
-        ],
-      );
 
-      final runsBefore =
-          await repository.getRunsForProgram(programId: '12345');
+      final runsBefore = await repository.getRunsForProgram(programId: '12345');
       expect(runsBefore.length, 2);
 
       await updateProgram(
@@ -146,8 +135,7 @@ void main() {
         ],
       );
 
-      final runsAfter =
-          await repository.getRunsForProgram(programId: '12345');
+      final runsAfter = await repository.getRunsForProgram(programId: '12345');
 
       expect(runsAfter.length, 1);
       expect(runsAfter.single.zoneId, 1);
@@ -159,25 +147,20 @@ void main() {
           id: '12345',
           name: 'Original',
           frequency: [],
-          runs: List.empty(),
+          runs: [
+            Run(
+              id: 'id-1',
+              programId: '12345',
+              startHour: 9,
+              startMinute: 9,
+              durationSeconds: 55,
+              zoneId: 1,
+            ),
+          ],
         ),
       );
-      await repository.insertRuns(
-        programId: '12345',
-        runs: [
-          Run(
-            id: 'id-1',
-            programId: '12345',
-            startHour: 9,
-            startMinute: 9,
-            durationSeconds: 55,
-            zoneId: 1,
-          ),
-        ],
-      );
 
-      final runsBefore =
-          await repository.getRunsForProgram(programId: '12345');
+      final runsBefore = await repository.getRunsForProgram(programId: '12345');
       expect(runsBefore.single.startTime, const TimeOfDay(hour: 9, minute: 9));
       expect(runsBefore.single.durationSeconds, 55);
 
@@ -195,8 +178,7 @@ void main() {
         ],
       );
 
-      final runsAfter =
-          await repository.getRunsForProgram(programId: '12345');
+      final runsAfter = await repository.getRunsForProgram(programId: '12345');
 
       expect(runsAfter.single.startTime, const TimeOfDay(hour: 5, minute: 5));
       expect(runsAfter.single.durationSeconds, 25);

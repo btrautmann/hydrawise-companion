@@ -27,12 +27,14 @@ void main() {
     });
 
     test('it hits the api with correct parameters', () async {
-      late Map<String, Object?> queryParameters;
-      late RequestOptions options;
+      late final LoginRequest loginRequest;
+      late final RequestOptions options;
 
       final charlatan = Charlatan()
-        ..whenGet('customerdetails.php', (request) {
-          queryParameters = request.queryParameters;
+        ..whenPost('login', (request) {
+          loginRequest =
+              // ignore: cast_nullable_to_non_nullable
+              LoginRequest.fromJson(request.body as Map<String, dynamic>);
           options = request.requestOptions;
           return Customer(
             activeControllerId: 1,
@@ -44,15 +46,15 @@ void main() {
 
       await subject.call('fake-api-key');
 
-      expect(queryParameters['api_key'], 'fake-api-key');
-      expect(queryParameters['type'], 'controllers');
+      expect(loginRequest.apiKey, 'fake-api-key');
+      expect(loginRequest.type, 'controllers');
       expect(options.extra['allow_auth_errors'], true);
     });
 
     group('when api call succeeds', () {
       setUp(() async {
         final charlatan = Charlatan()
-          ..whenGet('customerdetails.php', (request) {
+          ..whenPost('login', (request) {
             return Customer(
               activeControllerId: 1,
               customerId: 1,
@@ -82,8 +84,8 @@ void main() {
     group('when api call fails', () {
       setUp(() async {
         final charlatan = Charlatan()
-          ..whenGet(
-            'customerdetails.php',
+          ..whenPost(
+            'login',
             (request) => CharlatanHttpResponse(statusCode: 500),
           );
         await _buildSubject(charlatan);

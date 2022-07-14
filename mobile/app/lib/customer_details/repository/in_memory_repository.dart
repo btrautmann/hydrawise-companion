@@ -55,14 +55,7 @@ class InMemoryCustomerDetailsRepository implements CustomerDetailsRepository {
 
   @override
   Future<void> insertZone(Zone zone) async {
-    _zones.add(zone);
-  }
-
-  @override
-  Future<void> updateCustomer(Customer customer, List<Zone> zones) async {
-    _zones
-      ..clear()
-      ..addAll(zones);
+    return updateZone(zone);
   }
 
   @override
@@ -78,21 +71,16 @@ class InMemoryCustomerDetailsRepository implements CustomerDetailsRepository {
   }
 
   @override
-  Future<void> deleteProgram({required String programId}) async {
-    _programs.removeWhere((element) => element.id == programId);
+  Future<void> updateProgram(Program program) async {
+    final existingProgram = await getProgram(programId: program.id);
+    _programs
+      ..remove(existingProgram)
+      ..add(program);
   }
 
   @override
-  Future<void> updateProgram({
-    required String programId,
-    required String name,
-    required List<int> frequency,
-  }) async {
-    final index = _programs.indexWhere((element) => element.id == programId);
-    _programs[index] = _programs[index].copyWith(
-      name: name,
-      frequency: frequency,
-    );
+  Future<void> deleteProgram({required String programId}) async {
+    _programs.removeWhere((element) => element.id == programId);
   }
 
   @override
@@ -106,40 +94,8 @@ class InMemoryCustomerDetailsRepository implements CustomerDetailsRepository {
   }
 
   @override
-  Future<void> insertRuns({
-    required String programId,
-    required List<Run> runs,
-  }) async {
-    final program = _programs.singleWhere((element) => element.id == programId);
-    _programs
-      ..remove(program)
-      ..add(program.copyWith(runs: program.runs..addAll(runs)));
-  }
-
-  @override
-  Future<void> updateRuns({
-    required String programId,
-    required List<Run> runs,
-  }) async {
-    final program = _programs.singleWhere((element) => element.id == programId);
-    _programs
-      ..remove(program)
-      ..add(program.copyWith(runs: runs));
-  }
-
-  @override
   Future<List<Run>> getRunsForProgram({required String programId}) async {
     return _programs.singleWhere((element) => element.id == programId).runs;
-  }
-
-  @override
-  Future<void> deleteRun({
-    required String runId,
-    required String programId,
-  }) async {
-    final program = _programs.singleWhere((element) => element.id == programId);
-    final runs = program.runs..removeWhere((element) => element.id == runId);
-    return updateRuns(programId: programId, runs: runs);
   }
 
   @override

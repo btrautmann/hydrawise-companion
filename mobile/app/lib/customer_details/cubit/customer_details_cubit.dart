@@ -29,12 +29,12 @@ class CustomerDetailsCubit extends Cubit<CustomerDetailsState> {
 
   Timer? _timer;
 
-  void start() {
+  Future<void> start() async {
     if (_authCubit.state.isLoggedIn()) {
       // Need to check initial login state because
       // LoginCubit stream will not emit logged in
       // if already logged in when we begin listening
-      _loadCustomerDetails();
+      await _loadCustomerDetails();
     }
     _authCubit.stream.asBroadcastStream().listen((event) {
       event.when(

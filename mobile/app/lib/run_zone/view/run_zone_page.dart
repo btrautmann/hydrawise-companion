@@ -20,8 +20,7 @@ class RunZonesPage extends StatelessWidget {
       builder: (context, state) {
         return state.maybeWhen(
           complete: (details, zones) {
-            final zone =
-                zones.singleWhere((element) => element.id == zoneId);
+            final zone = zones.singleWhere((element) => element.id == zoneId);
             return Scaffold(
               appBar: AppBar(
                 title: Text(zone.name),
@@ -160,9 +159,7 @@ class __RunLengthSliderState extends State<_RunLengthSlider> {
   void initState() {
     // TODO(brandon): Fix this hack
     final maxValue =
-        widget.zone.runLengthSec == 0
-        ? 90
-        : widget.zone.runLengthSec / 60;
+        widget.zone.runLengthSec == 0 ? 90 : widget.zone.runLengthSec / 60;
     _setCurrentValue(maxValue.toDouble());
     super.initState();
   }

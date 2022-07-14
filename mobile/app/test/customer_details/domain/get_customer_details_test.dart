@@ -29,11 +29,22 @@ void main() {
       setUp(() async {
         final charlatan = Charlatan()
           ..whenGet(
-            'customerdetails.php',
-            (request) => Customer(
-              activeControllerId: 1,
-              customerId: 1,
-              apiKey: 'fake-api-key',
+            'customer',
+            (request) => GetCustomerResponse(
+              customer: Customer(
+                activeControllerId: 1,
+                customerId: 1,
+                apiKey: 'fake-api-key',
+              ),
+              zones: [
+                Zone(
+                  id: 1,
+                  number: 1,
+                  name: 'Fake Zone',
+                  timeUntilNextRunSec: 60,
+                  runLengthSec: 600,
+                ),
+              ],
             ),
           );
         await _buildSubject(charlatan);
@@ -44,10 +55,21 @@ void main() {
         expect(result.isSuccess, isTrue);
         expect(
           result.success,
-          Customer(
-            activeControllerId: 1,
-            customerId: 1,
-            apiKey: 'fake-api-key',
+          GetCustomerResponse(
+            customer: Customer(
+              activeControllerId: 1,
+              customerId: 1,
+              apiKey: 'fake-api-key',
+            ),
+            zones: [
+              Zone(
+                id: 1,
+                number: 1,
+                name: 'Fake Zone',
+                timeUntilNextRunSec: 60,
+                runLengthSec: 600,
+              ),
+            ],
           ),
         );
       });
@@ -59,13 +81,21 @@ void main() {
         final customerAfter = await repository.getCustomer();
         expect(customerAfter, isNotNull);
       });
+
+      test('it inserts zones', () async {
+        final zonesBefore = await repository.getZones();
+        expect(zonesBefore, isEmpty);
+        await subject.call();
+        final zonesAfter = await repository.getZones();
+        expect(zonesAfter, isNotEmpty);
+      });
     });
 
     group('when api call fails', () {
       setUp(() async {
         final charlatan = Charlatan()
           ..whenGet(
-            'customerdetails.php',
+            'customer',
             (request) => CharlatanHttpResponse(statusCode: 500),
           );
         await _buildSubject(charlatan);
@@ -76,7 +106,7 @@ void main() {
         expect(result.isFailure, isTrue);
         expect(
           result.failure,
-          "Can't fetch customer details",
+          'Http status error [500]',
         );
       });
     });
