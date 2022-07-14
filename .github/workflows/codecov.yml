@@ -34,15 +34,18 @@ jobs:
       - name: Install remove_from_coverage
         run: dart pub global activate remove_from_coverage
 
-      - name: Run code coverage
-        run: flutter test --coverage --test-randomize-ordering-seed random lib
-        working-directory: mobile/app
-        
-      - name: Remove generated files
-        run: remove_from_coverage -f coverage/lcov.info -r '\.g\.dart$' && remove_from_coverage -f coverage/lcov.info -r '\.freezed\.dart$'
-        working-directory: mobile/app
+      - name: activate melos
+        run: dart pub global activate melos && melos bs
 
+      - name: Run flutter code coverage
+        run: melos exec --flutter --dir-exists="test" -- flutter test --coverage --coverage-path="../coverage/${PWD##*/}_lcov.info" --test-randomize-ordering-seed random lib
+        working-directory: mobile
+
+      - name: Run dart code coverage
+        run: melos exec --no-flutter --dir-exists="test" -- dart test --coverage --coverage-path="../coverage/${PWD##*/}_lcov.info" --test-randomize-ordering-seed random lib
+        working-directory: mobile
+        
       - uses: codecov/codecov-action@v2
         with:
-          files: mobile/app/coverage/lcov.info
+          files: mobile/app/coverage/
 

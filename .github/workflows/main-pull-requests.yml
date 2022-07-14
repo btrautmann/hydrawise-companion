@@ -29,11 +29,14 @@ jobs:
       - name: activate melos
         run: dart pub global activate melos && melos bs
             
-      - name: run tests
-        run: melos exec --dir-exists="test" -- flutter test --test-randomize-ordering-seed random
+      - name: run flutter tests
+        run: melos exec --dir-exists="test" --flutter -- flutter test --test-randomize-ordering-seed random lib
+
+      - name: run dart tests
+        run: melos exec --dir-exists="test" --no-flutter -- dart test --test-randomize-ordering-seed random lib
         
       - name: analyze flutter
         run: melos exec --flutter -- flutter analyze
 
       - name: analyze dart
-        run: melos exec --no-depends-on="flutter"  -- dart analyze
+        run: melos exec --no-flutter -- dart analyze
