@@ -48,5 +48,5 @@ jobs:
         
       - uses: codecov/codecov-action@v2
         with:
-          files: mobile/coverage/
+          files: mobile/coverage/*_lcov.info
 
