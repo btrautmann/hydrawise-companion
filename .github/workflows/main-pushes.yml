@@ -28,6 +28,15 @@ jobs:
       
       - name: Bundle install
         run: cd mobile/app && bundle install
+
+      - name: Calculate version name
+        id: calculate_version_name
+        uses: paulhatch/semantic-version@v5.0.0-alpha2
+        with:
+          tag_prefix: "v"
+          major_pattern: "(MAJOR)"
+          minor_pattern: "(MINOR)"
+          version_format: "${major}.${minor}.${patch}"
     
       - name: Deploy iOS to TestFlight
         env:
@@ -38,33 +47,44 @@ jobs:
           APP_STORE_CONNECT_API_KEY_KEY: ${{secrets.APP_STORE_CONNECT_API_KEY}}
           APP_STORE_CONNECT_API_KEY_KEY_ID: ${{secrets.APP_STORE_CONNECT_API_KEY_ID}}
           APP_STORE_CONNECT_API_KEY_ISSUER_ID: ${{secrets.APP_STORE_CONNECT_API_KEY_ISSUER}}
+          VERSION_NAME: ${{ steps.calculate_version_name.outputs.version }}
+          BUILD_NUMBER: ${{ steps.calculate_version_name.outputs.increment }}
         run: cd mobile/app/ios && bundle exec fastlane deploy
 
-  deploy-android:
-    runs-on: macos-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: webfactory/ssh-agent@v0.5.3
-        with:
-          ssh-private-key: ${{secrets.SSH_PRIVATE_KEY}}
-      - uses: subosito/flutter-action@v1
-        with:
-          flutter-version: '3.0.4'
-          channel: stable
-      
-      - name: Bundle install
-        run: cd mobile/app && bundle install
-    
-      - name: Decode keystore file
-        run: echo "${{secrets.ANDROID_UPLOAD_KEYSTORE_FILE}}" | base64 --decode > ${{secrets.ANDROID_KEYSTORE_PATH}}
-        working-directory: mobile/app/android/app
+      - name: Tag release
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+      - run: "git tag v${{ steps.calculate_version_name.outputs.version }} -a -m \"Updated to ${{ steps.calculate_version_name.outputs.version }}\""
+      - run: "git push --tags"
 
-      - name: Deploy Android to Beta
-        env:
-          ANDROID_KEYSTORE_PATH: ${{secrets.ANDROID_KEYSTORE_PATH}}
-          ANDROID_KEYSTORE_ALIAS: ${{secrets.ANDROID_KEYSTORE_ALIAS}}
-          ANDROID_KEYSTORE_PRIVATE_KEY_PASSWORD: ${{secrets.ANDROID_KEYSTORE_PRIVATE_KEY_PASSWORD}}
-          ANDROID_KEYSTORE_PASSWORD: ${{secrets.ANDROID_KEYSTORE_PASSWORD}}
-          ANDROID_SECRET_JSON_FILE: ${{secrets.ANDROID_SECRET_JSON_FILE}}
-          OPEN_WEATHER_MAP_API_KEY: ${{secrets.OPEN_WEATHER_MAP_API_KEY}}
-        run: cd mobile/app/android && bundle exec fastlane deploy
+  # deploy-android:
+  #   runs-on: macos-latest
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - uses: webfactory/ssh-agent@v0.5.3
+  #       with:
+  #         ssh-private-key: ${{secrets.SSH_PRIVATE_KEY}}
+  #     - uses: subosito/flutter-action@v1
+  #       with:
+  #         flutter-version: '3.0.4'
+  #         channel: stable
+      
+  #     - name: Bundle install
+  #       run: cd mobile/app && bundle install
+    
+  #     - name: Decode keystore file
+  #       run: echo "${{secrets.ANDROID_UPLOAD_KEYSTORE_FILE}}" | base64 --decode > ${{secrets.ANDROID_KEYSTORE_PATH}}
+  #       working-directory: mobile/app/android/app
+
+  #     - name: Deploy Android to Beta
+  #       env:
+  #         ANDROID_KEYSTORE_PATH: ${{secrets.ANDROID_KEYSTORE_PATH}}
+  #         ANDROID_KEYSTORE_ALIAS: ${{secrets.ANDROID_KEYSTORE_ALIAS}}
+  #         ANDROID_KEYSTORE_PRIVATE_KEY_PASSWORD: ${{secrets.ANDROID_KEYSTORE_PRIVATE_KEY_PASSWORD}}
+  #         ANDROID_KEYSTORE_PASSWORD: ${{secrets.ANDROID_KEYSTORE_PASSWORD}}
+  #         ANDROID_SECRET_JSON_FILE: ${{secrets.ANDROID_SECRET_JSON_FILE}}
+  #         OPEN_WEATHER_MAP_API_KEY: ${{secrets.OPEN_WEATHER_MAP_API_KEY}}
+  #       run: cd mobile/app/android && bundle exec fastlane deploy
+

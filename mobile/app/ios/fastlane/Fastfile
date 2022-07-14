@@ -20,6 +20,9 @@ open_weather_map_api_key = ENV["OPEN_WEATHER_MAP_API_KEY"]
 platform :ios do
   desc "Deploy a new version to Test Flight"
   lane :deploy do
+    version_name = ENV["VERSION_NAME"]
+    build_number = ENV["BUILD_NUMBER"]
+
     create_keychain(
       name: "TempKeychain",
       password: "TempPassword",
@@ -44,7 +47,18 @@ platform :ios do
       clean_install: true,
       podfile: "./Podfile"
     )
-    sh("flutter", "build", "ipa", "--dart-define=OPEN_WEATHER_MAP_API_KEY=#{open_weather_map_api_key}", "--flavor=production", "--target=lib/main_production.dart", "--export-options-plist=ios/export_options.plist", "-v")
+    sh(
+      "flutter",
+      "build",
+      "ipa",
+      "--build-number=#{build_number}",
+      "--build-name=#{version_name}",
+      "--dart-define=OPEN_WEATHER_MAP_API_KEY=#{open_weather_map_api_key}",
+      "--flavor=production",
+      "--target=lib/main_production.dart",
+      "--export-options-plist=ios/export_options.plist",
+      "-v"
+    )
     upload_to_testflight(
       ipa: "../build/ios/ipa/Hydrawise.ipa",
       skip_waiting_for_build_processing: true
