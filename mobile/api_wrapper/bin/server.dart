@@ -33,7 +33,7 @@ Future<void> main(List<String> args) async {
   // Configure routes.
   final router = Router()
     ..get('/', Index())
-    ..post('/login', Login(db))
+    ..post('/v6/login', Login(db))
     ..post('/run_zone', RunZone(db))
     ..post('/stop_zone', StopZone(db))
     ..post('/program', CreateProgram(db))

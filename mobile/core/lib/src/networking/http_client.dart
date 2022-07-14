@@ -33,7 +33,7 @@ class HttpClient {
     Options? options,
   ) async {
     try {
-      final optionsWithMethod = options?.copyWith(method: method);
+      final optionsWithMethod = DioMixin.checkOptions(method, options);
       final response = await _dio.request(
         path,
         data: data,

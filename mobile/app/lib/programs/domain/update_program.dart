@@ -35,7 +35,7 @@ class UpdateProgram {
       (existingRun) => modifiedRunGroups.none(
         (element) =>
             element.zoneIds.contains(existingRun.zoneId) &&
-            element.timeOfDay == TimeOfDayX.fromJson(existingRun.startTime) &&
+            element.timeOfDay == existingRun.startTime &&
             element.duration.inSeconds == existingRun.durationSeconds,
       ),
     );
@@ -54,8 +54,7 @@ class UpdateProgram {
         Future<String> modificationId() async {
           final matchingRun = existingRuns.singleWhereOrNull(
             (existingRun) =>
-                TimeOfDayX.fromJson(existingRun.startTime) ==
-                    runGroup.timeOfDay &&
+                existingRun.startTime == runGroup.timeOfDay &&
                 existingRun.zoneId == zoneId &&
                 existingRun.durationSeconds == runGroup.duration.inSeconds,
           );
@@ -71,7 +70,8 @@ class UpdateProgram {
         final run = Run(
           id: id,
           programId: programId,
-          startTime: runGroup.timeOfDay.toString(),
+          startHour: runGroup.timeOfDay.hour,
+          startMinute: runGroup.timeOfDay.minute,
           durationSeconds: runGroup.duration.inSeconds,
           zoneId: zoneId,
         );

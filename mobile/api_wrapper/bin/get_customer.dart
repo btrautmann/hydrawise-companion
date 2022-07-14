@@ -55,7 +55,7 @@ class GetCustomer {
         GetCustomerResponse(
           customer: customer,
           zones: zones,
-        ).toJson(),
+        ),
       ),
       headers: {'Content-Type': 'application/json'},
     );

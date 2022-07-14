@@ -39,6 +39,6 @@ class GetCustomerDetails {
       return Success(getCustomerResponse);
     }
 
-    return Failure("Can't fetch customer details");
+    return Failure(response.failure.message);
   }
 }

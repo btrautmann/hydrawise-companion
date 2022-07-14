@@ -26,6 +26,8 @@ class CreateProgram {
       return Response(401);
     }
 
+    late final Program program;
+
     await db.transaction((connection) async {
       final programId = const Uuid().v4();
       final sql = _insertProgramSql(
@@ -33,10 +35,8 @@ class CreateProgram {
         programId,
         customerId,
       );
-      print(sql);
-      await connection.execute(
-        sql,
-      );
+      await connection.execute(sql);
+      final runs = <Run>[];
       for (final run in createProgramRequest.runs) {
         final runId = const Uuid().v4();
         await connection.execute(
@@ -46,10 +46,32 @@ class CreateProgram {
             runId,
           ),
         );
+        runs.add(
+          Run(
+            id: runId,
+            programId: programId,
+            zoneId: run.zoneId,
+            durationSeconds: run.durationSeconds,
+            startHour: run.startHour,
+            startMinute: run.startMinute,
+          ),
+        );
       }
+      program = Program(
+        id: programId,
+        name: createProgramRequest.programName,
+        frequency: createProgramRequest.frequency,
+        runs: runs,
+      );
     });
-
-    return Response.ok(createProgramRequest.toString());
+    return Response.ok(
+      jsonEncode(
+        CreateProgramResponse(
+          program: program,
+        ),
+      ),
+      headers: {'Content-Type': 'application/json'},
+    );
   }
 }
 
@@ -65,5 +87,5 @@ String _insertProgramSql(
     'VALUES (\'$programId\', $customerId, \'${request.programName}\', ARRAY${request.frequency.toString()});';
 
 String _insertRunSql(RunCreation runCreation, String programId, String runId) =>
-    'INSERT INTO run (program_id, run_id, zone_id, duration_sec, start_time) '
-    'VALUES (\'$programId\',\'$runId\', ${runCreation.zoneId}, ${runCreation.durationSeconds}, \'${runCreation.startTime}\');';
+    'INSERT INTO run (program_id, run_id, zone_id, duration_sec, start_hour, start_minute) '
+    'VALUES (\'$programId\',\'$runId\', ${runCreation.zoneId}, ${runCreation.durationSeconds}, ${runCreation.startHour}, ${runCreation.startMinute});';

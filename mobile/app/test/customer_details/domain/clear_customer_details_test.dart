@@ -35,7 +35,14 @@ void main() {
         apiKey: 'fake-api-key',
       );
       await repository.insertCustomer(customer);
-      await repository.createProgram(name: 'fake-program', frequency: [1]);
+      await repository.insertProgram(
+        Program(
+          id: '12345',
+          name: 'Fake Program',
+          frequency: [DateTime.monday],
+          runs: List.empty(),
+        ),
+      );
       await repository.addFcmToken('fake-token');
 
       expect(await repository.getZones(), isNotEmpty);

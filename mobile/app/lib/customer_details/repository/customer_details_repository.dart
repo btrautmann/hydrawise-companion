@@ -13,22 +13,15 @@ abstract class CustomerDetailsRepository {
   Future<void> insertZone(Zone zone);
   Future<void> updateZone(Zone zone);
   Future<List<Zone>> getZones();
-  Future<String> createProgram({
-    required String name,
-    required List<int> frequency,
-  });
-  Future<Program> getProgram({
-    required String programId,
-  });
+  Future<void> insertProgram(Program program);
+  Future<Program> getProgram({required String programId});
   Future<List<Program>> getPrograms();
   Future<void> updateProgram({
     required String programId,
     required String name,
     required List<int> frequency,
   });
-  Future<void> deleteProgram({
-    required String programId,
-  });
+  Future<void> deleteProgram({required String programId});
   Future<void> insertRuns({
     required String programId,
     required List<Run> runs,

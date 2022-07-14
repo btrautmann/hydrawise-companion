@@ -251,8 +251,10 @@ mixin _$RunCreation {
   int get zoneId => throw _privateConstructorUsedError;
   @JsonKey(name: 'duration_seconds')
   int get durationSeconds => throw _privateConstructorUsedError;
-  @JsonKey(name: 'start_time')
-  String get startTime => throw _privateConstructorUsedError;
+  @JsonKey(name: 'start_hour')
+  int get startHour => throw _privateConstructorUsedError;
+  @JsonKey(name: 'start_minute')
+  int get startMinute => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -268,7 +270,8 @@ abstract class $RunCreationCopyWith<$Res> {
   $Res call(
       {@JsonKey(name: 'zone_id') int zoneId,
       @JsonKey(name: 'duration_seconds') int durationSeconds,
-      @JsonKey(name: 'start_time') String startTime});
+      @JsonKey(name: 'start_hour') int startHour,
+      @JsonKey(name: 'start_minute') int startMinute});
 }
 
 /// @nodoc
@@ -283,7 +286,8 @@ class _$RunCreationCopyWithImpl<$Res> implements $RunCreationCopyWith<$Res> {
   $Res call({
     Object? zoneId = freezed,
     Object? durationSeconds = freezed,
-    Object? startTime = freezed,
+    Object? startHour = freezed,
+    Object? startMinute = freezed,
   }) {
     return _then(_value.copyWith(
       zoneId: zoneId == freezed
@@ -294,10 +298,14 @@ class _$RunCreationCopyWithImpl<$Res> implements $RunCreationCopyWith<$Res> {
           ? _value.durationSeconds
           : durationSeconds // ignore: cast_nullable_to_non_nullable
               as int,
-      startTime: startTime == freezed
-          ? _value.startTime
-          : startTime // ignore: cast_nullable_to_non_nullable
-              as String,
+      startHour: startHour == freezed
+          ? _value.startHour
+          : startHour // ignore: cast_nullable_to_non_nullable
+              as int,
+      startMinute: startMinute == freezed
+          ? _value.startMinute
+          : startMinute // ignore: cast_nullable_to_non_nullable
+              as int,
     ));
   }
 }
@@ -312,7 +320,8 @@ abstract class _$$_RunCreationCopyWith<$Res>
   $Res call(
       {@JsonKey(name: 'zone_id') int zoneId,
       @JsonKey(name: 'duration_seconds') int durationSeconds,
-      @JsonKey(name: 'start_time') String startTime});
+      @JsonKey(name: 'start_hour') int startHour,
+      @JsonKey(name: 'start_minute') int startMinute});
 }
 
 /// @nodoc
@@ -329,7 +338,8 @@ class __$$_RunCreationCopyWithImpl<$Res> extends _$RunCreationCopyWithImpl<$Res>
   $Res call({
     Object? zoneId = freezed,
     Object? durationSeconds = freezed,
-    Object? startTime = freezed,
+    Object? startHour = freezed,
+    Object? startMinute = freezed,
   }) {
     return _then(_$_RunCreation(
       zoneId: zoneId == freezed
@@ -340,10 +350,14 @@ class __$$_RunCreationCopyWithImpl<$Res> extends _$RunCreationCopyWithImpl<$Res>
           ? _value.durationSeconds
           : durationSeconds // ignore: cast_nullable_to_non_nullable
               as int,
-      startTime: startTime == freezed
-          ? _value.startTime
-          : startTime // ignore: cast_nullable_to_non_nullable
-              as String,
+      startHour: startHour == freezed
+          ? _value.startHour
+          : startHour // ignore: cast_nullable_to_non_nullable
+              as int,
+      startMinute: startMinute == freezed
+          ? _value.startMinute
+          : startMinute // ignore: cast_nullable_to_non_nullable
+              as int,
     ));
   }
 }
@@ -354,7 +368,8 @@ class _$_RunCreation implements _RunCreation {
   _$_RunCreation(
       {@JsonKey(name: 'zone_id') required this.zoneId,
       @JsonKey(name: 'duration_seconds') required this.durationSeconds,
-      @JsonKey(name: 'start_time') required this.startTime});
+      @JsonKey(name: 'start_hour') required this.startHour,
+      @JsonKey(name: 'start_minute') required this.startMinute});
 
   factory _$_RunCreation.fromJson(Map<String, dynamic> json) =>
       _$$_RunCreationFromJson(json);
@@ -366,12 +381,15 @@ class _$_RunCreation implements _RunCreation {
   @JsonKey(name: 'duration_seconds')
   final int durationSeconds;
   @override
-  @JsonKey(name: 'start_time')
-  final String startTime;
+  @JsonKey(name: 'start_hour')
+  final int startHour;
+  @override
+  @JsonKey(name: 'start_minute')
+  final int startMinute;
 
   @override
   String toString() {
-    return 'RunCreation(zoneId: $zoneId, durationSeconds: $durationSeconds, startTime: $startTime)';
+    return 'RunCreation(zoneId: $zoneId, durationSeconds: $durationSeconds, startHour: $startHour, startMinute: $startMinute)';
   }
 
   @override
@@ -382,7 +400,9 @@ class _$_RunCreation implements _RunCreation {
             const DeepCollectionEquality().equals(other.zoneId, zoneId) &&
             const DeepCollectionEquality()
                 .equals(other.durationSeconds, durationSeconds) &&
-            const DeepCollectionEquality().equals(other.startTime, startTime));
+            const DeepCollectionEquality().equals(other.startHour, startHour) &&
+            const DeepCollectionEquality()
+                .equals(other.startMinute, startMinute));
   }
 
   @JsonKey(ignore: true)
@@ -391,7 +411,8 @@ class _$_RunCreation implements _RunCreation {
       runtimeType,
       const DeepCollectionEquality().hash(zoneId),
       const DeepCollectionEquality().hash(durationSeconds),
-      const DeepCollectionEquality().hash(startTime));
+      const DeepCollectionEquality().hash(startHour),
+      const DeepCollectionEquality().hash(startMinute));
 
   @JsonKey(ignore: true)
   @override
@@ -408,7 +429,8 @@ abstract class _RunCreation implements RunCreation {
   factory _RunCreation(
           {@JsonKey(name: 'zone_id') required final int zoneId,
           @JsonKey(name: 'duration_seconds') required final int durationSeconds,
-          @JsonKey(name: 'start_time') required final String startTime}) =
+          @JsonKey(name: 'start_hour') required final int startHour,
+          @JsonKey(name: 'start_minute') required final int startMinute}) =
       _$_RunCreation;
 
   factory _RunCreation.fromJson(Map<String, dynamic> json) =
@@ -421,8 +443,11 @@ abstract class _RunCreation implements RunCreation {
   @JsonKey(name: 'duration_seconds')
   int get durationSeconds;
   @override
-  @JsonKey(name: 'start_time')
-  String get startTime;
+  @JsonKey(name: 'start_hour')
+  int get startHour;
+  @override
+  @JsonKey(name: 'start_minute')
+  int get startMinute;
   @override
   @JsonKey(ignore: true)
   _$$_RunCreationCopyWith<_$_RunCreation> get copyWith =>

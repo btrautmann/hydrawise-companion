@@ -42,7 +42,8 @@ _$_Run _$$_RunFromJson(Map json) => _$_Run(
       programId: json['program_id'] as String,
       zoneId: json['zone_id'] as int,
       durationSeconds: json['duration_sec'] as int,
-      startTime: json['start_time'] as String,
+      startHour: json['start_hour'] as int,
+      startMinute: json['start_minute'] as int,
     );
 
 Map<String, dynamic> _$$_RunToJson(_$_Run instance) => <String, dynamic>{
@@ -50,5 +51,6 @@ Map<String, dynamic> _$$_RunToJson(_$_Run instance) => <String, dynamic>{
       'program_id': instance.programId,
       'zone_id': instance.zoneId,
       'duration_sec': instance.durationSeconds,
-      'start_time': instance.startTime,
+      'start_hour': instance.startHour,
+      'start_minute': instance.startMinute,
     };

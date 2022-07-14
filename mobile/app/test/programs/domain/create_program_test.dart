@@ -1,7 +1,12 @@
+import 'package:charlatan/charlatan.dart';
+import 'package:core/core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:irri/auth/auth.dart';
 import 'package:irri/customer_details/repository/repository.dart';
 import 'package:irri/programs/programs.dart';
+
+import '../../core/fakes/fake_http_client.dart';
 
 void main() {
   group('CreateProgram', () {
@@ -10,7 +15,11 @@ void main() {
     setUp(repository.clearAllData);
 
     test('it creates a program with the name and frequency', () async {
-      final subject = CreateProgram(repository: repository);
+      final subject = CreateProgram(
+        httpClient: FakeHttpClient(Charlatan()),
+        getApiKey: GetApiKey(InMemoryStorage()),
+        repository: repository,
+      );
 
       await subject.call(
         name: 'Test Program',
@@ -26,7 +35,11 @@ void main() {
     });
 
     test('it creates runs with the correct attributes', () async {
-      final subject = CreateProgram(repository: repository);
+      final subject = CreateProgram(
+        httpClient: FakeHttpClient(Charlatan()),
+        getApiKey: GetApiKey(InMemoryStorage()),
+        repository: repository,
+      );
 
       final time = DateTime.now();
       await subject.call(
@@ -53,8 +66,8 @@ void main() {
       expect(runs.last.zoneId, 1);
       expect(
         runs.every(
-          (element) =>
-              TimeOfDayX.fromJson(element.startTime) ==
+          (run) =>
+              run.startTime ==
               TimeOfDay.fromDateTime(time),
         ),
         isTrue,

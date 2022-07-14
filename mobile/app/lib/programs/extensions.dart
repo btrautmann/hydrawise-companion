@@ -14,8 +14,8 @@ extension ListProgramX on List<Program> {
         where((element) => element.frequency.contains(dayOfWeek));
     return todayPrograms
         .expand(
-          (element) => element.runs.where(
-            (element) => TimeOfDayX.fromJson(element.startTime).isAfter(now),
+          (program) => program.runs.where(
+            (run) => run.startTime.isAfter(now),
           ),
         )
         .toList();
@@ -58,7 +58,7 @@ extension ListRunX on List<Run> {
     forEach((run) {
       final addedMod = mods.singleWhereOrNull(
         (RunGroup mod) =>
-            mod.timeOfDay == TimeOfDayX.fromJson(run.startTime) &&
+            mod.timeOfDay == run.startTime &&
             mod.duration.inSeconds == run.durationSeconds,
       );
       if (addedMod == null) {
@@ -67,7 +67,7 @@ extension ListRunX on List<Run> {
         mods.add(
           RunGroup(
             type: RunGroupType.modification,
-            timeOfDay: TimeOfDayX.fromJson(run.startTime),
+            timeOfDay: run.startTime,
             zoneIds: [run.zoneId],
             duration: Duration(seconds: run.durationSeconds),
           ),
@@ -83,6 +83,10 @@ extension ListRunX on List<Run> {
     });
     return mods;
   }
+}
+
+extension RunX on Run {
+  TimeOfDay get startTime => TimeOfDay(hour: startHour, minute: startMinute);
 }
 
 extension ZoneX on Zone {

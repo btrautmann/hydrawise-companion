@@ -62,7 +62,7 @@ class Login {
                 apiKey: loginRequest.apiKey,
                 activeControllerId: details.activeControllerId,
               ),
-            ).toJson(),
+            ),
           ),
           headers: {'Content-Type': 'application/json'},
         );

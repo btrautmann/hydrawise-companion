@@ -44,7 +44,8 @@ class GetPrograms {
               programId: map['program_id'],
               zoneId: map['zone_id'],
               durationSeconds: map['duration_sec'],
-              startTime: map['start_time'],
+              startHour: map['start_hour'],
+              startMinute: map['start_minute'],
             ),
           );
         }
@@ -59,9 +60,7 @@ class GetPrograms {
       }
     });
     return Response.ok(
-      jsonEncode(
-        GetProgramsResponse(programs: programs).toJson(),
-      ),
+      jsonEncode(GetProgramsResponse(programs: programs)),
       headers: {'Content-Type': 'application/json'},
     );
   }

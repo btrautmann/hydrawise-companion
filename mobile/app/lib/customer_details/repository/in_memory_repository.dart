@@ -1,12 +1,10 @@
 import 'package:api_models/api_models.dart';
 import 'package:irri/customer_details/customer_details.dart';
-import 'package:uuid/uuid.dart';
 
 class InMemoryCustomerDetailsRepository implements CustomerDetailsRepository {
   Customer? _customer;
   final _zones = <Zone>[];
   final _programs = <Program>[];
-  final _runs = <Run>[];
   final _fcmTokens = <String>[];
   String? _timeZone;
 
@@ -75,18 +73,8 @@ class InMemoryCustomerDetailsRepository implements CustomerDetailsRepository {
   }
 
   @override
-  Future<String> createProgram({
-    required String name,
-    required List<int> frequency,
-  }) async {
-    final program = Program(
-      id: const Uuid().v4(),
-      name: name,
-      frequency: frequency,
-      runs: [],
-    );
+  Future<void> insertProgram(Program program) async {
     _programs.add(program);
-    return program.id;
   }
 
   @override
@@ -109,13 +97,7 @@ class InMemoryCustomerDetailsRepository implements CustomerDetailsRepository {
 
   @override
   Future<List<Program>> getPrograms() async {
-    return _programs
-        .map(
-          (e) => e.copyWith(
-            runs: _runs.where((element) => element.programId == e.id).toList(),
-          ),
-        )
-        .toList();
+    return _programs;
   }
 
   @override
@@ -128,7 +110,10 @@ class InMemoryCustomerDetailsRepository implements CustomerDetailsRepository {
     required String programId,
     required List<Run> runs,
   }) async {
-    _runs.addAll(runs);
+    final program = _programs.singleWhere((element) => element.id == programId);
+    _programs
+      ..remove(program)
+      ..add(program.copyWith(runs: program.runs..addAll(runs)));
   }
 
   @override
@@ -136,15 +121,15 @@ class InMemoryCustomerDetailsRepository implements CustomerDetailsRepository {
     required String programId,
     required List<Run> runs,
   }) async {
-    for (final run in runs) {
-      final index = runs.indexWhere((element) => run.id == element.id);
-      _runs[index] = run;
-    }
+    final program = _programs.singleWhere((element) => element.id == programId);
+    _programs
+      ..remove(program)
+      ..add(program.copyWith(runs: runs));
   }
 
   @override
   Future<List<Run>> getRunsForProgram({required String programId}) async {
-    return _runs.where((element) => element.programId == programId).toList();
+    return _programs.singleWhere((element) => element.id == programId).runs;
   }
 
   @override
@@ -152,7 +137,9 @@ class InMemoryCustomerDetailsRepository implements CustomerDetailsRepository {
     required String runId,
     required String programId,
   }) async {
-    _runs.removeWhere((element) => element.id == runId);
+    final program = _programs.singleWhere((element) => element.id == programId);
+    final runs = program.runs..removeWhere((element) => element.id == runId);
+    return updateRuns(programId: programId, runs: runs);
   }
 
   @override
@@ -160,7 +147,6 @@ class InMemoryCustomerDetailsRepository implements CustomerDetailsRepository {
     _zones.clear();
     _customer = null;
     _programs.clear();
-    _runs.clear();
     _fcmTokens.clear();
   }
 }

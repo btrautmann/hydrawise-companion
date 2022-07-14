@@ -2,11 +2,14 @@ import 'dart:async';
 
 import 'package:api_models/api_models.dart';
 import 'package:bloc_test/bloc_test.dart';
+import 'package:charlatan/charlatan.dart';
 import 'package:clock/clock.dart';
 import 'package:core/core.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:irri/auth/auth.dart';
 import 'package:irri/customer_details/customer_details.dart';
+
+import '../../core/fakes/fake_http_client.dart';
 
 void main() {
   group('CustomerDetailsCubit', () {
@@ -18,7 +21,11 @@ void main() {
 
     CustomerDetailsCubit _buildSubject() {
       return CustomerDetailsCubit(
-        getCustomerDetails: GetFakeCustomerDetails(repository: repository),
+        getCustomerDetails: GetCustomerDetails(
+          httpClient: FakeHttpClient(Charlatan()),
+          getApiKey: GetApiKey(dataStorage),
+          repository: repository,
+        ),
         setNextPollTime: SetNextPollTimeInStorage(dataStorage),
         getNextPollTime: GetNextPollTimeFromStorage(dataStorage),
         authCubit: authCubit,

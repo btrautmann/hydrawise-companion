@@ -27,8 +27,14 @@ class ProgramsCubit extends Cubit<ProgramsState> {
   final DeleteProgram _deleteProgram;
 
   Future<void> _initPrograms() async {
-    final programs = await _getPrograms();
-    emit(state.copyWith(programs: programs));
+    final getProgramsResponse = await _getPrograms();
+    emit(
+      state.copyWith(
+        programs: getProgramsResponse.isSuccess
+            ? getProgramsResponse.success.programs
+            : List.empty(),
+      ),
+    );
   }
 
   Future<void> createProgram({
