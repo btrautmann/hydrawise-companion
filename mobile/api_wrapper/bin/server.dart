@@ -13,19 +13,35 @@ Future<void> main(List<String> args) async {
   // Use any available host or container IP (usually `0.0.0.0`).
   final ip = InternetAddress.anyIPv4;
 
-  final env = DotEnv(includePlatformEnvironment: true);
-  final envFiles = env['ENV_FILE'] != null
-      ? List<String>.from([env['ENV_FILE']])
-      : List<String>.from(['.env']);
-  print('Using .env file(s) $envFiles');
-  env.load(envFiles);
+  final dotEnv = DotEnv(includePlatformEnvironment: true);
+  final environment = dotEnv['ENV'] ?? 'prod';
+
+  late final String databaseHost;
+  late final String databasePort;
+  late final String databaseName;
+  late final String databaseUsername;
+  late final String databasePassword;
+  if (environment == 'prod') {
+    print('Running in production');
+  } else {
+    print('Running in development');
+    final envFiles = dotEnv['ENV_FILE'] != null ? List<String>.from([dotEnv['ENV_FILE']]) : List<String>.from(['.env']);
+    print('Using .env file(s) $envFiles');
+    dotEnv.load(envFiles);
+  }
+
+  databaseHost = dotEnv['INSTANCE_CONNECTION_NAME']!;
+  databasePort = dotEnv['DB_PORT']!;
+  databaseName = dotEnv['DB_NAME']!;
+  databaseUsername = dotEnv['DB_USER']!;
+  databasePassword = dotEnv['DB_PASS']!;
 
   final db = PostgreSQLConnection(
-    env['DATABASE_HOST']!,
-    int.parse(env['DATABASE_PORT']!),
-    env['DATABASE_NAME']!,
-    username: env['DATABASE_ROLE'],
-    password: env['DATABASE_PASSWORD'],
+    databaseHost,
+    int.parse(databasePort),
+    databaseName,
+    username: databaseUsername,
+    password: databasePassword,
   );
 
   await db.open();
@@ -42,8 +58,7 @@ Future<void> main(List<String> args) async {
     ..get('/customer', GetCustomer(db));
 
   // Configure a pipeline that logs requests.
-  final handler =
-      const Pipeline().addMiddleware(logRequests()).addHandler(router);
+  final handler = const Pipeline().addMiddleware(logRequests()).addHandler(router);
 
   // For running in containers, we respect the PORT environment variable.
   final port = int.parse(Platform.environment['PORT'] ?? '8080');
