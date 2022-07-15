@@ -177,9 +177,11 @@ packages:
   hydrawise:
     dependency: "direct main"
     description:
-      path: "../hydrawise"
-      relative: true
-    source: path
+      path: "."
+      ref: "97e2adafc2f095f2697bdcdc5bb997ec506465be"
+      resolved-ref: "97e2adafc2f095f2697bdcdc5bb997ec506465be"
+      url: "https://github.com/btrautmann/hydrawise-models.git"
+    source: git
     version: "1.0.0"
   io:
     dependency: transitive
