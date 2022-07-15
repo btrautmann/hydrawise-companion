@@ -18,9 +18,11 @@ packages:
   api_models:
     dependency: "direct main"
     description:
-      path: "../api_models"
-      relative: true
-    source: path
+      path: "."
+      ref: "77399842b27bd227175edbc04e5bee85d9fe6f1c"
+      resolved-ref: "77399842b27bd227175edbc04e5bee85d9fe6f1c"
+      url: "https://github.com/btrautmann/irri-models.git"
+    source: git
     version: "1.0.0"
   args:
     dependency: "direct main"

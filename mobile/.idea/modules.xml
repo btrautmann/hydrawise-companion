@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/api_models/melos_api_models.iml" filepath="$PROJECT_DIR$/api_models/melos_api_models.iml" />
       <module fileurl="file://$PROJECT_DIR$/api_wrapper/melos_api_wrapper.iml" filepath="$PROJECT_DIR$/api_wrapper/melos_api_wrapper.iml" />
       <module fileurl="file://$PROJECT_DIR$/core/melos_core.iml" filepath="$PROJECT_DIR$/core/melos_core.iml" />
       <module fileurl="file://$PROJECT_DIR$/core_ui/melos_core_ui.iml" filepath="$PROJECT_DIR$/core_ui/melos_core_ui.iml" />
