@@ -23,14 +23,16 @@ Future<void> main(List<String> args) async {
   late final String databasePassword;
   if (environment == 'prod') {
     print('Running in production');
+    final instanceConnectionName = dotEnv['INSTANCE_CONNECTION_NAME']!;
+    databaseHost = '/cloudsql/$instanceConnectionName';
   } else {
     print('Running in development');
     final envFiles = dotEnv['ENV_FILE'] != null ? List<String>.from([dotEnv['ENV_FILE']]) : List<String>.from(['.env']);
     print('Using .env file(s) $envFiles');
     dotEnv.load(envFiles);
+    databaseHost = dotEnv['DB_HOST']!;
   }
-
-  databaseHost = dotEnv['DB_HOST']!;
+  
   databasePort = dotEnv['DB_PORT']!;
   databaseName = dotEnv['DB_NAME']!;
   databaseUsername = dotEnv['DB_USER']!;
@@ -42,6 +44,7 @@ Future<void> main(List<String> args) async {
     databaseName,
     username: databaseUsername,
     password: databasePassword,
+    isUnixSocket: environment == 'prod',
   );
 
   await db.open();
