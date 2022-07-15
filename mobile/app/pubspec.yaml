@@ -11,7 +11,7 @@ dependencies:
   api_models:
     git:
       url: https://github.com/btrautmann/irri-models.git
-      ref: 77399842b27bd227175edbc04e5bee85d9fe6f1c
+      ref: main
   bloc: ^8.0.3
   clock: ^1.1.0
   collection: ^1.15.0

@@ -11,14 +11,14 @@ dependencies:
   api_models:
     git:
       url: https://github.com/btrautmann/irri-models.git
-      ref: 77399842b27bd227175edbc04e5bee85d9fe6f1c
+      ref: main
   args: ^2.0.0
   dotenv: ^4.0.1
   http: ^0.13.4
   hydrawise:
     git:
       url: https://github.com/btrautmann/hydrawise-models.git
-      ref: 97e2adafc2f095f2697bdcdc5bb997ec506465be
+      ref: main
   postgres: ^2.4.5
   shelf: ^1.1.0
   shelf_router: ^1.0.0
