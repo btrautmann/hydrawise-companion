@@ -24,7 +24,7 @@ Future<void> main(List<String> args) async {
   if (environment == 'prod') {
     print('Running in production');
     final instanceConnectionName = dotEnv['INSTANCE_CONNECTION_NAME']!;
-    databaseHost = instanceConnectionName;
+    databaseHost = '/cloudsql/$instanceConnectionName/.s.PGSQL.5432';
   } else {
     print('Running in development');
     final envFiles = dotEnv['ENV_FILE'] != null ? List<String>.from([dotEnv['ENV_FILE']]) : List<String>.from(['.env']);
