@@ -30,7 +30,7 @@ Future<void> main(List<String> args) async {
     dotEnv.load(envFiles);
   }
 
-  databaseHost = dotEnv['INSTANCE_CONNECTION_NAME']!;
+  databaseHost = dotEnv['DB_HOST']!;
   databasePort = dotEnv['DB_PORT']!;
   databaseName = dotEnv['DB_NAME']!;
   databaseUsername = dotEnv['DB_USER']!;
