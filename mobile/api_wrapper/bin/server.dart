@@ -27,7 +27,8 @@ Future<void> main(List<String> args) async {
     databaseHost = '/cloudsql/$instanceConnectionName/.s.PGSQL.5432';
   } else {
     print('Running in development');
-    final envFiles = dotEnv['ENV_FILE'] != null ? List<String>.from([dotEnv['ENV_FILE']]) : List<String>.from(['.env']);
+    final envFiles =
+        dotEnv['ENV_FILE'] != null ? List<String>.from([dotEnv['ENV_FILE']]) : List<String>.from(['.env.dev']);
     print('Using .env file(s) $envFiles');
     dotEnv.load(envFiles);
     databaseHost = dotEnv['DB_HOST']!;
@@ -52,7 +53,7 @@ Future<void> main(List<String> args) async {
   // Configure routes.
   final router = Router()
     ..get('/', Index())
-    ..post('/v6/login', Login(db))
+    ..post('/login', Login(db))
     ..post('/run_zone', RunZone(db))
     ..post('/stop_zone', StopZone(db))
     ..post('/program', CreateProgram(db))
@@ -61,10 +62,16 @@ Future<void> main(List<String> args) async {
     ..get('/customer', GetCustomer(db));
 
   // Configure a pipeline that logs requests.
-  final handler = const Pipeline().addMiddleware(logRequests()).addHandler(router);
+  final handler = const Pipeline().addMiddleware(logPriorRequests()).addMiddleware(logRequests()).addHandler(router);
 
   // For running in containers, we respect the PORT environment variable.
   final port = int.parse(Platform.environment['PORT'] ?? '8080');
   final server = await serve(handler, ip, port);
   print('Server listening on port ${server.port}');
 }
+
+Middleware logPriorRequests({void Function(String message, bool isError)? logger}) => (innerHandler) => (request) {
+      print('Received request ${request.url}');
+
+      return Future.sync(() => innerHandler(request));
+    };
