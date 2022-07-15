@@ -1,5 +1,6 @@
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target
 
 part of 'run_zone_response.dart';
@@ -11,32 +12,11 @@ part of 'run_zone_response.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more informations: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
+    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
 
 RunZoneResponse _$RunZoneResponseFromJson(Map<String, dynamic> json) {
   return _RunZoneResponse.fromJson(json);
 }
-
-/// @nodoc
-class _$RunZoneResponseTearOff {
-  const _$RunZoneResponseTearOff();
-
-  _RunZoneResponse call(
-      {@JsonKey(name: 'message') required String message,
-      @JsonKey(name: 'message_type') required String typeOfMessage}) {
-    return _RunZoneResponse(
-      message: message,
-      typeOfMessage: typeOfMessage,
-    );
-  }
-
-  RunZoneResponse fromJson(Map<String, Object?> json) {
-    return RunZoneResponse.fromJson(json);
-  }
-}
-
-/// @nodoc
-const $RunZoneResponse = _$RunZoneResponseTearOff();
 
 /// @nodoc
 mixin _$RunZoneResponse {
@@ -89,11 +69,11 @@ class _$RunZoneResponseCopyWithImpl<$Res>
 }
 
 /// @nodoc
-abstract class _$RunZoneResponseCopyWith<$Res>
+abstract class _$$_RunZoneResponseCopyWith<$Res>
     implements $RunZoneResponseCopyWith<$Res> {
-  factory _$RunZoneResponseCopyWith(
-          _RunZoneResponse value, $Res Function(_RunZoneResponse) then) =
-      __$RunZoneResponseCopyWithImpl<$Res>;
+  factory _$$_RunZoneResponseCopyWith(
+          _$_RunZoneResponse value, $Res Function(_$_RunZoneResponse) then) =
+      __$$_RunZoneResponseCopyWithImpl<$Res>;
   @override
   $Res call(
       {@JsonKey(name: 'message') String message,
@@ -101,22 +81,22 @@ abstract class _$RunZoneResponseCopyWith<$Res>
 }
 
 /// @nodoc
-class __$RunZoneResponseCopyWithImpl<$Res>
+class __$$_RunZoneResponseCopyWithImpl<$Res>
     extends _$RunZoneResponseCopyWithImpl<$Res>
-    implements _$RunZoneResponseCopyWith<$Res> {
-  __$RunZoneResponseCopyWithImpl(
-      _RunZoneResponse _value, $Res Function(_RunZoneResponse) _then)
-      : super(_value, (v) => _then(v as _RunZoneResponse));
+    implements _$$_RunZoneResponseCopyWith<$Res> {
+  __$$_RunZoneResponseCopyWithImpl(
+      _$_RunZoneResponse _value, $Res Function(_$_RunZoneResponse) _then)
+      : super(_value, (v) => _then(v as _$_RunZoneResponse));
 
   @override
-  _RunZoneResponse get _value => super._value as _RunZoneResponse;
+  _$_RunZoneResponse get _value => super._value as _$_RunZoneResponse;
 
   @override
   $Res call({
     Object? message = freezed,
     Object? typeOfMessage = freezed,
   }) {
-    return _then(_RunZoneResponse(
+    return _then(_$_RunZoneResponse(
       message: message == freezed
           ? _value.message
           : message // ignore: cast_nullable_to_non_nullable
@@ -155,12 +135,13 @@ class _$_RunZoneResponse implements _RunZoneResponse {
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _RunZoneResponse &&
+            other is _$_RunZoneResponse &&
             const DeepCollectionEquality().equals(other.message, message) &&
             const DeepCollectionEquality()
                 .equals(other.typeOfMessage, typeOfMessage));
   }
 
+  @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(
       runtimeType,
@@ -169,8 +150,8 @@ class _$_RunZoneResponse implements _RunZoneResponse {
 
   @JsonKey(ignore: true)
   @override
-  _$RunZoneResponseCopyWith<_RunZoneResponse> get copyWith =>
-      __$RunZoneResponseCopyWithImpl<_RunZoneResponse>(this, _$identity);
+  _$$_RunZoneResponseCopyWith<_$_RunZoneResponse> get copyWith =>
+      __$$_RunZoneResponseCopyWithImpl<_$_RunZoneResponse>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
@@ -180,8 +161,8 @@ class _$_RunZoneResponse implements _RunZoneResponse {
 
 abstract class _RunZoneResponse implements RunZoneResponse {
   factory _RunZoneResponse(
-          {@JsonKey(name: 'message') required String message,
-          @JsonKey(name: 'message_type') required String typeOfMessage}) =
+          {@JsonKey(name: 'message') required final String message,
+          @JsonKey(name: 'message_type') required final String typeOfMessage}) =
       _$_RunZoneResponse;
 
   factory _RunZoneResponse.fromJson(Map<String, dynamic> json) =
@@ -195,6 +176,6 @@ abstract class _RunZoneResponse implements RunZoneResponse {
   String get typeOfMessage;
   @override
   @JsonKey(ignore: true)
-  _$RunZoneResponseCopyWith<_RunZoneResponse> get copyWith =>
+  _$$_RunZoneResponseCopyWith<_$_RunZoneResponse> get copyWith =>
       throw _privateConstructorUsedError;
 }

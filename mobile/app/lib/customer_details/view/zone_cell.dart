@@ -1,6 +1,6 @@
+import 'package:api_models/api_models.dart';
 import 'package:core_ui/core_ui.dart';
 import 'package:flutter/material.dart';
-import 'package:hydrawise/hydrawise.dart';
 
 class ZoneCell extends StatelessWidget {
   const ZoneCell({
@@ -40,7 +40,7 @@ class ZoneCell extends StatelessWidget {
                 ),
               ),
               child: Center(
-                child: Text(zone.physicalNumber.toString()),
+                child: Text(zone.number.toString()),
               ),
             ),
           ),

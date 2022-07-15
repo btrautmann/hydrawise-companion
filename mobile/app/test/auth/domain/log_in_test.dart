@@ -1,69 +1,57 @@
+import 'package:api_models/api_models.dart';
+import 'package:charlatan/charlatan.dart';
 import 'package:core/core.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:irri/auth/auth.dart';
 
+import '../../core/fakes/fake_http_client.dart';
+
 void main() {
   group('LogIn', () {
-    late ValidateApiKey validateApiKey;
-    late AuthenticateWithFirebase authenticateWithFirebase;
     final storage = InMemoryStorage();
-    final setFirebaseUid = SetFirebaseUid(storage);
     final setApiKey = SetApiKey(storage);
+    final charlatan = Charlatan();
     late LogIn subject;
 
     setUp(storage.clearAll);
 
-    group('when api key is valid and firebase authentication succeeds', () {
+    group('when api key is valid', () {
       setUp(() {
-        validateApiKey = FakeValidateApiKey(setApiKey: setApiKey);
-        authenticateWithFirebase = FakeAuthenticateWithFirebase(
-          setFirebaseUid: setFirebaseUid,
+        charlatan.whenPost(
+          'login',
+          (request) => CharlatanHttpResponse(
+            body: LoginResponse(
+              customer: Customer(
+                customerId: 1,
+                activeControllerId: 1,
+                apiKey: 'fake-api-key',
+              ),
+            ),
+          ),
         );
         subject = LogIn(
-          validateApiKey: validateApiKey,
-          authenticateWithFirebase: authenticateWithFirebase,
+          httpClient: FakeHttpClient(charlatan),
+          setApiKey: setApiKey,
         );
       });
 
       test('it returns true', () async {
-        final isLoggedIn = await subject.call('apiKey');
+        final isLoggedIn = await subject.call('fake-api-key');
         expect(isLoggedIn, isTrue);
       });
     });
 
     group('when api key is invalid', () {
       setUp(() {
-        validateApiKey = FakeValidateApiKey(
-          isValid: false,
-          setApiKey: setApiKey,
-        );
-        authenticateWithFirebase = FakeAuthenticateWithFirebase(
-          setFirebaseUid: setFirebaseUid,
-        );
-        subject = LogIn(
-          validateApiKey: validateApiKey,
-          authenticateWithFirebase: authenticateWithFirebase,
-        );
-      });
-
-      test('it returns false', () async {
-        final isLoggedIn = await subject.call('apiKey');
-        expect(isLoggedIn, isFalse);
-      });
-    });
-
-    group('when firebase authentication fails', () {
-      setUp(() {
-        validateApiKey = FakeValidateApiKey(
-          setApiKey: setApiKey,
-        );
-        authenticateWithFirebase = FakeAuthenticateWithFirebase(
-          isSuccessful: false,
-          setFirebaseUid: setFirebaseUid,
+        charlatan.whenPost(
+          'login',
+          (request) => CharlatanHttpResponse(
+            statusCode: 401,
+          ),
         );
         subject = LogIn(
-          validateApiKey: validateApiKey,
-          authenticateWithFirebase: authenticateWithFirebase,
+          httpClient: FakeHttpClient(charlatan),
+          setApiKey: setApiKey,
         );
       });
 

@@ -1,0 +1,11 @@
+include: ../all_lint_rules.yaml
+analyzer:
+  errors:
+    # Don't flag TODOs - comment this out when wanting to address
+    todo: ignore
+    avoid_print: ignore
+    lines_longer_than_80_chars: ignore
+    avoid_escaping_inner_quotes: ignore
+linter:
+  rules:
+    public_member_api_docs: false

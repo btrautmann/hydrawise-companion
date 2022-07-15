@@ -1,5 +1,6 @@
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target
 
 part of 'auth_cubit.dart';
@@ -11,23 +12,7 @@ part of 'auth_cubit.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more informations: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
-
-/// @nodoc
-class _$AuthStateTearOff {
-  const _$AuthStateTearOff();
-
-  _LoggedIn loggedIn() {
-    return _LoggedIn();
-  }
-
-  _LoggedOut loggedOut() {
-    return _LoggedOut();
-  }
-}
-
-/// @nodoc
-const $AuthState = _$AuthStateTearOff();
+    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
 
 /// @nodoc
 mixin _$AuthState {
@@ -87,19 +72,21 @@ class _$AuthStateCopyWithImpl<$Res> implements $AuthStateCopyWith<$Res> {
 }
 
 /// @nodoc
-abstract class _$LoggedInCopyWith<$Res> {
-  factory _$LoggedInCopyWith(_LoggedIn value, $Res Function(_LoggedIn) then) =
-      __$LoggedInCopyWithImpl<$Res>;
+abstract class _$$_LoggedInCopyWith<$Res> {
+  factory _$$_LoggedInCopyWith(
+          _$_LoggedIn value, $Res Function(_$_LoggedIn) then) =
+      __$$_LoggedInCopyWithImpl<$Res>;
 }
 
 /// @nodoc
-class __$LoggedInCopyWithImpl<$Res> extends _$AuthStateCopyWithImpl<$Res>
-    implements _$LoggedInCopyWith<$Res> {
-  __$LoggedInCopyWithImpl(_LoggedIn _value, $Res Function(_LoggedIn) _then)
-      : super(_value, (v) => _then(v as _LoggedIn));
+class __$$_LoggedInCopyWithImpl<$Res> extends _$AuthStateCopyWithImpl<$Res>
+    implements _$$_LoggedInCopyWith<$Res> {
+  __$$_LoggedInCopyWithImpl(
+      _$_LoggedIn _value, $Res Function(_$_LoggedIn) _then)
+      : super(_value, (v) => _then(v as _$_LoggedIn));
 
   @override
-  _LoggedIn get _value => super._value as _LoggedIn;
+  _$_LoggedIn get _value => super._value as _$_LoggedIn;
 }
 
 /// @nodoc
@@ -115,7 +102,7 @@ class _$_LoggedIn implements _LoggedIn {
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is _LoggedIn);
+        (other.runtimeType == runtimeType && other is _$_LoggedIn);
   }
 
   @override
@@ -189,20 +176,21 @@ abstract class _LoggedIn implements AuthState {
 }
 
 /// @nodoc
-abstract class _$LoggedOutCopyWith<$Res> {
-  factory _$LoggedOutCopyWith(
-          _LoggedOut value, $Res Function(_LoggedOut) then) =
-      __$LoggedOutCopyWithImpl<$Res>;
+abstract class _$$_LoggedOutCopyWith<$Res> {
+  factory _$$_LoggedOutCopyWith(
+          _$_LoggedOut value, $Res Function(_$_LoggedOut) then) =
+      __$$_LoggedOutCopyWithImpl<$Res>;
 }
 
 /// @nodoc
-class __$LoggedOutCopyWithImpl<$Res> extends _$AuthStateCopyWithImpl<$Res>
-    implements _$LoggedOutCopyWith<$Res> {
-  __$LoggedOutCopyWithImpl(_LoggedOut _value, $Res Function(_LoggedOut) _then)
-      : super(_value, (v) => _then(v as _LoggedOut));
+class __$$_LoggedOutCopyWithImpl<$Res> extends _$AuthStateCopyWithImpl<$Res>
+    implements _$$_LoggedOutCopyWith<$Res> {
+  __$$_LoggedOutCopyWithImpl(
+      _$_LoggedOut _value, $Res Function(_$_LoggedOut) _then)
+      : super(_value, (v) => _then(v as _$_LoggedOut));
 
   @override
-  _LoggedOut get _value => super._value as _LoggedOut;
+  _$_LoggedOut get _value => super._value as _$_LoggedOut;
 }
 
 /// @nodoc
@@ -218,7 +206,7 @@ class _$_LoggedOut implements _LoggedOut {
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is _LoggedOut);
+        (other.runtimeType == runtimeType && other is _$_LoggedOut);
   }
 
   @override

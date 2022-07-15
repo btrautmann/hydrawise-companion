@@ -1,7 +1,7 @@
+import 'package:api_models/api_models.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:hydrawise/hydrawise.dart';
 import 'package:irri/app/networking/demo_mode_interceptor.dart';
 
 class FakeRequestInterceptorHandler extends RequestInterceptorHandler {
@@ -38,14 +38,14 @@ void main() {
   group('DemoModeInterceptor', () {
     final interceptor = DemoModeInterceptor();
     group('onRequest', () {
-      group('customerdetails.php', () {
+      group('customer', () {
         test(
           'it invokes handler.resolve with dummy data when in demo mode',
           () {
             Response? response;
             interceptor.onRequest(
               RequestOptions(
-                path: 'http://api.hydrawise.com/api/v1/customerdetails.php',
+                path: 'http://localhost:8080/customer',
                 queryParameters: {'api_key': 'demo'},
               ),
               FakeRequestInterceptorHandler(
@@ -57,21 +57,23 @@ void main() {
 
             expect(response, isNotNull);
             expect(
-              CustomerDetails.fromJson(response!.data as Map<String, dynamic>),
-              isA<CustomerDetails>(),
+              GetCustomerResponse.fromJson(
+                response!.data as Map<String, dynamic>,
+              ),
+              isA<GetCustomerResponse>(),
             );
           },
         );
       });
 
-      group('statusschedule.php', () {
+      group('login', () {
         test(
           'it invokes handler.resolve with dummy data when in demo mode',
           () {
             Response? response;
             interceptor.onRequest(
               RequestOptions(
-                path: 'http://api.hydrawise.com/api/v1/statusschedule.php',
+                path: 'http://localhost:8080/login',
                 queryParameters: {'api_key': 'demo'},
               ),
               FakeRequestInterceptorHandler(
@@ -83,8 +85,8 @@ void main() {
 
             expect(response, isNotNull);
             expect(
-              CustomerStatus.fromJson(response!.data as Map<String, dynamic>),
-              isA<CustomerStatus>(),
+              LoginResponse.fromJson(response!.data as Map<String, dynamic>),
+              isA<LoginResponse>(),
             );
           },
         );
@@ -95,7 +97,7 @@ void main() {
         RequestOptions? requestOptions;
         interceptor.onRequest(
           RequestOptions(
-            path: 'http://api.hydrawise.com/api/v1/customerdetails.php',
+            path: 'http://localhost:8080/login',
           ),
           FakeRequestInterceptorHandler(
             onResolve: (r) {

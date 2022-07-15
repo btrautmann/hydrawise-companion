@@ -42,18 +42,14 @@ class AuthCubit extends Cubit<AuthState> {
     );
   }
 
-  Future<bool> validateApiKey(String apiKey) {
-    return _logIn(apiKey);
-  }
-
   Future<void> login(String apiKey) async {
     final isLoggedIn = await _logIn(apiKey);
     if (isLoggedIn) {
       emit(AuthState.loggedIn());
       return;
     }
-    // If we got here, either we failed to authenticate
-    // with Hydrawise or Firebase
+    // If we got here, we failed to authenticate
+    // with Hydrawise
     // TODO(brandon): Handle auth failures
     await _logOut();
   }

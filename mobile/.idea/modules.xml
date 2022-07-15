@@ -2,9 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/api_wrapper/melos_api_wrapper.iml" filepath="$PROJECT_DIR$/api_wrapper/melos_api_wrapper.iml" />
       <module fileurl="file://$PROJECT_DIR$/core/melos_core.iml" filepath="$PROJECT_DIR$/core/melos_core.iml" />
       <module fileurl="file://$PROJECT_DIR$/core_ui/melos_core_ui.iml" filepath="$PROJECT_DIR$/core_ui/melos_core_ui.iml" />
-      <module fileurl="file://$PROJECT_DIR$/hydrawise/melos_hydrawise.iml" filepath="$PROJECT_DIR$/hydrawise/melos_hydrawise.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/melos_irri.iml" filepath="$PROJECT_DIR$/app/melos_irri.iml" />
       <module fileurl="file://$PROJECT_DIR$/weather/melos_weatherx.iml" filepath="$PROJECT_DIR$/weather/melos_weatherx.iml" />
       <module fileurl="file://$PROJECT_DIR$/melos_irri.iml" filepath="$PROJECT_DIR$/melos_irri.iml" />

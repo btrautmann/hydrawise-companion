@@ -1,13 +1,10 @@
-import 'package:hydrawise/hydrawise.dart';
+import 'package:api_models/api_models.dart';
 import 'package:irri/customer_details/customer_details.dart';
-import 'package:irri/programs/programs.dart';
-import 'package:uuid/uuid.dart';
 
 class InMemoryCustomerDetailsRepository implements CustomerDetailsRepository {
   Customer? _customer;
   final _zones = <Zone>[];
   final _programs = <Program>[];
-  final _runs = <Run>[];
   final _fcmTokens = <String>[];
   String? _timeZone;
 
@@ -58,17 +55,7 @@ class InMemoryCustomerDetailsRepository implements CustomerDetailsRepository {
 
   @override
   Future<void> insertZone(Zone zone) async {
-    _zones.add(zone);
-  }
-
-  @override
-  Future<void> updateCustomer(CustomerStatus customerStatus) async {
-    _zones
-      ..clear()
-      ..addAll(customerStatus.zones);
-    _customer = _customer!.copyWith(
-      lastStatusUpdate: customerStatus.timeOfLastStatusUnixEpoch,
-    );
+    return updateZone(zone);
   }
 
   @override
@@ -79,18 +66,15 @@ class InMemoryCustomerDetailsRepository implements CustomerDetailsRepository {
   }
 
   @override
-  Future<String> createProgram({
-    required String name,
-    required List<int> frequency,
-  }) async {
-    final program = Program(
-      id: const Uuid().v4(),
-      name: name,
-      frequency: frequency,
-      runs: [],
-    );
+  Future<void> insertProgram(Program program) async {
     _programs.add(program);
-    return program.id;
+  }
+
+  @override
+  Future<void> updateProgram(Program program) async {
+    _programs
+      ..retainWhere((element) => element.id != program.id)
+      ..add(program);
   }
 
   @override
@@ -99,27 +83,8 @@ class InMemoryCustomerDetailsRepository implements CustomerDetailsRepository {
   }
 
   @override
-  Future<void> updateProgram({
-    required String programId,
-    required String name,
-    required List<int> frequency,
-  }) async {
-    final index = _programs.indexWhere((element) => element.id == programId);
-    _programs[index] = _programs[index].copyWith(
-      name: name,
-      frequency: frequency,
-    );
-  }
-
-  @override
   Future<List<Program>> getPrograms() async {
-    return _programs
-        .map(
-          (e) => e.copyWith(
-            runs: _runs.where((element) => element.programId == e.id).toList(),
-          ),
-        )
-        .toList();
+    return _programs;
   }
 
   @override
@@ -128,35 +93,8 @@ class InMemoryCustomerDetailsRepository implements CustomerDetailsRepository {
   }
 
   @override
-  Future<void> insertRuns({
-    required String programId,
-    required List<Run> runs,
-  }) async {
-    _runs.addAll(runs);
-  }
-
-  @override
-  Future<void> updateRuns({
-    required String programId,
-    required List<Run> runs,
-  }) async {
-    for (final run in runs) {
-      final index = runs.indexWhere((element) => run.id == element.id);
-      _runs[index] = run;
-    }
-  }
-
-  @override
   Future<List<Run>> getRunsForProgram({required String programId}) async {
-    return _runs.where((element) => element.programId == programId).toList();
-  }
-
-  @override
-  Future<void> deleteRun({
-    required String runId,
-    required String programId,
-  }) async {
-    _runs.removeWhere((element) => element.id == runId);
+    return _programs.singleWhere((element) => element.id == programId).runs;
   }
 
   @override
@@ -164,7 +102,6 @@ class InMemoryCustomerDetailsRepository implements CustomerDetailsRepository {
     _zones.clear();
     _customer = null;
     _programs.clear();
-    _runs.clear();
     _fcmTokens.clear();
   }
 }

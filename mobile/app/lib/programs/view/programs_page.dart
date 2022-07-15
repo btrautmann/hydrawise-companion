@@ -1,10 +1,10 @@
 import 'dart:developer';
 
+import 'package:api_models/api_models.dart';
 import 'package:core_ui/core_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:hydrawise/hydrawise.dart';
 import 'package:irri/customer_details/customer_details.dart';
 import 'package:irri/programs/programs.dart';
 
@@ -72,11 +72,11 @@ class ProgramsPageView extends StatelessWidget {
                 child: BlocBuilder<CustomerDetailsCubit, CustomerDetailsState>(
                   builder: (context, state) {
                     return state.maybeWhen(
-                      complete: (details, status) {
+                      complete: (details, zones) {
                         return Padding(
                           padding: const EdgeInsets.only(left: 16, right: 16),
                           child: _ZoneList(
-                            zones: status.zones,
+                            zones: zones,
                             onZoneTapped: (zone) {
                               log('$zone tapped');
                             },

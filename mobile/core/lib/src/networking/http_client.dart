@@ -28,13 +28,15 @@ class HttpClient {
   Future<NetworkResult<T?>> _request<T extends Object>(
     String path,
     String method,
+    dynamic data,
     Map<String, Object>? queryParameters,
     Options? options,
   ) async {
     try {
-      final optionsWithMethod = options?..copyWith(method: method);
+      final optionsWithMethod = DioMixin.checkOptions(method, options);
       final response = await _dio.request(
         path,
+        data: data,
         queryParameters: queryParameters,
         options: optionsWithMethod,
       );
@@ -49,7 +51,7 @@ class HttpClient {
     Map<String, Object>? queryParameters,
     Options? options,
   }) async {
-    return _request(path, 'GET', queryParameters, options);
+    return _request(path, 'GET', null, queryParameters, options);
   }
 
   Future<NetworkResult<T?>> post<T extends Object>(
@@ -58,7 +60,7 @@ class HttpClient {
     Map<String, Object>? queryParameters,
     Options? options,
   }) async {
-    return _request(path, 'POST', queryParameters, options);
+    return _request(path, 'POST', data, queryParameters, options);
   }
 
   Future<NetworkResult<T?>> put<T extends Object>(
@@ -67,14 +69,15 @@ class HttpClient {
     Map<String, Object>? queryParameters,
     Options? options,
   }) async {
-    return _request(path, 'PUT', queryParameters, options);
+    return _request(path, 'PUT', data, queryParameters, options);
   }
 
   Future<NetworkResult<T?>> delete<T extends Object>(
     String path, {
+    dynamic data,
     Map<String, Object>? queryParameters,
     Options? options,
   }) async {
-    return _request(path, 'DELETE', queryParameters, options);
+    return _request(path, 'DELETE', data, queryParameters, options);
   }
 }

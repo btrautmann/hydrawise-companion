@@ -1,35 +1,34 @@
 import 'dart:async';
 
+import 'package:api_models/api_models.dart';
 import 'package:bloc_test/bloc_test.dart';
+import 'package:charlatan/charlatan.dart';
 import 'package:core/core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:irri/auth/auth.dart';
 import 'package:irri/customer_details/customer_details.dart';
 
+import '../../core/fakes/fake_http_client.dart';
+
 void main() {
   group('AuthCubit', () {
+    final charlatan = Charlatan();
     final DataStorage dataStorage = InMemoryStorage();
     final setApiKey = SetApiKey(dataStorage);
-    final setFirebaseUid = SetFirebaseUid(dataStorage);
 
     AuthCubit buildSubject({
       StreamController? authFailures,
-      ValidateApiKey? validateApiKey,
       LogIn? logIn,
       LogOut? logOut,
     }) {
       return AuthCubit(
         isLoggedIn: IsLoggedIn(
           getApiKey: GetApiKey(dataStorage),
-          getFirebaseUid: GetFirebaseUid(dataStorage),
         ),
         logOut: logOut ??
             LogOut(
               setApiKey: setApiKey,
-              unauthenticateWithFirebase: FakeUnauthenticateWithFirebase(
-                setFirebaseUid: setFirebaseUid,
-              ),
               customerDetailsRepository: InMemoryCustomerDetailsRepository(),
             ),
         getAuthFailures: GetAuthFailures(
@@ -37,13 +36,8 @@ void main() {
         ),
         logIn: logIn ??
             LogIn(
-              validateApiKey: validateApiKey ??
-                  FakeValidateApiKey(
-                    setApiKey: setApiKey,
-                  ),
-              authenticateWithFirebase: FakeAuthenticateWithFirebase(
-                setFirebaseUid: setFirebaseUid,
-              ),
+              httpClient: FakeHttpClient(charlatan),
+              setApiKey: setApiKey,
             ),
       );
     }
@@ -69,7 +63,6 @@ void main() {
             'it emits [loggedIn]',
             setUp: () async {
               await setApiKey('1234');
-              await setFirebaseUid('1');
             },
             build: buildSubject,
             expect: () => <AuthState>[
@@ -92,25 +85,24 @@ void main() {
       });
     });
 
-    group('validateApiKey', () {
-      test('it calls LogIn', () async {
-        var logInCalled = false;
-        final subject = buildSubject(
-          logIn: _FakeLogIn(() {
-            logInCalled = true;
-          }),
-        );
-
-        await subject.validateApiKey('1234');
-
-        expect(logInCalled, isTrue);
-      });
-    });
-
     group('logIn', () {
       blocTest<AuthCubit, AuthState>(
         'it emits [loggedIn]',
         build: buildSubject,
+        setUp: () {
+          charlatan.whenPost(
+            'login',
+            (request) => CharlatanHttpResponse(
+              body: LoginResponse(
+                customer: Customer(
+                  activeControllerId: 1,
+                  customerId: 1,
+                  apiKey: 'fake-api-key',
+                ),
+              ),
+            ),
+          );
+        },
         // Skip the initial loggedOut emission
         skip: 1,
         act: (cubit) async => cubit.login('1234'),
@@ -120,13 +112,16 @@ void main() {
       );
 
       test('it calls LogOut if authentication fails', () async {
+        charlatan.whenPost(
+          'login',
+          (request) => CharlatanHttpResponse(
+            statusCode: 401,
+          ),
+        );
+
         var logOutCalled = false;
 
         final subject = buildSubject(
-          validateApiKey: FakeValidateApiKey(
-            isValid: false,
-            setApiKey: SetApiKey(dataStorage),
-          ),
           logOut: _FakeLogOut(() {
             logOutCalled = true;
           }),
@@ -148,17 +143,5 @@ class _FakeLogOut implements LogOut {
   @override
   Future<void> call() async {
     onCalled();
-  }
-}
-
-class _FakeLogIn implements LogIn {
-  _FakeLogIn(this.onCalled);
-
-  final VoidCallback onCalled;
-
-  @override
-  Future<bool> call(String apiKey) async {
-    onCalled();
-    return true;
   }
 }

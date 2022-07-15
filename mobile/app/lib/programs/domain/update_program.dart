@@ -1,5 +1,6 @@
 // ignore: implementation_imports
-import 'package:collection/src/iterable_extensions.dart';
+import 'package:api_models/api_models.dart';
+import 'package:collection/collection.dart';
 import 'package:irri/customer_details/repository/customer_details_repository.dart';
 import 'package:irri/programs/programs.dart';
 import 'package:uuid/uuid.dart';
@@ -17,30 +18,7 @@ class UpdateProgram {
     required List<int> frequency,
     required List<RunGroup> runGroups,
   }) async {
-    await _repository.updateProgram(
-      programId: programId,
-      name: name,
-      frequency: frequency,
-    );
-
-    final existingRuns = await _repository.getRunsForProgram(
-      programId: programId,
-    );
-
-    final modifiedRunGroups =
-        runGroups.where((element) => !element.isNewRunGroup()).toList();
-
-    final deletedRuns = existingRuns.where(
-      (existingRun) => modifiedRunGroups.none(
-        (element) =>
-            element.zoneIds.contains(existingRun.zoneId) &&
-            element.timeOfDay == existingRun.startTime &&
-            element.duration.inSeconds == existingRun.duration,
-      ),
-    );
-    for (final run in deletedRuns) {
-      await _repository.deleteRun(runId: run.id, programId: programId);
-    }
+    final existingProgram = await _repository.getProgram(programId: programId);
 
     final runsToInsert = <Run>[];
     final runsToUpdate = <Run>[];
@@ -50,30 +28,29 @@ class UpdateProgram {
         // we may be adding runs OR updating runs,
         // and as such need to assign the correct Id, either
         // a new one or an existing one
-        Future<String> modificationId() async {
-          final matchingRun = existingRuns.singleWhereOrNull(
+        String modificationId() {
+          final matchingRun = existingProgram.runs.singleWhereOrNull(
             (existingRun) =>
                 existingRun.startTime == runGroup.timeOfDay &&
                 existingRun.zoneId == zoneId &&
-                existingRun.duration == runGroup.duration.inSeconds,
+                existingRun.durationSeconds == runGroup.duration.inSeconds,
           );
           // TODO(brandon): Create GetUniqueId to abstract the usage
           // of Uuid
           return matchingRun?.id ?? const Uuid().v4();
         }
 
-        final id = runGroup.isNewRunGroup()
-            ? const Uuid().v4()
-            : await modificationId();
+        final id = runGroup.isNewRunGroup() ? const Uuid().v4() : modificationId();
 
         final run = Run(
           id: id,
           programId: programId,
-          startTime: runGroup.timeOfDay,
-          duration: runGroup.duration.inSeconds,
+          startHour: runGroup.timeOfDay.hour,
+          startMinute: runGroup.timeOfDay.minute,
+          durationSeconds: runGroup.duration.inSeconds,
           zoneId: zoneId,
         );
-        final isCreating = existingRuns.none((run) => run.id == id);
+        final isCreating = existingProgram.runs.none((run) => run.id == id);
         if (isCreating) {
           runsToInsert.add(run);
         } else {
@@ -81,13 +58,13 @@ class UpdateProgram {
         }
       }
     }
-    await _repository.insertRuns(
-      programId: programId,
-      runs: runsToInsert,
-    );
-    await _repository.updateRuns(
-      programId: programId,
-      runs: runsToUpdate,
+
+    await _repository.updateProgram(
+      existingProgram.copyWith(
+        name: name,
+        frequency: frequency,
+        runs: <Run>[...runsToInsert, ...runsToUpdate],
+      ),
     );
   }
 }

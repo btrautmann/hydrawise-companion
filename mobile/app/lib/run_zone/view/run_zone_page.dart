@@ -1,8 +1,9 @@
+import 'package:api_models/api_models.dart';
 import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:hydrawise/hydrawise.dart';
 import 'package:irri/customer_details/customer_details.dart';
+import 'package:irri/programs/extensions.dart';
 import 'package:irri/run_zone/run_zone.dart';
 
 class RunZonesPage extends StatelessWidget {
@@ -18,9 +19,8 @@ class RunZonesPage extends StatelessWidget {
     return BlocBuilder<CustomerDetailsCubit, CustomerDetailsState>(
       builder: (context, state) {
         return state.maybeWhen(
-          complete: (details, state) {
-            final zone =
-                state.zones.singleWhere((element) => element.id == zoneId);
+          complete: (details, zones) {
+            final zone = zones.singleWhere((element) => element.id == zoneId);
             return Scaffold(
               appBar: AppBar(
                 title: Text(zone.name),
@@ -66,9 +66,9 @@ class __RunZonesViewState extends State<_RunZonesView> {
     final customerDetailsState =
         context.select((CustomerDetailsCubit cubit) => cubit.state);
     return customerDetailsState.maybeWhen(
-      complete: (details, status) {
+      complete: (details, zones) {
         final selectedZone =
-            status.zones.singleWhere((element) => element.id == widget.zone.id);
+            zones.singleWhere((element) => element.id == widget.zone.id);
         return Center(
           child: Padding(
             padding: const EdgeInsets.all(16),
@@ -158,9 +158,8 @@ class __RunLengthSliderState extends State<_RunLengthSlider> {
   @override
   void initState() {
     // TODO(brandon): Fix this hack
-    final maxValue = widget.zone.lengthOfNextRunTimeOrTimeRemaining == 0
-        ? 90
-        : widget.zone.lengthOfNextRunTimeOrTimeRemaining / 60;
+    final maxValue =
+        widget.zone.runLengthSec == 0 ? 90 : widget.zone.runLengthSec / 60;
     _setCurrentValue(maxValue.toDouble());
     super.initState();
   }
@@ -324,7 +323,7 @@ class _ZoneHeader extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.all(16),
                   child: Text(
-                    zone.physicalNumber.toString(),
+                    zone.number.toString(),
                     style: Theme.of(context).textTheme.headline3?.copyWith(
                           color: Theme.of(context).colorScheme.onSecondary,
                         ),
@@ -360,7 +359,7 @@ class _NextWaterText extends StatelessWidget {
     }
     if (zone.isRunning) {
       final endOfRun = clock.now().add(
-            Duration(seconds: zone.lengthOfNextRunTimeOrTimeRemaining),
+            Duration(seconds: zone.runLengthSec),
           );
       final difference = clock.now().difference(endOfRun).abs();
       if (difference.inHours > 1) {

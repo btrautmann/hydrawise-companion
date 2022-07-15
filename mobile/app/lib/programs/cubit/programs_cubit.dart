@@ -1,9 +1,11 @@
+import 'package:api_models/api_models.dart';
 import 'package:bloc/bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:irri/programs/programs.dart';
+import 'package:irri/programs/domain/domain.dart';
+import 'package:irri/programs/models/run_group.dart';
 
-part 'programs_state.dart';
 part 'programs_cubit.freezed.dart';
+part 'programs_state.dart';
 
 class ProgramsCubit extends Cubit<ProgramsState> {
   ProgramsCubit({
@@ -25,8 +27,14 @@ class ProgramsCubit extends Cubit<ProgramsState> {
   final DeleteProgram _deleteProgram;
 
   Future<void> _initPrograms() async {
-    final programs = await _getPrograms();
-    emit(state.copyWith(programs: programs));
+    final getProgramsResponse = await _getPrograms();
+    emit(
+      state.copyWith(
+        programs: getProgramsResponse.isSuccess
+            ? getProgramsResponse.success.programs
+            : List.empty(),
+      ),
+    );
   }
 
   Future<void> createProgram({

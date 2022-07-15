@@ -1,3 +1,4 @@
 {
-    "dart.lineLength": 80,
+    "dart.lineLength": 120,
+    "dart.flutterSdkPath": "/Users/brandontrautmann/Development/hydrawise-companion/mobile/app/.fvm/flutter_sdk",
 }

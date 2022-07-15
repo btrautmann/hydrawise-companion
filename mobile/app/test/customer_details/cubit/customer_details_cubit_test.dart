@@ -1,55 +1,82 @@
 import 'dart:async';
 
+import 'package:api_models/api_models.dart';
 import 'package:bloc_test/bloc_test.dart';
+import 'package:charlatan/charlatan.dart';
 import 'package:clock/clock.dart';
 import 'package:core/core.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:hydrawise/hydrawise.dart';
 import 'package:irri/auth/auth.dart';
 import 'package:irri/customer_details/customer_details.dart';
+
+import '../../core/fakes/fake_http_client.dart';
 
 void main() {
   group('CustomerDetailsCubit', () {
     final DataStorage dataStorage = InMemoryStorage();
-
+    final charlatan = Charlatan();
     final repository = InMemoryCustomerDetailsRepository();
     final setApiKey = SetApiKey(dataStorage);
-    final setFirebaseUid = SetFirebaseUid(dataStorage);
     late AuthCubit authCubit;
 
     CustomerDetailsCubit _buildSubject() {
       return CustomerDetailsCubit(
-        getCustomerDetails: GetFakeCustomerDetails(repository: repository),
-        getCustomerStatus: GetFakeCustomerStatus(repository: repository),
+        getCustomerDetails: GetCustomerDetails(
+          httpClient: FakeHttpClient(charlatan),
+          getApiKey: GetApiKey(dataStorage),
+          repository: repository,
+        ),
+        setNextPollTime: SetNextPollTimeInStorage(dataStorage),
+        getNextPollTime: GetNextPollTimeFromStorage(dataStorage),
         authCubit: authCubit,
       );
     }
 
     setUp(() async {
       await dataStorage.clearAll();
+      final customer = Customer(
+        activeControllerId: 1,
+        apiKey: 'fake-api-key',
+        customerId: 1,
+      );
+
+      charlatan
+        ..whenGet(
+          'customer',
+          (request) => GetCustomerResponse(
+            customer: customer,
+            zones: [
+              Zone(
+                id: 1,
+                number: 1,
+                name: 'Fake zone',
+                timeUntilNextRunSec: 60,
+                runLengthSec: 600,
+              ),
+            ],
+          ),
+        )
+        ..whenPost(
+          'login',
+          (request) => CharlatanHttpResponse(
+            body: customer,
+          ),
+        );
 
       authCubit = AuthCubit(
         logOut: LogOut(
           setApiKey: setApiKey,
-          unauthenticateWithFirebase: FakeUnauthenticateWithFirebase(
-            setFirebaseUid: setFirebaseUid,
-          ),
           customerDetailsRepository: repository,
         ),
         getAuthFailures: GetAuthFailures(
           authFailuresController: StreamController(),
         ),
         logIn: LogIn(
-          validateApiKey: FakeValidateApiKey(
-            setApiKey: setApiKey,
-          ),
-          authenticateWithFirebase: FakeAuthenticateWithFirebase(
-            setFirebaseUid: setFirebaseUid,
-          ),
+          httpClient: FakeHttpClient(charlatan),
+          setApiKey: setApiKey,
         ),
         isLoggedIn: IsLoggedIn(
           getApiKey: GetApiKey(dataStorage),
-          getFirebaseUid: GetFirebaseUid(dataStorage),
         ),
       );
     });
@@ -74,35 +101,29 @@ void main() {
             await authCubit.login('fake-api-key');
           },
           build: _buildSubject,
-          act: (cubit) {
+          act: (cubit) async {
             // Use fixed clock for the `act` zone
-            withClock(fixedWallClock, () {
-              cubit.start();
+            await withClock(fixedWallClock, () async {
+              await cubit.start();
             });
           },
           expect: () => <CustomerDetailsState>[
             CustomerDetailsState.loading(),
             CustomerDetailsState.complete(
-              customerDetails: CustomerDetails(
+              customerDetails: Customer(
                 activeControllerId: 1,
+                apiKey: 'fake-api-key',
                 customerId: 1,
-                controllers: [
-                  Controller(
-                    name: 'Fake Controller',
-                    lastContact: 1631616496,
-                    serialNumber: '123456789',
-                    id: 1234,
-                    status: 'All good!',
-                  )
-                ],
               ),
-              customerStatus: CustomerStatus(
-                numberOfSecondsUntilNextRequest: 5,
-                // ignore: lines_longer_than_80_chars
-                timeOfLastStatusUnixEpoch:
-                    fixedWallClock.now().millisecondsSinceEpoch,
-                zones: [],
-              ),
+              zones: [
+                Zone(
+                  id: 1,
+                  number: 1,
+                  name: 'Fake zone',
+                  timeUntilNextRunSec: 60,
+                  runLengthSec: 600,
+                ),
+              ],
             ),
           ],
         );

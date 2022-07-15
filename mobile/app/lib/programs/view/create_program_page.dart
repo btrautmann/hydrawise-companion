@@ -1,7 +1,7 @@
+import 'package:api_models/api_models.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:hydrawise/hydrawise.dart';
 import 'package:irri/customer_details/customer_details.dart';
 import 'package:irri/programs/programs.dart';
 
@@ -32,8 +32,8 @@ class CreateProgramPage extends StatelessWidget {
           ),
           body: CreateProgramView(
             name: existingProgram?.name ?? '',
-            frequency: existingProgram?.frequency ?? [],
-            runGroups: existingProgram?.runs?.toRunGroups() ?? [],
+            frequency: List.of(existingProgram?.frequency ?? []),
+            runGroups: existingProgram?.runs.toRunGroups() ?? [],
             existingProgramId: existingProgramId,
           ),
         );
@@ -359,7 +359,7 @@ class _RunsConfigurationState extends State<_RunsConfiguration> {
       builder: (context, state) {
         final zones = state.map(
           loading: (_) => List<Zone>.empty(),
-          complete: (state) => state.customerStatus.zones,
+          complete: (state) => state.zones,
         );
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -480,7 +480,7 @@ class _RunCreationViewState extends State<_RunCreationView> {
   }
 
   void _changeZoneMembership(bool isSelected, int zoneId) {
-    final zones = _runGroup.zoneIds;
+    final zones = List.of(_runGroup.zoneIds);
     if (isSelected) {
       zones.add(zoneId);
     } else {

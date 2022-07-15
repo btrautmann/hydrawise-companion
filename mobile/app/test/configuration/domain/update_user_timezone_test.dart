@@ -1,5 +1,5 @@
+import 'package:api_models/api_models.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:hydrawise/hydrawise.dart';
 import 'package:irri/configuration/configuration.dart';
 import 'package:irri/customer_details/repository/repository.dart';
 
@@ -15,8 +15,6 @@ void main() {
           activeControllerId: 1,
           customerId: 1,
           apiKey: 'fake-api-key',
-          lastStatusUpdate: DateTime.now().millisecondsSinceEpoch,
-          timeZone: 'America/New York',
         ),
       );
 

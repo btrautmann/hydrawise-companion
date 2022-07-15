@@ -2,6 +2,10 @@
 .dart_tool/
 .packages
 
+# Flutter/Dart/Pub related
+.flutter-plugins
+.flutter-plugins-dependencies
+
 # Conventional directory for build outputs.
 build/
 
