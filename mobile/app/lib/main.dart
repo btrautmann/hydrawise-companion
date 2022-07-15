@@ -48,7 +48,7 @@ Future<void> main() async {
 
           final httpClient = HttpClient(
             dio: Dio(),
-            baseUrl: 'http://10.0.2.2:8080/',
+            baseUrl: 'https://apiwrapper-5rvb357uza-uc.a.run.app/',
             interceptors: interceptors,
             responseDecoder: HydrawiseApiDecoder.decode,
           );

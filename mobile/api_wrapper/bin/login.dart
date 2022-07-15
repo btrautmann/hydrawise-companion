@@ -15,6 +15,7 @@ class Login {
   final PostgreSQLConnection db;
 
   Future<Response> call(Request request) async {
+    print('Received a call to /login');
     final body = await request.readAsString();
     final loginRequest = LoginRequest.fromJson(json.decode(body));
 
