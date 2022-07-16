@@ -6,6 +6,7 @@ import 'package:shelf/shelf.dart';
 import 'package:shelf/shelf_io.dart';
 import 'package:shelf_router/shelf_router.dart';
 
+import 'check_runs.dart';
 import 'get_programs.dart';
 import 'routes.dart';
 
@@ -59,7 +60,8 @@ Future<void> main(List<String> args) async {
     ..post('/program', CreateProgram(db))
     ..get('/program', GetPrograms(db))
     ..put('/program', UpdateProgram(db))
-    ..get('/customer', GetCustomer(db));
+    ..get('/customer', GetCustomer(db))
+    ..get('/check_runs', CheckRuns(db));
 
   // Configure a pipeline that logs requests.
   final handler = const Pipeline().addMiddleware(logPriorRequests()).addMiddleware(logRequests()).addHandler(router);
