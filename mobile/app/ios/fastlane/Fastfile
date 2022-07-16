@@ -23,14 +23,19 @@ platform :ios do
     version_name = ENV["VERSION_NAME"]
     build_number = ENV["BUILD_NUMBER"]
 
-    create_keychain(
-      name: "TempKeychain",
-      password: "TempPassword",
-      default_keychain: true,
-      unlock: true,
-      timeout: 3600,
-      lock_when_sleeps: true
-    )
+    if is_ci
+      puts "Creating TempKeychain" 
+      create_keychain(
+        name: "TempKeychain",
+        password: "TempPassword",
+        default_keychain: true,
+        unlock: true,
+        timeout: 3600,
+        lock_when_sleeps: true
+      )
+    else
+      puts "Not creating keychain" 
+    end
     app_store_connect_api_key(
       is_key_content_base64: true,
       duration: 1200, # optional (maximum 1200)
@@ -47,6 +52,9 @@ platform :ios do
       clean_install: true,
       podfile: "./Podfile"
     )
+    sh("pwd")
+
+    mapping_path = File.absolute_path("../export_options.plist")
     sh(
       "flutter",
       "build",
@@ -55,7 +63,7 @@ platform :ios do
       "--build-name=#{version_name}",
       "--dart-define=OPEN_WEATHER_MAP_API_KEY=#{open_weather_map_api_key}",
       "--flavor=production",
-      "--export-options-plist=../export_options.plist",
+      "--export-options-plist=#{mapping_path}",
       "-v"
     )
     upload_to_testflight(
