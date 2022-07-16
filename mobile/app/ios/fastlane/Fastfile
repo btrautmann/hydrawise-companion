@@ -11,7 +11,7 @@
 #
 
 # Uncomment the line if you want fastlane to automatically update itself
-update_fastlane
+# update_fastlane
 
 default_platform(:ios)
 
@@ -55,7 +55,7 @@ platform :ios do
       "--build-name=#{version_name}",
       "--dart-define=OPEN_WEATHER_MAP_API_KEY=#{open_weather_map_api_key}",
       "--flavor=production",
-      "--export-options-plist=export_options.plist",
+      "--export-options-plist=../export_options.plist",
       "-v"
     )
     upload_to_testflight(
