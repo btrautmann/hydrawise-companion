@@ -8,6 +8,7 @@ import 'package:shelf_router/shelf_router.dart';
 
 import 'check_runs.dart';
 import 'get_programs.dart';
+import 'middleware.dart';
 import 'routes.dart';
 
 Future<void> main(List<String> args) async {
@@ -63,8 +64,11 @@ Future<void> main(List<String> args) async {
     ..get('/customer', GetCustomer(db))
     ..get('/check_runs', CheckRuns(db));
 
-  // Configure a pipeline that logs requests.
-  final handler = const Pipeline().addMiddleware(logPriorRequests()).addMiddleware(logRequests()).addHandler(router);
+  final handler = const Pipeline()
+      .addMiddleware(logPriorRequests())
+      .addMiddleware(logRequests())
+      .addMiddleware(authentication(db))
+      .addHandler(router);
 
   // For running in containers, we respect the PORT environment variable.
   final port = int.parse(Platform.environment['PORT'] ?? '8080');

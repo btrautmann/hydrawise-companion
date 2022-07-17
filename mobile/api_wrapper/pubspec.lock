@@ -20,7 +20,7 @@ packages:
     description:
       path: "."
       ref: main
-      resolved-ref: "77399842b27bd227175edbc04e5bee85d9fe6f1c"
+      resolved-ref: "6eb9baeef81a5ffb4f59d2c27618e3512eb6f17d"
       url: "https://github.com/btrautmann/irri-models.git"
     source: git
     version: "1.0.0"

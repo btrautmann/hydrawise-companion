@@ -4,38 +4,26 @@ import 'package:api_models/api_models.dart';
 import 'package:postgres/postgres.dart';
 import 'package:shelf/shelf.dart';
 
+import 'extensions.dart';
+
 class GetCustomer {
   GetCustomer(this.db);
 
   final PostgreSQLConnection db;
 
   Future<Response> call(Request request) async {
-    final queryParameters = request.url.queryParameters;
+    final customerId = request.customerId;
 
-    // TODO(brandon): Auth interception
-    final apiKey = queryParameters['api_key'];
-    if (apiKey == null) {
-      return Response(401);
-    }
-    final queryResults = await db.query(_findCustomerSql(apiKey));
-    if (queryResults.isEmpty) {
-      return Response(401);
-    }
-    final customerId = queryResults.single.toColumnMap()['customer_id'] as int?;
-    if (customerId == null) {
-      return Response(401);
-    }
-
-    final customer = Customer(
-      customerId: customerId,
-      apiKey: apiKey,
-      activeControllerId:
-          queryResults.single.toColumnMap()['active_controller_id'],
-    );
-
+    late final Customer customer;
     final zones = <Zone>[];
-
     await db.transaction((connection) async {
+      final customerResult = await connection.query(_findCustomerSql(customerId));
+
+      customer = Customer(
+        customerId: customerId,
+        activeControllerId: customerResult.single.toColumnMap()['active_controller_id'],
+      );
+
       final zonesResult = await connection.query(_getZonesSql(customerId));
       for (final result in zonesResult) {
         final map = result.toColumnMap();
@@ -62,8 +50,6 @@ class GetCustomer {
   }
 }
 
-String _findCustomerSql(String apiKey) =>
-    'SELECT * FROM customer WHERE api_key=\'$apiKey\' LIMIT 1;';
+String _findCustomerSql(int customerId) => 'SELECT * FROM customer WHERE customer_id=$customerId LIMIT 1;';
 
-String _getZonesSql(int customerId) =>
-    'SELECT * FROM zone WHERE customer_id=$customerId;';
+String _getZonesSql(int customerId) => 'SELECT * FROM zone WHERE customer_id=$customerId;';

@@ -6,6 +6,8 @@ import 'package:hydrawise/hydrawise.dart' hide HCustomer;
 import 'package:postgres/postgres.dart';
 import 'package:shelf/shelf.dart';
 
+import 'extensions.dart';
+
 /// Calls the customer details and customer states endpoints
 /// and if successful, inserts the customer and their zones
 /// into the database
@@ -18,9 +20,10 @@ class Login {
     print('Received a call to /login');
     final body = await request.readAsString();
     final loginRequest = LoginRequest.fromJson(json.decode(body));
+    final apiKey = request.apiKey;
 
     final queryParameters = <String, dynamic>{
-      'api_key': loginRequest.apiKey,
+      'api_key': apiKey,
       'type': loginRequest.type,
     };
 
@@ -33,25 +36,22 @@ class Login {
     );
 
     if (detailsResponse.statusCode == 200) {
-      final details =
-          HCustomerDetails.fromJson(json.decode(detailsResponse.body));
+      final details = HCustomerDetails.fromJson(json.decode(detailsResponse.body));
       final statusResponse = await http.get(
         Uri.http(
           'api.hydrawise.com',
           '/api/v1/statusschedule.php',
-          Map.of(queryParameters)
-            ..removeWhere((key, value) => key != 'api_key'),
+          Map.of(queryParameters)..removeWhere((key, value) => key != 'api_key'),
         ),
       );
       if (statusResponse.statusCode == 200) {
-        final status =
-            HCustomerStatus.fromJson(json.decode(statusResponse.body));
+        final status = HCustomerStatus.fromJson(json.decode(statusResponse.body));
         await db.transaction((connection) async {
-          await connection.execute(
+          await connection.query(
             _insertCustomerSql(details, queryParameters['api_key']!),
           );
           for (final zone in status.zones) {
-            await connection.execute(_insertZoneSql(details, zone));
+            await connection.query(_insertZoneSql(details, zone));
           }
         });
 
@@ -60,7 +60,6 @@ class Login {
             LoginResponse(
               customer: Customer(
                 customerId: details.customerId,
-                apiKey: loginRequest.apiKey,
                 activeControllerId: details.activeControllerId,
               ),
             ),
