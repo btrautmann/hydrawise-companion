@@ -7,7 +7,7 @@ class DeleteProgram {
 
   final CustomerDetailsRepository _repository;
 
-  Future<void> call({required String programId}) {
+  Future<void> call({required int programId}) {
     return _repository.deleteProgram(programId: programId);
   }
 }

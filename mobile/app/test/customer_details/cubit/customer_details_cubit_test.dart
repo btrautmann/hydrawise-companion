@@ -36,7 +36,6 @@ void main() {
       await dataStorage.clearAll();
       final customer = Customer(
         activeControllerId: 1,
-        apiKey: 'fake-api-key',
         customerId: 1,
       );
 
@@ -112,7 +111,6 @@ void main() {
             CustomerDetailsState.complete(
               customerDetails: Customer(
                 activeControllerId: 1,
-                apiKey: 'fake-api-key',
                 customerId: 1,
               ),
               zones: [

@@ -67,7 +67,7 @@ class InMemoryCustomerDetailsRepository implements CustomerDetailsRepository {
 
   @override
   Future<void> insertProgram(Program program) async {
-    _programs.add(program);
+    return updateProgram(program);
   }
 
   @override
@@ -78,7 +78,7 @@ class InMemoryCustomerDetailsRepository implements CustomerDetailsRepository {
   }
 
   @override
-  Future<void> deleteProgram({required String programId}) async {
+  Future<void> deleteProgram({required int programId}) async {
     _programs.removeWhere((element) => element.id == programId);
   }
 
@@ -88,12 +88,12 @@ class InMemoryCustomerDetailsRepository implements CustomerDetailsRepository {
   }
 
   @override
-  Future<Program> getProgram({required String programId}) async {
+  Future<Program> getProgram({required int programId}) async {
     return _programs.singleWhere((element) => element.id == programId);
   }
 
   @override
-  Future<List<Run>> getRunsForProgram({required String programId}) async {
+  Future<List<Run>> getRunsForProgram({required int programId}) async {
     return _programs.singleWhere((element) => element.id == programId).runs;
   }
 

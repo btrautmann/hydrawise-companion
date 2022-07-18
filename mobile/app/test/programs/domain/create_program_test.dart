@@ -27,7 +27,7 @@ void main() {
         (request) => CharlatanHttpResponse(
           body: CreateProgramResponse(
             program: Program(
-              id: '12345',
+              id: 12345,
               name: 'Test Program',
               frequency: [1, 2, 3, 4, 5],
               runs: List.empty(),
@@ -38,7 +38,6 @@ void main() {
 
       final subject = CreateProgram(
         httpClient: FakeHttpClient(charlatan),
-        getApiKey: GetApiKey(storage),
         repository: repository,
       );
 
@@ -63,21 +62,21 @@ void main() {
         (request) => CharlatanHttpResponse(
           body: CreateProgramResponse(
             program: Program(
-              id: '12345',
+              id: 12345,
               name: 'Test Program',
               frequency: [1, 2, 3, 4, 5],
               runs: [
                 Run(
-                  id: '12345',
-                  programId: '12345',
+                  id: 12345,
+                  programId: 12345,
                   zoneId: 0,
                   durationSeconds: 600,
                   startHour: time.hour,
                   startMinute: time.minute,
                 ),
                 Run(
-                  id: '12345',
-                  programId: '12345',
+                  id: 12345,
+                  programId: 12345,
                   zoneId: 1,
                   durationSeconds: 600,
                   startHour: time.hour,
@@ -91,7 +90,6 @@ void main() {
 
       final subject = CreateProgram(
         httpClient: FakeHttpClient(charlatan),
-        getApiKey: GetApiKey(storage),
         repository: repository,
       );
 

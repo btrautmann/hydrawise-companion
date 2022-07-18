@@ -24,7 +24,6 @@ void main() {
               customer: Customer(
                 customerId: 1,
                 activeControllerId: 1,
-                apiKey: 'fake-api-key',
               ),
             ),
           ),

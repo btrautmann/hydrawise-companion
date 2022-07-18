@@ -83,7 +83,7 @@ class ProgramsCubit extends Cubit<ProgramsState> {
   }
 
   Future<void> updateProgram({
-    required String programId,
+    required int programId,
     required String name,
     required List<int> frequency,
     required List<RunGroup> runs,
@@ -97,7 +97,7 @@ class ProgramsCubit extends Cubit<ProgramsState> {
     await _initPrograms();
   }
 
-  Future<void> deleteProgram({required String programId}) async {
+  Future<void> deleteProgram({required int programId}) async {
     await _deleteProgram(programId: programId);
     await _initPrograms();
   }

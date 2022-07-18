@@ -56,9 +56,8 @@ abstract class ProductionDependencyFactory {
     final createProgram = CreateProgram(
       httpClient: client,
       repository: repository,
-      getApiKey: getApiKey,
     );
-    final updateProgram = UpdateProgram(repository: repository);
+    final updateProgram = UpdateProgram(client: client, repository: repository);
     final deleteProgram = DeleteProgram(repository: repository);
 
     final runZone = RunZoneOverNetwork(

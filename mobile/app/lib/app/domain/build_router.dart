@@ -68,7 +68,7 @@ class BuildAppRouter {
             pageBuilder: (context, state) => MaterialPage<void>(
               key: state.pageKey,
               child: CreateProgramPage(
-                existingProgramId: state.params['pid'],
+                existingProgramId: int.parse(state.params['pid']!),
               ),
             ),
           ),

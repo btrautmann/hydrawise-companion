@@ -1,16 +1,22 @@
+import 'dart:async';
+
 import 'package:dio/dio.dart';
 import 'package:result_type/result_type.dart';
 
 typedef NetworkResult<T> = Result<T, DioError>;
 
+typedef AuthenticationGetter = FutureOr<String?> Function();
+
 class HttpClient {
   HttpClient({
     required Dio dio,
     required String baseUrl,
+    required AuthenticationGetter getAuthentication,
     List<Interceptor>? interceptors,
     HttpClientAdapter? customAdapter,
     ResponseDecoder? responseDecoder,
-  }) : _dio = dio {
+  })  : _dio = dio,
+        _getAuthentication = getAuthentication {
     _dio.options.baseUrl = baseUrl;
     if (interceptors != null) {
       _dio.interceptors.addAll(interceptors);
@@ -24,6 +30,7 @@ class HttpClient {
   }
 
   final Dio _dio;
+  final AuthenticationGetter _getAuthentication;
 
   Future<NetworkResult<T?>> _request<T extends Object>(
     String path,
@@ -33,7 +40,21 @@ class HttpClient {
     Options? options,
   ) async {
     try {
-      final optionsWithMethod = DioMixin.checkOptions(method, options);
+      late final Map<String, dynamic> headers;
+      final nonNullOptions = options ?? Options();
+      final authentication = await _getAuthentication();
+      if (nonNullOptions.headers?['api_key'] == null && authentication != null) {
+        headers = nonNullOptions.headers ?? <String, dynamic>{}
+          ..addAll({'api_key': authentication});
+      } else {
+        headers = <String, dynamic>{};
+      }
+      final optionsWithMethod = DioMixin.checkOptions(
+        method,
+        nonNullOptions.copyWith(
+          headers: headers,
+        ),
+      );
       final response = await _dio.request(
         path,
         data: data,

@@ -1,6 +1,5 @@
 import 'package:api_models/api_models.dart';
 import 'package:core/core.dart';
-import 'package:irri/auth/auth.dart';
 import 'package:irri/customer_details/customer_details.dart';
 import 'package:irri/programs/programs.dart';
 import 'package:result_type/result_type.dart';
@@ -17,14 +16,11 @@ import 'package:result_type/result_type.dart';
 class CreateProgram {
   CreateProgram({
     required HttpClient httpClient,
-    required GetApiKey getApiKey,
     required CustomerDetailsRepository repository,
   })  : _httpClient = httpClient,
-        _getApiKey = getApiKey,
         _repository = repository;
 
   final HttpClient _httpClient;
-  final GetApiKey _getApiKey;
   final CustomerDetailsRepository _repository;
 
   Future<UseCaseResult<String, String>> call({
@@ -32,8 +28,6 @@ class CreateProgram {
     required List<int> frequency,
     required List<RunGroup> runGroups,
   }) async {
-    final apiKey = await _getApiKey();
-
     final runs = <RunCreation>[];
     for (final group in runGroups) {
       for (final zoneId in group.zoneIds) {
@@ -51,7 +45,6 @@ class CreateProgram {
     final response = await _httpClient.post<Map<String, dynamic>>(
       'program',
       data: CreateProgramRequest(
-        apiKey: apiKey!,
         programName: name,
         frequency: frequency,
         runs: runs,

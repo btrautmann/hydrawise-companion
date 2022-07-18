@@ -17,7 +17,6 @@ void main() {
         Customer(
           activeControllerId: 1,
           customerId: 1,
-          apiKey: 'fake-api-key',
         ),
       );
     });

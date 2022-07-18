@@ -34,7 +34,6 @@ void main() {
               customer: Customer(
                 activeControllerId: 1,
                 customerId: 1,
-                apiKey: 'fake-api-key',
               ),
               zones: [
                 Zone(
@@ -59,7 +58,6 @@ void main() {
             customer: Customer(
               activeControllerId: 1,
               customerId: 1,
-              apiKey: 'fake-api-key',
             ),
             zones: [
               Zone(

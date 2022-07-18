@@ -7,6 +7,7 @@ class FakeHttpClient extends HttpClient {
       : super(
           baseUrl: 'http://localhost',
           dio: Dio(),
+          getAuthentication: () => 'fake-api-key',
           customAdapter: charlatan.toFakeHttpClientAdapter(),
         );
 }

@@ -23,10 +23,10 @@ abstract class CustomerDetailsRepository {
   // Programs
   Future<void> insertProgram(Program program);
   Future<void> updateProgram(Program program);
-  Future<Program> getProgram({required String programId});
+  Future<Program> getProgram({required int programId});
   Future<List<Program>> getPrograms();
-  Future<void> deleteProgram({required String programId});
-  Future<List<Run>> getRunsForProgram({required String programId});
+  Future<void> deleteProgram({required int programId});
+  Future<List<Run>> getRunsForProgram({required int programId});
 
   // Misc.
   Future<void> clearAllData();
