@@ -24,8 +24,6 @@ platform :ios do
     build_number = ENV["BUILD_NUMBER"]
     base_url = ENV["BASE_URL"]
 
-    puts base_url
-
     if is_ci
       puts "Creating TempKeychain" 
       create_keychain(
