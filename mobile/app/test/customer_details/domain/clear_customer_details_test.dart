@@ -32,12 +32,11 @@ void main() {
       final customer = Customer(
         activeControllerId: 1,
         customerId: 1,
-        apiKey: 'fake-api-key',
       );
       await repository.insertCustomer(customer);
       await repository.insertProgram(
         Program(
-          id: '12345',
+          id: 12345,
           name: 'Fake Program',
           frequency: [DateTime.monday],
           runs: List.empty(),

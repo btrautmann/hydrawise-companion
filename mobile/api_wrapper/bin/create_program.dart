@@ -3,7 +3,8 @@ import 'dart:convert';
 import 'package:api_models/api_models.dart';
 import 'package:postgres/postgres.dart';
 import 'package:shelf/shelf.dart';
-import 'package:uuid/uuid.dart';
+
+import 'extensions.dart';
 
 class CreateProgram {
   CreateProgram(this.db);
@@ -12,40 +13,30 @@ class CreateProgram {
 
   Future<Response> call(Request request) async {
     final body = await request.readAsString();
-    final createProgramRequest =
-        CreateProgramRequest.fromJson(json.decode(body));
+    final createProgramRequest = CreateProgramRequest.fromJson(json.decode(body));
 
-    // TODO(brandon): Auth interception
-    final queryResults =
-        await db.query(_findCustomerSql(createProgramRequest.apiKey));
-    if (queryResults.isEmpty) {
-      return Response(401);
-    }
-    final customerId = queryResults.single.toColumnMap()['customer_id'] as int?;
-    if (customerId == null) {
-      return Response(401);
-    }
+    final customerId = request.customerId;
 
     late final Program program;
 
     await db.transaction((connection) async {
-      final programId = const Uuid().v4();
-      final sql = _insertProgramSql(
-        createProgramRequest,
-        programId,
-        customerId,
+      final insertProgramResult = await connection.query(
+        _insertProgramSql(
+          createProgramRequest,
+          customerId,
+        ),
       );
-      await connection.execute(sql);
+      print(insertProgramResult.affectedRowCount);
+      final programId = insertProgramResult.single.toColumnMap()['program_id'] as int;
       final runs = <Run>[];
       for (final run in createProgramRequest.runs) {
-        final runId = const Uuid().v4();
-        await connection.execute(
+        final insertRunResult = await connection.query(
           _insertRunSql(
             run,
             programId,
-            runId,
           ),
         );
+        final runId = insertRunResult.single.toColumnMap()['run_id'] as int;
         runs.add(
           Run(
             id: runId,
@@ -75,17 +66,15 @@ class CreateProgram {
   }
 }
 
-String _findCustomerSql(String apiKey) =>
-    'SELECT * FROM customer WHERE api_key=\'$apiKey\' LIMIT 1;';
-
 String _insertProgramSql(
   CreateProgramRequest request,
-  String programId,
   int customerId,
 ) =>
-    'INSERT INTO program (program_id, customer_id, name, frequency) '
-    'VALUES (\'$programId\', $customerId, \'${request.programName}\', ARRAY${request.frequency.toString()});';
+    'INSERT INTO program (customer_id, name, frequency) '
+    'VALUES ($customerId, \'${request.programName}\', ARRAY${request.frequency.toString()}) '
+    'RETURNING program_id;';
 
-String _insertRunSql(RunCreation runCreation, String programId, String runId) =>
-    'INSERT INTO run (program_id, run_id, zone_id, duration_sec, start_hour, start_minute) '
-    'VALUES (\'$programId\',\'$runId\', ${runCreation.zoneId}, ${runCreation.durationSeconds}, ${runCreation.startHour}, ${runCreation.startMinute});';
+String _insertRunSql(RunCreation runCreation, int programId) =>
+    'INSERT INTO run (program_id, zone_id, duration_sec, start_hour, start_minute) '
+    'VALUES ($programId, ${runCreation.zoneId}, ${runCreation.durationSeconds}, ${runCreation.startHour}, ${runCreation.startMinute}) '
+    'RETURNING run_id;';

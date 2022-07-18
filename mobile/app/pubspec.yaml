@@ -20,6 +20,7 @@ dependencies:
   core_ui:
     path: ../core_ui
   dio: ^4.0.6
+  dotenv: ^4.0.1
   equatable: ^2.0.3
   firebase_analytics: ^9.1.2
   firebase_core: ^1.13.1

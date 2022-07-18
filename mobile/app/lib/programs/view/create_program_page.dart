@@ -13,7 +13,7 @@ class CreateProgramPage extends StatelessWidget {
 
   /// If present, represents the ID of the
   /// program being modified
-  final String? existingProgramId;
+  final int? existingProgramId;
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +54,7 @@ class CreateProgramView extends StatefulWidget {
   final String name;
   final List<int> frequency;
   final List<RunGroup> runGroups;
-  final String? existingProgramId;
+  final int? existingProgramId;
 
   @override
   State<CreateProgramView> createState() => _CreateProgramViewState();

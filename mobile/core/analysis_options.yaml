@@ -9,10 +9,7 @@ analyzer:
     todo: ignore
     sized_box_for_whitespace: error
     avoid_print: error
-    # Causes issues with freezed on CI
-    # TODO(brandon): Figure out why this fails on CI only
-    # Relevant: https://github.com/rrousselGit/freezed/issues/488
-    invalid_annotation_target: ignore
+
 linter:
   rules:
     always_put_required_named_parameters_first: false
@@ -22,3 +19,8 @@ linter:
     diagnostic_describe_all_properties: false
     prefer_expression_function_bodies: false
     public_member_api_docs: false
+    lines_longer_than_80_chars: false
+    # Causes issues with freezed on CI
+    # TODO(brandon): Figure out why this fails on CI only
+    # Relevant: https://github.com/rrousselGit/freezed/issues/488
+    invalid_annotation_target: false

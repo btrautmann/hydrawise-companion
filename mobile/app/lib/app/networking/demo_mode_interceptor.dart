@@ -19,7 +19,6 @@ class DemoModeInterceptor extends Interceptor {
               customer: Customer(
                 activeControllerId: 1,
                 customerId: 1,
-                apiKey: 'fake-api-key',
               ),
             ).toJson(),
           ),
@@ -33,7 +32,6 @@ class DemoModeInterceptor extends Interceptor {
               customer: Customer(
                 activeControllerId: 1,
                 customerId: 1,
-                apiKey: 'fake-api-key',
               ),
               zones: List.of(
                 [

@@ -26,7 +26,7 @@ class LogIn {
       options: Options(
         extra: {'allow_auth_errors': true},
       ),
-      data: LoginRequest(apiKey: apiKey, type: 'controllers').toJson(),
+      data: LoginRequest(type: 'controllers').toJson(),
     );
 
     if (response.isSuccess) {

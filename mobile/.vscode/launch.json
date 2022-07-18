@@ -38,6 +38,15 @@
             "args": [
                 "--test-randomize-ordering-seed=random"
             ]
+        },
+        {
+            "name": "api wrapper",
+            "request": "launch",
+            "type": "dart",
+            "program": "api_wrapper/bin/server.dart",
+            "env": {
+                "ENV": "development"
+            }
         }
     ]
 }

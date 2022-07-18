@@ -39,14 +39,12 @@ void main() {
           return Customer(
             activeControllerId: 1,
             customerId: 1,
-            apiKey: 'fake-api-key',
           );
         });
       await _buildSubject(charlatan);
 
       await subject.call('fake-api-key');
 
-      expect(loginRequest.apiKey, 'fake-api-key');
       expect(loginRequest.type, 'controllers');
       expect(options.extra['allow_auth_errors'], true);
     });
@@ -58,7 +56,6 @@ void main() {
             return Customer(
               activeControllerId: 1,
               customerId: 1,
-              apiKey: 'fake-api-key',
             );
           });
         await _buildSubject(charlatan);

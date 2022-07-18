@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:api_models/api_models.dart';
 import 'package:core_ui/core_ui.dart';
 import 'package:flutter/material.dart';
@@ -12,9 +10,13 @@ class ProgramsPage extends StatelessWidget {
   const ProgramsPage({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: SafeArea(
+    return Scaffold(
+      body: const SafeArea(
         child: ProgramsPageView(),
+      ),
+      floatingActionButton: FloatingActionButton(
+        child: const Icon(Icons.add),
+        onPressed: () => GoRouter.of(context).push('/create_program'),
       ),
     );
   }
@@ -67,32 +69,22 @@ class ProgramsPageView extends StatelessWidget {
                 ),
               ),
               const VSpace(spacing: 16),
-              Expanded(
-                flex: 2,
-                child: BlocBuilder<CustomerDetailsCubit, CustomerDetailsState>(
-                  builder: (context, state) {
-                    return state.maybeWhen(
-                      complete: (details, zones) {
-                        return Padding(
-                          padding: const EdgeInsets.only(left: 16, right: 16),
-                          child: _ZoneList(
-                            zones: zones,
-                            onZoneTapped: (zone) {
-                              log('$zone tapped');
-                            },
-                          ),
-                        );
-                      },
-                      orElse: () => const Center(
-                        child: CircularProgressIndicator(),
-                      ),
-                    );
-                  },
-                ),
-              ),
-              Expanded(
-                flex: 8,
-                child: _Programs(),
+              BlocBuilder<CustomerDetailsCubit, CustomerDetailsState>(
+                builder: (context, state) {
+                  return state.maybeWhen(
+                    complete: (details, zones) {
+                      return Padding(
+                        padding: const EdgeInsets.only(left: 16, right: 16),
+                        child: _ZonesAndPrograms(
+                          zones: zones,
+                        ),
+                      );
+                    },
+                    orElse: () => const Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                  );
+                },
               ),
             ],
           ),
@@ -129,135 +121,40 @@ class ProgramDetailsDialog extends StatelessWidget {
   }
 }
 
-class _Programs extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<ProgramsCubit, ProgramsState>(
-      builder: (context, state) {
-        return Column(
-          children: [
-            Visibility(visible: state.programs.isEmpty, child: const Spacer()),
-            Visibility(
-              visible: state.programs.isEmpty,
-              child: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Text('No programs'),
-                    Padding(
-                      padding: const EdgeInsets.all(8),
-                      child: ElevatedButton(
-                        onPressed: () {
-                          GoRouter.of(context).push('/create_program');
-                        },
-                        child: const Text('Create Program'),
-                      ),
-                    )
-                  ],
-                ),
-              ),
-            ),
-            Visibility(
-              visible: state.programs.isNotEmpty,
-              child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(top: 16, bottom: 16),
-                    child: ListView.builder(
-                      primary: false,
-                      shrinkWrap: true,
-                      itemCount: state.programs.length,
-                      itemBuilder: (context, index) {
-                        return Column(
-                          children: [
-                            Dismissible(
-                              background: ColoredBox(
-                                color: Theme.of(context).errorColor,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8),
-                                  child: Align(
-                                    alignment: Alignment.centerLeft,
-                                    child: Text(
-                                      'Delete',
-                                      style: TextStyle(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .onError,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              direction: DismissDirection.startToEnd,
-                              key: ObjectKey(state.programs[index]),
-                              child: Padding(
-                                padding:
-                                    const EdgeInsets.only(top: 4, bottom: 4),
-                                child: ListRow(
-                                  leadingIcon: CircleBackground(
-                                    child: Text(
-                                      state.programs[index].name.characters
-                                          .first,
-                                    ),
-                                  ),
-                                  title: Text(state.programs[index].name),
-                                  onTapped: () {
-                                    GoRouter.of(context).push(
-                                      '/update_program/${state.programs[index].id}',
-                                    );
-                                  },
-                                ),
-                              ),
-                              onDismissed: (direction) {
-                                context
-                                    .read<ProgramsCubit>()
-                                    .addToPendingDeletes(state.programs[index]);
-                              },
-                            ),
-                            const Divider(),
-                          ],
-                        );
-                      },
-                    ),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      GoRouter.of(context).push('/create_program');
-                    },
-                    child: const Text('Add Program'),
-                  )
-                ],
-              ),
-            ),
-            Visibility(visible: state.programs.isEmpty, child: const Spacer()),
-          ],
-        );
-      },
-    );
-  }
-}
-
-class _ZoneList extends StatelessWidget {
-  const _ZoneList({
+class _ZonesAndPrograms extends StatelessWidget {
+  const _ZonesAndPrograms({
     Key? key,
     required this.zones,
-    required this.onZoneTapped,
   }) : super(key: key);
 
   final List<Zone> zones;
-  final ValueSetter<Zone> onZoneTapped;
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      scrollDirection: Axis.horizontal,
-      primary: false,
-      itemCount: zones.length,
-      itemBuilder: (_, index) {
-        return ZoneCell(
-          zone: zones[index],
-          onZoneTapped: onZoneTapped,
+    return BlocBuilder<ProgramsCubit, ProgramsState>(
+      builder: (_, state) {
+        final zonesAndPrograms = [...zones, ...state.programs];
+        return ListView.builder(
+          shrinkWrap: true,
+          primary: false,
+          itemCount: zonesAndPrograms.length,
+          itemBuilder: (_, index) {
+            final item = zonesAndPrograms[index];
+            if (item is Zone) {
+              return ListTile(
+                title: Text(item.name),
+                onTap: () => GoRouter.of(context).push('/zone/${item.id}'),
+              );
+            } else if (item is Program) {
+              return ListTile(
+                title: Text(item.name),
+                onTap: () => GoRouter.of(context).push(
+                  '/update_program/${item.id}',
+                ),
+              );
+            }
+            throw Exception('Item not a zone or program');
+          },
         );
       },
     );

@@ -46,31 +46,26 @@ abstract class ProductionDependencyFactory {
     final getCustomerDetails = GetCustomerDetails(
       httpClient: client,
       repository: repository,
-      getApiKey: getApiKey,
     );
     final getPrograms = GetPrograms(
       httpClient: client,
       repository: repository,
-      getApiKey: getApiKey,
     );
     final createProgram = CreateProgram(
       httpClient: client,
       repository: repository,
-      getApiKey: getApiKey,
     );
-    final updateProgram = UpdateProgram(repository: repository);
-    final deleteProgram = DeleteProgram(repository: repository);
+    final updateProgram = UpdateProgram(client: client, repository: repository);
+    final deleteProgram = DeleteProgram(client: client, repository: repository);
 
-    final runZone = RunZoneOverNetwork(
+    final runZone = RunZone(
       httpClient: client,
-      getApiKey: getApiKey,
       setNextPollTime: setNextPollTime,
       repository: repository,
     );
 
-    final stopZone = StopZoneOverNetwork(
+    final stopZone = StopZone(
       httpClient: client,
-      getApiKey: getApiKey,
     );
 
     final setAppThemeMode = SetAppThemeMode(dataStorage);

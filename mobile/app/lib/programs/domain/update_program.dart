@@ -1,26 +1,43 @@
 // ignore: implementation_imports
 import 'package:api_models/api_models.dart';
 import 'package:collection/collection.dart';
+import 'package:core/core.dart';
 import 'package:irri/customer_details/repository/customer_details_repository.dart';
 import 'package:irri/programs/programs.dart';
-import 'package:uuid/uuid.dart';
 
 class UpdateProgram {
   UpdateProgram({
+    required HttpClient client,
     required CustomerDetailsRepository repository,
-  }) : _repository = repository;
+  })  : _client = client,
+        _repository = repository;
 
+  final HttpClient _client;
   final CustomerDetailsRepository _repository;
 
   Future<void> call({
-    required String programId,
+    required int programId,
     required String name,
     required List<int> frequency,
     required List<RunGroup> runGroups,
   }) async {
     final existingProgram = await _repository.getProgram(programId: programId);
 
-    final runsToInsert = <Run>[];
+    final modifiedGroups = runGroups.where((group) => !group.isNewRunGroup()).toList();
+
+    // Delete any runs that are no longer found in any of the "modification" groups
+    final runsToDelete = existingProgram.runs
+        .where(
+          (existingRun) => modifiedGroups.none(
+            (group) =>
+                group.zoneIds.contains(existingRun.zoneId) &&
+                group.timeOfDay == existingRun.startTime &&
+                group.duration.inSeconds == existingRun.durationSeconds,
+          ),
+        )
+        .toList();
+
+    final runsToInsert = <RunCreation>[];
     final runsToUpdate = <Run>[];
     for (final runGroup in runGroups) {
       for (final zoneId in runGroup.zoneIds) {
@@ -28,43 +45,43 @@ class UpdateProgram {
         // we may be adding runs OR updating runs,
         // and as such need to assign the correct Id, either
         // a new one or an existing one
-        String modificationId() {
-          final matchingRun = existingProgram.runs.singleWhereOrNull(
+        Run? existingRun() {
+          return existingProgram.runs.singleWhereOrNull(
             (existingRun) =>
                 existingRun.startTime == runGroup.timeOfDay &&
                 existingRun.zoneId == zoneId &&
                 existingRun.durationSeconds == runGroup.duration.inSeconds,
           );
-          // TODO(brandon): Create GetUniqueId to abstract the usage
-          // of Uuid
-          return matchingRun?.id ?? const Uuid().v4();
         }
 
-        final id = runGroup.isNewRunGroup() ? const Uuid().v4() : modificationId();
-
-        final run = Run(
-          id: id,
-          programId: programId,
-          startHour: runGroup.timeOfDay.hour,
-          startMinute: runGroup.timeOfDay.minute,
-          durationSeconds: runGroup.duration.inSeconds,
-          zoneId: zoneId,
-        );
-        final isCreating = existingProgram.runs.none((run) => run.id == id);
-        if (isCreating) {
-          runsToInsert.add(run);
+        if (runGroup.isNewRunGroup() || existingRun() == null) {
+          runsToInsert.add(
+            RunCreation(
+              zoneId: zoneId,
+              durationSeconds: runGroup.duration.inSeconds,
+              startHour: runGroup.timeOfDay.hour,
+              startMinute: runGroup.timeOfDay.minute,
+            ),
+          );
         } else {
-          runsToUpdate.add(run);
+          runsToUpdate.add(existingRun()!);
         }
       }
     }
-
-    await _repository.updateProgram(
-      existingProgram.copyWith(
-        name: name,
+    final response = await _client.put<Map<String, dynamic>>(
+      'program',
+      data: UpdateProgramRequest(
+        programId: programId,
+        programName: name,
         frequency: frequency,
-        runs: <Run>[...runsToInsert, ...runsToUpdate],
+        runsToCreate: runsToInsert,
+        runsToUpdate: runsToUpdate,
+        runsToDelete: runsToDelete,
       ),
     );
+    if (response.isSuccess) {
+      final updateProgramResponse = UpdateProgramResponse.fromJson(response.success!);
+      await _repository.updateProgram(updateProgramResponse.program);
+    }
   }
 }

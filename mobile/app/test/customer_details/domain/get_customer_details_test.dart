@@ -20,7 +20,6 @@ void main() {
       await setApiKey('fake_api_key');
       subject = GetCustomerDetails(
         httpClient: client,
-        getApiKey: GetApiKey(storage),
         repository: repository,
       );
     }
@@ -34,7 +33,6 @@ void main() {
               customer: Customer(
                 activeControllerId: 1,
                 customerId: 1,
-                apiKey: 'fake-api-key',
               ),
               zones: [
                 Zone(
@@ -59,7 +57,6 @@ void main() {
             customer: Customer(
               activeControllerId: 1,
               customerId: 1,
-              apiKey: 'fake-api-key',
             ),
             zones: [
               Zone(

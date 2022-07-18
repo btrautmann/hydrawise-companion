@@ -6,6 +6,8 @@ import 'package:hydrawise/hydrawise.dart';
 import 'package:postgres/postgres.dart';
 import 'package:shelf/shelf.dart';
 
+import 'extensions.dart';
+
 class RunZone {
   RunZone(this.db);
 
@@ -15,19 +17,11 @@ class RunZone {
     final body = await request.readAsString();
     final runZoneRequest = RunZoneRequest.fromJson(json.decode(body));
 
-    // TODO(brandon): Auth interception
-    final queryResults =
-        await db.query(_findCustomerSql(runZoneRequest.apiKey));
-    if (queryResults.isEmpty) {
-      return Response(401);
-    }
-    final customerId = queryResults.single.toColumnMap()['customer_id'] as int?;
-    if (customerId == null) {
-      return Response(401);
-    }
+    final customerId = request.customerId;
+    final apiKey = request.apiKey;
 
     final queryParameters = <String, String>{
-      'api_key': runZoneRequest.apiKey,
+      'api_key': apiKey,
       'action': 'run',
       'period_id': '999',
       'custom': runZoneRequest.runLengthSeconds.toString(),
@@ -47,16 +41,14 @@ class RunZone {
         Uri.http(
           'api.hydrawise.com',
           '/api/v1/statusschedule.php',
-          Map.of(queryParameters)
-            ..removeWhere((key, value) => key != 'api_key'),
+          Map.of(queryParameters)..removeWhere((key, value) => key != 'api_key'),
         ),
       );
       if (statusResponse.statusCode == 200) {
-        final status =
-            HCustomerStatus.fromJson(json.decode(statusResponse.body));
+        final status = HCustomerStatus.fromJson(json.decode(statusResponse.body));
         await db.transaction((connection) async {
           for (final zone in status.zones) {
-            await connection.execute(_updateZoneSql(customerId, zone));
+            await connection.query(_updateZoneSql(customerId, zone));
           }
         });
       }
@@ -64,9 +56,6 @@ class RunZone {
 
     return Response(runResponse.statusCode, body: runResponse.body);
   }
-
-  String _findCustomerSql(String apiKey) =>
-      'SELECT * FROM customer WHERE api_key=\'$apiKey\' LIMIT 1;';
 
   String _updateZoneSql(int customerId, HZone zone) => 'UPDATE zone '
       'SET time_until_run_sec = ${zone.secondsUntilNextRun}, run_length_sec = ${zone.lengthOfNextRunTimeOrTimeRemaining} '

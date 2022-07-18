@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:bloc/bloc.dart';
 import 'package:core/core.dart';
 import 'package:dio/dio.dart';
+import 'package:dotenv/dotenv.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -14,6 +15,7 @@ import 'package:irri/app/domain/app_domain_factory.dart';
 import 'package:irri/app/domain/build_router.dart';
 import 'package:irri/app/irri_app.dart';
 import 'package:irri/app/networking/networking.dart';
+import 'package:irri/auth/auth.dart';
 import 'package:irri/customer_details/customer_details.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -29,6 +31,16 @@ Future<void> main() async {
         () async {
           WidgetsFlutterBinding.ensureInitialized();
           await Firebase.initializeApp();
+
+          final dotEnv = DotEnv(includePlatformEnvironment: true);
+          final isProduction = dotEnv['IS_PROD'] == 'true';
+          late final String baseUrl;
+          // TODO(brandon): Inject these during build
+          if (isProduction) {
+            baseUrl = 'https://apiwrapper-5rvb357uza-uc.a.run.app/';
+          } else {
+            baseUrl = 'http://10.0.2.2:8080/';
+          }
 
           final firebaseMessaging = FirebaseMessaging.instance;
 
@@ -48,9 +60,9 @@ Future<void> main() async {
 
           final httpClient = HttpClient(
             dio: Dio(),
-            baseUrl: 'https://apiwrapper-5rvb357uza-uc.a.run.app/',
+            baseUrl: baseUrl,
+            getAuthentication: GetApiKey(dataStorage),
             interceptors: interceptors,
-            responseDecoder: HydrawiseApiDecoder.decode,
           );
 
           final providers = ProductionDependencyFactory.build(
