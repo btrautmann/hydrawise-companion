@@ -46,6 +46,7 @@ jobs:
           MATCH_KEYCHAIN_PASSWORD: ${{secrets.MATCH_PASSWORD}}
           MATCH_GIT_BASIC_AUTHORIZATION: ${{secrets.BASIC_AUTH_HEADER}}
           OPEN_WEATHER_MAP_API_KEY: ${{secrets.OPEN_WEATHER_MAP_API_KEY}}
+          BASE_URL: ${{secrets.BASE_URL}}
           APP_STORE_CONNECT_API_KEY_KEY: ${{secrets.APP_STORE_CONNECT_API_KEY}}
           APP_STORE_CONNECT_API_KEY_KEY_ID: ${{secrets.APP_STORE_CONNECT_API_KEY_ID}}
           APP_STORE_CONNECT_API_KEY_ISSUER_ID: ${{secrets.APP_STORE_CONNECT_API_KEY_ISSUER}}
@@ -88,5 +89,6 @@ jobs:
   #         ANDROID_KEYSTORE_PASSWORD: ${{secrets.ANDROID_KEYSTORE_PASSWORD}}
   #         ANDROID_SECRET_JSON_FILE: ${{secrets.ANDROID_SECRET_JSON_FILE}}
   #         OPEN_WEATHER_MAP_API_KEY: ${{secrets.OPEN_WEATHER_MAP_API_KEY}}
+  #         BASE_URL: ${{secrets.BASE_URL}}
   #       run: cd mobile/app/android && bundle exec fastlane deploy
 

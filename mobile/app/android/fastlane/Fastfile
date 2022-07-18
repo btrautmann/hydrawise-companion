@@ -24,7 +24,15 @@ platform :android do
   lane :deploy do
     sh("flutter", "clean")
     sh("flutter", "packages", "get")
-    sh("flutter", "build", "appbundle", "--dart-define=OPEN_WEATHER_MAP_API_KEY=#{open_weather_map_api_key}", "--flavor=production", "-v")
+    sh(
+      "flutter",
+      "build",
+      "appbundle",
+      "--dart-define=OPEN_WEATHER_MAP_API_KEY=#{open_weather_map_api_key}",
+      "--dart-define=BASE_URL=#{base_url}",
+      "--flavor=production",
+      "-v"
+    )
     
     upload_to_play_store(
       track: "beta",

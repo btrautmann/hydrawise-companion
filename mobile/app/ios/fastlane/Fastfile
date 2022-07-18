@@ -22,6 +22,7 @@ platform :ios do
   lane :deploy do
     version_name = ENV["VERSION_NAME"]
     build_number = ENV["BUILD_NUMBER"]
+    base_url = ENV["BASE_URL"]
 
     if is_ci
       puts "Creating TempKeychain" 
@@ -62,7 +63,7 @@ platform :ios do
       "--build-number=#{build_number}",
       "--build-name=#{version_name}",
       "--dart-define=OPEN_WEATHER_MAP_API_KEY=#{open_weather_map_api_key}",
-      "--flavor=production",
+      "--dart-define=BASE_URL=#{base_url}",
       "--export-options-plist=#{mapping_path}",
       "-v"
     )

@@ -25,6 +25,7 @@ class LogIn {
       'login',
       options: Options(
         extra: {'allow_auth_errors': true},
+        headers: {'api_key': apiKey},
       ),
       data: LoginRequest(type: 'controllers').toJson(),
     );

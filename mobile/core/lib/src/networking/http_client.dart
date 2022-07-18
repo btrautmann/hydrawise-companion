@@ -47,7 +47,7 @@ class HttpClient {
         headers = nonNullOptions.headers ?? <String, dynamic>{}
           ..addAll({'api_key': authentication});
       } else {
-        headers = <String, dynamic>{};
+        headers = nonNullOptions.headers ?? <String, String>{};
       }
       final optionsWithMethod = DioMixin.checkOptions(
         method,
