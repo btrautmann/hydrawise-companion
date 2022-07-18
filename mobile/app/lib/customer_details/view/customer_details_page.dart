@@ -189,8 +189,7 @@ class _RunsList extends StatelessWidget {
                                     (p) => p.id == todayRuns[index].programId,
                                   ),
                                   run: todayRuns[index],
-                                  shouldShowDivider:
-                                      index != todayRuns.length - 1,
+                                  shouldShowDivider: index != todayRuns.length - 1,
                                   onRunTapped: onRunTapped,
                                 );
                               },
@@ -233,8 +232,7 @@ class _RunCell extends StatelessWidget {
     if (zone.isRunning) {
       return 'Running now';
     }
-    return TimeOfDay(hour: run.startHour, minute: run.startMinute)
-        .format(context);
+    return TimeOfDay(hour: run.startHour, minute: run.startMinute).format(context);
   }
 
   @override
@@ -243,40 +241,10 @@ class _RunCell extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
-        InkWell(
+        ListTile(
+          title: Text('${zone.name} at ${formattedTimeOfNextRun(context)}'),
+          subtitle: Text(program.name),
           onTap: () => onRunTapped(run),
-          child: Padding(
-            padding: const EdgeInsets.only(left: 16, right: 16),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(right: 8),
-                  child: Hero(
-                    tag: run,
-                    child: CircleBackground(
-                      child: Text(zone.number.toString()),
-                    ),
-                  ),
-                ),
-                Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(zone.name),
-                    Text(
-                      program.name,
-                      style: const TextStyle(
-                        fontStyle: FontStyle.italic,
-                      ),
-                    ),
-                  ],
-                ),
-                const Spacer(),
-                Text(formattedTimeOfNextRun(context)),
-              ],
-            ),
-          ),
         ),
         if (shouldShowDivider)
           const Divider(
