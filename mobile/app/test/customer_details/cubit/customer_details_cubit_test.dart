@@ -23,7 +23,6 @@ void main() {
       return CustomerDetailsCubit(
         getCustomerDetails: GetCustomerDetails(
           httpClient: FakeHttpClient(charlatan),
-          getApiKey: GetApiKey(dataStorage),
           repository: repository,
         ),
         setNextPollTime: SetNextPollTimeInStorage(dataStorage),

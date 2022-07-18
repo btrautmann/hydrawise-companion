@@ -30,9 +30,7 @@ class ProgramsCubit extends Cubit<ProgramsState> {
     final getProgramsResponse = await _getPrograms();
     emit(
       state.copyWith(
-        programs: getProgramsResponse.isSuccess
-            ? getProgramsResponse.success.programs
-            : List.empty(),
+        programs: getProgramsResponse.isSuccess ? getProgramsResponse.success.programs : List.empty(),
       ),
     );
   }
@@ -51,12 +49,8 @@ class ProgramsCubit extends Cubit<ProgramsState> {
   }
 
   void addToPendingDeletes(Program program) {
-    final pending = <Program>[
-      ...state.pendingDeletes,
-      ...state.programs,
-    ];
-    final programs = <Program>[...state.programs]
-      ..removeWhere((element) => element.id == program.id);
+    final pending = List.of(state.pendingDeletes)..add(program);
+    final programs = List.of(state.programs)..retainWhere((p) => p.id != program.id);
     emit(
       state.copyWith(
         programs: programs,

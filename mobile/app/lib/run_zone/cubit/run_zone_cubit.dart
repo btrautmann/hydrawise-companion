@@ -22,21 +22,23 @@ class RunZoneCubit extends Cubit<RunZoneState> {
 
   Future<void> runZone({required int runLengthMinutes}) async {
     emit(RunZoneState.loading());
+    // ignore: unused_local_variable
     final result = await _runZone(
       zone: _zone,
       runLengthSeconds: runLengthMinutes * 60,
     );
 
-    final message = result.isFailure ? result.failure : result.success.message;
+    const message = 'TODO';
     emit(RunZoneState.resting(message: message));
   }
 
   Future<void> stopZone() async {
     emit(RunZoneState.loading());
+    // ignore: unused_local_variable
     final result = await _stopZone(
       zone: _zone,
     );
-    final message = result.isFailure ? result.failure : result.success.message;
+    const message = 'TODO';
     emit(RunZoneState.resting(message: message));
   }
 }

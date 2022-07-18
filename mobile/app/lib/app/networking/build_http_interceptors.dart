@@ -29,18 +29,3 @@ class BuildProductionHttpInterceptors implements BuildHttpInterceptors {
     ];
   }
 }
-
-class BuildStagingHttpInterceptors implements BuildHttpInterceptors {
-  BuildStagingHttpInterceptors({
-    required VoidCallback onAuthenticationFailure,
-  }) : _onAuthenticationFailure = onAuthenticationFailure;
-
-  final VoidCallback _onAuthenticationFailure;
-
-  @override
-  Future<List<Interceptor>> call() {
-    return BuildProductionHttpInterceptors(
-      onAuthenticationFailure: _onAuthenticationFailure,
-    ).call();
-  }
-}

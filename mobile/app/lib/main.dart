@@ -63,7 +63,6 @@ Future<void> main() async {
             baseUrl: baseUrl,
             getAuthentication: GetApiKey(dataStorage),
             interceptors: interceptors,
-            responseDecoder: HydrawiseApiDecoder.decode,
           );
 
           final providers = ProductionDependencyFactory.build(

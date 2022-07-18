@@ -20,7 +20,6 @@ void main() {
       await setApiKey('fake_api_key');
       subject = GetCustomerDetails(
         httpClient: client,
-        getApiKey: GetApiKey(storage),
         repository: repository,
       );
     }

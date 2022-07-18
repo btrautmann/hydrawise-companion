@@ -9,24 +9,10 @@ void main() {
     final buildProductionHttpInterceptors = BuildProductionHttpInterceptors(
       onAuthenticationFailure: () {},
     );
-    final buildStagingHttpInterceptors = BuildStagingHttpInterceptors(
-      onAuthenticationFailure: () {},
-    );
 
     group('BuildProductionHttpInterceptors', () {
       test('the correct interceptors are returned', () async {
         final interceptors = await buildProductionHttpInterceptors();
-
-        expect(interceptors.length, 3);
-        expect(interceptors[0], isA<DemoModeInterceptor>());
-        expect(interceptors[1], isA<AuthenticationInterceptor>());
-        expect(interceptors[2], isA<LogInterceptor>());
-      });
-    });
-
-    group('BuildStagingHttpInterceptors', () {
-      test('the correct interceptors are returned', () async {
-        final interceptors = await buildStagingHttpInterceptors();
 
         expect(interceptors.length, 3);
         expect(interceptors[0], isA<DemoModeInterceptor>());

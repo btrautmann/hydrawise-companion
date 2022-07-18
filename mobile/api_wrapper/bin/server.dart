@@ -61,6 +61,7 @@ Future<void> main(List<String> args) async {
     ..post('/program', CreateProgram(db))
     ..get('/program', GetPrograms(db))
     ..put('/program', UpdateProgram(db))
+    ..delete('/program', DeleteProgram(db))
     ..get('/customer', GetCustomer(db))
     ..get('/check_runs', CheckRuns(db));
 
