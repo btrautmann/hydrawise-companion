@@ -4,7 +4,6 @@ import 'dart:developer';
 import 'package:bloc/bloc.dart';
 import 'package:core/core.dart';
 import 'package:dio/dio.dart';
-import 'package:dotenv/dotenv.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -32,16 +31,6 @@ Future<void> main() async {
           WidgetsFlutterBinding.ensureInitialized();
           await Firebase.initializeApp();
 
-          final dotEnv = DotEnv(includePlatformEnvironment: true);
-          final isProduction = dotEnv['IS_PROD'] == 'true';
-          late final String baseUrl;
-          // TODO(brandon): Inject these during build
-          if (isProduction) {
-            baseUrl = 'https://apiwrapper-5rvb357uza-uc.a.run.app/';
-          } else {
-            baseUrl = 'http://10.0.2.2:8080/';
-          }
-
           final firebaseMessaging = FirebaseMessaging.instance;
 
           final sharedPreferences = await SharedPreferences.getInstance();
@@ -58,6 +47,8 @@ Future<void> main() async {
             onAuthenticationFailure: onAuthenticationFailure,
           ).call();
 
+          // ignore: do_not_use_environment
+          const baseUrl = String.fromEnvironment('BASE_URL');
           final httpClient = HttpClient(
             dio: Dio(),
             baseUrl: baseUrl,

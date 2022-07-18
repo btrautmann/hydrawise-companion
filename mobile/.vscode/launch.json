@@ -13,8 +13,6 @@
             "args": [
                 "--dart-define",
                 "OPEN_WEATHER_MAP_API_KEY=${env:OPEN_WEATHER_MAP_API_KEY}",
-                "--flavor",
-                "production"
             ]
         },
         {
