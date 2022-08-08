@@ -45,10 +45,25 @@ class StopZone {
         final status = HCustomerStatus.fromJson(json.decode(statusResponse.body));
         await db.transaction((connection) async {
           for (final zone in status.zones) {
-            print('Inserting zone $zone');
             await connection.query(_updateZoneSql(customerId, zone));
           }
         });
+        final runZoneResponse = RunZoneResponse(
+          zones: status.zones
+              .map(
+                (e) => Zone(
+                  id: e.id,
+                  number: e.physicalNumber,
+                  name: e.name,
+                  timeUntilNextRunSec: e.secondsUntilNextRun,
+                  runLengthSec: e.lengthOfNextRunTimeOrTimeRemaining,
+                ),
+              )
+              .toList(),
+        );
+        return Response.ok(
+          jsonEncode(runZoneResponse),
+        );
       }
     }
 

@@ -79,7 +79,7 @@ class __RunZonesViewState extends State<_RunZonesView> {
                   padding: const EdgeInsets.only(top: 16),
                   child: _NextWaterText(zone: selectedZone),
                 ),
-                if (!selectedZone.isRunning && !selectedZone.isSuspended)
+                if (!selectedZone.isRunning)
                   Padding(
                     padding: const EdgeInsets.only(top: 16),
                     child: _RunLengthSlider(
@@ -201,16 +201,7 @@ class _ZoneButtons extends StatelessWidget {
   final VoidCallback onSuspendPressed;
 
   List<Widget> _buildZoneButtons(BuildContext context) {
-    if (zone.isSuspended) {
-      return [
-        const Spacer(),
-        _ZoneButton(
-          text: 'Resume',
-          onPressed: onResumePressed,
-        ),
-        const Spacer(),
-      ];
-    } else if (zone.isRunning) {
+    if (zone.isRunning) {
       return [
         const Spacer(),
         _ZoneButton(
@@ -354,9 +345,6 @@ class _NextWaterText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (zone.isSuspended) {
-      return const Text('Suspended');
-    }
     if (zone.isRunning) {
       final endOfRun = clock.now().add(
             Duration(seconds: zone.runLengthSec),

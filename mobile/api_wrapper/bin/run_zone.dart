@@ -51,6 +51,22 @@ class RunZone {
             await connection.query(_updateZoneSql(customerId, zone));
           }
         });
+        final runZoneResponse = RunZoneResponse(
+          zones: status.zones
+              .map(
+                (e) => Zone(
+                  id: e.id,
+                  number: e.physicalNumber,
+                  name: e.name,
+                  timeUntilNextRunSec: e.secondsUntilNextRun,
+                  runLengthSec: e.lengthOfNextRunTimeOrTimeRemaining,
+                ),
+              )
+              .toList(),
+        );
+        return Response.ok(
+          jsonEncode(runZoneResponse),
+        );
       }
     }
 

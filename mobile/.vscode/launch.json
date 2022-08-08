@@ -13,6 +13,8 @@
             "args": [
                 "--dart-define",
                 "OPEN_WEATHER_MAP_API_KEY=${env:OPEN_WEATHER_MAP_API_KEY}",
+                "--dart-define",
+                "BASE_URL=https://apiwrapper-5rvb357uza-uc.a.run.app/",
             ]
         },
         {
@@ -20,12 +22,10 @@
             "request": "launch",
             "type": "dart",
             "flutterMode": "profile",
-            "program": "app/lib/main_production.dart",
+            "program": "app/lib/main.dart",
             "args": [
                 "--dart-define",
                 "OPEN_WEATHER_MAP_API_KEY=${env:OPEN_WEATHER_MAP_API_KEY}",
-                "--flavor",
-                "production"
             ]
         },
         {
