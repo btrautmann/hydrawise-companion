@@ -22,9 +22,7 @@ class StopZone {
     );
     if (response.isSuccess) {
       final runZoneResponse = RunZoneResponse.fromJson(response.success!);
-      await _repository.updateZone(
-        runZoneResponse.zones.firstWhere((element) => element.id == zone.id),
-      );
+      await _repository.updateZone(runZoneResponse.zone);
     }
     return response.isSuccess ? Success(true) : Failure(false);
   }

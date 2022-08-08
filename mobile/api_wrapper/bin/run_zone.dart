@@ -46,30 +46,25 @@ class RunZone {
       );
       if (statusResponse.statusCode == 200) {
         final status = HCustomerStatus.fromJson(json.decode(statusResponse.body));
+        final zone = status.zones.singleWhere((z) => z.id == runZoneRequest.zoneId);
         await db.transaction((connection) async {
-          for (final zone in status.zones) {
-            await connection.query(_updateZoneSql(customerId, zone));
-          }
+          final result = await connection.query(_updateZoneSql(customerId, zone));
+          final map = result.single.toColumnMap();
+          final runZoneResponse = RunZoneResponse(
+            zone: Zone(
+              id: runZoneRequest.zoneId,
+              number: map['zone_num'],
+              name: map['zone_name'],
+              timeUntilNextRunSec: map['time_until_run_sec'],
+              runLengthSec: map['run_length_sec'],
+            ),
+          );
+          return Response.ok(
+            jsonEncode(runZoneResponse),
+          );
         });
-        final runZoneResponse = RunZoneResponse(
-          zones: status.zones
-              .map(
-                (e) => Zone(
-                  id: e.id,
-                  number: e.physicalNumber,
-                  name: e.name,
-                  timeUntilNextRunSec: e.secondsUntilNextRun,
-                  runLengthSec: e.lengthOfNextRunTimeOrTimeRemaining,
-                ),
-              )
-              .toList(),
-        );
-        return Response.ok(
-          jsonEncode(runZoneResponse),
-        );
       }
     }
-
     return Response(runResponse.statusCode, body: runResponse.body);
   }
 
