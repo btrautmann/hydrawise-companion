@@ -13,7 +13,6 @@ void main() {
       test('the correct interceptors are returned', () async {
         final interceptors = await buildProductionHttpInterceptors();
 
-        expect(interceptors.length, 3);
         expect(interceptors[1], isA<AuthenticationInterceptor>());
         expect(interceptors[2], isA<LogInterceptor>());
       });
