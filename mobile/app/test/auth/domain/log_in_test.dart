@@ -35,7 +35,7 @@ void main() {
       });
 
       test('it returns true', () async {
-        final isLoggedIn = await subject.call('fake-api-key');
+        final isLoggedIn = await subject.call('fake-api-key', 'fake-timezone');
         expect(isLoggedIn, isTrue);
       });
     });
@@ -55,7 +55,7 @@ void main() {
       });
 
       test('it returns false', () async {
-        final isLoggedIn = await subject.call('apiKey');
+        final isLoggedIn = await subject.call('apiKey', 'fake-timezone');
         expect(isLoggedIn, isFalse);
       });
     });

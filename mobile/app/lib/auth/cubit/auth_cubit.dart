@@ -43,7 +43,8 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   Future<void> login(String apiKey) async {
-    final isLoggedIn = await _logIn(apiKey);
+    // TODO(brandon): Use `GetUserTimezone` to get real time zone
+    final isLoggedIn = await _logIn(apiKey, 'America/New York');
     if (isLoggedIn) {
       emit(AuthState.loggedIn());
       return;
