@@ -6,6 +6,5 @@ extension DbCustomerMappings on DbCustomer {
   Customer toCustomer() => Customer(
         customerId: customerId,
         activeControllerId: activeControllerId,
-        timezone: timezone,
       );
 }

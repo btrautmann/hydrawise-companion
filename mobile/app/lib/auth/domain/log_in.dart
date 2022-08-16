@@ -32,7 +32,6 @@ class LogIn {
       ),
       data: LoginRequest(
         type: 'controllers',
-        timezone: timezone,
       ).toJson(),
     );
 

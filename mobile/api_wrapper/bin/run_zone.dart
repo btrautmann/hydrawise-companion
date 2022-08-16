@@ -7,18 +7,21 @@ import 'package:postgres/postgres.dart';
 import 'package:shelf/shelf.dart';
 
 import '../db/extensions/program.dart';
-import '../db/queries/get_programs_by_customer_id.dart';
+import '../db/queries/get_customer_by_id.dart';
+import '../db/queries/get_programs_by_customer.dart';
 import '../db/queries/get_zone_by_id.dart';
 import 'extensions.dart';
 
 class RunZone {
   RunZone(this.db)
-      : _getProgramsByCustomerId = GetProgramsByCustomerId(db),
-        _getZoneById = GetZoneById(db);
+      : _getProgramsByCustomerId = GetProgramsByCustomer(db),
+        _getZoneById = GetZoneById(db),
+        _getCustomerById = GetCustomerById(db);
 
-  late final GetProgramsByCustomerId _getProgramsByCustomerId;
-  late final GetZoneById _getZoneById;
   final PostgreSQLConnection db;
+  final GetCustomerById _getCustomerById;
+  final GetProgramsByCustomer _getProgramsByCustomerId;
+  final GetZoneById _getZoneById;
 
   Future<Response> call(Request request) async {
     final body = await request.readAsString();
@@ -55,7 +58,8 @@ class RunZone {
         final status = HCustomerStatus.fromJson(json.decode(statusResponse.body));
         final hZone = status.zones.singleWhere((z) => z.id == runZoneRequest.zoneId);
         final dbZone = await _getZoneById(hZone.id);
-        final programs = await _getProgramsByCustomerId(customerId);
+        final customer = await _getCustomerById(customerId);
+        final programs = await _getProgramsByCustomerId(customer);
         final nextRun = programs.nextRun(hZone.id);
         final runZoneResponse = RunZoneResponse(
           zone: Zone(

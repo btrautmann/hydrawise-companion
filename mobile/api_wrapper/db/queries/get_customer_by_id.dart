@@ -13,7 +13,6 @@ class GetCustomerById {
 
     return DbCustomer(
       customerId: customerId,
-      timezone: map['timezone'],
       activeControllerId: map['active_controller_id'],
     );
   }

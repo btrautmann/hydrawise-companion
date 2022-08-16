@@ -6,15 +6,17 @@ import 'package:hydrawise/hydrawise.dart';
 import 'package:postgres/postgres.dart';
 import 'package:shelf/shelf.dart';
 
+import '../db/queries/insert_customer.dart';
 import 'extensions.dart';
 
 /// Calls the customer details and customer states endpoints
 /// and if successful, inserts the customer and their zones
 /// into the database
 class Login {
-  Login(this.db);
+  Login(this.db) : _insertCustomer = InsertCustomer(db);
 
   final PostgreSQLConnection db;
+  final InsertCustomer _insertCustomer;
 
   Future<Response> call(Request request) async {
     final body = await request.readAsString();
@@ -40,23 +42,15 @@ class Login {
         Uri.http(
           'api.hydrawise.com',
           '/api/v1/statusschedule.php',
-          Map.of(queryParameters)..removeWhere((key, value) => key != 'api_key'),
+          <String, dynamic>{
+            'api_key': apiKey,
+            'controller_id': details.activeControllerId.toString(),
+          },
         ),
       );
       if (statusResponse.statusCode == 200) {
         final status = HCustomerStatus.fromJson(json.decode(statusResponse.body));
-        await db.transaction((connection) async {
-          await connection.query(
-            _insertCustomerSql(
-              details,
-              apiKey,
-              loginRequest,
-            ),
-          );
-          for (final zone in status.zones) {
-            await connection.query(_insertZoneSql(details, zone));
-          }
-        });
+        await _insertCustomer(apiKey: apiKey, details: details, status: status);
 
         return Response.ok(
           jsonEncode(
@@ -64,7 +58,6 @@ class Login {
               customer: Customer(
                 customerId: details.customerId,
                 activeControllerId: details.activeControllerId,
-                timezone: loginRequest.timezone,
               ),
             ),
           ),
@@ -74,19 +67,4 @@ class Login {
     }
     return Response(401);
   }
-
-  // TODO(brandon): Add DO UPDATE clause to allow changing API key
-  String _insertCustomerSql(
-    HCustomerDetails details,
-    String apiKey,
-    LoginRequest request,
-  ) =>
-      'INSERT INTO customer (customer_id, api_key, active_controller_id, timezone) '
-      'VALUES (${details.customerId}, \'$apiKey\', ${details.activeControllerId}, \'${request.timezone}\') '
-      'ON CONFLICT (customer_id, api_key) DO NOTHING;';
-
-  String _insertZoneSql(HCustomerDetails details, HZone zone) =>
-      'INSERT INTO zone (zone_id, customer_id, zone_num, zone_name) '
-      'VALUES (${zone.id}, ${details.customerId}, ${zone.physicalNumber}, \'${zone.name}\') '
-      'ON CONFLICT (zone_id, customer_id) DO NOTHING;';
 }

@@ -1,15 +1,18 @@
 import 'package:postgres/postgres.dart';
 
+import '../models/db_customer.dart';
 import '../models/db_program.dart';
 import '../models/db_run.dart';
 
-class GetProgramsByCustomerId {
-  GetProgramsByCustomerId(this.db);
+class GetProgramsByCustomer {
+  GetProgramsByCustomer(this.db);
 
   final PostgreSQLConnection db;
 
-  Future<List<DbProgram>> call(int customerId) async {
-    final programsResult = await db.query('SELECT * FROM program WHERE customer_id=$customerId;');
+  Future<List<DbProgram>> call(DbCustomer customer) async {
+    final programsResult = await db.query(
+      'SELECT * FROM program WHERE customer_id=${customer.customerId} AND controller_id=${customer.activeControllerId};',
+    );
 
     final programs = <DbProgram>[];
     for (final programRow in programsResult) {

@@ -9,28 +9,27 @@ import 'package:shelf/shelf.dart';
 import '../db/extensions/program.dart';
 import '../db/mappings/db_customer.dart';
 import '../db/queries/get_customer_by_id.dart';
-import '../db/queries/get_programs_by_customer_id.dart';
-import '../db/queries/get_zones_by_customer_id.dart';
+import '../db/queries/get_programs_by_customer.dart';
+import '../db/queries/get_zones_by_customer.dart';
 import 'extensions.dart';
 
 class GetCustomer {
   GetCustomer(this.db)
-      : _getZonesByCustomerId = GetZonesByCustomerId(db),
+      : _getZonesByCustomer = GetZonesByCustomer(db),
         _getCustomerById = GetCustomerById(db),
-        _getProgramsByCustomerId = GetProgramsByCustomerId(db);
-
-  late final GetZonesByCustomerId _getZonesByCustomerId;
-  late final GetCustomerById _getCustomerById;
-  late final GetProgramsByCustomerId _getProgramsByCustomerId;
+        _getProgramsByCustomer = GetProgramsByCustomer(db);
 
   final PostgreSQLConnection db;
+  final GetZonesByCustomer _getZonesByCustomer;
+  final GetCustomerById _getCustomerById;
+  final GetProgramsByCustomer _getProgramsByCustomer;
 
   Future<Response> call(Request request) async {
     final customerId = request.customerId;
 
     final customer = await _getCustomerById(customerId);
-    final zones = await _getZonesByCustomerId(customerId);
-    final programs = await _getProgramsByCustomerId(customerId);
+    final zones = await _getZonesByCustomer(customer);
+    final programs = await _getProgramsByCustomer(customer);
 
     final statusResponse = await http.get(
       Uri.http(

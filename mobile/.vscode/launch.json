@@ -5,7 +5,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "irri",
+            "name": "irri (prod)",
             "request": "launch",
             "type": "dart",
             "program": "app/lib/main.dart",
@@ -15,6 +15,19 @@
                 "OPEN_WEATHER_MAP_API_KEY=${env:OPEN_WEATHER_MAP_API_KEY}",
                 "--dart-define",
                 "BASE_URL=https://apiwrapper-5rvb357uza-uc.a.run.app/",
+            ]
+        },
+        {
+            "name": "irri (local)",
+            "request": "launch",
+            "type": "dart",
+            "program": "app/lib/main.dart",
+            "flutterMode": "debug",
+            "args": [
+                "--dart-define",
+                "OPEN_WEATHER_MAP_API_KEY=${env:OPEN_WEATHER_MAP_API_KEY}",
+                "--dart-define",
+                "BASE_URL=http://10.0.2.2:8080/",
             ]
         },
         {
