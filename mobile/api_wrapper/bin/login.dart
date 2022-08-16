@@ -64,6 +64,7 @@ class Login {
               customer: Customer(
                 customerId: details.customerId,
                 activeControllerId: details.activeControllerId,
+                timezone: loginRequest.timezone,
               ),
             ),
           ),
@@ -81,7 +82,7 @@ class Login {
     LoginRequest request,
   ) =>
       'INSERT INTO customer (customer_id, api_key, active_controller_id, timezone) '
-      'VALUES (${details.customerId}, \'$apiKey\', ${details.activeControllerId}, ${request.timezone}) '
+      'VALUES (${details.customerId}, \'$apiKey\', ${details.activeControllerId}, \'${request.timezone}\') '
       'ON CONFLICT (customer_id, api_key) DO NOTHING;';
 
   String _insertZoneSql(HCustomerDetails details, HZone zone) =>

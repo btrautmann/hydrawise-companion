@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:irri/auth/auth.dart';
+import 'package:irri/configuration/configuration.dart';
 
 part 'auth_cubit.freezed.dart';
 part 'auth_state.dart';
@@ -11,10 +12,12 @@ class AuthCubit extends Cubit<AuthState> {
     required LogIn logIn,
     required LogOut logOut,
     required GetAuthFailures getAuthFailures,
+    required GetLocalTimezone getLocalTimezone,
   })  : _isLoggedIn = isLoggedIn,
         _logIn = logIn,
         _logOut = logOut,
         _getAuthFailures = getAuthFailures,
+        _getLocalTimezone = getLocalTimezone,
         super(AuthState.loggedOut()) {
     _checkAuthenticationStatus();
     _listenForAuthFailures();
@@ -24,6 +27,7 @@ class AuthCubit extends Cubit<AuthState> {
   final LogIn _logIn;
   final LogOut _logOut;
   final GetAuthFailures _getAuthFailures;
+  final GetLocalTimezone _getLocalTimezone;
 
   Future<void> _checkAuthenticationStatus() async {
     if (await _isLoggedIn()) {
@@ -43,8 +47,8 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   Future<void> login(String apiKey) async {
-    // TODO(brandon): Use `GetUserTimezone` to get real time zone
-    final isLoggedIn = await _logIn(apiKey, 'America/New York');
+    final timeZone = await _getLocalTimezone();
+    final isLoggedIn = await _logIn(apiKey, timeZone);
     if (isLoggedIn) {
       emit(AuthState.loggedIn());
       return;

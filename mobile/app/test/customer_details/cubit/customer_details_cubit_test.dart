@@ -7,6 +7,7 @@ import 'package:clock/clock.dart';
 import 'package:core/core.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:irri/auth/auth.dart';
+import 'package:irri/configuration/configuration.dart';
 import 'package:irri/customer_details/customer_details.dart';
 
 import '../../core/fakes/fake_http_client.dart';
@@ -48,8 +49,10 @@ void main() {
                 id: 1,
                 number: 1,
                 name: 'Fake zone',
-                timeUntilNextRunSec: 60,
-                runLengthSec: 600,
+                nextRunStart: DateTime.now().toString(),
+                nextRunLengthSec: 60,
+                isRunning: false,
+                timeRemainingSec: 0,
               ),
             ],
           ),
@@ -76,6 +79,7 @@ void main() {
         isLoggedIn: IsLoggedIn(
           getApiKey: GetApiKey(dataStorage),
         ),
+        getLocalTimezone: FakeGetLocalTimezone(),
       );
     });
 
@@ -113,13 +117,15 @@ void main() {
                 customerId: 1,
               ),
               zones: [
-                Zone(
-                  id: 1,
-                  number: 1,
-                  name: 'Fake zone',
-                  timeUntilNextRunSec: 60,
-                  runLengthSec: 600,
-                ),
+              Zone(
+                id: 1,
+                number: 1,
+                name: 'Fake zone',
+                nextRunStart: DateTime.now().toString(),
+                nextRunLengthSec: 60,
+                isRunning: false,
+                timeRemainingSec: 0,
+              ),
               ],
             ),
           ],
