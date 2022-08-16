@@ -34,19 +34,20 @@ platform :ios do
         timeout: 3600,
         lock_when_sleeps: true
       )
+      match(
+        type: "appstore",
+        keychain_name: "TempKeychain",
+        keychain_password: "TempPassword",
+        readonly: true
+      )
     else
-      puts "Not creating keychain" 
+      puts "Not creating keychain and invoking match" 
     end
     app_store_connect_api_key(
       is_key_content_base64: true,
       duration: 1200, # optional (maximum 1200)
       in_house: false # optional but may be required if using match/sigh
     )
-    match(
-      type: "appstore",
-      keychain_name: "TempKeychain",
-      keychain_password: "TempPassword",
-      readonly: true)
     sh("flutter", "clean")
     sh("flutter", "packages", "get")
     cocoapods(
