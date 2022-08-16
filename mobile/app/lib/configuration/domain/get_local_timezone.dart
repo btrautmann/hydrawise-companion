@@ -7,3 +7,10 @@ class GetLocalTimezone {
     return FlutterNativeTimezone.getLocalTimezone();
   }
 }
+
+class FakeGetLocalTimezone implements GetLocalTimezone {
+  @override
+  Future<String> call() async {
+    return 'America/New York';
+  }
+}

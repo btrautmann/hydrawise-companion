@@ -30,12 +30,8 @@ class RunZone {
     );
 
     if (response.isSuccess) {
-      await _repository.updateZone(
-        zone.copyWith(
-          timeUntilNextRunSec: 1,
-          runLengthSec: runLengthSeconds,
-        ),
-      );
+      final runZoneResponse = RunZoneResponse.fromJson(response.success!);
+      await _repository.updateZone(runZoneResponse.zone);
       // Push next poll time back to right after the zone is set
       // to complete, so our state will update correctly
       await _setNextPollTime(secondsUntilNextPoll: runLengthSeconds + 1);

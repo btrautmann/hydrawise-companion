@@ -6,12 +6,22 @@ import 'package:hydrawise/hydrawise.dart';
 import 'package:postgres/postgres.dart';
 import 'package:shelf/shelf.dart';
 
+import '../db/extensions/program.dart';
+import '../db/queries/get_customer_by_id.dart';
+import '../db/queries/get_programs_by_customer.dart';
+import '../db/queries/get_zone_by_id.dart';
 import 'extensions.dart';
 
 class StopZone {
-  StopZone(this.db);
+  StopZone(this.db)
+      : _getProgramsByCustomerId = GetProgramsByCustomer(db),
+        _getZoneById = GetZoneById(db),
+        _getCustomerById = GetCustomerById(db);
 
   final PostgreSQLConnection db;
+  final GetCustomerById _getCustomerById;
+  final GetZoneById _getZoneById;
+  final GetProgramsByCustomer _getProgramsByCustomerId;
 
   Future<Response> call(Request request) async {
     final body = await request.readAsString();
@@ -41,21 +51,31 @@ class StopZone {
           Map.of(queryParameters)..removeWhere((key, value) => key != 'api_key'),
         ),
       );
+
       if (statusResponse.statusCode == 200) {
         final status = HCustomerStatus.fromJson(json.decode(statusResponse.body));
-        await db.transaction((connection) async {
-          for (final zone in status.zones) {
-            print('Inserting zone $zone');
-            await connection.query(_updateZoneSql(customerId, zone));
-          }
-        });
+        final hZone = status.zones.singleWhere((z) => z.id == stopZoneRequest.zoneId);
+        final dbZone = await _getZoneById(hZone.id);
+        final customer = await _getCustomerById(customerId);
+        final programs = await _getProgramsByCustomerId(customer);
+        final nextRun = programs.nextRun(hZone.id);
+        final runZoneResponse = RunZoneResponse(
+          zone: Zone(
+            id: dbZone!.id,
+            number: dbZone.number,
+            name: dbZone.name,
+            isRunning: hZone.secondsUntilNextRun == 1,
+            timeRemainingSec: hZone.lengthOfNextRunTimeOrTimeRemaining,
+            nextRunStart: nextRun?.time.toString(),
+            nextRunLengthSec: nextRun?.run.durationSec ?? 0,
+          ),
+        );
+        return Response.ok(
+          jsonEncode(runZoneResponse),
+        );
       }
     }
 
     return Response(stopResponse.statusCode, body: stopResponse.body);
   }
-
-  String _updateZoneSql(int customerId, HZone zone) => 'UPDATE zone '
-      'SET time_until_run_sec = ${zone.secondsUntilNextRun}, run_length_sec = ${zone.lengthOfNextRunTimeOrTimeRemaining} '
-      'WHERE zone_id = ${zone.id} AND customer_id = $customerId;';
 }

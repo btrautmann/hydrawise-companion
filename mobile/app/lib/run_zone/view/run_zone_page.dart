@@ -63,12 +63,10 @@ class __RunZonesViewState extends State<_RunZonesView> {
 
   @override
   Widget build(BuildContext context) {
-    final customerDetailsState =
-        context.select((CustomerDetailsCubit cubit) => cubit.state);
+    final customerDetailsState = context.select((CustomerDetailsCubit cubit) => cubit.state);
     return customerDetailsState.maybeWhen(
       complete: (details, zones) {
-        final selectedZone =
-            zones.singleWhere((element) => element.id == widget.zone.id);
+        final selectedZone = zones.singleWhere((element) => element.id == widget.zone.id);
         return Center(
           child: Padding(
             padding: const EdgeInsets.all(16),
@@ -79,7 +77,7 @@ class __RunZonesViewState extends State<_RunZonesView> {
                   padding: const EdgeInsets.only(top: 16),
                   child: _NextWaterText(zone: selectedZone),
                 ),
-                if (!selectedZone.isRunning && !selectedZone.isSuspended)
+                if (!selectedZone.isRunning)
                   Padding(
                     padding: const EdgeInsets.only(top: 16),
                     child: _RunLengthSlider(
@@ -158,8 +156,7 @@ class __RunLengthSliderState extends State<_RunLengthSlider> {
   @override
   void initState() {
     // TODO(brandon): Fix this hack
-    final maxValue =
-        widget.zone.runLengthSec == 0 ? 90 : widget.zone.runLengthSec / 60;
+    final maxValue = widget.zone.nextRunLengthSec == 0 ? 90 : widget.zone.nextRunLengthSec / 60;
     _setCurrentValue(maxValue.toDouble());
     super.initState();
   }
@@ -201,16 +198,7 @@ class _ZoneButtons extends StatelessWidget {
   final VoidCallback onSuspendPressed;
 
   List<Widget> _buildZoneButtons(BuildContext context) {
-    if (zone.isSuspended) {
-      return [
-        const Spacer(),
-        _ZoneButton(
-          text: 'Resume',
-          onPressed: onResumePressed,
-        ),
-        const Spacer(),
-      ];
-    } else if (zone.isRunning) {
+    if (zone.isRunning) {
       return [
         const Spacer(),
         _ZoneButton(
@@ -261,8 +249,7 @@ class _ZoneButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<RunZoneCubit, RunZoneState>(
       builder: (_, state) {
-        final isLoading =
-            state.when(resting: (_) => false, loading: () => true);
+        final isLoading = state.when(resting: (_) => false, loading: () => true);
         return ActionChip(
           onPressed: onPressed,
           label: SizedBox(
@@ -354,12 +341,9 @@ class _NextWaterText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (zone.isSuspended) {
-      return const Text('Suspended');
-    }
     if (zone.isRunning) {
       final endOfRun = clock.now().add(
-            Duration(seconds: zone.runLengthSec),
+            Duration(seconds: zone.nextRunLengthSec),
           );
       final difference = clock.now().difference(endOfRun).abs();
       if (difference.inHours > 1) {

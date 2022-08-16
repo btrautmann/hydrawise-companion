@@ -8,6 +8,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:irri/app/app.dart';
 import 'package:irri/app_theme_mode/app_theme_mode.dart';
 import 'package:irri/auth/auth.dart';
+import 'package:irri/configuration/configuration.dart';
 import 'package:irri/customer_details/customer_details.dart';
 import 'package:irri/programs/programs.dart';
 import 'package:provider/provider.dart';
@@ -42,6 +43,7 @@ class IrriApp extends StatelessWidget {
               getAuthFailures: context.read<GetAuthFailures>(),
               isLoggedIn: context.read<IsLoggedIn>(),
               logIn: context.read<LogIn>(),
+              getLocalTimezone: context.read<GetLocalTimezone>(),
             ),
             lazy: false,
           ),

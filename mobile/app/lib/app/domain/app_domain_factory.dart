@@ -66,6 +66,7 @@ abstract class ProductionDependencyFactory {
 
     final stopZone = StopZone(
       httpClient: client,
+      repository: repository,
     );
 
     final setAppThemeMode = SetAppThemeMode(dataStorage);

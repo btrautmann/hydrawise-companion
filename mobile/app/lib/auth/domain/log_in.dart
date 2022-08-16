@@ -20,14 +20,19 @@ class LogIn {
   final SetApiKey _setApiKey;
 
   /// {@macro log_in}
-  Future<bool> call(String apiKey) async {
+  Future<bool> call(
+    String apiKey,
+    String timezone,
+  ) async {
     final response = await _httpClient.post<Map<String, dynamic>>(
       'login',
       options: Options(
         extra: {'allow_auth_errors': true},
         headers: {'api_key': apiKey},
       ),
-      data: LoginRequest(type: 'controllers').toJson(),
+      data: LoginRequest(
+        type: 'controllers',
+      ).toJson(),
     );
 
     if (response.isSuccess) {

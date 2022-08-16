@@ -7,6 +7,7 @@ import 'package:core/core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:irri/auth/auth.dart';
+import 'package:irri/configuration/configuration.dart';
 import 'package:irri/customer_details/customer_details.dart';
 
 import '../../core/fakes/fake_http_client.dart';
@@ -39,6 +40,7 @@ void main() {
               httpClient: FakeHttpClient(charlatan),
               setApiKey: setApiKey,
             ),
+        getLocalTimezone: FakeGetLocalTimezone(),
       );
     }
 

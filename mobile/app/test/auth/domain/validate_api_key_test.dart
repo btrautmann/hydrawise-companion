@@ -43,7 +43,7 @@ void main() {
         });
       await _buildSubject(charlatan);
 
-      await subject.call('fake-api-key');
+      await subject.call('fake-api-key', 'fake-timezone');
 
       expect(loginRequest.type, 'controllers');
       expect(options.extra['allow_auth_errors'], true);
@@ -65,14 +65,14 @@ void main() {
         final apiKeyBefore = await getApiKey();
         expect(apiKeyBefore, isNull);
 
-        await subject.call('fake-api-key');
+        await subject.call('fake-api-key', 'fake-timezone');
 
         final apiKeyAfter = await getApiKey();
         expect(apiKeyAfter, 'fake-api-key');
       });
 
       test('it returns true', () async {
-        final result = await subject.call('fake-api-key');
+        final result = await subject.call('fake-api-key', 'fake-timezone');
 
         expect(result, isTrue);
       });
@@ -91,14 +91,14 @@ void main() {
         final apiKeyBefore = await getApiKey();
         expect(apiKeyBefore, isNull);
 
-        await subject.call('fake-api-key');
+        await subject.call('fake-api-key', 'fake-timezone');
 
         final apiKeyAfter = await getApiKey();
         expect(apiKeyAfter, isNull);
       });
 
       test('it returns false', () async {
-        final result = await subject.call('fake-api-key');
+        final result = await subject.call('fake-api-key', 'fake-timezone');
 
         expect(result, isFalse);
       });

@@ -24,9 +24,11 @@ void main() {
       final zone = Zone(
         id: 1,
         number: 1,
-        name: 'Fake Zone',
-        timeUntilNextRunSec: 60,
-        runLengthSec: 500,
+        name: 'Fake zone',
+        nextRunStart: DateTime.now().toString(),
+        nextRunLengthSec: 60,
+        isRunning: false,
+        timeRemainingSec: 0,
       );
       await repository.insertZone(zone);
       final customer = Customer(

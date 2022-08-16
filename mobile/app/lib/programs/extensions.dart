@@ -10,8 +10,7 @@ extension ListProgramX on List<Program> {
   List<Run> todayRuns() {
     final now = clock.now();
     final dayOfWeek = now.weekday;
-    final todayPrograms =
-        where((element) => element.frequency.contains(dayOfWeek));
+    final todayPrograms = where((element) => element.frequency.contains(dayOfWeek));
     return todayPrograms
         .expand(
           (program) => program.runs.where(
@@ -57,9 +56,7 @@ extension ListRunX on List<Run> {
     final mods = <RunGroup>[];
     forEach((run) {
       final addedMod = mods.singleWhereOrNull(
-        (RunGroup mod) =>
-            mod.timeOfDay == run.startTime &&
-            mod.duration.inSeconds == run.durationSeconds,
+        (RunGroup mod) => mod.timeOfDay == run.startTime && mod.duration.inSeconds == run.durationSeconds,
       );
       if (addedMod == null) {
         // A runGroup containing this run has not
@@ -77,8 +74,7 @@ extension ListRunX on List<Run> {
         final index = mods.indexWhere(
           (element) => element.timeOfDay == addedMod.timeOfDay,
         );
-        mods[index] =
-            addedMod.copyWith(zoneIds: [run.zoneId, ...addedMod.zoneIds]);
+        mods[index] = addedMod.copyWith(zoneIds: [run.zoneId, ...addedMod.zoneIds]);
       }
     });
     return mods;
@@ -91,9 +87,10 @@ extension RunX on Run {
 
 extension ZoneX on Zone {
   int get nextRunMillisecondsSinceEpoch {
-    final currentTimeEpochMillis = clock.now().millisecondsSinceEpoch;
-    final millisUntilNextRun = timeUntilNextRunSec * 1000;
-    return currentTimeEpochMillis + millisUntilNextRun;
+    if (nextRunStart == null) {
+      return 0;
+    }
+    return DateTime.parse(nextRunStart!).millisecondsSinceEpoch;
   }
 
   DateTime get dateTimeOfNextRun {

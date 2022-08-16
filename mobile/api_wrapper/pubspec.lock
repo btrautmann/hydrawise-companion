@@ -20,7 +20,7 @@ packages:
     description:
       path: "."
       ref: main
-      resolved-ref: fcd3ff351a5f38c8b4f661b4116c7c5923965e1c
+      resolved-ref: "0c5e815f1b1ce626591c6aa2f21afe14090b5d76"
       url: "https://github.com/btrautmann/irri-models.git"
     source: git
     version: "1.0.0"
@@ -146,12 +146,10 @@ packages:
   hydrawise:
     dependency: "direct main"
     description:
-      path: "."
-      ref: main
-      resolved-ref: b87bfbf95432568b39f1d57392b8ff16c9c8bc30
-      url: "https://github.com/btrautmann/hydrawise-models.git"
-    source: git
-    version: "1.0.0"
+      name: hydrawise
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.1"
   io:
     dependency: transitive
     description:
