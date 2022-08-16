@@ -27,8 +27,8 @@ platform :ios do
     if is_ci
       puts "Creating TempKeychain" 
       create_keychain(
-        name: "TempKeychain",
-        password: "TempPassword",
+        name: "TempKeychain2",
+        password: "TempPassword2",
         default_keychain: true,
         unlock: true,
         timeout: 3600,
