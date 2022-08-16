@@ -24,25 +24,32 @@ platform :ios do
     build_number = ENV["BUILD_NUMBER"]
     base_url = ENV["BASE_URL"]
 
-    if is_ci
-      puts "Creating TempKeychain" 
-      create_keychain(
-        name: "TempKeychain2",
-        password: ENV["MATCH_KEYCHAIN_PASSWORD"],
-        default_keychain: true,
-        unlock: true,
-        timeout: 3600,
-        lock_when_sleeps: true
-      )
-      match(
-        type: "appstore",
-        keychain_name: "TempKeychain2",
-        keychain_password: ENV["MATCH_KEYCHAIN_PASSWORD"],
-        readonly: true
-      )
-    else
-      puts "Not creating keychain and invoking match" 
-    end
+    match(
+      type: "appstore",
+      keychain_name: "login.keychain",
+      keychain_password: ENV["MATCH_PASSWORD"],
+      readonly: true
+    )
+
+    # if is_ci
+    #   puts "Creating TempKeychain" 
+    #   create_keychain(
+    #     name: "TempKeychain2",
+    #     password: ENV["MATCH_KEYCHAIN_PASSWORD"],
+    #     default_keychain: true,
+    #     unlock: true,
+    #     timeout: 3600,
+    #     lock_when_sleeps: true
+    #   )
+    #   match(
+    #     type: "appstore",
+    #     keychain_name: "login.keychain",
+    #     keychain_password: ENV["MATCH_PASSWORD"],
+    #     readonly: true
+    #   )
+    # else
+    #   puts "Not creating keychain and invoking match" 
+    # end
     app_store_connect_api_key(
       is_key_content_base64: true,
       duration: 1200, # optional (maximum 1200)
