@@ -23,7 +23,6 @@ class CreateProgram {
 
     final customer = await _getCustomerById(customerId);
     await db.transaction((connection) async {
-      print('Got customer');
       final insertProgramResult = await connection.query(
         _insertProgramSql(
           createProgramRequest,
