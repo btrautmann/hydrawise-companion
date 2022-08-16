@@ -24,9 +24,10 @@ platform :ios do
     build_number = ENV["BUILD_NUMBER"]
     base_url = ENV["BASE_URL"]
 
+    setup_ci
+
     match(
       type: "appstore",
-      keychain_name: "login.keychain",
       keychain_password: ENV["MATCH_PASSWORD"],
       readonly: true
     )
