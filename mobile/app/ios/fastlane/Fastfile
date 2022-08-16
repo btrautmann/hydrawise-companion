@@ -36,8 +36,8 @@ platform :ios do
       )
       match(
         type: "appstore",
-        keychain_name: "TempKeychain",
-        keychain_password: "TempPassword",
+        keychain_name: "TempKeychain2",
+        keychain_password: "TempPassword2",
         readonly: true
       )
     else
