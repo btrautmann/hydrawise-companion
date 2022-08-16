@@ -43,6 +43,7 @@ jobs:
       - name: Deploy iOS to TestFlight
         env:
           MATCH_PASSWORD: ${{secrets.MATCH_PASSWORD}}
+          MATCH_KEYCHAIN_PASSWORD: ${{secrets.MATCH_KEYCHAIN_PASSWORD}}
           OPEN_WEATHER_MAP_API_KEY: ${{secrets.OPEN_WEATHER_MAP_API_KEY}}
           BASE_URL: ${{secrets.BASE_URL}}
           APP_STORE_CONNECT_API_KEY_KEY: ${{secrets.APP_STORE_CONNECT_API_KEY}}
