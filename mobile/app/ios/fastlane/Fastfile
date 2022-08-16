@@ -28,7 +28,7 @@ platform :ios do
       puts "Creating TempKeychain" 
       create_keychain(
         name: "TempKeychain2",
-        password: "TempPassword2",
+        password: ENV["MATCH_KEYCHAIN_PASSWORD"],
         default_keychain: true,
         unlock: true,
         timeout: 3600,
@@ -36,8 +36,8 @@ platform :ios do
       )
       match(
         type: "appstore",
-        keychain_name: "TempKeychain",
-        keychain_password: "TempPassword",
+        keychain_name: "TempKeychain2",
+        keychain_password: ENV["MATCH_KEYCHAIN_PASSWORD"],
         readonly: true
       )
     else
