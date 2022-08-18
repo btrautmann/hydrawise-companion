@@ -19,6 +19,7 @@ dependencies:
   postgres: ^2.4.5
   shelf: ^1.1.0
   shelf_router: ^1.0.0
+  timezone: ^0.8.0
   uuid: ^3.0.6
 
 dev_dependencies:

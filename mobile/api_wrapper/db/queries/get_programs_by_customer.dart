@@ -11,7 +11,7 @@ class GetProgramsByCustomer {
 
   Future<List<DbProgram>> call(DbCustomer customer) async {
     final programsResult = await db.query(
-      'SELECT * FROM program WHERE customer_id=${customer.customerId} AND controller_id=${customer.activeControllerId};',
+      'SELECT * FROM program WHERE customer_id=${customer.id} AND controller_id=${customer.activeControllerId};',
     );
 
     final programs = <DbProgram>[];

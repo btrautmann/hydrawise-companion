@@ -9,7 +9,8 @@ class GetZonesByCustomer {
   final PostgreSQLConnection db;
 
   Future<List<DbZone>> call(DbCustomer customer) async {
-    final result = await db.query('SELECT * from zone WHERE customer_id=${customer.customerId} AND controller_id=${customer.activeControllerId};');
+    final result = await db
+        .query('SELECT * from zone WHERE customer_id=${customer.id} AND controller_id=${customer.activeControllerId};');
     final zones = <DbZone>[];
     for (final row in result) {
       final map = row.toColumnMap();

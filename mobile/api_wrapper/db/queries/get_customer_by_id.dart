@@ -12,7 +12,7 @@ class GetCustomerById {
     final map = result.single.toColumnMap();
 
     return DbCustomer(
-      customerId: customerId,
+      id: customerId,
       activeControllerId: map['active_controller_id'],
     );
   }

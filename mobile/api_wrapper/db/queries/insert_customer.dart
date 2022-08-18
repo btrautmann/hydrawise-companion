@@ -37,7 +37,7 @@ class InsertCustomer {
       }
     });
     return DbCustomer(
-      customerId: details.activeControllerId,
+      id: details.activeControllerId,
       activeControllerId: details.activeControllerId,
     );
   }

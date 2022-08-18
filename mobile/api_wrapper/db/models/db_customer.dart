@@ -1,9 +1,9 @@
 class DbCustomer {
   DbCustomer({
-    required this.customerId,
+    required this.id,
     required this.activeControllerId,
   });
 
-  final int customerId;
+  final int id;
   final int activeControllerId;
 }
