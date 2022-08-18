@@ -48,22 +48,13 @@ class ConfigurationView extends StatelessWidget {
           ),
         ),
         _AppThemeRow(),
-        const Divider(
-          indent: 16,
-        ),
         Visibility(
           visible: false,
           child: _PushNotificationsRow(),
         ),
-        const Divider(
-          indent: 16,
-        ),
         Visibility(
           visible: false,
           child: _ChangeTimeZoneRow(),
-        ),
-        const Divider(
-          indent: 16,
         ),
         Visibility(
           visible: false,
