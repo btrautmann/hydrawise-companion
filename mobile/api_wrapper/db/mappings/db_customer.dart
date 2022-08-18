@@ -4,7 +4,7 @@ import '../models/db_customer.dart';
 
 extension DbCustomerMappings on DbCustomer {
   Customer toCustomer() => Customer(
-        customerId: customerId,
+        customerId: id,
         activeControllerId: activeControllerId,
       );
 }

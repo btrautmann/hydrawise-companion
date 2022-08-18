@@ -5,6 +5,7 @@ import 'package:postgres/postgres.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf/shelf_io.dart';
 import 'package:shelf_router/shelf_router.dart';
+import 'package:timezone/data/latest_all.dart' as tz;
 
 import 'check_runs.dart';
 import 'get_programs.dart';
@@ -51,6 +52,8 @@ Future<void> main(List<String> args) async {
   );
 
   await db.open();
+
+  tz.initializeTimeZones();
 
   // Configure routes.
   final router = Router()

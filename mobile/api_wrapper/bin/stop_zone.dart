@@ -6,8 +6,8 @@ import 'package:hydrawise/hydrawise.dart';
 import 'package:postgres/postgres.dart';
 import 'package:shelf/shelf.dart';
 
-import '../db/extensions/program.dart';
 import '../db/queries/get_customer_by_id.dart';
+import '../db/queries/get_next_run_for_zone.dart';
 import '../db/queries/get_programs_by_customer.dart';
 import '../db/queries/get_zone_by_id.dart';
 import 'extensions.dart';
@@ -15,6 +15,7 @@ import 'extensions.dart';
 class StopZone {
   StopZone(this.db)
       : _getProgramsByCustomerId = GetProgramsByCustomer(db),
+        _getNextRunForZone = GetNextRunForZone(db),
         _getZoneById = GetZoneById(db),
         _getCustomerById = GetCustomerById(db);
 
@@ -22,6 +23,7 @@ class StopZone {
   final GetCustomerById _getCustomerById;
   final GetZoneById _getZoneById;
   final GetProgramsByCustomer _getProgramsByCustomerId;
+  final GetNextRunForZone _getNextRunForZone;
 
   Future<Response> call(Request request) async {
     final body = await request.readAsString();
@@ -58,10 +60,14 @@ class StopZone {
         final dbZone = await _getZoneById(hZone.id);
         final customer = await _getCustomerById(customerId);
         final programs = await _getProgramsByCustomerId(customer);
-        final nextRun = programs.nextRun(hZone.id);
+        final nextRun = await _getNextRunForZone(
+          customer: customer,
+          zone: dbZone!,
+          programs: programs,
+        );
         final runZoneResponse = RunZoneResponse(
           zone: Zone(
-            id: dbZone!.id,
+            id: dbZone.id,
             number: dbZone.number,
             name: dbZone.name,
             isRunning: hZone.secondsUntilNextRun == 1,

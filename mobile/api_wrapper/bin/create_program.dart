@@ -30,7 +30,6 @@ class CreateProgram {
           customer.activeControllerId,
         ),
       );
-      print(insertProgramResult.affectedRowCount);
       final programId = insertProgramResult.single.toColumnMap()['program_id'] as int;
       final runs = <Run>[];
       for (final run in createProgramRequest.runs) {
