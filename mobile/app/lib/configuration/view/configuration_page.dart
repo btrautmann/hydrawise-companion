@@ -17,14 +17,11 @@ class ConfigurationPage extends StatelessWidget {
       body: SafeArea(
         child: BlocProvider(
           create: (context) => ConfigurationCubit(
-            getPushNotificationsEnabled:
-                context.read<GetPushNotificationsEnabled>(),
+            getPushNotificationsEnabled: context.read<GetPushNotificationsEnabled>(),
             getLocalTimezone: context.read<GetLocalTimezone>(),
             getAvailableTimezones: context.read<GetAvailableTimezones>(),
-            registerForPushNotifications:
-                context.read<RegisterForPushNotifications>(),
-            unregisterForPushNotifications:
-                context.read<UnregisterForPushNotifications>(),
+            registerForPushNotifications: context.read<RegisterForPushNotifications>(),
+            unregisterForPushNotifications: context.read<UnregisterForPushNotifications>(),
             getUserTimezone: context.read<GetUserTimezone>(),
             updateUserTimeZone: context.read<UpdateUserTimeZone>(),
           ),
@@ -54,11 +51,17 @@ class ConfigurationView extends StatelessWidget {
         const Divider(
           indent: 16,
         ),
-        _PushNotificationsRow(),
+        Visibility(
+          visible: false,
+          child: _PushNotificationsRow(),
+        ),
         const Divider(
           indent: 16,
         ),
-        _ChangeTimeZoneRow(),
+        Visibility(
+          visible: false,
+          child: _ChangeTimeZoneRow(),
+        ),
         const Divider(
           indent: 16,
         ),
@@ -159,9 +162,8 @@ class _PushNotificationsRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<ConfigurationCubit, ConfigurationState>(
       builder: (context, state) {
-        final title = state.pushNotificationsEnabled
-            ? 'Tap to turn off push notifications'
-            : 'Tap to turn on push notifications';
+        final title =
+            state.pushNotificationsEnabled ? 'Tap to turn off push notifications' : 'Tap to turn on push notifications';
         return ListRow(
           leadingIcon: const CircleBackground(
             child: Icon(
@@ -171,9 +173,7 @@ class _PushNotificationsRow extends StatelessWidget {
           title: Text(title),
           onTapped: () {
             if (state.pushNotificationsEnabled) {
-              context
-                  .read<ConfigurationCubit>()
-                  .unregisterForPushNotifications();
+              context.read<ConfigurationCubit>().unregisterForPushNotifications();
             } else {
               context.read<ConfigurationCubit>().registerForPushNotifications();
             }
@@ -240,11 +240,7 @@ class _ChangeApiKeyDialogState extends State<_ChangeApiKeyDialog> {
               ),
             ),
             TextButton(
-              onPressed: _controller.text.isEmpty
-                  ? null
-                  : () => context
-                      .read<AuthCubit>()
-                      .login(_controller.text),
+              onPressed: _controller.text.isEmpty ? null : () => context.read<AuthCubit>().login(_controller.text),
               child: const Text(
                 'Submit',
               ),
