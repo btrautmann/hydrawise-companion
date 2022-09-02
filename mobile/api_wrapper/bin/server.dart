@@ -42,8 +42,8 @@ Future<void> main(List<String> args) async {
   databaseUsername = dotEnv['DB_USER']!;
   databasePassword = dotEnv['DB_PASS']!;
 
-  Future<PostgreSQLConnection> getConnection() async {
-    final connection = PostgreSQLConnection(
+  PostgreSQLConnection db() {
+    return PostgreSQLConnection(
       databaseHost,
       int.parse(databasePort),
       databaseName,
@@ -51,8 +51,6 @@ Future<void> main(List<String> args) async {
       password: databasePassword,
       isUnixSocket: environment == 'prod',
     );
-    await connection.open();
-    return connection;
   }
 
   tz.initializeTimeZones();
@@ -60,20 +58,20 @@ Future<void> main(List<String> args) async {
   // Configure routes.
   final router = Router()
     ..get('/', Index())
-    ..post('/login', Login(getConnection))
-    ..post('/run_zone', RunZone(getConnection))
-    ..post('/stop_zone', StopZone(getConnection))
-    ..post('/program', CreateProgram(getConnection))
-    ..get('/program', GetPrograms(getConnection))
-    ..put('/program', UpdateProgram(getConnection))
-    ..delete('/program', DeleteProgram(getConnection))
-    ..get('/customer', GetCustomer(getConnection))
-    ..get('/check_runs', CheckRuns(getConnection));
+    ..post('/login', Login(db))
+    ..post('/run_zone', RunZone(db))
+    ..post('/stop_zone', StopZone(db))
+    ..post('/program', CreateProgram(db))
+    ..get('/program', GetPrograms(db))
+    ..put('/program', UpdateProgram(db))
+    ..delete('/program', DeleteProgram(db))
+    ..get('/customer', GetCustomer(db))
+    ..get('/check_runs', CheckRuns(db));
 
   final handler = const Pipeline()
       .addMiddleware(logPriorRequests())
       .addMiddleware(logRequests())
-      .addMiddleware(authentication(getConnection))
+      .addMiddleware(authentication(db))
       .addHandler(router);
 
   // For running in containers, we respect the PORT environment variable.
