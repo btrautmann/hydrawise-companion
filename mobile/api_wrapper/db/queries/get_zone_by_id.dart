@@ -3,11 +3,12 @@ import 'package:postgres/postgres.dart';
 import '../models/db_zone.dart';
 
 class GetZoneById {
-  GetZoneById(this.db);
+  GetZoneById(this.connection);
 
-  final PostgreSQLConnection db;
+  final Future<PostgreSQLConnection> Function() connection;
 
   Future<DbZone?> call(int zoneId) async {
+    final db = await connection();
     final result = await db.query('SELECT * from zone WHERE zone_id=$zoneId LIMIT 1;');
     if (result.isEmpty) {
       return null;

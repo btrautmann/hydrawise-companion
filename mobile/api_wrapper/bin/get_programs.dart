@@ -7,11 +7,12 @@ import 'package:shelf/shelf.dart';
 import 'extensions.dart';
 
 class GetPrograms {
-  GetPrograms(this.db);
+  GetPrograms(this.connection);
 
-  final PostgreSQLConnection db;
+  final Future<PostgreSQLConnection> Function() connection;
 
   Future<Response> call(Request request) async {
+    final db = await connection();
     final customerId = request.customerId;
 
     final programs = <Program>[];

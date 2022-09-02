@@ -4,11 +4,12 @@ import '../models/db_customer.dart';
 import '../models/db_zone.dart';
 
 class GetZonesByCustomer {
-  GetZonesByCustomer(this.db);
+  GetZonesByCustomer(this.connection);
 
-  final PostgreSQLConnection db;
+  final Future<PostgreSQLConnection> Function() connection;
 
   Future<List<DbZone>> call(DbCustomer customer) async {
+    final db = await connection();
     final result = await db
         .query('SELECT * from zone WHERE customer_id=${customer.id} AND controller_id=${customer.activeControllerId};');
     final zones = <DbZone>[];

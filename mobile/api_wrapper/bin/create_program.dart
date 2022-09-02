@@ -8,9 +8,9 @@ import '../db/queries/get_customer_by_id.dart';
 import 'extensions.dart';
 
 class CreateProgram {
-  CreateProgram(this.db) : _getCustomerById = GetCustomerById(db);
+  CreateProgram(this.connection) : _getCustomerById = GetCustomerById(connection);
 
-  final PostgreSQLConnection db;
+  final Future<PostgreSQLConnection> Function() connection;
   final GetCustomerById _getCustomerById;
 
   Future<Response> call(Request request) async {
@@ -22,6 +22,7 @@ class CreateProgram {
     late final Program program;
 
     final customer = await _getCustomerById(customerId);
+    final db = await connection();
     await db.transaction((connection) async {
       final insertProgramResult = await connection.query(
         _insertProgramSql(

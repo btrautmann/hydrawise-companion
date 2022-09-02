@@ -4,9 +4,9 @@ import 'package:postgres/postgres.dart';
 import '../models/db_customer.dart';
 
 class InsertCustomer {
-  InsertCustomer(this.db);
+  InsertCustomer(this.connection);
 
-  final PostgreSQLConnection db;
+  final Future<PostgreSQLConnection> Function() connection;
 
   Future<DbCustomer> call({
     required String apiKey,
@@ -27,6 +27,7 @@ class InsertCustomer {
         'VALUES (${zone.id}, ${details.customerId}, ${details.activeControllerId}, ${zone.physicalNumber}, \'${zone.name}\') '
         'ON CONFLICT (zone_id, customer_id, controller_id) DO NOTHING;';
 
+    final db = await connection();
     await db.transaction((connection) async {
       await connection.query(insertCustomerSql);
       for (final controller in details.controllers) {
