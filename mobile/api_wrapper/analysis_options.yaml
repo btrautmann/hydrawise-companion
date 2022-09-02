@@ -6,6 +6,7 @@ analyzer:
     avoid_print: ignore
     lines_longer_than_80_chars: ignore
     avoid_escaping_inner_quotes: ignore
+    prefer_expression_function_bodies: ignore
 linter:
   rules:
     public_member_api_docs: false

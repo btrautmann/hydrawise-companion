@@ -1,12 +1,13 @@
 import 'package:hydrawise/hydrawise.dart';
 import 'package:postgres/postgres.dart';
 
+import '../../bin/postgres_extensions.dart';
 import '../models/db_customer.dart';
 
 class InsertCustomer {
-  InsertCustomer(this.connection);
+  InsertCustomer(this.db);
 
-  final Future<PostgreSQLConnection> Function() connection;
+  final PostgreSQLConnection Function() db;
 
   Future<DbCustomer> call({
     required String apiKey,
@@ -27,19 +28,20 @@ class InsertCustomer {
         'VALUES (${zone.id}, ${details.customerId}, ${details.activeControllerId}, ${zone.physicalNumber}, \'${zone.name}\') '
         'ON CONFLICT (zone_id, customer_id, controller_id) DO NOTHING;';
 
-    final db = await connection();
-    await db.transaction((connection) async {
-      await connection.query(insertCustomerSql);
-      for (final controller in details.controllers) {
-        await connection.query(insertControllerSql(controller));
-      }
-      for (final zone in status.zones) {
-        await connection.query(insertZoneSql(zone));
-      }
+    return db().use((connection) async {
+      await connection.transaction((connection) async {
+        await connection.query(insertCustomerSql);
+        for (final controller in details.controllers) {
+          await connection.query(insertControllerSql(controller));
+        }
+        for (final zone in status.zones) {
+          await connection.query(insertZoneSql(zone));
+        }
+      });
+      return DbCustomer(
+        id: details.activeControllerId,
+        activeControllerId: details.activeControllerId,
+      );
     });
-    return DbCustomer(
-      id: details.activeControllerId,
-      activeControllerId: details.activeControllerId,
-    );
   }
 }

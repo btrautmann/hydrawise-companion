@@ -9,9 +9,10 @@ import '../models/next_run_for_zone.dart';
 import 'get_controller_by_id.dart';
 
 class GetNextRunForZone {
-  GetNextRunForZone(this.connection) : _getControllerById = GetControllerById(connection);
+  GetNextRunForZone(
+    PostgreSQLConnection Function() db,
+  ) : _getControllerById = GetControllerById(db);
 
-  final Future<PostgreSQLConnection> Function() connection;
   final GetControllerById _getControllerById;
 
   Future<NextRunForZone?> call({
