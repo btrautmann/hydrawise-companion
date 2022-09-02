@@ -2,7 +2,6 @@ import 'package:api_models/api_models.dart';
 import 'package:bloc/bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:irri/programs/domain/domain.dart';
-import 'package:irri/programs/models/run_group.dart';
 
 part 'programs_cubit.freezed.dart';
 part 'programs_state.dart';
@@ -38,7 +37,7 @@ class ProgramsCubit extends Cubit<ProgramsState> {
   Future<void> createProgram({
     required String name,
     required List<int> frequency,
-    required List<RunGroup> runGroups,
+    required List<RunCreation> runGroups,
   }) async {
     await _createProgram(
       name: name,
@@ -80,7 +79,7 @@ class ProgramsCubit extends Cubit<ProgramsState> {
     required int programId,
     required String name,
     required List<int> frequency,
-    required List<RunGroup> runs,
+    required List<RunCreation> runs,
   }) async {
     await _updateProgram(
       programId: programId,

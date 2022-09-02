@@ -11,6 +11,6 @@ class GetLocalTimezone {
 class FakeGetLocalTimezone implements GetLocalTimezone {
   @override
   Future<String> call() async {
-    return 'America/New York';
+    return 'America/New_York';
   }
 }

@@ -21,6 +21,7 @@ class UpdateProgram {
     final customerId = request.customerId;
 
     late final Program updatedProgram;
+    final resultingRuns = <Run>[];
     return db().use((connection) async {
       await connection.transaction(
         (connection) async {
@@ -50,14 +51,11 @@ class UpdateProgram {
               ),
             );
           }
-          for (final run in updateProgramRequest.runsToDelete) {
+          // For ease, delete all existing runs
+          for (final run in originalRuns) {
             await connection.query(_deleteRunSql(run.id));
           }
-          for (final run in updateProgramRequest.runsToUpdate) {
-            await connection.query(_updateRunSql(run));
-          }
-          final resultingRuns = <Run>[...updateProgramRequest.runsToUpdate];
-          for (final run in updateProgramRequest.runsToCreate) {
+          for (final run in updateProgramRequest.runs) {
             final insertResult = await connection.query(
               _insertRunSql(run, updateProgramRequest.programId),
             );
@@ -105,10 +103,6 @@ String _updateProgramSql(
 String _getRunsSql(int programId) => 'SELECT * FROM run WHERE program_id=$programId;';
 
 String _deleteRunSql(int runId) => 'DELETE FROM run WHERE run_id=$runId;';
-
-String _updateRunSql(Run run) => 'UPDATE run '
-    'SET zone_id = ${run.zoneId}, duration_sec=${run.durationSeconds}, start_hour=${run.startHour}, start_minute=${run.startMinute} '
-    'WHERE run_id = \'${run.id}\';';
 
 String _insertRunSql(RunCreation runCreation, int programId) =>
     'INSERT INTO run (program_id, zone_id, duration_sec, start_hour, start_minute) '

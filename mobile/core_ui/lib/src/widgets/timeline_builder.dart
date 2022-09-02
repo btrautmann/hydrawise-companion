@@ -1,89 +1,161 @@
 import 'package:core_ui/core_ui.dart';
 import 'package:flutter/material.dart';
+import 'package:uuid/uuid.dart';
 
 class TimelineEntry {
+  final String id;
   final TimeOfDay time;
   final Duration duration;
 
-  TimelineEntry(
-    this.time,
-    this.duration,
-  );
+  TimelineEntry({
+    required this.time,
+    required this.duration,
+    String? id,
+  }) : id = id ?? const Uuid().v4();
 }
 
-extension on DateTime {
+extension TimelineEntryListX on List<TimelineEntry> {
+  void sortByTime() {
+    DateTime now = DateTime.now();
+    sort((a, b) {
+      final aDate = now.apply(a.time);
+      final bDate = now.apply(b.time);
+      return aDate.millisecondsSinceEpoch.compareTo(bDate.millisecondsSinceEpoch);
+    });
+  }
+}
+
+extension DateTimeX on DateTime {
   DateTime apply(TimeOfDay time) {
     return DateTime(year, month, day, time.hour, time.minute);
   }
 }
 
-enum NodeType { solo, jointWithTop, jointWithBottom, surrounded, overlap }
+enum NodeType {
+  solo,
+  jointWithTop,
+  jointWithBottom,
+  surrounded,
+  overlap,
+}
 
-class TimelineBuilder extends StatelessWidget {
+class TimelineBuilder extends StatefulWidget {
   final List<TimelineEntry> entries;
-  final String Function(TimelineEntry entry) buildTitle;
-  final ValueSetter<TimelineEntry> onEntryRemoved;
-  final Function(TimelineEntry entry, TimeOfDay startTime) onEntryStartTimeChanged;
-  final Function(TimelineEntry entry, double duration) onEntryDurationChanged;
+  final String Function(String entryId) buildTitle;
+  final Function(String entryId, double duration) onEntryDurationChanged;
+  final Function(String entryId) onNodeTapped;
+  final ValueSetter<bool> onValidityChanged;
 
   const TimelineBuilder({
     Key? key,
     required this.entries,
     required this.buildTitle,
-    required this.onEntryRemoved,
-    required this.onEntryStartTimeChanged,
+    required this.onNodeTapped,
     required this.onEntryDurationChanged,
+    required this.onValidityChanged,
   }) : super(key: key);
 
   @override
+  State<TimelineBuilder> createState() => _TimelineBuilderState();
+}
+
+class _TimelineBuilderState extends State<TimelineBuilder> {
+  bool isValid = true;
+
+  bool calculateValidity() {
+    List<bool> invalidNodes = [];
+    widget.entries.asMap().forEach((index, element) {
+      final currentEntry = widget.entries[index];
+      final currentEntryStartTime = DateTime.now().apply(currentEntry.time);
+      final currentEntryEndTime = currentEntryStartTime.add(currentEntry.duration);
+
+      final previousEntry = index == 0 ? null : widget.entries[index - 1];
+      final previousEntryStartTime = previousEntry == null ? null : DateTime.now().apply(previousEntry.time);
+      final previousEntryEndTime = previousEntryStartTime?.add(previousEntry!.duration);
+
+      final nextEntry = index == widget.entries.length - 1 ? null : widget.entries[index + 1];
+      final nextEntryStartTime = nextEntry == null ? null : DateTime.now().apply(nextEntry.time);
+
+      final overlapsWithPrevious = widget.entries.length > 1 &&
+          previousEntryEndTime != null &&
+          currentEntryStartTime.isBefore(previousEntryEndTime);
+
+      final overlapsWithNext =
+          widget.entries.length > 1 && nextEntryStartTime != null && currentEntryEndTime.isAfter(nextEntryStartTime);
+      final hasOverlap = overlapsWithPrevious || overlapsWithNext;
+      if (hasOverlap) {
+        invalidNodes.add(true);
+      }
+    });
+    return invalidNodes.isEmpty;
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final now = DateTime.now();
-    entries.sort((a, b) {
-      final aDate = now.apply(a.time);
-      final bDate = now.apply(b.time);
-      return aDate.millisecondsSinceEpoch.compareTo(bDate.millisecondsSinceEpoch);
+    widget.entries.sortByTime();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      bool newValidity = calculateValidity();
+      if (isValid != newValidity) {
+        setState(() {
+          isValid = newValidity;
+        });
+        widget.onValidityChanged(isValid);
+      }
     });
     return ListView.builder(
-      itemCount: entries.length,
+      itemCount: widget.entries.length,
       itemBuilder: (context, index) {
-        final currentEntry = entries[index];
-        final currentEntryTime = DateTime.now().apply(currentEntry.time);
-        final previousEntryTime = index == 0 ? currentEntryTime : DateTime.now().apply(entries[index - 1].time);
-        final nextEntryTime =
-            index == entries.length - 1 ? currentEntryTime : DateTime.now().apply(entries[index + 1].time);
-        final isDirectlyAfterPrevious = entries.length > 1 &&
-            (previousEntryTime == currentEntryTime ||
-                currentEntryTime.subtract(currentEntry.duration).isAtSameMomentAs(previousEntryTime));
-        final endsDirectlyBeforeNext = entries.length > 1 &&
-            (currentEntryTime == nextEntryTime ||
-                currentEntryTime.add(currentEntry.duration).isAtSameMomentAs(nextEntryTime));
-        final overlapsWithPrevious = currentEntryTime != previousEntryTime &&
-            currentEntryTime.subtract(currentEntry.duration).isBefore(previousEntryTime);
+        final currentEntry = widget.entries[index];
+        final currentEntryStartTime = DateTime.now().apply(currentEntry.time);
+        final currentEntryEndTime = currentEntryStartTime.add(currentEntry.duration);
+
+        final previousEntry = index == 0 ? null : widget.entries[index - 1];
+        final previousEntryStartTime = previousEntry == null ? null : DateTime.now().apply(previousEntry.time);
+        final previousEntryEndTime = previousEntryStartTime?.add(previousEntry!.duration);
+
+        final nextEntry = index == widget.entries.length - 1 ? null : widget.entries[index + 1];
+        final nextEntryStartTime = nextEntry == null ? null : DateTime.now().apply(nextEntry.time);
+
+        final beginsAtPreviousEnd = widget.entries.length > 1 &&
+            previousEntryEndTime != null &&
+            currentEntryStartTime.isAtSameMomentAs(previousEntryEndTime);
+
+        final endsAtNextStart = widget.entries.length > 1 &&
+            nextEntryStartTime != null &&
+            currentEntryEndTime.isAtSameMomentAs(nextEntryStartTime);
+
+        final overlapsWithPrevious = widget.entries.length > 1 &&
+            previousEntryEndTime != null &&
+            currentEntryStartTime.isBefore(previousEntryEndTime);
+
         final overlapsWithNext =
-            currentEntryTime != nextEntryTime && currentEntryTime.add(currentEntry.duration).isAfter(nextEntryTime);
+            widget.entries.length > 1 && nextEntryStartTime != null && currentEntryEndTime.isAfter(nextEntryStartTime);
+
         final hasOverlap = overlapsWithPrevious || overlapsWithNext;
 
         NodeType nodeType;
         if (hasOverlap) {
           nodeType = NodeType.overlap;
         } else if (index == 0) {
-          if (endsDirectlyBeforeNext) {
+          if (endsAtNextStart) {
             nodeType = NodeType.jointWithBottom;
           } else {
             nodeType = NodeType.solo;
           }
-        } else if (index == entries.length - 1) {
-          if (isDirectlyAfterPrevious) {
+        } else if (index == widget.entries.length - 1) {
+          if (beginsAtPreviousEnd) {
             nodeType = NodeType.jointWithTop;
           } else {
             nodeType = NodeType.solo;
           }
-        } else if (endsDirectlyBeforeNext && isDirectlyAfterPrevious) {
+        } else if (endsAtNextStart && beginsAtPreviousEnd) {
           nodeType = NodeType.surrounded;
-        } else if (endsDirectlyBeforeNext) {
+        } else if (endsAtNextStart) {
           nodeType = NodeType.jointWithBottom;
-        } else {
+        } else if (beginsAtPreviousEnd) {
           nodeType = NodeType.jointWithTop;
+        } else {
+          nodeType = NodeType.solo;
         }
 
         final DashLocation location;
@@ -91,7 +163,9 @@ class TimelineBuilder extends StatelessWidget {
         switch (nodeType) {
           case NodeType.overlap:
             color = Colors.red.shade300;
-            if (overlapsWithPrevious) {
+            if (overlapsWithPrevious && overlapsWithNext) {
+              location = DashLocation.all;
+            } else if (overlapsWithPrevious) {
               location = DashLocation.top;
             } else {
               location = DashLocation.bottom;
@@ -117,9 +191,15 @@ class TimelineBuilder extends StatelessWidget {
         return ColoredBox(
           color: index.isEven ? Colors.grey.shade100 : Colors.white,
           child: Padding(
-            padding: const EdgeInsets.only(left: 16, right: 16),
+            padding: const EdgeInsets.only(left: 8, right: 8),
             child: Row(
               children: [
+                RotatedBox(
+                  quarterTurns: 3,
+                  child: Text(
+                    currentEntry.time.format(context),
+                  ),
+                ),
                 SizedBox(
                   height: 100,
                   child: Stack(
@@ -132,7 +212,7 @@ class TimelineBuilder extends StatelessWidget {
                       ),
                       ElevatedButton(
                         onPressed: () {
-                          print('Pressed the time');
+                          widget.onNodeTapped(currentEntry.id);
                         },
                         style: ButtonStyle(
                           shape: MaterialStateProperty.all(const CircleBorder()),
@@ -149,24 +229,27 @@ class TimelineBuilder extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min,
                     children: [
+                      Padding(
+                        padding: const EdgeInsets.only(left: 24),
+                        child: Text(widget.buildTitle(currentEntry.id)),
+                      ),
                       Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Text(
-                            currentEntry.time.format(context),
-                            textAlign: TextAlign.center,
-                          ),
                           Expanded(
                             child: Slider(
                               value: currentEntry.duration.inMinutes.toDouble(),
-                              onChanged: (time) => onEntryDurationChanged(currentEntry, time),
+                              onChangeEnd: (time) => widget.onEntryDurationChanged(
+                                currentEntry.id,
+                                time,
+                              ),
+                              onChanged: (time) => widget.onEntryDurationChanged(
+                                currentEntry.id,
+                                time,
+                              ),
                               min: 1,
                               max: 60,
                             ),
-                          ),
-                          Text(
-                            currentEntry.time.format(context),
-                            textAlign: TextAlign.center,
                           ),
                         ],
                       ),

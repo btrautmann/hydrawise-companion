@@ -26,28 +26,15 @@ class CreateProgram {
   Future<UseCaseResult<String, String>> call({
     required String name,
     required List<int> frequency,
-    required List<RunGroup> runGroups,
+    required List<RunCreation> runGroups,
   }) async {
-    final runs = <RunCreation>[];
-    for (final group in runGroups) {
-      for (final zoneId in group.zoneIds) {
-        runs.add(
-          RunCreation(
-            startHour: group.timeOfDay.hour,
-            startMinute: group.timeOfDay.minute,
-            durationSeconds: group.duration.inSeconds,
-            zoneId: zoneId,
-          ),
-        );
-      }
-    }
 
     final response = await _httpClient.post<Map<String, dynamic>>(
       'program',
       data: CreateProgramRequest(
         programName: name,
         frequency: frequency,
-        runs: runs,
+        runs: runGroups,
       ),
     );
 

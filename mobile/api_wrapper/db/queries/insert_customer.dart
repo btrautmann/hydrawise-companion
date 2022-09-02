@@ -18,10 +18,10 @@ class InsertCustomer {
         'VALUES (${details.customerId}, \'$apiKey\', ${details.activeControllerId}) '
         'ON CONFLICT (customer_id, api_key) DO NOTHING;';
 
-    // For now, default to America/New York for all controller timezones
+    // For now, default to America/New_York for all controller timezones
     String insertControllerSql(HydrawiseController controller) =>
         'INSERT INTO controller (controller_id, customer_id, timezone) '
-        'VALUES (${controller.id}, ${details.customerId}, \'America/New York\') '
+        'VALUES (${controller.id}, ${details.customerId}, \'America/New_York\') '
         'ON CONFLICT (controller_id, customer_id) DO NOTHING;';
 
     String insertZoneSql(HZone zone) => 'INSERT INTO zone (zone_id, customer_id, controller_id, zone_num, zone_name) '

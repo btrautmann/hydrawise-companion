@@ -28,7 +28,7 @@ void main() {
               name: r.programName,
               frequency: r.frequency,
               runs: [
-                ...r.runsToCreate.map(
+                ...r.runs.map(
                   (e) => Run(
                     id: Random().nextInt(100),
                     programId: r.programId,
@@ -38,7 +38,6 @@ void main() {
                     startMinute: e.startMinute,
                   ),
                 ),
-                ...r.runsToUpdate
               ],
             ),
           ),
@@ -104,16 +103,18 @@ void main() {
       final runsBefore = await repository.getRunsForProgram(programId: 12345);
       expect(runsBefore.length, 0);
 
+      final now = TimeOfDay.now();
+
       await updateProgram(
         programId: 12345,
         name: 'New',
         frequency: [DateTime.monday],
         runGroups: [
-          RunGroup(
-            type: RunGroupType.creation,
-            timeOfDay: TimeOfDay.now(),
-            zoneIds: [1],
-            duration: const Duration(seconds: 5),
+          RunCreation(
+            zoneId: 1,
+            durationSeconds: const Duration(seconds: 5).inSeconds,
+            startHour: now.hour,
+            startMinute: now.minute,
           ),
         ],
       );
@@ -154,16 +155,18 @@ void main() {
       final runsBefore = await repository.getRunsForProgram(programId: 12345);
       expect(runsBefore.length, 2);
 
+      final now = TimeOfDay.now();
+
       await updateProgram(
         programId: 12345,
         name: 'New',
         frequency: [],
         runGroups: [
-          RunGroup(
-            type: RunGroupType.modification,
-            timeOfDay: TimeOfDay.now(),
-            zoneIds: [1],
-            duration: const Duration(seconds: 5),
+          RunCreation(
+            zoneId: 1,
+            durationSeconds: const Duration(seconds: 5).inSeconds,
+            startHour: now.hour,
+            startMinute: now.minute,
           ),
         ],
       );
@@ -197,16 +200,18 @@ void main() {
       expect(runsBefore.single.startTime, const TimeOfDay(hour: 9, minute: 9));
       expect(runsBefore.single.durationSeconds, 55);
 
+      final now = TimeOfDay.now();
+
       await updateProgram(
         programId: 12345,
         name: 'New',
         frequency: [],
         runGroups: [
-          RunGroup(
-            type: RunGroupType.modification,
-            timeOfDay: const TimeOfDay(hour: 5, minute: 5),
-            zoneIds: [1],
-            duration: const Duration(seconds: 25),
+          RunCreation(
+            zoneId: 1,
+            durationSeconds: const Duration(seconds: 5).inSeconds,
+            startHour: now.hour,
+            startMinute: now.minute,
           ),
         ],
       );
