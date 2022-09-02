@@ -7,9 +7,9 @@ import 'package:shelf/shelf.dart';
 import 'extensions.dart';
 
 class UpdateProgram {
-  UpdateProgram(this.db);
+  UpdateProgram(this.connection);
 
-  final PostgreSQLConnection db;
+  final Future<PostgreSQLConnection> Function() connection;
 
   Future<Response> call(Request request) async {
     final body = await request.readAsString();
@@ -18,6 +18,7 @@ class UpdateProgram {
     final customerId = request.customerId;
 
     late final Program updatedProgram;
+    final db = await connection();
     await db.transaction(
       (connection) async {
         await connection.query(_updateProgramSql(updateProgramRequest, customerId));

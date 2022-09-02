@@ -1,7 +1,7 @@
 import 'package:postgres/postgres.dart';
 import 'package:shelf/shelf.dart';
 
-Middleware authentication(PostgreSQLConnection db) => (innerHandler) => (originalRequest) async {
+Middleware authentication(Future<PostgreSQLConnection> Function() connection) => (innerHandler) => (originalRequest) async {
       final headers = originalRequest.headers;
       final apiKey = headers['api_key'];
       if (originalRequest.url.path == 'check_runs') {
@@ -13,6 +13,7 @@ Middleware authentication(PostgreSQLConnection db) => (innerHandler) => (origina
         if (originalRequest.url.path == 'login') {
           return innerHandler(originalRequest);
         }
+        final db = await connection();
         final customerResult = await db.query(_findCustomerSql(apiKey));
         if (customerResult.isEmpty) {
           return Response(401);

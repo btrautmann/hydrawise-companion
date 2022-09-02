@@ -5,11 +5,12 @@ import '../models/db_program.dart';
 import '../models/db_run.dart';
 
 class GetProgramsByCustomer {
-  GetProgramsByCustomer(this.db);
+  GetProgramsByCustomer(this.connection);
 
-  final PostgreSQLConnection db;
+  final Future<PostgreSQLConnection> Function() connection;
 
   Future<List<DbProgram>> call(DbCustomer customer) async {
+    final db = await connection();
     final programsResult = await db.query(
       'SELECT * FROM program WHERE customer_id=${customer.id} AND controller_id=${customer.activeControllerId};',
     );

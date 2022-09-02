@@ -5,12 +5,13 @@ import 'package:postgres/postgres.dart';
 import 'package:shelf/shelf.dart';
 
 class CheckRuns {
-  CheckRuns(this.db);
+  CheckRuns(this.connection);
 
-  final PostgreSQLConnection db;
+  final Future<PostgreSQLConnection> Function() connection;
 
   Future<Response> call(Request request) async {
     final runsToRun = <Run>[];
+    final db = await connection();
     await db.transaction((connection) async {
       // First, get all programs intended to run today
       final programsResult = await connection.query(_getTodayProgramsSql());

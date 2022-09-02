@@ -5,11 +5,12 @@ import 'package:postgres/postgres.dart';
 import 'package:shelf/shelf.dart';
 
 class DeleteProgram {
-  DeleteProgram(this.db);
+  DeleteProgram(this.connection);
 
-  final PostgreSQLConnection db;
+  final Future<PostgreSQLConnection> Function() connection;
 
   Future<Response> call(Request request) async {
+    final db = await connection();
     final body = await request.readAsString();
     final deleteProgramRequest = DeleteProgramRequest.fromJson(json.decode(body));
     await db.query(_deleteProgramSql(deleteProgramRequest.programId));
