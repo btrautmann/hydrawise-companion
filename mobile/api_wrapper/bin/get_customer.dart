@@ -20,7 +20,7 @@ class GetCustomer {
         _getProgramsByCustomer = GetProgramsByCustomer(db),
         _getNextRunForZone = GetNextRunForZone(db);
 
-  final PostgreSQLConnection db;
+  final PostgreSQLConnection Function() db;
   final GetNextRunForZone _getNextRunForZone;
   final GetZonesByCustomer _getZonesByCustomer;
   final GetCustomerById _getCustomerById;

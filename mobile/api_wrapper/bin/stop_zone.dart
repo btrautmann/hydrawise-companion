@@ -13,13 +13,13 @@ import '../db/queries/get_zone_by_id.dart';
 import 'extensions.dart';
 
 class StopZone {
-  StopZone(this.db)
+  StopZone(PostgreSQLConnection Function() db)
       : _getProgramsByCustomerId = GetProgramsByCustomer(db),
         _getNextRunForZone = GetNextRunForZone(db),
         _getZoneById = GetZoneById(db),
         _getCustomerById = GetCustomerById(db);
 
-  final PostgreSQLConnection db;
+
   final GetCustomerById _getCustomerById;
   final GetZoneById _getZoneById;
   final GetProgramsByCustomer _getProgramsByCustomerId;

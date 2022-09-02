@@ -42,16 +42,16 @@ Future<void> main(List<String> args) async {
   databaseUsername = dotEnv['DB_USER']!;
   databasePassword = dotEnv['DB_PASS']!;
 
-  final db = PostgreSQLConnection(
-    databaseHost,
-    int.parse(databasePort),
-    databaseName,
-    username: databaseUsername,
-    password: databasePassword,
-    isUnixSocket: environment == 'prod',
-  );
-
-  await db.open();
+  PostgreSQLConnection db() {
+    return PostgreSQLConnection(
+      databaseHost,
+      int.parse(databasePort),
+      databaseName,
+      username: databaseUsername,
+      password: databasePassword,
+      isUnixSocket: environment == 'prod',
+    );
+  }
 
   tz.initializeTimeZones();
 

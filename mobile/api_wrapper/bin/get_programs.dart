@@ -5,51 +5,54 @@ import 'package:postgres/postgres.dart';
 import 'package:shelf/shelf.dart';
 
 import 'extensions.dart';
+import 'postgres_extensions.dart';
 
 class GetPrograms {
   GetPrograms(this.db);
 
-  final PostgreSQLConnection db;
+  final PostgreSQLConnection Function() db;
 
   Future<Response> call(Request request) async {
     final customerId = request.customerId;
 
     final programs = <Program>[];
 
-    await db.transaction((connection) async {
-      final programsResult = await connection.query(_getProgramsSql(customerId));
-      for (final row in programsResult) {
-        final map = row.toColumnMap();
-        final programId = map['program_id'] as int;
-        final runsResult = await connection.query(_getRunsSql(programId));
-        final runs = <Run>[];
-        for (final row in runsResult) {
+    return db().use((connection) async {
+      await connection.transaction((connection) async {
+        final programsResult = await connection.query(_getProgramsSql(customerId));
+        for (final row in programsResult) {
           final map = row.toColumnMap();
-          runs.add(
-            Run(
-              id: map['run_id'],
-              programId: map['program_id'],
-              zoneId: map['zone_id'],
-              durationSeconds: map['duration_sec'],
-              startHour: map['start_hour'],
-              startMinute: map['start_minute'],
+          final programId = map['program_id'] as int;
+          final runsResult = await connection.query(_getRunsSql(programId));
+          final runs = <Run>[];
+          for (final row in runsResult) {
+            final map = row.toColumnMap();
+            runs.add(
+              Run(
+                id: map['run_id'],
+                programId: map['program_id'],
+                zoneId: map['zone_id'],
+                durationSeconds: map['duration_sec'],
+                startHour: map['start_hour'],
+                startMinute: map['start_minute'],
+              ),
+            );
+          }
+          programs.add(
+            Program(
+              id: map['program_id'],
+              name: map['name'],
+              frequency: map['frequency'],
+              runs: runs,
             ),
           );
         }
-        programs.add(
-          Program(
-            id: map['program_id'],
-            name: map['name'],
-            frequency: map['frequency'],
-            runs: runs,
-          ),
-        );
-      }
+      });
+      return Response.ok(
+        jsonEncode(GetProgramsResponse(programs: programs)),
+        headers: {'Content-Type': 'application/json'},
+      );
     });
-    return Response.ok(
-      jsonEncode(GetProgramsResponse(programs: programs)),
-      headers: {'Content-Type': 'application/json'},
-    );
   }
 }
 

@@ -6,11 +6,12 @@ import 'package:shelf/shelf.dart';
 
 import '../db/queries/get_customer_by_id.dart';
 import 'extensions.dart';
+import 'postgres_extensions.dart';
 
 class CreateProgram {
   CreateProgram(this.db) : _getCustomerById = GetCustomerById(db);
 
-  final PostgreSQLConnection db;
+  final PostgreSQLConnection Function() db;
   final GetCustomerById _getCustomerById;
 
   Future<Response> call(Request request) async {
@@ -22,50 +23,52 @@ class CreateProgram {
     late final Program program;
 
     final customer = await _getCustomerById(customerId);
-    await db.transaction((connection) async {
-      final insertProgramResult = await connection.query(
-        _insertProgramSql(
-          createProgramRequest,
-          customerId,
-          customer.activeControllerId,
+    return db().use((connection) async {
+      await connection.transaction((connection) async {
+        final insertProgramResult = await connection.query(
+          _insertProgramSql(
+            createProgramRequest,
+            customerId,
+            customer.activeControllerId,
+          ),
+        );
+        final programId = insertProgramResult.single.toColumnMap()['program_id'] as int;
+        final runs = <Run>[];
+        for (final run in createProgramRequest.runs) {
+          final insertRunResult = await connection.query(
+            _insertRunSql(
+              run,
+              programId,
+            ),
+          );
+          final runId = insertRunResult.single.toColumnMap()['run_id'] as int;
+          runs.add(
+            Run(
+              id: runId,
+              programId: programId,
+              zoneId: run.zoneId,
+              durationSeconds: run.durationSeconds,
+              startHour: run.startHour,
+              startMinute: run.startMinute,
+            ),
+          );
+        }
+        program = Program(
+          id: programId,
+          name: createProgramRequest.programName,
+          frequency: createProgramRequest.frequency,
+          runs: runs,
+        );
+      });
+      return Response.ok(
+        jsonEncode(
+          CreateProgramResponse(
+            program: program,
+          ),
         ),
-      );
-      final programId = insertProgramResult.single.toColumnMap()['program_id'] as int;
-      final runs = <Run>[];
-      for (final run in createProgramRequest.runs) {
-        final insertRunResult = await connection.query(
-          _insertRunSql(
-            run,
-            programId,
-          ),
-        );
-        final runId = insertRunResult.single.toColumnMap()['run_id'] as int;
-        runs.add(
-          Run(
-            id: runId,
-            programId: programId,
-            zoneId: run.zoneId,
-            durationSeconds: run.durationSeconds,
-            startHour: run.startHour,
-            startMinute: run.startMinute,
-          ),
-        );
-      }
-      program = Program(
-        id: programId,
-        name: createProgramRequest.programName,
-        frequency: createProgramRequest.frequency,
-        runs: runs,
+        headers: {'Content-Type': 'application/json'},
       );
     });
-    return Response.ok(
-      jsonEncode(
-        CreateProgramResponse(
-          program: program,
-        ),
-      ),
-      headers: {'Content-Type': 'application/json'},
-    );
   }
 }
 
