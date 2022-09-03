@@ -1,8 +1,6 @@
 import 'package:api_models/api_models.dart';
 import 'package:clock/clock.dart';
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:irri/programs/models/run_group.dart';
 
 extension ListProgramX on List<Program> {
   /// Returns the runs that will run today,
@@ -52,32 +50,15 @@ extension TimeOfDayX on TimeOfDay {
 }
 
 extension ListRunX on List<Run> {
-  List<RunGroup> toRunGroups() {
-    final mods = <RunGroup>[];
-    forEach((run) {
-      final addedMod = mods.singleWhereOrNull(
-        (RunGroup mod) => mod.timeOfDay == run.startTime && mod.duration.inSeconds == run.durationSeconds,
-      );
-      if (addedMod == null) {
-        // A runGroup containing this run has not
-        // been created yet
-        mods.add(
-          RunGroup(
-            type: RunGroupType.modification,
-            timeOfDay: run.startTime,
-            zoneIds: [run.zoneId],
-            duration: Duration(seconds: run.durationSeconds),
-          ),
-        );
-      } else {
-        // Add this run's zoneId to the run draft
-        final index = mods.indexWhere(
-          (element) => element.timeOfDay == addedMod.timeOfDay,
-        );
-        mods[index] = addedMod.copyWith(zoneIds: [run.zoneId, ...addedMod.zoneIds]);
-      }
-    });
-    return mods;
+  List<RunCreation> toRunCreations() {
+    return map(
+      (e) => RunCreation(
+        zoneId: e.zoneId,
+        durationSeconds: e.durationSeconds,
+        startHour: e.startHour,
+        startMinute: e.startMinute,
+      ),
+    ).toList();
   }
 }
 

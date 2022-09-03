@@ -1,18 +1,10 @@
 import 'package:api_models/api_models.dart';
 import 'package:core/core.dart';
 import 'package:irri/customer_details/customer_details.dart';
-import 'package:irri/programs/programs.dart';
 import 'package:result_type/result_type.dart';
 
 /// Creates a [Program] in the provided [CustomerDetailsRepository]
 /// with the given name, frequency, and runs.
-///
-/// The [RunGroup]s passed to [call] are broken up into the individual
-/// [Run]s that comprise the [RunGroup] and stored individually, associated
-/// with the created [Program] via the [Program]s id.
-///
-/// Each created [Run] has the same duration and start time as the parent
-/// [RunGroup].
 class CreateProgram {
   CreateProgram({
     required HttpClient httpClient,
@@ -26,28 +18,15 @@ class CreateProgram {
   Future<UseCaseResult<String, String>> call({
     required String name,
     required List<int> frequency,
-    required List<RunGroup> runGroups,
+    required List<RunCreation> runGroups,
   }) async {
-    final runs = <RunCreation>[];
-    for (final group in runGroups) {
-      for (final zoneId in group.zoneIds) {
-        runs.add(
-          RunCreation(
-            startHour: group.timeOfDay.hour,
-            startMinute: group.timeOfDay.minute,
-            durationSeconds: group.duration.inSeconds,
-            zoneId: zoneId,
-          ),
-        );
-      }
-    }
 
     final response = await _httpClient.post<Map<String, dynamic>>(
       'program',
       data: CreateProgramRequest(
         programName: name,
         frequency: frequency,
-        runs: runs,
+        runs: runGroups,
       ),
     );
 

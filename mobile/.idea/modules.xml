@@ -6,6 +6,7 @@
       <module fileurl="file://$PROJECT_DIR$/core/melos_core.iml" filepath="$PROJECT_DIR$/core/melos_core.iml" />
       <module fileurl="file://$PROJECT_DIR$/core_ui/melos_core_ui.iml" filepath="$PROJECT_DIR$/core_ui/melos_core_ui.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/melos_irri.iml" filepath="$PROJECT_DIR$/app/melos_irri.iml" />
+      <module fileurl="file://$PROJECT_DIR$/playground/melos_playground.iml" filepath="$PROJECT_DIR$/playground/melos_playground.iml" />
       <module fileurl="file://$PROJECT_DIR$/weather/melos_weatherx.iml" filepath="$PROJECT_DIR$/weather/melos_weatherx.iml" />
       <module fileurl="file://$PROJECT_DIR$/melos_irri.iml" filepath="$PROJECT_DIR$/melos_irri.iml" />
     </modules>

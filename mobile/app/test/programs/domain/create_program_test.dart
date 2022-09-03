@@ -44,7 +44,7 @@ void main() {
       await subject.call(
         name: 'Test Program',
         frequency: [1, 2, 3, 4, 5],
-        runGroups: <RunGroup>[],
+        runGroups: <RunCreation>[],
       );
 
       final programs = await repository.getPrograms();
@@ -96,12 +96,24 @@ void main() {
       await subject.call(
         name: 'Test Program',
         frequency: [1, 2, 3, 4, 5],
-        runGroups: <RunGroup>[
-          RunGroup(
-            type: RunGroupType.creation,
-            timeOfDay: TimeOfDay.fromDateTime(time),
-            zoneIds: [0, 1],
-            duration: const Duration(minutes: 10),
+        runGroups: <RunCreation>[
+          RunCreation(
+            zoneId: 0,
+            durationSeconds: const Duration(minutes: 10).inSeconds,
+            startHour: TimeOfDay.fromDateTime(time).hour,
+            startMinute: TimeOfDay.fromDateTime(time).minute,
+          ),
+          RunCreation(
+            zoneId: 1,
+            durationSeconds: const Duration(minutes: 10).inSeconds,
+            startHour: TimeOfDay.fromDateTime(time).hour,
+            startMinute: TimeOfDay.fromDateTime(
+              time.add(
+                const Duration(
+                  minutes: 10,
+                ),
+              ),
+            ).minute,
           ),
         ],
       );

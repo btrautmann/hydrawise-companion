@@ -1,6 +1,6 @@
 import 'package:api_models/api_models.dart';
+import 'package:core_ui/core_ui.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:irri/customer_details/customer_details.dart';
 import 'package:irri/programs/programs.dart';
@@ -33,7 +33,7 @@ class CreateProgramPage extends StatelessWidget {
           body: CreateProgramView(
             name: existingProgram?.name ?? '',
             frequency: List.of(existingProgram?.frequency ?? []),
-            runGroups: existingProgram?.runs.toRunGroups() ?? [],
+            runGroups: existingProgram?.runs.toRunCreations() ?? [],
             existingProgramId: existingProgramId,
           ),
         );
@@ -53,7 +53,7 @@ class CreateProgramView extends StatefulWidget {
 
   final String name;
   final List<int> frequency;
-  final List<RunGroup> runGroups;
+  final List<RunCreation> runGroups;
   final int? existingProgramId;
 
   @override
@@ -63,7 +63,7 @@ class CreateProgramView extends StatefulWidget {
 class _CreateProgramViewState extends State<CreateProgramView> {
   late String _name;
   late List<int> _frequency;
-  late List<RunGroup> _runGroups;
+  late List<RunCreation> _runGroups;
   late TextEditingController _nameController;
 
   @override
@@ -84,33 +84,34 @@ class _CreateProgramViewState extends State<CreateProgramView> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: TextField(
-              controller: _nameController,
-              onChanged: (text) {
-                setState(() {
-                  _name = text;
-                });
-              },
-              decoration: const InputDecoration(
-                hintText: 'Give your program a name',
-              ),
-            ),
-          ),
-          _FrequencySelection(
-            initialFrequency: _frequency,
-            onFrequencyChanged: (frequency) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(16),
+          child: TextField(
+            controller: _nameController,
+            onChanged: (text) {
               setState(() {
-                _frequency = frequency;
+                _name = text;
               });
             },
+            decoration: const InputDecoration(
+              hintText: 'Give your program a name',
+            ),
           ),
-          _RunsConfiguration(
+        ),
+        _FrequencySelection(
+          initialFrequency: _frequency,
+          onFrequencyChanged: (frequency) {
+            setState(() {
+              _frequency = frequency;
+            });
+          },
+        ),
+        Flexible(
+          child: _RunsConfiguration(
             initialrunGroups: _runGroups,
             onRunsChanged: (runs) {
               setState(() {
@@ -118,40 +119,33 @@ class _CreateProgramViewState extends State<CreateProgramView> {
               });
             },
           ),
-          Visibility(
-            visible: _name.isNotEmpty &&
-                _frequency.isNotEmpty &&
-                _runGroups.isNotEmpty &&
-                !_runGroups.any(
-                  (element) =>
-                      element.duration.inMinutes == 0 ||
-                      element.zoneIds.isEmpty,
-                ),
-            child: Align(
-              child: ElevatedButton(
-                child: const Text('Done'),
-                onPressed: () {
-                  if (widget.existingProgramId != null) {
-                    context.read<ProgramsCubit>().updateProgram(
-                          programId: widget.existingProgramId!,
-                          name: _name,
-                          frequency: _frequency,
-                          runs: _runGroups,
-                        );
-                  } else {
-                    context.read<ProgramsCubit>().createProgram(
-                          name: _name,
-                          frequency: _frequency,
-                          runGroups: _runGroups,
-                        );
-                  }
-                  Navigator.of(context).pop();
-                },
-              ),
+        ),
+        Visibility(
+          visible: _name.isNotEmpty && _frequency.isNotEmpty && _runGroups.isNotEmpty,
+          child: Align(
+            child: ElevatedButton(
+              child: const Text('Done'),
+              onPressed: () {
+                if (widget.existingProgramId != null) {
+                  context.read<ProgramsCubit>().updateProgram(
+                        programId: widget.existingProgramId!,
+                        name: _name,
+                        frequency: _frequency,
+                        runs: _runGroups,
+                      );
+                } else {
+                  context.read<ProgramsCubit>().createProgram(
+                        name: _name,
+                        frequency: _frequency,
+                        runGroups: _runGroups,
+                      );
+                }
+                Navigator.of(context).pop();
+              },
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
@@ -220,70 +214,63 @@ class _FrequencySelectionState extends State<_FrequencySelection> {
                     _updateFrequency(DateTime.monday);
                   },
                   text: 'M',
-                  colorResolver: (states) =>
-                      _frequency.contains(DateTime.monday)
-                          ? Theme.of(context).colorScheme.secondary
-                          : Colors.transparent,
+                  colorResolver: (states) => _frequency.contains(DateTime.monday)
+                      ? Theme.of(context).colorScheme.secondary
+                      : Colors.transparent,
                 ),
                 _DayButton(
                   onTapped: () {
                     _updateFrequency(DateTime.tuesday);
                   },
                   text: 'T',
-                  colorResolver: (states) =>
-                      _frequency.contains(DateTime.tuesday)
-                          ? Theme.of(context).colorScheme.secondary
-                          : Colors.transparent,
+                  colorResolver: (states) => _frequency.contains(DateTime.tuesday)
+                      ? Theme.of(context).colorScheme.secondary
+                      : Colors.transparent,
                 ),
                 _DayButton(
                   onTapped: () {
                     _updateFrequency(DateTime.wednesday);
                   },
                   text: 'W',
-                  colorResolver: (states) =>
-                      _frequency.contains(DateTime.wednesday)
-                          ? Theme.of(context).colorScheme.secondary
-                          : Colors.transparent,
+                  colorResolver: (states) => _frequency.contains(DateTime.wednesday)
+                      ? Theme.of(context).colorScheme.secondary
+                      : Colors.transparent,
                 ),
                 _DayButton(
                   onTapped: () {
                     _updateFrequency(DateTime.thursday);
                   },
                   text: 'R',
-                  colorResolver: (states) =>
-                      _frequency.contains(DateTime.thursday)
-                          ? Theme.of(context).colorScheme.secondary
-                          : Colors.transparent,
+                  colorResolver: (states) => _frequency.contains(DateTime.thursday)
+                      ? Theme.of(context).colorScheme.secondary
+                      : Colors.transparent,
                 ),
                 _DayButton(
                   onTapped: () {
                     _updateFrequency(DateTime.friday);
                   },
                   text: 'F',
-                  colorResolver: (friday) =>
-                      _frequency.contains(DateTime.friday)
-                          ? Theme.of(context).colorScheme.secondary
-                          : Colors.transparent,
+                  colorResolver: (friday) => _frequency.contains(DateTime.friday)
+                      ? Theme.of(context).colorScheme.secondary
+                      : Colors.transparent,
                 ),
                 _DayButton(
                   onTapped: () {
                     _updateFrequency(DateTime.saturday);
                   },
                   text: 'S',
-                  colorResolver: (states) =>
-                      _frequency.contains(DateTime.saturday)
-                          ? Theme.of(context).colorScheme.secondary
-                          : Colors.transparent,
+                  colorResolver: (states) => _frequency.contains(DateTime.saturday)
+                      ? Theme.of(context).colorScheme.secondary
+                      : Colors.transparent,
                 ),
                 _DayButton(
                   onTapped: () {
                     _updateFrequency(DateTime.sunday);
                   },
                   text: 'Su',
-                  colorResolver: (states) =>
-                      _frequency.contains(DateTime.sunday)
-                          ? Theme.of(context).colorScheme.secondary
-                          : Colors.transparent,
+                  colorResolver: (states) => _frequency.contains(DateTime.sunday)
+                      ? Theme.of(context).colorScheme.secondary
+                      : Colors.transparent,
                 ),
               ],
             ),
@@ -337,20 +324,89 @@ class _RunsConfiguration extends StatefulWidget {
     required this.onRunsChanged,
   }) : super(key: key);
 
-  final List<RunGroup> initialrunGroups;
-  final ValueSetter<List<RunGroup>> onRunsChanged;
+  final List<RunCreation> initialrunGroups;
+  final ValueSetter<List<RunCreation>> onRunsChanged;
 
   @override
   _RunsConfigurationState createState() => _RunsConfigurationState();
 }
 
 class _RunsConfigurationState extends State<_RunsConfiguration> {
-  late List<RunGroup> _runGroups;
+  final entries = <TimelineEntry>[];
+  final mapping = <String, RunCreation>{};
+  bool isValid = true;
 
   @override
   void initState() {
-    _runGroups = widget.initialrunGroups;
+    for (final element in widget.initialrunGroups) {
+      final entry = TimelineEntry(
+        time: TimeOfDay(
+          hour: element.startHour,
+          minute: element.startMinute,
+        ),
+        duration: Duration(seconds: element.durationSeconds),
+      );
+      entries.add(entry);
+      mapping[entry.id] = element;
+    }
     super.initState();
+  }
+
+  void _addStartTime(TimelineEntry entry, Zone zone) {
+    setState(() {
+      mapping[entry.id] = RunCreation(
+        zoneId: zone.id,
+        durationSeconds: entry.duration.inSeconds,
+        startHour: entry.time.hour,
+        startMinute: entry.time.minute,
+      );
+      entries.add(entry);
+      widget.onRunsChanged(mapping.values.toList());
+    });
+  }
+
+  void _changeStartTime(String entryId, TimeOfDay time) {
+    final entry = entries.singleWhere(
+      (element) => element.id == entryId,
+    );
+    final adjustedEntry = TimelineEntry(
+      time: time,
+      duration: entry.duration,
+      id: entry.id,
+    );
+    final runCreation = mapping[entryId]!;
+    setState(() {
+      entries
+        ..removeWhere((element) => element.id == adjustedEntry.id)
+        ..add(adjustedEntry);
+      mapping[entryId] = runCreation.copyWith(
+        startHour: time.hour,
+        startMinute: time.minute,
+      );
+      widget.onRunsChanged(mapping.values.toList());
+    });
+  }
+
+  void _changeDuration(String entryId, double duration) {
+    final entry = entries.singleWhere(
+      (element) => element.id == entryId,
+    );
+    setState(() {
+      entries
+        ..removeWhere((element) => element.id == entryId)
+        ..add(
+          TimelineEntry(
+            time: entry.time,
+            duration: Duration(minutes: duration.toInt()),
+            id: entry.id,
+          ),
+        );
+      final runCreation = mapping[entryId]!;
+      mapping[entryId] = runCreation.copyWith(
+        durationSeconds: Duration(minutes: duration.toInt()).inSeconds,
+      );
+      widget.onRunsChanged(mapping.values.toList());
+    });
   }
 
   @override
@@ -361,255 +417,145 @@ class _RunsConfigurationState extends State<_RunsConfiguration> {
           loading: (_) => List<Zone>.empty(),
           complete: (state) => state.zones,
         );
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(left: 16, top: 8),
-              child: Text(
-                'Run at',
-                style: Theme.of(context).textTheme.headline6,
-              ),
-            ),
-            const Padding(
-              padding: EdgeInsets.only(left: 16, top: 8),
-              child: Text(
-                'Set start times and durations for groups of zones.',
-              ),
-            ),
-            if (_runGroups.isNotEmpty)
-              ListView.builder(
-                primary: false,
-                shrinkWrap: true,
-                itemCount: _runGroups.length,
-                itemBuilder: (context, rIndex) {
-                  return _RunCreationView(
-                    key: ObjectKey(_runGroups[rIndex]),
-                    runCreation: _runGroups[rIndex],
-                    availableZones: zones,
-                    onChanged: (runCreation) {
-                      setState(() {
-                        _runGroups[rIndex] = runCreation;
-                      });
-                      widget.onRunsChanged(_runGroups);
-                    },
-                    onRemoved: (runCreation) {
-                      setState(() {
-                        _runGroups.remove(runCreation);
-                      });
-                      widget.onRunsChanged(_runGroups);
-                    },
-                  );
-                },
-              ),
-            Align(
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: TextButton(
-                  onPressed: () {
-                    setState(() {
-                      _runGroups.add(
-                        RunGroup(
-                          type: RunGroupType.creation,
-                          timeOfDay: TimeOfDay.now(),
-                          zoneIds: [],
-                          duration: Duration.zero,
-                        ),
-                      );
-                    });
-                    widget.onRunsChanged(_runGroups);
-                  },
-                  child: const Text('Add Run'),
-                ),
-              ),
-            ),
-          ],
-        );
-      },
-    );
-  }
-}
-
-class _RunCreationView extends StatefulWidget {
-  const _RunCreationView({
-    Key? key,
-    required this.runCreation,
-    required this.availableZones,
-    required this.onChanged,
-    required this.onRemoved,
-  }) : super(key: key);
-
-  final RunGroup runCreation;
-  final List<Zone> availableZones;
-  final ValueSetter<RunGroup> onChanged;
-  final ValueSetter<RunGroup> onRemoved;
-
-  @override
-  _RunCreationViewState createState() => _RunCreationViewState();
-}
-
-class _RunCreationViewState extends State<_RunCreationView> {
-  late RunGroup _runGroup;
-
-  @override
-  void initState() {
-    _runGroup = widget.runCreation;
-    super.initState();
-  }
-
-  void _changeTime(TimeOfDay? timeOfDay, BuildContext context) {
-    if (timeOfDay != null) {
-      setState(() {
-        _runGroup = _runGroup.copyWith(timeOfDay: timeOfDay);
-        widget.onChanged(_runGroup);
-      });
-    }
-  }
-
-  void _changeDuration(String minutes) {
-    if (minutes.isNotEmpty) {
-      setState(() {
-        _runGroup = _runGroup.copyWith(
-          duration: Duration(
-            minutes: int.parse(minutes),
-          ),
-        );
-        widget.onChanged(_runGroup);
-      });
-    }
-  }
-
-  void _changeZoneMembership(bool isSelected, int zoneId) {
-    final zones = List.of(_runGroup.zoneIds);
-    if (isSelected) {
-      zones.add(zoneId);
-    } else {
-      zones.remove(zoneId);
-    }
-    _runGroup = _runGroup.copyWith(zoneIds: zones);
-    widget.onChanged(_runGroup);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(16),
-          child: Row(
+        return Center(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
             children: [
-              Tooltip(
-                message: 'Remove run',
-                child: IconButton(
-                  onPressed: () {
-                    widget.onRemoved(_runGroup);
+              Flexible(
+                child: TimelineBuilder(
+                  entries: entries,
+                  buildTitle: (entryId) {
+                    final zoneId = mapping[entryId]!.zoneId;
+                    final zone = zones.singleWhere(
+                      (element) => element.id == zoneId,
+                    );
+                    final entry = entries.singleWhere(
+                      (element) => element.id == entryId,
+                    );
+                    return 'Zone ${zone.name} runs for ${entry.duration.inMinutes} minutes';
                   },
-                  icon: const Icon(Icons.remove_circle),
+                  onEntryDurationChanged: (String entryId, double duration) {
+                    _changeDuration(entryId, duration);
+                  },
+                  onValidityChanged: (valid) {
+                    setState(() {
+                      isValid = valid;
+                    });
+                  },
+                  onNodeTapped: (node) {
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+                        return Dialog(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              InkWell(
+                                onTap: () {
+                                  setState(() {
+                                    mapping.remove(node);
+                                    entries.removeWhere(
+                                      (element) => element.id == node,
+                                    );
+                                  });
+                                  Navigator.pop(context);
+                                },
+                                child: const Padding(
+                                  padding: EdgeInsets.all(12),
+                                  child: Text('Remove run'),
+                                ),
+                              ),
+                              const Divider(),
+                              InkWell(
+                                onTap: () async {
+                                  Navigator.pop(context);
+                                  final newTime = await showTimePicker(
+                                    context: context,
+                                    initialTime: entries
+                                        .singleWhere(
+                                          (element) => element.id == node,
+                                        )
+                                        .time,
+                                  );
+                                  if (newTime != null) {
+                                    _changeStartTime(node, newTime);
+                                  }
+                                },
+                                child: const Padding(
+                                  padding: EdgeInsets.all(12),
+                                  child: Text('Adjust start time'),
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    );
+                  },
                 ),
               ),
-              OutlinedButton(
-                child: Text(_runGroup.timeOfDay.format(context)),
-                onPressed: () async {
-                  final time = await showTimePicker(
-                    context: context,
-                    initialTime: TimeOfDay.now(),
-                  );
-                  // TODO(brandon): Address this by passing
-                  // a param `onChosen`
-                  // ignore: use_build_context_synchronously
-                  _changeTime(time, context);
-                },
-              ),
-              const Padding(
-                padding: EdgeInsets.only(left: 8, right: 8),
-                child: Text('for'),
-              ),
-              OutlinedButton(
-                child: Text(_runGroup.duration.inMinutes.toString()),
-                onPressed: () async {
-                  await showDialog(
-                    context: context,
-                    builder: (_) {
-                      return _DurationTimeInputDialog(
-                        onSubmit: _changeDuration,
+              Visibility(
+                visible: isValid,
+                child: Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: FloatingActionButton.extended(
+                    onPressed: () async {
+                      final zone = await showDialog<Zone>(
+                        context: context,
+                        builder: (_) {
+                          return Dialog(
+                            child: ListView.builder(
+                              shrinkWrap: true,
+                              itemCount: zones.length,
+                              itemBuilder: (context, index) {
+                                final zone = zones[index];
+                                return InkWell(
+                                  onTap: () {
+                                    Navigator.of(context).pop(zone);
+                                  },
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8),
+                                    child: Text(zone.name),
+                                  ),
+                                );
+                              },
+                            ),
+                          );
+                        },
                       );
+                      if (zone != null) {
+                        entries.sortByTime();
+                        final lastEntry = entries.isEmpty ? null : entries.last;
+                        final newTime = await showTimePicker(
+                          context: context,
+                          initialTime: lastEntry == null
+                              ? TimeOfDay.now()
+                              : TimeOfDay.fromDateTime(
+                                  DateTime.now().apply(lastEntry.time).add(lastEntry.duration),
+                                ),
+                        );
+                        if (newTime != null) {
+                          _addStartTime(
+                            TimelineEntry(
+                              time: newTime,
+                              duration: const Duration(minutes: 10),
+                            ),
+                            zone,
+                          );
+                        }
+                      }
                     },
-                  );
-                },
-              ),
-              const Padding(
-                padding: EdgeInsets.only(left: 8, right: 8),
-                child: Text('minutes'),
+                    backgroundColor: Colors.green.shade300,
+                    label: const Text('Add Run'),
+                  ),
+                ),
               ),
             ],
           ),
-        ),
-        SizedBox(
-          height: 48,
-          child: ListView.builder(
-            padding: const EdgeInsets.only(left: 16, right: 16),
-            shrinkWrap: true,
-            itemCount: widget.availableZones.length,
-            scrollDirection: Axis.horizontal,
-            itemBuilder: (context, zIndex) {
-              final zone = widget.availableZones[zIndex];
-              return Padding(
-                padding: const EdgeInsets.only(
-                  left: 4,
-                  right: 4,
-                ),
-                child: FilterChip(
-                  key: ValueKey(zone.id),
-                  label: Text(
-                    zone.name,
-                    style: TextStyle(
-                      color: Theme.of(context).colorScheme.onSecondary,
-                    ),
-                  ),
-                  checkmarkColor: Theme.of(context).colorScheme.onSecondary,
-                  selectedColor: Theme.of(context).colorScheme.secondary,
-                  selected: _runGroup.zoneIds.contains(zone.id),
-                  onSelected: (isSelected) {
-                    _changeZoneMembership(isSelected, zone.id);
-                  },
-                ),
-              );
-            },
-          ),
-        ),
-        const Divider(),
-      ],
-    );
-  }
-}
-
-class _DurationTimeInputDialog extends StatelessWidget {
-  const _DurationTimeInputDialog({
-    Key? key,
-    required this.onSubmit,
-  }) : super(key: key);
-
-  final ValueSetter<String> onSubmit;
-
-  @override
-  Widget build(BuildContext context) {
-    return Dialog(
-      child: TextField(
-        autofocus: true,
-        inputFormatters: [
-          FilteringTextInputFormatter.digitsOnly,
-        ],
-        onSubmitted: (value) {
-          onSubmit(value);
-          Navigator.pop(context);
-        },
-        decoration: const InputDecoration(
-          border: OutlineInputBorder(),
-        ),
-        keyboardType: const TextInputType.numberWithOptions(signed: true),
-      ),
+        );
+      },
     );
   }
 }
