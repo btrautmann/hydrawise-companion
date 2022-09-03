@@ -200,8 +200,6 @@ void main() {
       expect(runsBefore.single.startTime, const TimeOfDay(hour: 9, minute: 9));
       expect(runsBefore.single.durationSeconds, 55);
 
-      final now = TimeOfDay.now();
-
       await updateProgram(
         programId: 12345,
         name: 'New',
@@ -209,9 +207,9 @@ void main() {
         runGroups: [
           RunCreation(
             zoneId: 1,
-            durationSeconds: const Duration(seconds: 5).inSeconds,
-            startHour: now.hour,
-            startMinute: now.minute,
+            durationSeconds: const Duration(seconds: 25).inSeconds,
+            startHour: 5,
+            startMinute: 5,
           ),
         ],
       );
