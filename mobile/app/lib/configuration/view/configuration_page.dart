@@ -2,6 +2,7 @@ import 'package:core_ui/core_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:irri/app/app.dart';
+import 'package:irri/auth/auth.dart';
 
 class ConfigurationPage extends StatelessWidget {
   const ConfigurationPage({Key? key}) : super(key: key);
@@ -31,6 +32,8 @@ class ConfigurationView extends StatelessWidget {
           ),
         ),
         _AppThemeRow(),
+        const Divider(),
+        _LogOutRow(),
       ],
     );
   }
@@ -111,6 +114,51 @@ class ChooseThemeModeDialog extends ConsumerWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class _LogOutRow extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return ListRow(
+      leadingIcon: const CircleBackground(
+        child: Icon(
+          Icons.logout,
+        ),
+      ),
+      title: const Text('Log out'),
+      onTapped: () => showDialog<void>(
+        context: context,
+        builder: (_) => const LogOutDialog(),
+      ),
+    );
+  }
+}
+
+class LogOutDialog extends ConsumerWidget {
+  const LogOutDialog({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final yesButton = TextButton(
+      onPressed: () {
+        Navigator.pop(context);
+        ref.read(logOutControllerProvider.notifier).logOut();
+      },
+      child: const Text('Yes'),
+    );
+    final noButton = TextButton(
+      onPressed: () {
+        Navigator.pop(context);
+      },
+      child: const Text('No'),
+    );
+    return AlertDialog(
+      content: const Text('Are you sure?'),
+      actions: [yesButton, noButton],
     );
   }
 }

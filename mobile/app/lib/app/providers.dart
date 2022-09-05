@@ -6,7 +6,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:irri/app/app.dart';
 import 'package:irri/app_theme_mode/domain/domain.dart';
 import 'package:irri/auth/providers.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -17,11 +16,6 @@ part 'providers.freezed.dart';
 class AppState with _$AppState {
   factory AppState({required ThemeMode themeMode}) = _AppState;
 }
-
-// ignore: prefer_void_to_null
-final authFailuresProvider = Provider<StreamController<Null>>((ref) {
-  return StreamController();
-});
 
 final storageProvider = Provider<DataStorage>((ref) {
   return SharedPreferencesStorage(ref.watch(sharedPreferencesProvider));
@@ -38,11 +32,7 @@ final httpClientProvider = Provider<HttpClient>((ref) {
 // ignore: do_not_use_environment
   const baseUrl = String.fromEnvironment('BASE_URL');
   // ignore: close_sinks
-  final authFailures = ref.watch(authFailuresProvider);
   final interceptors = [
-    AuthenticationInterceptor(
-      onAuthenticationFailure: () => authFailures.add(null),
-    ),
     // Always place LogInterceptor at the end
     LogInterceptor(logPrint: (o) => debugPrint.call(o.toString())),
   ];

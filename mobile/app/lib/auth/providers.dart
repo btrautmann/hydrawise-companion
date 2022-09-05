@@ -48,18 +48,14 @@ class AuthNotifier extends StateNotifier<AuthState> {
   AuthNotifier({
     required IsLoggedIn isLoggedIn,
     required LogOut logOut,
-    required GetAuthFailures getAuthFailures,
   })  : _isLoggedIn = isLoggedIn,
         _logOut = logOut,
-        _getAuthFailures = getAuthFailures,
         super(AuthState.loggedOut()) {
     _checkAuthenticationStatus();
-    _listenForAuthFailures();
   }
 
   final IsLoggedIn _isLoggedIn;
   final LogOut _logOut;
-  final GetAuthFailures _getAuthFailures;
 
   Future<void> _checkAuthenticationStatus() async {
     if (await _isLoggedIn()) {
@@ -69,13 +65,8 @@ class AuthNotifier extends StateNotifier<AuthState> {
     }
   }
 
-  Future<void> _listenForAuthFailures() async {
-    await _getAuthFailures().then(
-      (stream) => stream.listen((event) async {
-        await _logOut();
-        state = AuthState.loggedOut();
-      }),
-    );
+  Future<void> logOut() async {
+    return _logOut();
   }
 }
 
@@ -84,9 +75,6 @@ final authProvider = StateNotifierProvider<AuthNotifier, AuthState>(
     return AuthNotifier(
       isLoggedIn: ref.watch(isLoggedInProvider),
       logOut: ref.watch(logOutProvider),
-      getAuthFailures: GetAuthFailures(
-        authFailuresController: ref.watch(authFailuresProvider),
-      ),
     );
   },
 );
