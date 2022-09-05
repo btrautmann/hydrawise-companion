@@ -1,11 +1,11 @@
 import 'package:api_models/api_models.dart';
 import 'package:core_ui/core_ui.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:irri/customer_details/customer_details.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:irri/programs/programs.dart';
+import 'package:irri/zones/providers.dart';
 
-class CreateProgramPage extends StatelessWidget {
+class CreateProgramPage extends ConsumerWidget {
   const CreateProgramPage({
     Key? key,
     this.existingProgramId,
@@ -16,33 +16,31 @@ class CreateProgramPage extends StatelessWidget {
   final int? existingProgramId;
 
   @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<ProgramsCubit, ProgramsState>(
-      builder: (context, state) {
-        final existingProgram = existingProgramId != null
-            ? state.programs.singleWhere(
-                (program) => program.id == existingProgramId,
-              )
-            : null;
-        return Scaffold(
-          appBar: AppBar(
-            title: Text(
-              existingProgramId == null ? 'Create Program' : 'Edit Program',
-            ),
-          ),
-          body: CreateProgramView(
-            name: existingProgram?.name ?? '',
-            frequency: List.of(existingProgram?.frequency ?? []),
-            runGroups: existingProgram?.runs.toRunCreations() ?? [],
-            existingProgramId: existingProgramId,
-          ),
-        );
-      },
+  Widget build(BuildContext context, WidgetRef ref) {
+    final programs = ref.watch(programsProvider);
+    final existingProgram = existingProgramId != null
+        ? programs.whenData(
+            (value) =>
+                value.singleWhere((element) => element.id == existingProgramId),
+          )
+        : null;
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          existingProgramId == null ? 'Create Program' : 'Edit Program',
+        ),
+      ),
+      body: CreateProgramView(
+        name: existingProgram?.asData?.value.name ?? '',
+        frequency: List.of(existingProgram?.asData?.value.frequency ?? []),
+        runGroups: existingProgram?.asData?.value.runs.toRunCreations() ?? [],
+        existingProgramId: existingProgramId,
+      ),
     );
   }
 }
 
-class CreateProgramView extends StatefulWidget {
+class CreateProgramView extends ConsumerStatefulWidget {
   const CreateProgramView({
     Key? key,
     required this.name,
@@ -57,10 +55,10 @@ class CreateProgramView extends StatefulWidget {
   final int? existingProgramId;
 
   @override
-  State<CreateProgramView> createState() => _CreateProgramViewState();
+  ConsumerState<CreateProgramView> createState() => _CreateProgramViewState();
 }
 
-class _CreateProgramViewState extends State<CreateProgramView> {
+class _CreateProgramViewState extends ConsumerState<CreateProgramView> {
   late String _name;
   late List<int> _frequency;
   late List<RunCreation> _runGroups;
@@ -84,6 +82,18 @@ class _CreateProgramViewState extends State<CreateProgramView> {
 
   @override
   Widget build(BuildContext context) {
+    ref.listen<AsyncValue<void>>(
+      createProgramControllerProvider,
+      (_, state) => state.whenOrNull(
+        error: (error, stack) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(error.toString())),
+          );
+        },
+      ),
+    );
+    final createProgramState = ref.watch(createProgramControllerProvider);
+    final isLoading = createProgramState is AsyncLoading<void>;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
@@ -121,28 +131,36 @@ class _CreateProgramViewState extends State<CreateProgramView> {
           ),
         ),
         Visibility(
-          visible: _name.isNotEmpty && _frequency.isNotEmpty && _runGroups.isNotEmpty,
+          visible: _name.isNotEmpty &&
+              _frequency.isNotEmpty &&
+              _runGroups.isNotEmpty,
           child: Align(
-            child: ElevatedButton(
-              child: const Text('Done'),
-              onPressed: () {
-                if (widget.existingProgramId != null) {
-                  context.read<ProgramsCubit>().updateProgram(
-                        programId: widget.existingProgramId!,
-                        name: _name,
-                        frequency: _frequency,
-                        runs: _runGroups,
-                      );
-                } else {
-                  context.read<ProgramsCubit>().createProgram(
-                        name: _name,
-                        frequency: _frequency,
-                        runGroups: _runGroups,
-                      );
-                }
-                Navigator.of(context).pop();
-              },
-            ),
+            child: isLoading
+                ? const CircularProgressIndicator()
+                : ElevatedButton(
+                    child: const Text('Done'),
+                    onPressed: () {
+                      if (widget.existingProgramId != null) {
+                        ref
+                            .read(updateProgramControllerProvider.notifier)
+                            .updateProgram(
+                              programId: widget.existingProgramId!,
+                              name: _name,
+                              frequency: _frequency,
+                              runGroups: _runGroups,
+                            );
+                      } else {
+                        ref
+                            .read(createProgramControllerProvider.notifier)
+                            .createProgram(
+                              name: _name,
+                              frequency: _frequency,
+                              runGroups: _runGroups,
+                            );
+                      }
+                      Navigator.of(context).pop();
+                    },
+                  ),
           ),
         ),
       ],
@@ -214,63 +232,70 @@ class _FrequencySelectionState extends State<_FrequencySelection> {
                     _updateFrequency(DateTime.monday);
                   },
                   text: 'M',
-                  colorResolver: (states) => _frequency.contains(DateTime.monday)
-                      ? Theme.of(context).colorScheme.secondary
-                      : Colors.transparent,
+                  colorResolver: (states) =>
+                      _frequency.contains(DateTime.monday)
+                          ? Theme.of(context).colorScheme.secondary
+                          : Colors.transparent,
                 ),
                 _DayButton(
                   onTapped: () {
                     _updateFrequency(DateTime.tuesday);
                   },
                   text: 'T',
-                  colorResolver: (states) => _frequency.contains(DateTime.tuesday)
-                      ? Theme.of(context).colorScheme.secondary
-                      : Colors.transparent,
+                  colorResolver: (states) =>
+                      _frequency.contains(DateTime.tuesday)
+                          ? Theme.of(context).colorScheme.secondary
+                          : Colors.transparent,
                 ),
                 _DayButton(
                   onTapped: () {
                     _updateFrequency(DateTime.wednesday);
                   },
                   text: 'W',
-                  colorResolver: (states) => _frequency.contains(DateTime.wednesday)
-                      ? Theme.of(context).colorScheme.secondary
-                      : Colors.transparent,
+                  colorResolver: (states) =>
+                      _frequency.contains(DateTime.wednesday)
+                          ? Theme.of(context).colorScheme.secondary
+                          : Colors.transparent,
                 ),
                 _DayButton(
                   onTapped: () {
                     _updateFrequency(DateTime.thursday);
                   },
                   text: 'R',
-                  colorResolver: (states) => _frequency.contains(DateTime.thursday)
-                      ? Theme.of(context).colorScheme.secondary
-                      : Colors.transparent,
+                  colorResolver: (states) =>
+                      _frequency.contains(DateTime.thursday)
+                          ? Theme.of(context).colorScheme.secondary
+                          : Colors.transparent,
                 ),
                 _DayButton(
                   onTapped: () {
                     _updateFrequency(DateTime.friday);
                   },
                   text: 'F',
-                  colorResolver: (friday) => _frequency.contains(DateTime.friday)
-                      ? Theme.of(context).colorScheme.secondary
-                      : Colors.transparent,
+                  colorResolver: (friday) =>
+                      _frequency.contains(DateTime.friday)
+                          ? Theme.of(context).colorScheme.secondary
+                          : Colors.transparent,
                 ),
                 _DayButton(
                   onTapped: () {
                     _updateFrequency(DateTime.saturday);
                   },
                   text: 'S',
-                  colorResolver: (states) => _frequency.contains(DateTime.saturday)
-                      ? Theme.of(context).colorScheme.secondary
-                      : Colors.transparent,
+                  colorResolver: (states) =>
+                      _frequency.contains(DateTime.saturday)
+                          ? Theme.of(context).colorScheme.secondary
+                          : Colors.transparent,
                 ),
                 _DayButton(
                   onTapped: () {
                     _updateFrequency(DateTime.sunday);
                   },
                   text: 'Su',
-                  colorResolver: (states) => _frequency.contains(DateTime.sunday)
-                      ? Theme.of(context).colorScheme.secondary
-                      : Colors.transparent,
+                  colorResolver: (states) =>
+                      _frequency.contains(DateTime.sunday)
+                          ? Theme.of(context).colorScheme.secondary
+                          : Colors.transparent,
                 ),
               ],
             ),
@@ -317,7 +342,7 @@ class _DayButton extends StatelessWidget {
   }
 }
 
-class _RunsConfiguration extends StatefulWidget {
+class _RunsConfiguration extends ConsumerStatefulWidget {
   const _RunsConfiguration({
     Key? key,
     required this.initialrunGroups,
@@ -328,10 +353,10 @@ class _RunsConfiguration extends StatefulWidget {
   final ValueSetter<List<RunCreation>> onRunsChanged;
 
   @override
-  _RunsConfigurationState createState() => _RunsConfigurationState();
+  ConsumerState<_RunsConfiguration> createState() => _RunsConfigurationState();
 }
 
-class _RunsConfigurationState extends State<_RunsConfiguration> {
+class _RunsConfigurationState extends ConsumerState<_RunsConfiguration> {
   final entries = <TimelineEntry>[];
   final mapping = <String, RunCreation>{};
   bool isValid = true;
@@ -411,12 +436,9 @@ class _RunsConfigurationState extends State<_RunsConfiguration> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<CustomerDetailsCubit, CustomerDetailsState>(
-      builder: (context, state) {
-        final zones = state.map(
-          loading: (_) => List<Zone>.empty(),
-          complete: (state) => state.zones,
-        );
+    final zonesState = ref.watch(zonesProvider);
+    return zonesState.maybeWhen(
+      data: (zones) {
         return Center(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -533,7 +555,9 @@ class _RunsConfigurationState extends State<_RunsConfiguration> {
                           initialTime: lastEntry == null
                               ? TimeOfDay.now()
                               : TimeOfDay.fromDateTime(
-                                  DateTime.now().apply(lastEntry.time).add(lastEntry.duration),
+                                  DateTime.now()
+                                      .apply(lastEntry.time)
+                                      .add(lastEntry.duration),
                                 ),
                         );
                         if (newTime != null) {
@@ -555,6 +579,9 @@ class _RunsConfigurationState extends State<_RunsConfiguration> {
             ],
           ),
         );
+      },
+      orElse: () {
+        return const CircularProgressIndicator();
       },
     );
   }

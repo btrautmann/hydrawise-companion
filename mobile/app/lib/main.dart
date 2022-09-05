@@ -1,21 +1,14 @@
 import 'dart:async';
 import 'dart:developer';
 
-import 'package:bloc/bloc.dart';
-import 'package:core/core.dart';
-import 'package:dio/dio.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
-import 'package:irri/app/app_bloc_observer.dart';
-import 'package:irri/app/domain/app_domain_factory.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:irri/app/domain/build_router.dart';
 import 'package:irri/app/irri_app.dart';
-import 'package:irri/app/networking/networking.dart';
-import 'package:irri/auth/auth.dart';
-import 'package:irri/customer_details/customer_details.dart';
+import 'package:irri/app/provider_logging.dart';
+import 'package:irri/app/providers.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 Future<void> main() async {
@@ -26,55 +19,23 @@ Future<void> main() async {
 
   await runZonedGuarded(
     () async {
-      await BlocOverrides.runZoned(
-        () async {
-          WidgetsFlutterBinding.ensureInitialized();
-          await Firebase.initializeApp();
+      WidgetsFlutterBinding.ensureInitialized();
+      await Firebase.initializeApp();
 
-          final firebaseMessaging = FirebaseMessaging.instance;
+      final sharedPreferences = await SharedPreferences.getInstance();
 
-          final sharedPreferences = await SharedPreferences.getInstance();
-          final dataStorage = SharedPreferencesStorage(sharedPreferences);
-          final repository = InMemoryCustomerDetailsRepository();
-
-          // ignore: prefer_void_to_null, close_sinks
-          final authFailures = StreamController<Null>();
-          void onAuthenticationFailure() {
-            authFailures.add(null);
-          }
-
-          final interceptors = await BuildProductionHttpInterceptors(
-            onAuthenticationFailure: onAuthenticationFailure,
-          ).call();
-
-          // ignore: do_not_use_environment
-          const baseUrl = String.fromEnvironment('BASE_URL');
-          final httpClient = HttpClient(
-            dio: Dio(),
-            baseUrl: baseUrl,
-            getAuthentication: GetApiKey(dataStorage),
-            interceptors: interceptors,
-          );
-
-          final providers = ProductionDependencyFactory.build(
-            client: httpClient,
-            dataStorage: dataStorage,
-            repository: repository,
-            firebaseMessaging: firebaseMessaging,
-            authFailures: authFailures,
-            inDeveloperMode: kDebugMode,
-          );
-
-          final router = await BuildAppRouter().call();
-
-          runApp(
-            IrriApp(
-              router: router,
-              providers: providers,
-            ),
-          );
-        },
-        blocObserver: AppBlocObserver(),
+      runApp(
+        ProviderScope(
+          observers: [
+            ProviderLogger(),
+          ],
+          overrides: [
+            sharedPreferencesProvider.overrideWithValue(sharedPreferences),
+          ],
+          child: IrriApp(
+            router: BuildAppRouter().call(),
+          ),
+        ),
       );
     },
     (error, stackTrace) => log(error.toString()),
