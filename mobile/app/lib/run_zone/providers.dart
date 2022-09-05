@@ -2,7 +2,6 @@ import 'package:api_models/api_models.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:irri/app/app.dart';
-import 'package:irri/customer_details/customer_details.dart';
 import 'package:irri/run_zone/run_zone.dart';
 
 part 'providers.freezed.dart';
@@ -17,15 +16,12 @@ class RunZoneState with _$RunZoneState {
 final runZoneProvider = Provider<RunZone>((ref) {
   return RunZone(
     httpClient: ref.watch(httpClientProvider),
-    setNextPollTime: ref.watch(setNextPollTimeProvider),
-    repository: ref.watch(customerDetailsRepositoryProvider),
   );
 });
 
 final stopZoneProvider = Provider<StopZone>((ref) {
   return StopZone(
     httpClient: ref.watch(httpClientProvider),
-    repository: ref.watch(customerDetailsRepositoryProvider),
   );
 });
 

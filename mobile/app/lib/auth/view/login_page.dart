@@ -1,7 +1,7 @@
 import 'package:core_ui/core_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:irri/auth/providers.dart';
+import 'package:irri/auth/auth.dart';
 
 /// Page for the user to enter their API key
 /// and gain access to the rest of the application
@@ -19,11 +19,11 @@ class LoginPage extends StatelessWidget {
 class _ApiKeyInput extends ConsumerStatefulWidget {
   @override
   ConsumerState<ConsumerStatefulWidget> createState() {
-    return __ApiKeyInputState();
+    return _ApiKeyInputState();
   }
 }
 
-class __ApiKeyInputState extends ConsumerState<_ApiKeyInput> {
+class _ApiKeyInputState extends ConsumerState<_ApiKeyInput> {
   late TextEditingController _controller;
 
   @override
@@ -34,6 +34,16 @@ class __ApiKeyInputState extends ConsumerState<_ApiKeyInput> {
 
   @override
   Widget build(BuildContext context) {
+    ref.listen<AsyncValue<void>>(
+      logInControllerProvider,
+      (_, state) => state.whenOrNull(
+        error: (error, stack) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(error.toString())),
+          );
+        },
+      ),
+    );
     return Padding(
       padding: const EdgeInsets.all(16),
       child: Column(
@@ -49,7 +59,7 @@ class __ApiKeyInputState extends ConsumerState<_ApiKeyInput> {
           const VSpace(spacing: 16),
           ElevatedButton(
             onPressed: () {
-              ref.read(authProvider.notifier).login(_controller.text);
+              ref.read(logInControllerProvider.notifier).logIn(apiKey: _controller.text);
             },
             child: const Text('Submit'),
           )

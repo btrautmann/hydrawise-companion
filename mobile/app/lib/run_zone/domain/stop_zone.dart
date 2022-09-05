@@ -1,19 +1,14 @@
 import 'package:api_models/api_models.dart';
 import 'package:core/core.dart';
-import 'package:irri/customer_details/customer_details.dart';
-import 'package:result_type/result_type.dart';
 
 class StopZone {
   StopZone({
     required HttpClient httpClient,
-    required CustomerDetailsRepository repository,
-  })  : _httpClient = httpClient,
-        _repository = repository;
+  }) : _httpClient = httpClient;
 
   final HttpClient _httpClient;
-  final CustomerDetailsRepository _repository;
 
-  Future<UseCaseResult<bool, bool>> call({
+  Future<Zone> call({
     required Zone zone,
   }) async {
     final response = await _httpClient.post<Map<String, dynamic>>(
@@ -22,8 +17,9 @@ class StopZone {
     );
     if (response.isSuccess) {
       final runZoneResponse = RunZoneResponse.fromJson(response.success!);
-      await _repository.updateZone(runZoneResponse.zone);
+      return runZoneResponse.zone;
+    } else {
+      throw Exception(response.failure);
     }
-    return response.isSuccess ? Success(true) : Failure(false);
   }
 }

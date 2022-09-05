@@ -8,6 +8,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:irri/app/domain/build_router.dart';
 import 'package:irri/app/irri_app.dart';
 import 'package:irri/app/provider_logging.dart';
+import 'package:irri/app/providers.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 Future<void> main() async {
   FlutterError.onError = (details) {
@@ -20,10 +22,15 @@ Future<void> main() async {
       WidgetsFlutterBinding.ensureInitialized();
       await Firebase.initializeApp();
 
+      final sharedPreferences = await SharedPreferences.getInstance();
+
       runApp(
         ProviderScope(
           observers: [
             ProviderLogger(),
+          ],
+          overrides: [
+            sharedPreferencesProvider.overrideWithValue(sharedPreferences),
           ],
           child: IrriApp(
             router: BuildAppRouter().call(),

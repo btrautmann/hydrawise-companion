@@ -1,7 +1,11 @@
 import 'package:api_models/api_models.dart';
 import 'package:core/core.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:irri/auth/auth.dart';
+import 'package:irri/auth/providers.dart';
+
+part 'log_in_controller.dart';
 
 /// {@template log_in}
 /// Validates the provided API key and if valid,
@@ -20,10 +24,9 @@ class LogIn {
   final SetApiKey _setApiKey;
 
   /// {@macro log_in}
-  Future<bool> call(
-    String apiKey,
-    String timezone,
-  ) async {
+  Future<bool> call({
+    required String apiKey,
+  }) async {
     final response = await _httpClient.post<Map<String, dynamic>>(
       'login',
       options: Options(

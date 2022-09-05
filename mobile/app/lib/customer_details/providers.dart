@@ -17,23 +17,10 @@ class CustomerDetailsState with _$CustomerDetailsState {
   }) = _Complete;
 }
 
-final customerDetailsRepositoryProvider = Provider<CustomerDetailsRepository>((ref) {
-  return InMemoryCustomerDetailsRepository();
-});
-
 final getCustomerDetailsProvider = Provider<GetCustomerDetails>((ref) {
   return GetCustomerDetails(
     httpClient: ref.watch(httpClientProvider),
-    repository: ref.watch(customerDetailsRepositoryProvider),
   );
-});
-
-final getNextPollTimeProvider = Provider<GetNextPollTime>((ref) {
-  return GetNextPollTime(ref.watch(storageProvider));
-});
-
-final setNextPollTimeProvider = Provider<SetNextPollTime>((ref) {
-  return SetNextPollTime(ref.watch(storageProvider));
 });
 
 class CustomerNotifier extends StateNotifier<CustomerDetailsState> {
@@ -60,12 +47,10 @@ class CustomerNotifier extends StateNotifier<CustomerDetailsState> {
     final customerDetails = await _getCustomerDetails();
 
     // TODO(brandon): Handle failure
-    if (customerDetails.isSuccess) {
-      state = CustomerDetailsState.complete(
-        customerDetails: customerDetails.success.customer,
-        zones: customerDetails.success.zones,
-      );
-    }
+    state = CustomerDetailsState.complete(
+      customerDetails: customerDetails.customer,
+      zones: customerDetails.zones,
+    );
   }
 }
 

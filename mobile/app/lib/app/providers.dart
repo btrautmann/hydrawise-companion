@@ -9,6 +9,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:irri/app/app.dart';
 import 'package:irri/app_theme_mode/domain/domain.dart';
 import 'package:irri/auth/providers.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 part 'providers.freezed.dart';
 
@@ -23,7 +24,14 @@ final authFailuresProvider = Provider<StreamController<Null>>((ref) {
 });
 
 final storageProvider = Provider<DataStorage>((ref) {
-  return InMemoryStorage();
+  return SharedPreferencesStorage(ref.watch(sharedPreferencesProvider));
+});
+
+// TODO(brandon): This throws `UnimplementedError` because it will always
+// be overridden in `main.dart`. This is a workaround to avoid having to make
+// all DataStorage-dependent providers FutureProviders.
+final sharedPreferencesProvider = Provider<SharedPreferences>((ref) {
+  throw UnimplementedError();
 });
 
 final httpClientProvider = Provider<HttpClient>((ref) {
