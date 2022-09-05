@@ -4,8 +4,8 @@ import 'package:irri/auth/auth.dart';
 import 'package:irri/error_page.dart';
 import 'package:irri/home/home.dart';
 import 'package:irri/programs/programs.dart';
-import 'package:irri/run_zone/run_zone.dart';
 import 'package:irri/splash_page.dart';
+import 'package:irri/zones/zones.dart';
 
 class BuildAppRouter {
   BuildAppRouter();

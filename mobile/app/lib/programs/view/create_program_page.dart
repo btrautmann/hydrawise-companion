@@ -2,8 +2,8 @@ import 'package:api_models/api_models.dart';
 import 'package:core_ui/core_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:irri/customer_details/customer_details.dart';
 import 'package:irri/programs/programs.dart';
+import 'package:irri/zones/providers.dart';
 
 class CreateProgramPage extends ConsumerWidget {
   const CreateProgramPage({
@@ -422,148 +422,151 @@ class _RunsConfigurationState extends ConsumerState<_RunsConfiguration> {
 
   @override
   Widget build(BuildContext context) {
-    final customerState = ref.watch(customerDetailsStateProvider);
-    final zones = customerState.map(
-      loading: (_) => List<Zone>.empty(),
-      complete: (state) => state.zones,
-    );
-    return Center(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Flexible(
-            child: TimelineBuilder(
-              entries: entries,
-              buildTitle: (entryId) {
-                final zoneId = mapping[entryId]!.zoneId;
-                final zone = zones.singleWhere(
-                  (element) => element.id == zoneId,
-                );
-                final entry = entries.singleWhere(
-                  (element) => element.id == entryId,
-                );
-                return 'Zone ${zone.name} runs for ${entry.duration.inMinutes} minutes';
-              },
-              onEntryDurationChanged: (String entryId, double duration) {
-                _changeDuration(entryId, duration);
-              },
-              onValidityChanged: (valid) {
-                setState(() {
-                  isValid = valid;
-                });
-              },
-              onNodeTapped: (node) {
-                showDialog(
-                  context: context,
-                  builder: (context) {
-                    return Dialog(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          InkWell(
-                            onTap: () {
-                              setState(() {
-                                mapping.remove(node);
-                                entries.removeWhere(
-                                  (element) => element.id == node,
-                                );
-                              });
-                              Navigator.pop(context);
-                            },
-                            child: const Padding(
-                              padding: EdgeInsets.all(12),
-                              child: Text('Remove run'),
-                            ),
-                          ),
-                          const Divider(),
-                          InkWell(
-                            onTap: () async {
-                              Navigator.pop(context);
-                              final newTime = await showTimePicker(
-                                context: context,
-                                initialTime: entries
-                                    .singleWhere(
+    final zonesState = ref.watch(zonesProvider);
+    return zonesState.maybeWhen(
+      data: (zones) {
+        return Center(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Flexible(
+                child: TimelineBuilder(
+                  entries: entries,
+                  buildTitle: (entryId) {
+                    final zoneId = mapping[entryId]!.zoneId;
+                    final zone = zones.singleWhere(
+                      (element) => element.id == zoneId,
+                    );
+                    final entry = entries.singleWhere(
+                      (element) => element.id == entryId,
+                    );
+                    return 'Zone ${zone.name} runs for ${entry.duration.inMinutes} minutes';
+                  },
+                  onEntryDurationChanged: (String entryId, double duration) {
+                    _changeDuration(entryId, duration);
+                  },
+                  onValidityChanged: (valid) {
+                    setState(() {
+                      isValid = valid;
+                    });
+                  },
+                  onNodeTapped: (node) {
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+                        return Dialog(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              InkWell(
+                                onTap: () {
+                                  setState(() {
+                                    mapping.remove(node);
+                                    entries.removeWhere(
                                       (element) => element.id == node,
-                                    )
-                                    .time,
-                              );
-                              if (newTime != null) {
-                                _changeStartTime(node, newTime);
-                              }
-                            },
-                            child: const Padding(
-                              padding: EdgeInsets.all(12),
-                              child: Text('Adjust start time'),
-                            ),
+                                    );
+                                  });
+                                  Navigator.pop(context);
+                                },
+                                child: const Padding(
+                                  padding: EdgeInsets.all(12),
+                                  child: Text('Remove run'),
+                                ),
+                              ),
+                              const Divider(),
+                              InkWell(
+                                onTap: () async {
+                                  Navigator.pop(context);
+                                  final newTime = await showTimePicker(
+                                    context: context,
+                                    initialTime: entries
+                                        .singleWhere(
+                                          (element) => element.id == node,
+                                        )
+                                        .time,
+                                  );
+                                  if (newTime != null) {
+                                    _changeStartTime(node, newTime);
+                                  }
+                                },
+                                child: const Padding(
+                                  padding: EdgeInsets.all(12),
+                                  child: Text('Adjust start time'),
+                                ),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
+                        );
+                      },
                     );
                   },
-                );
-              },
-            ),
-          ),
-          Visibility(
-            visible: isValid,
-            child: Padding(
-              padding: const EdgeInsets.all(8),
-              child: FloatingActionButton.extended(
-                onPressed: () async {
-                  final zone = await showDialog<Zone>(
-                    context: context,
-                    builder: (_) {
-                      return Dialog(
-                        child: ListView.builder(
-                          shrinkWrap: true,
-                          itemCount: zones.length,
-                          itemBuilder: (context, index) {
-                            final zone = zones[index];
-                            return InkWell(
-                              onTap: () {
-                                Navigator.of(context).pop(zone);
-                              },
-                              child: Padding(
-                                padding: const EdgeInsets.all(8),
-                                child: Text(zone.name),
-                              ),
-                            );
-                          },
-                        ),
-                      );
-                    },
-                  );
-                  if (zone != null) {
-                    entries.sortByTime();
-                    final lastEntry = entries.isEmpty ? null : entries.last;
-                    final newTime = await showTimePicker(
-                      context: context,
-                      initialTime: lastEntry == null
-                          ? TimeOfDay.now()
-                          : TimeOfDay.fromDateTime(
-                              DateTime.now().apply(lastEntry.time).add(lastEntry.duration),
-                            ),
-                    );
-                    if (newTime != null) {
-                      _addStartTime(
-                        TimelineEntry(
-                          time: newTime,
-                          duration: const Duration(minutes: 10),
-                        ),
-                        zone,
-                      );
-                    }
-                  }
-                },
-                backgroundColor: Colors.green.shade300,
-                label: const Text('Add Run'),
+                ),
               ),
-            ),
+              Visibility(
+                visible: isValid,
+                child: Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: FloatingActionButton.extended(
+                    onPressed: () async {
+                      final zone = await showDialog<Zone>(
+                        context: context,
+                        builder: (_) {
+                          return Dialog(
+                            child: ListView.builder(
+                              shrinkWrap: true,
+                              itemCount: zones.length,
+                              itemBuilder: (context, index) {
+                                final zone = zones[index];
+                                return InkWell(
+                                  onTap: () {
+                                    Navigator.of(context).pop(zone);
+                                  },
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8),
+                                    child: Text(zone.name),
+                                  ),
+                                );
+                              },
+                            ),
+                          );
+                        },
+                      );
+                      if (zone != null) {
+                        entries.sortByTime();
+                        final lastEntry = entries.isEmpty ? null : entries.last;
+                        final newTime = await showTimePicker(
+                          context: context,
+                          initialTime: lastEntry == null
+                              ? TimeOfDay.now()
+                              : TimeOfDay.fromDateTime(
+                                  DateTime.now().apply(lastEntry.time).add(lastEntry.duration),
+                                ),
+                        );
+                        if (newTime != null) {
+                          _addStartTime(
+                            TimelineEntry(
+                              time: newTime,
+                              duration: const Duration(minutes: 10),
+                            ),
+                            zone,
+                          );
+                        }
+                      }
+                    },
+                    backgroundColor: Colors.green.shade300,
+                    label: const Text('Add Run'),
+                  ),
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
+      orElse: () {
+        return const CircularProgressIndicator();
+      },
     );
   }
 }

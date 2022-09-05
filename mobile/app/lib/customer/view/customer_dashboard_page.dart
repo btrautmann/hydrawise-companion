@@ -4,33 +4,33 @@ import 'package:core_ui/core_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:irri/customer_details/customer_details.dart';
 import 'package:irri/programs/programs.dart';
+import 'package:irri/zones/providers.dart';
 
-class CustomerDetailsPage extends StatelessWidget {
-  const CustomerDetailsPage({Key? key}) : super(key: key);
+class CustomerDashboardPage extends StatelessWidget {
+  const CustomerDashboardPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return const CustomerDetailsView();
+    return const CustomerDashboardView();
   }
 }
 
-class CustomerDetailsView extends StatelessWidget {
-  const CustomerDetailsView({Key? key}) : super(key: key);
+class CustomerDashboardView extends StatelessWidget {
+  const CustomerDashboardView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
       body: SafeArea(
-        child: _CustomerDetailsStateView(),
+        child: _CustomerDashboardStateView(),
       ),
     );
   }
 }
 
-class _CustomerDetailsStateView extends ConsumerWidget {
-  const _CustomerDetailsStateView({Key? key}) : super(key: key);
+class _CustomerDashboardStateView extends ConsumerWidget {
+  const _CustomerDashboardStateView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -120,7 +120,7 @@ class _RunsList extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final customerState = ref.watch(customerDetailsStateProvider);
+    final zonesState = ref.watch(zonesProvider);
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
       child: Card(
@@ -146,8 +146,8 @@ class _RunsList extends ConsumerWidget {
             ),
             Padding(
               padding: const EdgeInsets.only(top: 8, bottom: 8),
-              child: customerState.maybeWhen(
-                complete: (details, zones) {
+              child: zonesState.maybeWhen(
+                data: (zones) {
                   return Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [

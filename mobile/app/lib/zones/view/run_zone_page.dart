@@ -2,9 +2,8 @@ import 'package:api_models/api_models.dart';
 import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:irri/customer_details/customer_details.dart';
 import 'package:irri/programs/extensions.dart';
-import 'package:irri/run_zone/providers.dart';
+import 'package:irri/zones/zones.dart';
 
 class RunZonesPage extends ConsumerWidget {
   const RunZonesPage({
@@ -16,9 +15,9 @@ class RunZonesPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final customerState = ref.watch(customerDetailsStateProvider);
-    return customerState.maybeWhen(
-      complete: (details, zones) {
+    final zonesState = ref.watch(zonesProvider);
+    return zonesState.maybeWhen(
+      data: (zones) {
         final zone = zones.singleWhere((element) => element.id == zoneId);
         return Scaffold(
           appBar: AppBar(
@@ -53,9 +52,9 @@ class _RunZonesViewState extends ConsumerState<_RunZonesView> {
 
   @override
   Widget build(BuildContext context) {
-    final customerState = ref.watch(customerDetailsStateProvider);
-    return customerState.maybeWhen(
-      complete: (details, zones) {
+    final zonesState = ref.watch(zonesProvider);
+    return zonesState.maybeWhen(
+      data: (zones) {
         final selectedZone = zones.singleWhere((element) => element.id == widget.zone.id);
         return Center(
           child: Padding(
@@ -82,13 +81,13 @@ class _RunZonesViewState extends ConsumerState<_RunZonesView> {
                   onRunPressed: () {
                     // TODO(brandon): Figure out correct way to get time from
                     // slider
-                    ref.read(runZoneStateProvider.notifier).runZone(
+                    ref.read(runZoneControllerProvider.notifier).runZone(
                           zone: widget.zone,
                           runLengthMinutes: selectedRunLengthInMinutes.toInt(),
                         );
                   },
                   onStopPressed: () {
-                    ref.read(runZoneStateProvider.notifier).stopZone(
+                    ref.read(stopZoneControllerProvider.notifier).stopZone(
                           zone: widget.zone,
                         );
                   },
@@ -207,8 +206,11 @@ class _ZoneButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final runZoneState = ref.watch(runZoneStateProvider);
-    final isLoading = runZoneState.when(resting: (_) => false, loading: () => true);
+    final runZoneState = ref.watch(runZoneControllerProvider);
+    final isLoading = runZoneState.maybeMap(
+      loading: (_) => true,
+      orElse: () => false,
+    );
 
     return ActionChip(
       onPressed: onPressed,

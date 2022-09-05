@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:irri/configuration/configuration.dart';
-import 'package:irri/customer_details/customer_details.dart';
+import 'package:irri/customer/customer.dart';
 import 'package:irri/home/home.dart';
 import 'package:irri/programs/programs.dart';
 
@@ -70,13 +70,13 @@ class HomeBody extends StatelessWidget {
   Widget build(BuildContext context) {
     switch (_selectedTabIndex) {
       case 0:
-        return const CustomerDetailsPage();
+        return const CustomerDashboardPage();
       case 1:
         return const ProgramsPage();
       case 2:
         return const ConfigurationPage();
       default:
-        return const CustomerDetailsPage();
+        return const CustomerDashboardPage();
     }
   }
 }

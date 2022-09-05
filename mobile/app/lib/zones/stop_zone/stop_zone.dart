@@ -1,5 +1,9 @@
 import 'package:api_models/api_models.dart';
 import 'package:core/core.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:irri/zones/providers.dart';
+
+part 'stop_zone_controller.dart';
 
 class StopZone {
   StopZone({

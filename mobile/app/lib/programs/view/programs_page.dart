@@ -3,8 +3,8 @@ import 'package:core_ui/core_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:irri/customer_details/customer_details.dart';
 import 'package:irri/programs/programs.dart';
+import 'package:irri/zones/providers.dart';
 
 class ProgramsPage extends StatelessWidget {
   const ProgramsPage({Key? key}) : super(key: key);
@@ -26,8 +26,8 @@ class ProgramsPageView extends ConsumerWidget {
   const ProgramsPageView({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final customerState = ref.watch(
-      customerDetailsStateProvider,
+    final zonesState = ref.watch(
+      zonesProvider,
     );
     return Center(
       child: Column(
@@ -41,8 +41,8 @@ class ProgramsPageView extends ConsumerWidget {
             ),
           ),
           const VSpace(spacing: 16),
-          customerState.maybeWhen(
-            complete: (details, zones) {
+          zonesState.maybeWhen(
+            data: (zones) {
               return Padding(
                 padding: const EdgeInsets.only(left: 16, right: 16),
                 child: _ZonesAndPrograms(
