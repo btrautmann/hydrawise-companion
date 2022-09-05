@@ -85,7 +85,9 @@ class ChooseThemeModeDialog extends ConsumerWidget {
               ),
               title: const Text('Light mode'),
               onTapped: () {
-                ref.read(appStateProvider.notifier).setThemeMode(ThemeMode.light);
+                ref
+                    .read(appStateProvider.notifier)
+                    .setThemeMode(ThemeMode.light);
                 Navigator.pop(context);
               },
             ),
@@ -96,7 +98,9 @@ class ChooseThemeModeDialog extends ConsumerWidget {
               ),
               title: const Text('Dark mode'),
               onTapped: () {
-                ref.read(appStateProvider.notifier).setThemeMode(ThemeMode.dark);
+                ref
+                    .read(appStateProvider.notifier)
+                    .setThemeMode(ThemeMode.dark);
                 Navigator.pop(context);
               },
             ),
@@ -107,7 +111,9 @@ class ChooseThemeModeDialog extends ConsumerWidget {
               ),
               title: const Text('Follow system'),
               onTapped: () {
-                ref.read(appStateProvider.notifier).setThemeMode(ThemeMode.system);
+                ref
+                    .read(appStateProvider.notifier)
+                    .setThemeMode(ThemeMode.system);
                 Navigator.pop(context);
               },
             ),

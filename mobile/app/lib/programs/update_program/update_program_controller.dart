@@ -36,7 +36,8 @@ class UpdateProgramController extends StateNotifier<AsyncValue<void>> {
   }
 }
 
-final updateProgramControllerProvider = StateNotifierProvider<UpdateProgramController, AsyncValue<void>>((ref) {
+final updateProgramControllerProvider =
+    StateNotifierProvider<UpdateProgramController, AsyncValue<void>>((ref) {
   return UpdateProgramController(
     updateProgram: ref.watch(
       updateProgramProvider,

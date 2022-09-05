@@ -55,7 +55,8 @@ class _RunZonesViewState extends ConsumerState<_RunZonesView> {
     final zonesState = ref.watch(zonesProvider);
     return zonesState.maybeWhen(
       data: (zones) {
-        final selectedZone = zones.singleWhere((element) => element.id == widget.zone.id);
+        final selectedZone =
+            zones.singleWhere((element) => element.id == widget.zone.id);
         return Center(
           child: Padding(
             padding: const EdgeInsets.all(16),
@@ -124,7 +125,9 @@ class __RunLengthSliderState extends State<_RunLengthSlider> {
   @override
   void initState() {
     // TODO(brandon): Fix this hack
-    final maxValue = widget.zone.nextRunLengthSec == 0 ? 90 : widget.zone.nextRunLengthSec / 60;
+    final maxValue = widget.zone.nextRunLengthSec == 0
+        ? 90
+        : widget.zone.nextRunLengthSec / 60;
     _setCurrentValue(maxValue.toDouble());
     super.initState();
   }

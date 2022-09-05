@@ -59,7 +59,9 @@ class _ApiKeyInputState extends ConsumerState<_ApiKeyInput> {
           const VSpace(spacing: 16),
           ElevatedButton(
             onPressed: () {
-              ref.read(logInControllerProvider.notifier).logIn(apiKey: _controller.text);
+              ref
+                  .read(logInControllerProvider.notifier)
+                  .logIn(apiKey: _controller.text);
             },
             child: const Text('Submit'),
           )

@@ -77,7 +77,8 @@ class AppStateNotifier extends StateNotifier<AppState> {
   }
 }
 
-final appStateProvider = StateNotifierProvider<AppStateNotifier, AppState>((ref) {
+final appStateProvider =
+    StateNotifierProvider<AppStateNotifier, AppState>((ref) {
   return AppStateNotifier(
     setAppThemeMode: ref.watch(setAppThemeProvider),
     getAppThemeMode: ref.watch(getAppThemeProvider),

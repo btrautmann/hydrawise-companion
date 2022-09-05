@@ -26,7 +26,8 @@ class LogOutController extends StateNotifier<AsyncValue<void>> {
   }
 }
 
-final logOutControllerProvider = StateNotifierProvider<LogOutController, AsyncValue<void>>((ref) {
+final logOutControllerProvider =
+    StateNotifierProvider<LogOutController, AsyncValue<void>>((ref) {
   return LogOutController(
     logOut: ref.watch(logOutProvider),
     ref: ref,

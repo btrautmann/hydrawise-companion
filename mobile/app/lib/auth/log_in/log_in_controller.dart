@@ -30,7 +30,8 @@ class LogInController extends StateNotifier<AsyncValue<void>> {
   }
 }
 
-final logInControllerProvider = StateNotifierProvider<LogInController, AsyncValue<void>>((ref) {
+final logInControllerProvider =
+    StateNotifierProvider<LogInController, AsyncValue<void>>((ref) {
   return LogInController(
     logIn: ref.watch(
       logInProvider,

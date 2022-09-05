@@ -34,7 +34,8 @@ class CreateProgramController extends StateNotifier<AsyncValue<void>> {
   }
 }
 
-final createProgramControllerProvider = StateNotifierProvider<CreateProgramController, AsyncValue<void>>((ref) {
+final createProgramControllerProvider =
+    StateNotifierProvider<CreateProgramController, AsyncValue<void>>((ref) {
   return CreateProgramController(
     createProgram: ref.watch(
       createProgramProvider,

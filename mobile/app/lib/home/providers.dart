@@ -16,6 +16,7 @@ class HomeStateNotifier extends StateNotifier<HomeState> {
   }
 }
 
-final homeStateProvider = StateNotifierProvider<HomeStateNotifier, HomeState>((ref) {
+final homeStateProvider =
+    StateNotifierProvider<HomeStateNotifier, HomeState>((ref) {
   return HomeStateNotifier();
 });

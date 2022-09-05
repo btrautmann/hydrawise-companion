@@ -40,7 +40,8 @@ class CustomerNotifier extends StateNotifier<AsyncValue<Customer>> {
   }
 }
 
-final customerProvider = StateNotifierProvider<CustomerNotifier, AsyncValue<Customer>>((ref) {
+final customerProvider =
+    StateNotifierProvider<CustomerNotifier, AsyncValue<Customer>>((ref) {
   return CustomerNotifier(
     getCustomer: ref.watch(getCustomerProvider),
     authState: ref.watch(authProvider),

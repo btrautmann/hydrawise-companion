@@ -215,7 +215,8 @@ class _RunCell extends StatelessWidget {
     if (zone.isRunning) {
       return 'Running now';
     }
-    return TimeOfDay(hour: run.startHour, minute: run.startMinute).format(context);
+    return TimeOfDay(hour: run.startHour, minute: run.startMinute)
+        .format(context);
   }
 
   @override

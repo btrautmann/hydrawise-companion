@@ -28,7 +28,8 @@ class StopZoneController extends StateNotifier<AsyncValue<void>> {
   }
 }
 
-final stopZoneControllerProvider = StateNotifierProvider<StopZoneController, AsyncValue<void>>((ref) {
+final stopZoneControllerProvider =
+    StateNotifierProvider<StopZoneController, AsyncValue<void>>((ref) {
   return StopZoneController(
     stopZone: ref.watch(stopZoneProvider),
     ref: ref,

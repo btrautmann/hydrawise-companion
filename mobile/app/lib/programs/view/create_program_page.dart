@@ -20,7 +20,8 @@ class CreateProgramPage extends ConsumerWidget {
     final programs = ref.watch(programsProvider);
     final existingProgram = existingProgramId != null
         ? programs.whenData(
-            (value) => value.singleWhere((element) => element.id == existingProgramId),
+            (value) =>
+                value.singleWhere((element) => element.id == existingProgramId),
           )
         : null;
     return Scaffold(
@@ -130,7 +131,9 @@ class _CreateProgramViewState extends ConsumerState<CreateProgramView> {
           ),
         ),
         Visibility(
-          visible: _name.isNotEmpty && _frequency.isNotEmpty && _runGroups.isNotEmpty,
+          visible: _name.isNotEmpty &&
+              _frequency.isNotEmpty &&
+              _runGroups.isNotEmpty,
           child: Align(
             child: isLoading
                 ? const CircularProgressIndicator()
@@ -138,14 +141,18 @@ class _CreateProgramViewState extends ConsumerState<CreateProgramView> {
                     child: const Text('Done'),
                     onPressed: () {
                       if (widget.existingProgramId != null) {
-                        ref.read(updateProgramControllerProvider.notifier).updateProgram(
+                        ref
+                            .read(updateProgramControllerProvider.notifier)
+                            .updateProgram(
                               programId: widget.existingProgramId!,
                               name: _name,
                               frequency: _frequency,
                               runGroups: _runGroups,
                             );
                       } else {
-                        ref.read(createProgramControllerProvider.notifier).createProgram(
+                        ref
+                            .read(createProgramControllerProvider.notifier)
+                            .createProgram(
                               name: _name,
                               frequency: _frequency,
                               runGroups: _runGroups,
@@ -225,63 +232,70 @@ class _FrequencySelectionState extends State<_FrequencySelection> {
                     _updateFrequency(DateTime.monday);
                   },
                   text: 'M',
-                  colorResolver: (states) => _frequency.contains(DateTime.monday)
-                      ? Theme.of(context).colorScheme.secondary
-                      : Colors.transparent,
+                  colorResolver: (states) =>
+                      _frequency.contains(DateTime.monday)
+                          ? Theme.of(context).colorScheme.secondary
+                          : Colors.transparent,
                 ),
                 _DayButton(
                   onTapped: () {
                     _updateFrequency(DateTime.tuesday);
                   },
                   text: 'T',
-                  colorResolver: (states) => _frequency.contains(DateTime.tuesday)
-                      ? Theme.of(context).colorScheme.secondary
-                      : Colors.transparent,
+                  colorResolver: (states) =>
+                      _frequency.contains(DateTime.tuesday)
+                          ? Theme.of(context).colorScheme.secondary
+                          : Colors.transparent,
                 ),
                 _DayButton(
                   onTapped: () {
                     _updateFrequency(DateTime.wednesday);
                   },
                   text: 'W',
-                  colorResolver: (states) => _frequency.contains(DateTime.wednesday)
-                      ? Theme.of(context).colorScheme.secondary
-                      : Colors.transparent,
+                  colorResolver: (states) =>
+                      _frequency.contains(DateTime.wednesday)
+                          ? Theme.of(context).colorScheme.secondary
+                          : Colors.transparent,
                 ),
                 _DayButton(
                   onTapped: () {
                     _updateFrequency(DateTime.thursday);
                   },
                   text: 'R',
-                  colorResolver: (states) => _frequency.contains(DateTime.thursday)
-                      ? Theme.of(context).colorScheme.secondary
-                      : Colors.transparent,
+                  colorResolver: (states) =>
+                      _frequency.contains(DateTime.thursday)
+                          ? Theme.of(context).colorScheme.secondary
+                          : Colors.transparent,
                 ),
                 _DayButton(
                   onTapped: () {
                     _updateFrequency(DateTime.friday);
                   },
                   text: 'F',
-                  colorResolver: (friday) => _frequency.contains(DateTime.friday)
-                      ? Theme.of(context).colorScheme.secondary
-                      : Colors.transparent,
+                  colorResolver: (friday) =>
+                      _frequency.contains(DateTime.friday)
+                          ? Theme.of(context).colorScheme.secondary
+                          : Colors.transparent,
                 ),
                 _DayButton(
                   onTapped: () {
                     _updateFrequency(DateTime.saturday);
                   },
                   text: 'S',
-                  colorResolver: (states) => _frequency.contains(DateTime.saturday)
-                      ? Theme.of(context).colorScheme.secondary
-                      : Colors.transparent,
+                  colorResolver: (states) =>
+                      _frequency.contains(DateTime.saturday)
+                          ? Theme.of(context).colorScheme.secondary
+                          : Colors.transparent,
                 ),
                 _DayButton(
                   onTapped: () {
                     _updateFrequency(DateTime.sunday);
                   },
                   text: 'Su',
-                  colorResolver: (states) => _frequency.contains(DateTime.sunday)
-                      ? Theme.of(context).colorScheme.secondary
-                      : Colors.transparent,
+                  colorResolver: (states) =>
+                      _frequency.contains(DateTime.sunday)
+                          ? Theme.of(context).colorScheme.secondary
+                          : Colors.transparent,
                 ),
               ],
             ),
@@ -541,7 +555,9 @@ class _RunsConfigurationState extends ConsumerState<_RunsConfiguration> {
                           initialTime: lastEntry == null
                               ? TimeOfDay.now()
                               : TimeOfDay.fromDateTime(
-                                  DateTime.now().apply(lastEntry.time).add(lastEntry.duration),
+                                  DateTime.now()
+                                      .apply(lastEntry.time)
+                                      .add(lastEntry.duration),
                                 ),
                         );
                         if (newTime != null) {

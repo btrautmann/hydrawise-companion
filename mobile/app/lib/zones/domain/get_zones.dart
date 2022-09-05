@@ -12,7 +12,8 @@ class GetZones {
     final response = await _httpClient.get<Map<String, dynamic>>('customer');
 
     if (response.isSuccess) {
-      final getCustomerResponse = GetCustomerResponse.fromJson(response.success!);
+      final getCustomerResponse =
+          GetCustomerResponse.fromJson(response.success!);
       return getCustomerResponse.zones;
     } else {
       throw Exception(response.failure);

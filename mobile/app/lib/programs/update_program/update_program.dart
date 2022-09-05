@@ -29,7 +29,8 @@ class UpdateProgram {
       ),
     );
     if (response.isSuccess) {
-      final updateProgramResponse = UpdateProgramResponse.fromJson(response.success!);
+      final updateProgramResponse =
+          UpdateProgramResponse.fromJson(response.success!);
       return updateProgramResponse.program;
     } else {
       throw Exception(response.failure);

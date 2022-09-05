@@ -32,7 +32,8 @@ class RunZoneController extends StateNotifier<AsyncValue<void>> {
   }
 }
 
-final runZoneControllerProvider = StateNotifierProvider<RunZoneController, AsyncValue<void>>((ref) {
+final runZoneControllerProvider =
+    StateNotifierProvider<RunZoneController, AsyncValue<void>>((ref) {
   return RunZoneController(
     runZone: ref.watch(runZoneProvider),
     ref: ref,
