@@ -1,12 +1,12 @@
 import 'package:api_models/api_models.dart';
 import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:irri/customer_details/customer_details.dart';
 import 'package:irri/programs/extensions.dart';
-import 'package:irri/run_zone/run_zone.dart';
+import 'package:irri/run_zone/providers.dart';
 
-class RunZonesPage extends StatelessWidget {
+class RunZonesPage extends ConsumerWidget {
   const RunZonesPage({
     Key? key,
     required this.zoneId,
@@ -15,38 +15,28 @@ class RunZonesPage extends StatelessWidget {
   final int zoneId;
 
   @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<CustomerDetailsCubit, CustomerDetailsState>(
-      builder: (context, state) {
-        return state.maybeWhen(
-          complete: (details, zones) {
-            final zone = zones.singleWhere((element) => element.id == zoneId);
-            return Scaffold(
-              appBar: AppBar(
-                title: Text(zone.name),
-              ),
-              body: BlocProvider<RunZoneCubit>(
-                create: (_) => RunZoneCubit(
-                  runZone: context.read<RunZone>(),
-                  stopZone: context.read<StopZone>(),
-                  zone: zone,
-                ),
-                child: _RunZonesView(zone: zone),
-              ),
-            );
-          },
-          orElse: () {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          },
+  Widget build(BuildContext context, WidgetRef ref) {
+    final customerState = ref.watch(customerDetailsStateProvider);
+    return customerState.maybeWhen(
+      complete: (details, zones) {
+        final zone = zones.singleWhere((element) => element.id == zoneId);
+        return Scaffold(
+          appBar: AppBar(
+            title: Text(zone.name),
+          ),
+          body: _RunZonesView(zone: zone),
+        );
+      },
+      orElse: () {
+        return const Center(
+          child: CircularProgressIndicator(),
         );
       },
     );
   }
 }
 
-class _RunZonesView extends StatefulWidget {
+class _RunZonesView extends ConsumerStatefulWidget {
   const _RunZonesView({
     Key? key,
     required this.zone,
@@ -55,16 +45,16 @@ class _RunZonesView extends StatefulWidget {
   final Zone zone;
 
   @override
-  __RunZonesViewState createState() => __RunZonesViewState();
+  ConsumerState<_RunZonesView> createState() => _RunZonesViewState();
 }
 
-class __RunZonesViewState extends State<_RunZonesView> {
+class _RunZonesViewState extends ConsumerState<_RunZonesView> {
   double selectedRunLengthInMinutes = 0;
 
   @override
   Widget build(BuildContext context) {
-    final customerDetailsState = context.select((CustomerDetailsCubit cubit) => cubit.state);
-    return customerDetailsState.maybeWhen(
+    final customerState = ref.watch(customerDetailsStateProvider);
+    return customerState.maybeWhen(
       complete: (details, zones) {
         final selectedZone = zones.singleWhere((element) => element.id == widget.zone.id);
         return Center(
@@ -92,17 +82,17 @@ class __RunZonesViewState extends State<_RunZonesView> {
                   onRunPressed: () {
                     // TODO(brandon): Figure out correct way to get time from
                     // slider
-                    context.read<RunZoneCubit>().runZone(
+                    ref.read(runZoneStateProvider.notifier).runZone(
+                          zone: widget.zone,
                           runLengthMinutes: selectedRunLengthInMinutes.toInt(),
                         );
                   },
                   onStopPressed: () {
-                    context.read<RunZoneCubit>().stopZone();
+                    ref.read(runZoneStateProvider.notifier).stopZone(
+                          zone: widget.zone,
+                        );
                   },
-                  onResumePressed: () {},
-                  onSuspendPressed: () {},
                 ),
-                _MessageSnackbarListener(),
               ],
             ),
           ),
@@ -111,27 +101,6 @@ class __RunZonesViewState extends State<_RunZonesView> {
       orElse: () {
         return const Center(child: CircularProgressIndicator());
       },
-    );
-  }
-}
-
-class _MessageSnackbarListener extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return BlocListener<RunZoneCubit, RunZoneState>(
-      listener: (context, state) {
-        state.maybeWhen(
-          resting: (error) {
-            if (error != null) {
-              ScaffoldMessenger.of(context)
-                ..removeCurrentSnackBar()
-                ..showSnackBar(SnackBar(content: Text(error)));
-            }
-          },
-          orElse: () {},
-        );
-      },
-      child: const SizedBox.shrink(),
     );
   }
 }
@@ -187,15 +156,11 @@ class _ZoneButtons extends StatelessWidget {
     required this.zone,
     required this.onRunPressed,
     required this.onStopPressed,
-    required this.onResumePressed,
-    required this.onSuspendPressed,
   }) : super(key: key);
 
   final Zone zone;
   final VoidCallback onRunPressed;
   final VoidCallback onStopPressed;
-  final VoidCallback onResumePressed;
-  final VoidCallback onSuspendPressed;
 
   List<Widget> _buildZoneButtons(BuildContext context) {
     if (zone.isRunning) {
@@ -209,11 +174,6 @@ class _ZoneButtons extends StatelessWidget {
       ];
     } else {
       return [
-        const Spacer(),
-        _ZoneButton(
-          text: 'Suspend',
-          onPressed: onSuspendPressed,
-        ),
         const Spacer(),
         _ZoneButton(
           text: 'Run',
@@ -235,7 +195,7 @@ class _ZoneButtons extends StatelessWidget {
   }
 }
 
-class _ZoneButton extends StatelessWidget {
+class _ZoneButton extends ConsumerWidget {
   const _ZoneButton({
     Key? key,
     required this.text,
@@ -246,37 +206,35 @@ class _ZoneButton extends StatelessWidget {
   final VoidCallback onPressed;
 
   @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<RunZoneCubit, RunZoneState>(
-      builder: (_, state) {
-        final isLoading = state.when(resting: (_) => false, loading: () => true);
-        return ActionChip(
-          onPressed: onPressed,
-          label: SizedBox(
-            width: MediaQuery.of(context).size.width / 3,
-            child: Padding(
-              padding: const EdgeInsets.only(top: 8, bottom: 8),
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  Visibility(
-                    visible: !isLoading,
-                    child: Text(text),
-                  ),
-                  Visibility(
-                    visible: isLoading,
-                    child: const SizedBox(
-                      width: 24,
-                      height: 24,
-                      child: CircularProgressIndicator(),
-                    ),
-                  ),
-                ],
+  Widget build(BuildContext context, WidgetRef ref) {
+    final runZoneState = ref.watch(runZoneStateProvider);
+    final isLoading = runZoneState.when(resting: (_) => false, loading: () => true);
+
+    return ActionChip(
+      onPressed: onPressed,
+      label: SizedBox(
+        width: MediaQuery.of(context).size.width / 3,
+        child: Padding(
+          padding: const EdgeInsets.only(top: 8, bottom: 8),
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              Visibility(
+                visible: !isLoading,
+                child: Text(text),
               ),
-            ),
+              Visibility(
+                visible: isLoading,
+                child: const SizedBox(
+                  width: 24,
+                  height: 24,
+                  child: CircularProgressIndicator(),
+                ),
+              ),
+            ],
           ),
-        );
-      },
+        ),
+      ),
     );
   }
 }

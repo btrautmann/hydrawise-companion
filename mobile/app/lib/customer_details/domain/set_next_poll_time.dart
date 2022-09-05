@@ -1,12 +1,8 @@
 import 'package:clock/clock.dart';
 import 'package:core/core.dart';
 
-typedef SetNextPollTime = Future<void> Function({
-  required int secondsUntilNextPoll,
-});
-
-class SetNextPollTimeInStorage {
-  SetNextPollTimeInStorage(this._dataStorage);
+class SetNextPollTime {
+  SetNextPollTime(this._dataStorage);
 
   final DataStorage _dataStorage;
 

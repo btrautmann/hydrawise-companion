@@ -1,102 +1,60 @@
 // ignore_for_file: avoid_redundant_argument_values
-import 'package:core_ui/core_ui.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart' hide Provider;
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:irri/app/app.dart';
-import 'package:irri/app_theme_mode/app_theme_mode.dart';
-import 'package:irri/auth/auth.dart';
-import 'package:irri/configuration/configuration.dart';
-import 'package:irri/customer_details/customer_details.dart';
-import 'package:irri/programs/programs.dart';
-import 'package:provider/provider.dart';
+import 'package:irri/auth/providers.dart';
 
-class IrriApp extends StatelessWidget {
+class IrriApp extends ConsumerWidget {
   const IrriApp({
     Key? key,
     required GoRouter router,
-    required List<Provider> providers,
   })  : _router = router,
-        _providers = providers,
         super(key: key);
 
   final GoRouter _router;
-  final List<Provider> _providers;
 
   @override
-  Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: _providers,
-      child: MultiBlocProvider(
-        providers: [
-          BlocProvider(
-            create: (context) => AppCubit(
-              setAppThemeMode: context.read<SetAppThemeMode>(),
-              getAppThemeMode: context.read<GetAppThemeMode>(),
-            ),
-          ),
-          BlocProvider(
-            create: (context) => AuthCubit(
-              logOut: context.read<LogOut>(),
-              getAuthFailures: context.read<GetAuthFailures>(),
-              isLoggedIn: context.read<IsLoggedIn>(),
-              logIn: context.read<LogIn>(),
-              getLocalTimezone: context.read<GetLocalTimezone>(),
-            ),
-            lazy: false,
-          ),
-          BlocProvider(
-            create: (context) => CustomerDetailsCubit(
-              getCustomerDetails: context.read<GetCustomerDetails>(),
-              setNextPollTime: context.read<SetNextPollTime>(),
-              getNextPollTime: context.read<GetNextPollTime>(),
-              authCubit: context.read<AuthCubit>(),
-            )..start(),
-          ),
-          BlocProvider(
-            create: (context) => ProgramsCubit(
-              getPrograms: context.read<GetPrograms>(),
-              createProgram: context.read<CreateProgram>(),
-              updateProgram: context.read<UpdateProgram>(),
-              deleteProgram: context.read<DeleteProgram>(),
-            ),
-          ),
+  Widget build(BuildContext context, WidgetRef ref) {
+    final appState = ref.watch(appStateProvider);
+    return AuthListener(
+      router: _router,
+      child: MaterialApp.router(
+        theme: _buildLightTheme(context),
+        darkTheme: _buildDarkTheme(context),
+        localizationsDelegates: const [
+          GlobalMaterialLocalizations.delegate,
         ],
-        child: BlocListener<AuthCubit, AuthState>(
-          listener: (context, state) {
-            if (state.isLoggedIn()) {
-              _router.go('/home');
-            } else {
-              _router.go('/login');
-            }
-          },
-          child: BlocBuilder<AppCubit, AppState>(
-            builder: (context, state) {
-              return AppLifecycleStateObserver(
-                onForeground: () {
-                  context.read<CustomerDetailsCubit>().resumePolling();
-                },
-                onBackground: () {
-                  context.read<CustomerDetailsCubit>().stopPolling();
-                },
-                child: MaterialApp.router(
-                  theme: _buildLightTheme(context),
-                  darkTheme: _buildDarkTheme(context),
-                  localizationsDelegates: const [
-                    GlobalMaterialLocalizations.delegate,
-                  ],
-                  themeMode: state.themeMode,
-                  routeInformationParser: _router.routeInformationParser,
-                  routerDelegate: _router.routerDelegate,
-                ),
-              );
-            },
-          ),
-        ),
+        themeMode: appState.themeMode,
+        routeInformationParser: _router.routeInformationParser,
+        routerDelegate: _router.routerDelegate,
       ),
     );
+  }
+}
+
+class AuthListener extends ConsumerWidget {
+  const AuthListener({
+    Key? key,
+    required this.router,
+    required this.child,
+  }) : super(key: key);
+
+  final GoRouter router;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    ref.listen<AuthState>(authProvider, (a, b) {
+      if (b.isLoggedIn()) {
+        router.go('/home');
+      } else {
+        router.go('/login');
+      }
+    });
+    return child;
   }
 }
 
@@ -118,15 +76,13 @@ ThemeData _buildLightTheme(BuildContext context) {
     navigationRailTheme: NavigationRailThemeData(
       backgroundColor: AppColors.blue700,
       selectedIconTheme: const IconThemeData(color: AppColors.orange500),
-      selectedLabelTextStyle:
-          GoogleFonts.workSansTextTheme().headline5?.copyWith(
-                color: AppColors.orange500,
-              ),
+      selectedLabelTextStyle: GoogleFonts.workSansTextTheme().headline5?.copyWith(
+            color: AppColors.orange500,
+          ),
       unselectedIconTheme: const IconThemeData(color: AppColors.blue200),
-      unselectedLabelTextStyle:
-          GoogleFonts.workSansTextTheme().headline5?.copyWith(
-                color: AppColors.blue200,
-              ),
+      unselectedLabelTextStyle: GoogleFonts.workSansTextTheme().headline5?.copyWith(
+            color: AppColors.blue200,
+          ),
     ),
     chipTheme: _buildChipTheme(
       AppColors.blue700,
@@ -160,15 +116,13 @@ ThemeData _buildDarkTheme(BuildContext context) {
     navigationRailTheme: NavigationRailThemeData(
       backgroundColor: AppColors.darkBottomAppBarBackground,
       selectedIconTheme: const IconThemeData(color: AppColors.orange300),
-      selectedLabelTextStyle:
-          GoogleFonts.workSansTextTheme().headline5?.copyWith(
-                color: AppColors.orange300,
-              ),
+      selectedLabelTextStyle: GoogleFonts.workSansTextTheme().headline5?.copyWith(
+            color: AppColors.orange300,
+          ),
       unselectedIconTheme: const IconThemeData(color: AppColors.greyLabel),
-      unselectedLabelTextStyle:
-          GoogleFonts.workSansTextTheme().headline5?.copyWith(
-                color: AppColors.greyLabel,
-              ),
+      unselectedLabelTextStyle: GoogleFonts.workSansTextTheme().headline5?.copyWith(
+            color: AppColors.greyLabel,
+          ),
     ),
     chipTheme: _buildChipTheme(
       AppColors.blue200,
@@ -304,9 +258,7 @@ ChipThemeData _buildChipTheme(
     padding: const EdgeInsets.all(4),
     shape: const StadiumBorder(),
     labelStyle: GoogleFonts.workSansTextTheme().bodyText2!.copyWith(
-          color: brightness == Brightness.dark
-              ? AppColors.white50
-              : AppColors.black900,
+          color: brightness == Brightness.dark ? AppColors.white50 : AppColors.black900,
         ),
     secondaryLabelStyle: GoogleFonts.workSansTextTheme().bodyText2,
     brightness: brightness,

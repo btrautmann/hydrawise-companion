@@ -2,31 +2,19 @@ import 'dart:developer';
 
 import 'package:core_ui/core_ui.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_native_timezone/flutter_native_timezone.dart';
-import 'package:irri/app/cubit/app_cubit.dart';
-import 'package:irri/auth/auth.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:irri/app/app.dart';
+import 'package:irri/auth/providers.dart';
 import 'package:irri/configuration/configuration.dart';
-import 'package:irri/push_notifications/push_notifications.dart';
 
 class ConfigurationPage extends StatelessWidget {
   const ConfigurationPage({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
       body: SafeArea(
-        child: BlocProvider(
-          create: (context) => ConfigurationCubit(
-            getPushNotificationsEnabled: context.read<GetPushNotificationsEnabled>(),
-            getLocalTimezone: context.read<GetLocalTimezone>(),
-            getAvailableTimezones: context.read<GetAvailableTimezones>(),
-            registerForPushNotifications: context.read<RegisterForPushNotifications>(),
-            unregisterForPushNotifications: context.read<UnregisterForPushNotifications>(),
-            getUserTimezone: context.read<GetUserTimezone>(),
-            updateUserTimeZone: context.read<UpdateUserTimeZone>(),
-          ),
-          child: const ConfigurationView(),
-        ),
+        child: ConfigurationView(),
       ),
     );
   }
@@ -65,44 +53,40 @@ class ConfigurationView extends StatelessWidget {
   }
 }
 
-class _AppThemeRow extends StatelessWidget {
+class _AppThemeRow extends ConsumerWidget {
   @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<AppCubit, AppState>(
-      builder: (context, state) {
-        final currentThemeMode = state.themeMode;
-        Icon icon;
-        switch (currentThemeMode) {
-          case ThemeMode.system:
-            icon = const Icon(Icons.settings);
-            break;
-          case ThemeMode.light:
-            icon = const Icon(Icons.light_mode);
-            break;
-          case ThemeMode.dark:
-            icon = const Icon(Icons.dark_mode);
-            break;
-        }
-        return ListRow(
-          leadingIcon: CircleBackground(child: icon),
-          title: const Text('App theme'),
-          onTapped: () => showDialog<void>(
-            context: context,
-            builder: (_) => const ChooseThemeModeDialog(),
-          ),
-        );
-      },
+  Widget build(BuildContext context, WidgetRef ref) {
+    final themeMode = ref.watch(appStateProvider).themeMode;
+    Icon icon;
+    switch (themeMode) {
+      case ThemeMode.system:
+        icon = const Icon(Icons.settings);
+        break;
+      case ThemeMode.light:
+        icon = const Icon(Icons.light_mode);
+        break;
+      case ThemeMode.dark:
+        icon = const Icon(Icons.dark_mode);
+        break;
+    }
+    return ListRow(
+      leadingIcon: CircleBackground(child: icon),
+      title: const Text('App theme'),
+      onTapped: () => showDialog<void>(
+        context: context,
+        builder: (_) => const ChooseThemeModeDialog(),
+      ),
     );
   }
 }
 
-class ChooseThemeModeDialog extends StatelessWidget {
+class ChooseThemeModeDialog extends ConsumerWidget {
   const ChooseThemeModeDialog({
     Key? key,
   }) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Dialog(
       child: Padding(
         padding: const EdgeInsets.only(top: 16, bottom: 16),
@@ -115,7 +99,7 @@ class ChooseThemeModeDialog extends StatelessWidget {
               ),
               title: const Text('Light mode'),
               onTapped: () {
-                context.read<AppCubit>().setThemeMode(ThemeMode.light);
+                ref.read(appStateProvider.notifier).setThemeMode(ThemeMode.light);
                 Navigator.pop(context);
               },
             ),
@@ -126,7 +110,7 @@ class ChooseThemeModeDialog extends StatelessWidget {
               ),
               title: const Text('Dark mode'),
               onTapped: () {
-                context.read<AppCubit>().setThemeMode(ThemeMode.dark);
+                ref.read(appStateProvider.notifier).setThemeMode(ThemeMode.dark);
                 Navigator.pop(context);
               },
             ),
@@ -137,7 +121,7 @@ class ChooseThemeModeDialog extends StatelessWidget {
               ),
               title: const Text('Follow system'),
               onTapped: () {
-                context.read<AppCubit>().setThemeMode(ThemeMode.system);
+                ref.read(appStateProvider.notifier).setThemeMode(ThemeMode.system);
                 Navigator.pop(context);
               },
             ),
@@ -148,28 +132,26 @@ class ChooseThemeModeDialog extends StatelessWidget {
   }
 }
 
-class _PushNotificationsRow extends StatelessWidget {
+class _PushNotificationsRow extends ConsumerWidget {
   @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<ConfigurationCubit, ConfigurationState>(
-      builder: (context, state) {
-        final title =
-            state.pushNotificationsEnabled ? 'Tap to turn off push notifications' : 'Tap to turn on push notifications';
-        return ListRow(
-          leadingIcon: const CircleBackground(
-            child: Icon(
-              Icons.vibration_sharp,
-            ),
-          ),
-          title: Text(title),
-          onTapped: () {
-            if (state.pushNotificationsEnabled) {
-              context.read<ConfigurationCubit>().unregisterForPushNotifications();
-            } else {
-              context.read<ConfigurationCubit>().registerForPushNotifications();
-            }
-          },
-        );
+  Widget build(BuildContext context, WidgetRef ref) {
+    final configurationState = ref.watch(configurationProvider);
+    final title = configurationState.pushNotificationsEnabled
+        ? 'Tap to turn off push notifications'
+        : 'Tap to turn on push notifications';
+    return ListRow(
+      leadingIcon: const CircleBackground(
+        child: Icon(
+          Icons.vibration_sharp,
+        ),
+      ),
+      title: Text(title),
+      onTapped: () {
+        if (configurationState.pushNotificationsEnabled) {
+          ref.read(configurationProvider.notifier).unregisterForPushNotifications();
+        } else {
+          ref.read(configurationProvider.notifier).registerForPushNotifications();
+        }
       },
     );
   }
@@ -191,16 +173,16 @@ class _ChangeApiKeyRow extends StatelessWidget {
   }
 }
 
-class _ChangeApiKeyDialog extends StatefulWidget {
+class _ChangeApiKeyDialog extends ConsumerStatefulWidget {
   const _ChangeApiKeyDialog({
     Key? key,
   }) : super(key: key);
 
   @override
-  State<_ChangeApiKeyDialog> createState() => _ChangeApiKeyDialogState();
+  ConsumerState<_ChangeApiKeyDialog> createState() => _ChangeApiKeyDialogState();
 }
 
-class _ChangeApiKeyDialogState extends State<_ChangeApiKeyDialog> {
+class _ChangeApiKeyDialogState extends ConsumerState<_ChangeApiKeyDialog> {
   late TextEditingController _controller;
 
   @override
@@ -231,7 +213,8 @@ class _ChangeApiKeyDialogState extends State<_ChangeApiKeyDialog> {
               ),
             ),
             TextButton(
-              onPressed: _controller.text.isEmpty ? null : () => context.read<AuthCubit>().login(_controller.text),
+              onPressed:
+                  _controller.text.isEmpty ? null : () => ref.read(authProvider.notifier).login(_controller.text),
               child: const Text(
                 'Submit',
               ),
@@ -243,28 +226,25 @@ class _ChangeApiKeyDialogState extends State<_ChangeApiKeyDialog> {
   }
 }
 
-class _ChangeTimeZoneRow extends StatelessWidget {
+class _ChangeTimeZoneRow extends ConsumerWidget {
   @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<ConfigurationCubit, ConfigurationState>(
-      builder: (context, state) {
-        final rowText = state.timeZone ?? 'Set timezone';
-        return ListRow(
-          leadingIcon: const CircleBackground(
-            child: Icon(Icons.map),
-          ),
-          title: Text(rowText),
-          onTapped: () => showDialog<void>(
-            context: context,
-            builder: (_) => _ChangeTimeZoneDialog(
-              onTimezoneSelected: (timezone) {
-                context.read<ConfigurationCubit>().updateUserTimezone(timezone);
-                Navigator.pop(context);
-              },
-            ),
-          ),
-        );
-      },
+  Widget build(BuildContext context, WidgetRef ref) {
+    final configurationState = ref.watch(configurationProvider);
+    final rowText = configurationState.timeZone ?? 'Set timezone';
+    return ListRow(
+      leadingIcon: const CircleBackground(
+        child: Icon(Icons.map),
+      ),
+      title: Text(rowText),
+      onTapped: () => showDialog<void>(
+        context: context,
+        builder: (_) => _ChangeTimeZoneDialog(
+          onTimezoneSelected: (timezone) {
+            ref.read(configurationProvider.notifier).updateUserTimezone(timezone);
+            Navigator.pop(context);
+          },
+        ),
+      ),
     );
   }
 }

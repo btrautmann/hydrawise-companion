@@ -1,7 +1,7 @@
 import 'package:core_ui/core_ui.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:irri/auth/auth.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:irri/auth/providers.dart';
 
 /// Page for the user to enter their API key
 /// and gain access to the rest of the application
@@ -16,12 +16,14 @@ class LoginPage extends StatelessWidget {
   }
 }
 
-class _ApiKeyInput extends StatefulWidget {
+class _ApiKeyInput extends ConsumerStatefulWidget {
   @override
-  __ApiKeyInputState createState() => __ApiKeyInputState();
+  ConsumerState<ConsumerStatefulWidget> createState() {
+    return __ApiKeyInputState();
+  }
 }
 
-class __ApiKeyInputState extends State<_ApiKeyInput> {
+class __ApiKeyInputState extends ConsumerState<_ApiKeyInput> {
   late TextEditingController _controller;
 
   @override
@@ -47,7 +49,7 @@ class __ApiKeyInputState extends State<_ApiKeyInput> {
           const VSpace(spacing: 16),
           ElevatedButton(
             onPressed: () {
-              context.read<AuthCubit>().login(_controller.text);
+              ref.read(authProvider.notifier).login(_controller.text);
             },
             child: const Text('Submit'),
           )

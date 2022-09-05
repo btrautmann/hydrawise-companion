@@ -1,11 +1,11 @@
 import 'package:api_models/api_models.dart';
 import 'package:core_ui/core_ui.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:irri/customer_details/customer_details.dart';
 import 'package:irri/programs/programs.dart';
 
-class CreateProgramPage extends StatelessWidget {
+class CreateProgramPage extends ConsumerWidget {
   const CreateProgramPage({
     Key? key,
     this.existingProgramId,
@@ -16,33 +16,30 @@ class CreateProgramPage extends StatelessWidget {
   final int? existingProgramId;
 
   @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<ProgramsCubit, ProgramsState>(
-      builder: (context, state) {
-        final existingProgram = existingProgramId != null
-            ? state.programs.singleWhere(
-                (program) => program.id == existingProgramId,
-              )
-            : null;
-        return Scaffold(
-          appBar: AppBar(
-            title: Text(
-              existingProgramId == null ? 'Create Program' : 'Edit Program',
-            ),
-          ),
-          body: CreateProgramView(
-            name: existingProgram?.name ?? '',
-            frequency: List.of(existingProgram?.frequency ?? []),
-            runGroups: existingProgram?.runs.toRunCreations() ?? [],
-            existingProgramId: existingProgramId,
-          ),
-        );
-      },
+  Widget build(BuildContext context, WidgetRef ref) {
+    final programs = ref.watch(programsProvider);
+    final existingProgram = existingProgramId != null
+        ? programs.whenData(
+            (value) => value.singleWhere((element) => element.id == existingProgramId),
+          )
+        : null;
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          existingProgramId == null ? 'Create Program' : 'Edit Program',
+        ),
+      ),
+      body: CreateProgramView(
+        name: existingProgram?.asData?.value.name ?? '',
+        frequency: List.of(existingProgram?.asData?.value.frequency ?? []),
+        runGroups: existingProgram?.asData?.value.runs.toRunCreations() ?? [],
+        existingProgramId: existingProgramId,
+      ),
     );
   }
 }
 
-class CreateProgramView extends StatefulWidget {
+class CreateProgramView extends ConsumerStatefulWidget {
   const CreateProgramView({
     Key? key,
     required this.name,
@@ -57,10 +54,10 @@ class CreateProgramView extends StatefulWidget {
   final int? existingProgramId;
 
   @override
-  State<CreateProgramView> createState() => _CreateProgramViewState();
+  ConsumerState<CreateProgramView> createState() => _CreateProgramViewState();
 }
 
-class _CreateProgramViewState extends State<CreateProgramView> {
+class _CreateProgramViewState extends ConsumerState<CreateProgramView> {
   late String _name;
   late List<int> _frequency;
   late List<RunCreation> _runGroups;
@@ -84,6 +81,18 @@ class _CreateProgramViewState extends State<CreateProgramView> {
 
   @override
   Widget build(BuildContext context) {
+    ref.listen<AsyncValue<void>>(
+      createProgramControllerProvider,
+      (_, state) => state.whenOrNull(
+        error: (error, stack) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(error.toString())),
+          );
+        },
+      ),
+    );
+    final createProgramState = ref.watch(createProgramControllerProvider);
+    final isLoading = createProgramState is AsyncLoading<void>;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
@@ -123,26 +132,28 @@ class _CreateProgramViewState extends State<CreateProgramView> {
         Visibility(
           visible: _name.isNotEmpty && _frequency.isNotEmpty && _runGroups.isNotEmpty,
           child: Align(
-            child: ElevatedButton(
-              child: const Text('Done'),
-              onPressed: () {
-                if (widget.existingProgramId != null) {
-                  context.read<ProgramsCubit>().updateProgram(
-                        programId: widget.existingProgramId!,
-                        name: _name,
-                        frequency: _frequency,
-                        runs: _runGroups,
-                      );
-                } else {
-                  context.read<ProgramsCubit>().createProgram(
-                        name: _name,
-                        frequency: _frequency,
-                        runGroups: _runGroups,
-                      );
-                }
-                Navigator.of(context).pop();
-              },
-            ),
+            child: isLoading
+                ? const CircularProgressIndicator()
+                : ElevatedButton(
+                    child: const Text('Done'),
+                    onPressed: () {
+                      if (widget.existingProgramId != null) {
+                        ref.read(updateProgramControllerProvider.notifier).updateProgram(
+                              programId: widget.existingProgramId!,
+                              name: _name,
+                              frequency: _frequency,
+                              runGroups: _runGroups,
+                            );
+                      } else {
+                        ref.read(createProgramControllerProvider.notifier).createProgram(
+                              name: _name,
+                              frequency: _frequency,
+                              runGroups: _runGroups,
+                            );
+                      }
+                      Navigator.of(context).pop();
+                    },
+                  ),
           ),
         ),
       ],
@@ -317,7 +328,7 @@ class _DayButton extends StatelessWidget {
   }
 }
 
-class _RunsConfiguration extends StatefulWidget {
+class _RunsConfiguration extends ConsumerStatefulWidget {
   const _RunsConfiguration({
     Key? key,
     required this.initialrunGroups,
@@ -328,10 +339,10 @@ class _RunsConfiguration extends StatefulWidget {
   final ValueSetter<List<RunCreation>> onRunsChanged;
 
   @override
-  _RunsConfigurationState createState() => _RunsConfigurationState();
+  ConsumerState<_RunsConfiguration> createState() => _RunsConfigurationState();
 }
 
-class _RunsConfigurationState extends State<_RunsConfiguration> {
+class _RunsConfigurationState extends ConsumerState<_RunsConfiguration> {
   final entries = <TimelineEntry>[];
   final mapping = <String, RunCreation>{};
   bool isValid = true;
@@ -411,151 +422,148 @@ class _RunsConfigurationState extends State<_RunsConfiguration> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<CustomerDetailsCubit, CustomerDetailsState>(
-      builder: (context, state) {
-        final zones = state.map(
-          loading: (_) => List<Zone>.empty(),
-          complete: (state) => state.zones,
-        );
-        return Center(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Flexible(
-                child: TimelineBuilder(
-                  entries: entries,
-                  buildTitle: (entryId) {
-                    final zoneId = mapping[entryId]!.zoneId;
-                    final zone = zones.singleWhere(
-                      (element) => element.id == zoneId,
-                    );
-                    final entry = entries.singleWhere(
-                      (element) => element.id == entryId,
-                    );
-                    return 'Zone ${zone.name} runs for ${entry.duration.inMinutes} minutes';
-                  },
-                  onEntryDurationChanged: (String entryId, double duration) {
-                    _changeDuration(entryId, duration);
-                  },
-                  onValidityChanged: (valid) {
-                    setState(() {
-                      isValid = valid;
-                    });
-                  },
-                  onNodeTapped: (node) {
-                    showDialog(
-                      context: context,
-                      builder: (context) {
-                        return Dialog(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              InkWell(
-                                onTap: () {
-                                  setState(() {
-                                    mapping.remove(node);
-                                    entries.removeWhere(
-                                      (element) => element.id == node,
-                                    );
-                                  });
-                                  Navigator.pop(context);
-                                },
-                                child: const Padding(
-                                  padding: EdgeInsets.all(12),
-                                  child: Text('Remove run'),
-                                ),
-                              ),
-                              const Divider(),
-                              InkWell(
-                                onTap: () async {
-                                  Navigator.pop(context);
-                                  final newTime = await showTimePicker(
-                                    context: context,
-                                    initialTime: entries
-                                        .singleWhere(
-                                          (element) => element.id == node,
-                                        )
-                                        .time,
-                                  );
-                                  if (newTime != null) {
-                                    _changeStartTime(node, newTime);
-                                  }
-                                },
-                                child: const Padding(
-                                  padding: EdgeInsets.all(12),
-                                  child: Text('Adjust start time'),
-                                ),
-                              ),
-                            ],
-                          ),
-                        );
-                      },
-                    );
-                  },
-                ),
-              ),
-              Visibility(
-                visible: isValid,
-                child: Padding(
-                  padding: const EdgeInsets.all(8),
-                  child: FloatingActionButton.extended(
-                    onPressed: () async {
-                      final zone = await showDialog<Zone>(
-                        context: context,
-                        builder: (_) {
-                          return Dialog(
-                            child: ListView.builder(
-                              shrinkWrap: true,
-                              itemCount: zones.length,
-                              itemBuilder: (context, index) {
-                                final zone = zones[index];
-                                return InkWell(
-                                  onTap: () {
-                                    Navigator.of(context).pop(zone);
-                                  },
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8),
-                                    child: Text(zone.name),
-                                  ),
+    final customerState = ref.watch(customerDetailsStateProvider);
+    final zones = customerState.map(
+      loading: (_) => List<Zone>.empty(),
+      complete: (state) => state.zones,
+    );
+    return Center(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Flexible(
+            child: TimelineBuilder(
+              entries: entries,
+              buildTitle: (entryId) {
+                final zoneId = mapping[entryId]!.zoneId;
+                final zone = zones.singleWhere(
+                  (element) => element.id == zoneId,
+                );
+                final entry = entries.singleWhere(
+                  (element) => element.id == entryId,
+                );
+                return 'Zone ${zone.name} runs for ${entry.duration.inMinutes} minutes';
+              },
+              onEntryDurationChanged: (String entryId, double duration) {
+                _changeDuration(entryId, duration);
+              },
+              onValidityChanged: (valid) {
+                setState(() {
+                  isValid = valid;
+                });
+              },
+              onNodeTapped: (node) {
+                showDialog(
+                  context: context,
+                  builder: (context) {
+                    return Dialog(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          InkWell(
+                            onTap: () {
+                              setState(() {
+                                mapping.remove(node);
+                                entries.removeWhere(
+                                  (element) => element.id == node,
                                 );
-                              },
+                              });
+                              Navigator.pop(context);
+                            },
+                            child: const Padding(
+                              padding: EdgeInsets.all(12),
+                              child: Text('Remove run'),
                             ),
-                          );
-                        },
-                      );
-                      if (zone != null) {
-                        entries.sortByTime();
-                        final lastEntry = entries.isEmpty ? null : entries.last;
-                        final newTime = await showTimePicker(
-                          context: context,
-                          initialTime: lastEntry == null
-                              ? TimeOfDay.now()
-                              : TimeOfDay.fromDateTime(
-                                  DateTime.now().apply(lastEntry.time).add(lastEntry.duration),
-                                ),
-                        );
-                        if (newTime != null) {
-                          _addStartTime(
-                            TimelineEntry(
-                              time: newTime,
-                              duration: const Duration(minutes: 10),
+                          ),
+                          const Divider(),
+                          InkWell(
+                            onTap: () async {
+                              Navigator.pop(context);
+                              final newTime = await showTimePicker(
+                                context: context,
+                                initialTime: entries
+                                    .singleWhere(
+                                      (element) => element.id == node,
+                                    )
+                                    .time,
+                              );
+                              if (newTime != null) {
+                                _changeStartTime(node, newTime);
+                              }
+                            },
+                            child: const Padding(
+                              padding: EdgeInsets.all(12),
+                              child: Text('Adjust start time'),
                             ),
-                            zone,
-                          );
-                        }
-                      }
-                    },
-                    backgroundColor: Colors.green.shade300,
-                    label: const Text('Add Run'),
-                  ),
-                ),
-              ),
-            ],
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                );
+              },
+            ),
           ),
-        );
-      },
+          Visibility(
+            visible: isValid,
+            child: Padding(
+              padding: const EdgeInsets.all(8),
+              child: FloatingActionButton.extended(
+                onPressed: () async {
+                  final zone = await showDialog<Zone>(
+                    context: context,
+                    builder: (_) {
+                      return Dialog(
+                        child: ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: zones.length,
+                          itemBuilder: (context, index) {
+                            final zone = zones[index];
+                            return InkWell(
+                              onTap: () {
+                                Navigator.of(context).pop(zone);
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.all(8),
+                                child: Text(zone.name),
+                              ),
+                            );
+                          },
+                        ),
+                      );
+                    },
+                  );
+                  if (zone != null) {
+                    entries.sortByTime();
+                    final lastEntry = entries.isEmpty ? null : entries.last;
+                    final newTime = await showTimePicker(
+                      context: context,
+                      initialTime: lastEntry == null
+                          ? TimeOfDay.now()
+                          : TimeOfDay.fromDateTime(
+                              DateTime.now().apply(lastEntry.time).add(lastEntry.duration),
+                            ),
+                    );
+                    if (newTime != null) {
+                      _addStartTime(
+                        TimelineEntry(
+                          time: newTime,
+                          duration: const Duration(minutes: 10),
+                        ),
+                        zone,
+                      );
+                    }
+                  }
+                },
+                backgroundColor: Colors.green.shade300,
+                label: const Text('Add Run'),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

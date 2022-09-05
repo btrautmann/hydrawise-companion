@@ -1,9 +1,7 @@
 import 'package:core/core.dart';
 
-typedef GetNextPollTime = Future<DateTime> Function();
-
-class GetNextPollTimeFromStorage {
-  GetNextPollTimeFromStorage(this._dataStorage);
+class GetNextPollTime {
+  GetNextPollTime(this._dataStorage);
 
   final DataStorage _dataStorage;
 

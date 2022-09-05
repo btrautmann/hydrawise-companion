@@ -2,13 +2,10 @@ import 'package:api_models/api_models.dart';
 import 'package:clock/clock.dart';
 import 'package:core_ui/core_ui.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:irri/customer_details/customer_details.dart';
-import 'package:irri/developer/developer.dart';
-import 'package:irri/programs/cubit/programs_cubit.dart';
-import 'package:irri/programs/extensions.dart';
-import 'package:weatherx/weather.dart';
+import 'package:irri/programs/programs.dart';
 
 class CustomerDetailsPage extends StatelessWidget {
   const CustomerDetailsPage({Key? key}) : super(key: key);
@@ -32,18 +29,21 @@ class CustomerDetailsView extends StatelessWidget {
   }
 }
 
-class _CustomerDetailsStateView extends StatelessWidget {
+class _CustomerDetailsStateView extends ConsumerWidget {
   const _CustomerDetailsStateView({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<ProgramsCubit, ProgramsState>(
-      builder: (context, state) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    return ref.watch(programsProvider).maybeWhen(
+      data: (programs) {
         return SingleChildScrollView(
           child: _AllCustomerContent(
-            programs: state.programs,
+            programs: programs,
           ),
         );
+      },
+      orElse: () {
+        return const CircularProgressIndicator();
       },
     );
   }
@@ -67,21 +67,8 @@ class _AllCustomerContent extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(bottom: 16),
             child: Row(
-              children: [
-                const _Greeting(),
-                const Spacer(),
-                Visibility(
-                  visible: context.read<ShouldShowDeveloperEntryPoint>().call(),
-                  child: Tooltip(
-                    message: 'Developer',
-                    child: IconButton(
-                      onPressed: () {
-                        GoRouter.of(context).push('/developer');
-                      },
-                      icon: const Icon(Icons.computer),
-                    ),
-                  ),
-                ),
+              children: const [
+                _Greeting(),
               ],
             ),
           ),
@@ -91,7 +78,6 @@ class _AllCustomerContent extends StatelessWidget {
               GoRouter.of(context).push('/zone/${run.zoneId}');
             },
           ),
-          const WeatherDetailsCard(),
         ],
       ),
     );
@@ -120,7 +106,7 @@ class _Greeting extends StatelessWidget {
   }
 }
 
-class _RunsList extends StatelessWidget {
+class _RunsList extends ConsumerWidget {
   _RunsList({
     Key? key,
     required this.programs,
@@ -133,7 +119,8 @@ class _RunsList extends StatelessWidget {
   final ValueSetter<Run> onRunTapped;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final customerState = ref.watch(customerDetailsStateProvider);
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
       child: Card(
@@ -159,50 +146,46 @@ class _RunsList extends StatelessWidget {
             ),
             Padding(
               padding: const EdgeInsets.only(top: 8, bottom: 8),
-              child: BlocBuilder<CustomerDetailsCubit, CustomerDetailsState>(
-                builder: (context, state) {
-                  return state.maybeWhen(
-                    complete: (details, zones) {
-                      return Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Visibility(
-                            visible: todayRuns.isEmpty,
-                            child: const Padding(
-                              padding: EdgeInsets.all(16),
-                              child: Text('No more runs today'),
-                            ),
-                          ),
-                          Visibility(
-                            visible: todayRuns.isNotEmpty,
-                            child: ListView.builder(
-                              primary: false,
-                              physics: const NeverScrollableScrollPhysics(),
-                              shrinkWrap: true,
-                              itemCount: todayRuns.length,
-                              itemBuilder: (_, index) {
-                                return _RunCell(
-                                  zone: zones.singleWhere(
-                                    (z) => z.id == todayRuns[index].zoneId,
-                                  ),
-                                  program: programs.singleWhere(
-                                    (p) => p.id == todayRuns[index].programId,
-                                  ),
-                                  run: todayRuns[index],
-                                  shouldShowDivider: index != todayRuns.length - 1,
-                                  onRunTapped: onRunTapped,
-                                );
-                              },
-                            ),
-                          ),
-                        ],
-                      );
-                    },
-                    orElse: () => const Center(
-                      child: CircularProgressIndicator(),
-                    ),
+              child: customerState.maybeWhen(
+                complete: (details, zones) {
+                  return Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Visibility(
+                        visible: todayRuns.isEmpty,
+                        child: const Padding(
+                          padding: EdgeInsets.all(16),
+                          child: Text('No more runs today'),
+                        ),
+                      ),
+                      Visibility(
+                        visible: todayRuns.isNotEmpty,
+                        child: ListView.builder(
+                          primary: false,
+                          physics: const NeverScrollableScrollPhysics(),
+                          shrinkWrap: true,
+                          itemCount: todayRuns.length,
+                          itemBuilder: (_, index) {
+                            return _RunCell(
+                              zone: zones.singleWhere(
+                                (z) => z.id == todayRuns[index].zoneId,
+                              ),
+                              program: programs.singleWhere(
+                                (p) => p.id == todayRuns[index].programId,
+                              ),
+                              run: todayRuns[index],
+                              shouldShowDivider: index != todayRuns.length - 1,
+                              onRunTapped: onRunTapped,
+                            );
+                          },
+                        ),
+                      ),
+                    ],
                   );
                 },
+                orElse: () => const Center(
+                  child: CircularProgressIndicator(),
+                ),
               ),
             ),
           ],
