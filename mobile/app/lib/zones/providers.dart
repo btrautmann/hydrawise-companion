@@ -53,9 +53,9 @@ class ZonesNotifier extends StateNotifier<AsyncValue<List<Zone>>> {
   }
 }
 
-final zonesProvider = FutureProvider<List<Zone>>((ref) async {
-  // TODO(brandon): Add API for fetching only zones
-  final getZones = ref.watch(getZonesProvider);
-  final zones = await getZones();
-  return zones;
+final zonesProvider = StateNotifierProvider<ZonesNotifier, AsyncValue<List<Zone>>>((ref) {
+  return ZonesNotifier(
+    getCustomer: ref.watch(getZonesProvider),
+    authState: ref.watch(authProvider),
+  );
 });
