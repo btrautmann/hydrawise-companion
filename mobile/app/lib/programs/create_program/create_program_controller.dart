@@ -1,12 +1,12 @@
 part of 'create_program.dart';
 
-class CreateProgramController extends StateNotifier<AsyncValue<void>> {
+class CreateProgramController extends StateNotifier<AsyncValue<Object?>> {
   CreateProgramController({
     required CreateProgram createProgram,
     required Ref ref,
   })  : _createProgram = createProgram,
         _ref = ref,
-        super(const AsyncValue.data(null));
+        super(const AsyncData(null));
 
   final CreateProgram _createProgram;
   final Ref _ref;
@@ -17,7 +17,7 @@ class CreateProgramController extends StateNotifier<AsyncValue<void>> {
     required List<RunCreation> runGroups,
   }) async {
     try {
-      state = const AsyncValue.loading();
+      state = const AsyncLoading();
 
       await _createProgram(
         name: name,
@@ -26,16 +26,16 @@ class CreateProgramController extends StateNotifier<AsyncValue<void>> {
       );
       // TODO(brandon): Is this the best way to do this?
       _ref.invalidate(programsProvider);
+      state = const AsyncData(success);
     } on Exception catch (e) {
-      state = AsyncValue.error(e);
+      state = AsyncError(e);
     } finally {
-      state = const AsyncValue.data(null);
+      state = const AsyncData(null);
     }
   }
 }
 
-final createProgramControllerProvider =
-    StateNotifierProvider<CreateProgramController, AsyncValue<void>>((ref) {
+final createProgramControllerProvider = StateNotifierProvider<CreateProgramController, AsyncValue<Object?>>((ref) {
   return CreateProgramController(
     createProgram: ref.watch(
       createProgramProvider,

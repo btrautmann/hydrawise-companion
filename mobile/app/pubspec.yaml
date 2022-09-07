@@ -37,6 +37,7 @@ dependencies:
   pedantic: ^1.11.1
   provider: ^6.0.0
   shared_preferences: ^2.0.13
+  tab_indicator_styler: ^2.0.0
   uuid: ^3.0.5
 
 dev_dependencies:
