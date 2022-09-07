@@ -61,86 +61,18 @@ class AuthListener extends ConsumerWidget {
 ThemeData _buildLightTheme(BuildContext context) {
   final base = ThemeData.light();
   return base.copyWith(
-    bottomAppBarColor: AppColors.blue700,
-    appBarTheme: base.appBarTheme.copyWith(
-      iconTheme: const IconThemeData(
-        color: AppColors.white50,
-      ),
-      color: AppColors.blue700,
-      elevation: 0,
-    ),
-    bottomSheetTheme: BottomSheetThemeData(
-      backgroundColor: AppColors.blue700,
-      modalBackgroundColor: Colors.white.withOpacity(0.7),
-    ),
-    navigationRailTheme: NavigationRailThemeData(
-      backgroundColor: AppColors.blue700,
-      selectedIconTheme: const IconThemeData(color: AppColors.orange500),
-      selectedLabelTextStyle:
-          GoogleFonts.workSansTextTheme().headline5?.copyWith(
-                color: AppColors.orange500,
-              ),
-      unselectedIconTheme: const IconThemeData(color: AppColors.blue200),
-      unselectedLabelTextStyle:
-          GoogleFonts.workSansTextTheme().headline5?.copyWith(
-                color: AppColors.blue200,
-              ),
-    ),
-    chipTheme: _buildChipTheme(
-      AppColors.blue700,
-      AppColors.lightChipBackground,
-      Brightness.light,
-    ),
-    canvasColor: AppColors.white50,
-    cardColor: AppColors.white50,
     colorScheme: _lightColorScheme,
-    textTheme: _buildLightTextTheme(base.textTheme),
-    scaffoldBackgroundColor: AppColors.blue50,
   );
 }
 
 ThemeData _buildDarkTheme(BuildContext context) {
   final base = ThemeData.dark();
-  final darkTextTheme = _buildDarkTextTheme(base.textTheme);
   return base.copyWith(
-    bottomAppBarColor: AppColors.darkBottomAppBarBackground,
-    bottomSheetTheme: BottomSheetThemeData(
-      backgroundColor: AppColors.darkDrawerBackground,
-      modalBackgroundColor: Colors.black.withOpacity(0.7),
-    ),
-    appBarTheme: base.appBarTheme.copyWith(
-      iconTheme: const IconThemeData(
-        color: AppColors.white50,
-      ),
-      color: AppColors.darkBottomAppBarBackground,
-      elevation: 0,
-    ),
-    navigationRailTheme: NavigationRailThemeData(
-      backgroundColor: AppColors.darkBottomAppBarBackground,
-      selectedIconTheme: const IconThemeData(color: AppColors.orange300),
-      selectedLabelTextStyle:
-          GoogleFonts.workSansTextTheme().headline5?.copyWith(
-                color: AppColors.orange300,
-              ),
-      unselectedIconTheme: const IconThemeData(color: AppColors.greyLabel),
-      unselectedLabelTextStyle:
-          GoogleFonts.workSansTextTheme().headline5?.copyWith(
-                color: AppColors.greyLabel,
-              ),
-    ),
-    chipTheme: _buildChipTheme(
-      AppColors.blue200,
-      AppColors.darkChipBackground,
-      Brightness.dark,
-    ),
-    canvasColor: AppColors.black900,
-    cardColor: AppColors.darkCardBackground,
     colorScheme: _darkColorScheme,
-    textTheme: darkTextTheme,
-    scaffoldBackgroundColor: AppColors.black900,
   );
 }
 
+// ignore: unused_element
 TextTheme _buildLightTextTheme(TextTheme base) {
   return base.copyWith(
     button: GoogleFonts.workSans(
@@ -195,6 +127,7 @@ TextTheme _buildLightTextTheme(TextTheme base) {
   );
 }
 
+// ignore: unused_element
 TextTheme _buildDarkTextTheme(TextTheme base) {
   return base.copyWith(
     button: GoogleFonts.workSans(
@@ -249,50 +182,12 @@ TextTheme _buildDarkTextTheme(TextTheme base) {
   );
 }
 
-ChipThemeData _buildChipTheme(
-  Color primaryColor,
-  Color chipBackground,
-  Brightness brightness,
-) {
-  return ChipThemeData(
-    backgroundColor: primaryColor.withOpacity(0.12),
-    disabledColor: primaryColor.withOpacity(0.87),
-    selectedColor: primaryColor.withOpacity(0.05),
-    secondarySelectedColor: chipBackground,
-    padding: const EdgeInsets.all(4),
-    shape: const StadiumBorder(),
-    labelStyle: GoogleFonts.workSansTextTheme().bodyText2!.copyWith(
-          color: brightness == Brightness.dark
-              ? AppColors.white50
-              : AppColors.black900,
-        ),
-    secondaryLabelStyle: GoogleFonts.workSansTextTheme().bodyText2,
-    brightness: brightness,
-  );
-}
-
-const ColorScheme _lightColorScheme = ColorScheme.light(
-  primary: AppColors.blue700,
-  secondary: AppColors.orange500,
-  surface: AppColors.white50,
-  error: AppColors.red400,
-  onPrimary: AppColors.white50,
-  onSecondary: AppColors.black900,
-  onBackground: AppColors.black900,
-  onSurface: AppColors.black900,
-  onError: AppColors.white50,
-  background: AppColors.blue50,
+ColorScheme _lightColorScheme = ColorScheme.fromSeed(
+  seedColor: AppColors.pink,
+  brightness: Brightness.light,
 );
 
-const ColorScheme _darkColorScheme = ColorScheme.dark(
-  primary: AppColors.blue200,
-  secondary: AppColors.orange300,
-  surface: AppColors.black800,
-  error: AppColors.red200,
-  onPrimary: AppColors.black900,
-  onSecondary: AppColors.black900,
-  onBackground: AppColors.white50,
-  onSurface: AppColors.white50,
-  onError: AppColors.white50,
-  background: AppColors.black900Alpha087,
+ColorScheme _darkColorScheme = ColorScheme.fromSeed(
+  seedColor: AppColors.pink,
+  brightness: Brightness.dark,
 );

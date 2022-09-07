@@ -490,78 +490,81 @@ class _RunsTabState extends ConsumerState<_RunsTab> with AutomaticKeepAliveClien
             mainAxisSize: MainAxisSize.min,
             children: [
               Flexible(
-                child: TimelineBuilder(
-                  entries: entries,
-                  buildTitle: (entryId) {
-                    final zoneId = mapping[entryId]!.zoneId;
-                    final zone = zones.singleWhere(
-                      (element) => element.id == zoneId,
-                    );
-                    final entry = entries.singleWhere(
-                      (element) => element.id == entryId,
-                    );
-                    return 'Zone ${zone.name} runs for ${entry.duration.inMinutes} minutes';
-                  },
-                  onEntryDurationChanged: (String entryId, double duration) {
-                    _changeDuration(entryId, duration);
-                  },
-                  onValidityChanged: (valid) {
-                    setState(() {
-                      isValid = valid;
-                    });
-                    context.read<_ProgramNotifier>().updateRunValidity(isValid: valid);
-                  },
-                  onNodeTapped: (node) {
-                    showDialog(
-                      context: context,
-                      builder: (context) {
-                        return Dialog(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              InkWell(
-                                onTap: () {
-                                  setState(() {
-                                    mapping.remove(node);
-                                    entries.removeWhere(
-                                      (element) => element.id == node,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  child: TimelineBuilder(
+                    entries: entries,
+                    buildTitle: (entryId) {
+                      final zoneId = mapping[entryId]!.zoneId;
+                      final zone = zones.singleWhere(
+                        (element) => element.id == zoneId,
+                      );
+                      final entry = entries.singleWhere(
+                        (element) => element.id == entryId,
+                      );
+                      return 'Zone ${zone.name} runs for ${entry.duration.inMinutes} minutes';
+                    },
+                    onEntryDurationChanged: (String entryId, double duration) {
+                      _changeDuration(entryId, duration);
+                    },
+                    onValidityChanged: (valid) {
+                      setState(() {
+                        isValid = valid;
+                      });
+                      context.read<_ProgramNotifier>().updateRunValidity(isValid: valid);
+                    },
+                    onNodeTapped: (node) {
+                      showDialog(
+                        context: context,
+                        builder: (context) {
+                          return Dialog(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                InkWell(
+                                  onTap: () {
+                                    setState(() {
+                                      mapping.remove(node);
+                                      entries.removeWhere(
+                                        (element) => element.id == node,
+                                      );
+                                    });
+                                    Navigator.pop(context);
+                                  },
+                                  child: const Padding(
+                                    padding: EdgeInsets.all(12),
+                                    child: Text('Remove run'),
+                                  ),
+                                ),
+                                const Divider(),
+                                InkWell(
+                                  onTap: () async {
+                                    Navigator.pop(context);
+                                    final newTime = await showTimePicker(
+                                      context: context,
+                                      initialTime: entries
+                                          .singleWhere(
+                                            (element) => element.id == node,
+                                          )
+                                          .time,
                                     );
-                                  });
-                                  Navigator.pop(context);
-                                },
-                                child: const Padding(
-                                  padding: EdgeInsets.all(12),
-                                  child: Text('Remove run'),
+                                    if (newTime != null) {
+                                      _changeStartTime(node, newTime);
+                                    }
+                                  },
+                                  child: const Padding(
+                                    padding: EdgeInsets.all(12),
+                                    child: Text('Adjust start time'),
+                                  ),
                                 ),
-                              ),
-                              const Divider(),
-                              InkWell(
-                                onTap: () async {
-                                  Navigator.pop(context);
-                                  final newTime = await showTimePicker(
-                                    context: context,
-                                    initialTime: entries
-                                        .singleWhere(
-                                          (element) => element.id == node,
-                                        )
-                                        .time,
-                                  );
-                                  if (newTime != null) {
-                                    _changeStartTime(node, newTime);
-                                  }
-                                },
-                                child: const Padding(
-                                  padding: EdgeInsets.all(12),
-                                  child: Text('Adjust start time'),
-                                ),
-                              ),
-                            ],
-                          ),
-                        );
-                      },
-                    );
-                  },
+                              ],
+                            ),
+                          );
+                        },
+                      );
+                    },
+                  ),
                 ),
               ),
               Visibility(

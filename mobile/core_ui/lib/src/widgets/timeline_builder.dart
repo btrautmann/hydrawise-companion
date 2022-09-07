@@ -188,90 +188,72 @@ class _TimelineBuilderState extends State<TimelineBuilder> {
             location = DashLocation.all;
             break;
         }
-        return ColoredBox(
-          color: index.isEven
-              ? Theme.of(context).colorScheme.secondaryContainer
-              : Theme.of(context).colorScheme.tertiaryContainer,
-          child: Padding(
-            padding: const EdgeInsets.only(left: 8, right: 8),
-            child: Row(
-              children: [
-                RotatedBox(
-                  quarterTurns: 3,
-                  child: Text(
-                    currentEntry.time.format(context),
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: index.isEven
-                              ? Theme.of(context).colorScheme.onSecondaryContainer
-                              : Theme.of(context).colorScheme.onTertiaryContainer,
-                        ),
-                  ),
+        return Padding(
+          padding: const EdgeInsets.only(left: 8, right: 8),
+          child: Row(
+            children: [
+              RotatedBox(
+                quarterTurns: 3,
+                child: Text(currentEntry.time.format(context)),
+              ),
+              SizedBox(
+                height: 100,
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    DashedVerticalLine(
+                      color: hasOverlap ? Theme.of(context).errorColor : Theme.of(context).dividerColor,
+                      width: 1.5,
+                      location: location,
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        widget.onNodeTapped(currentEntry.id);
+                      },
+                      style: ButtonStyle(
+                        shape: MaterialStateProperty.all(const CircleBorder()),
+                        padding: MaterialStateProperty.all(const EdgeInsets.all(20)),
+                        backgroundColor: MaterialStateProperty.all(color), // <-- Button color
+                      ),
+                      child: const SizedBox.shrink(),
+                    ),
+                  ],
                 ),
-                SizedBox(
-                  height: 100,
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      DashedVerticalLine(
-                        color: hasOverlap ? Theme.of(context).errorColor : Theme.of(context).dividerColor,
-                        width: 1.5,
-                        location: location,
-                      ),
-                      ElevatedButton(
-                        onPressed: () {
-                          widget.onNodeTapped(currentEntry.id);
-                        },
-                        style: ButtonStyle(
-                          shape: MaterialStateProperty.all(const CircleBorder()),
-                          padding: MaterialStateProperty.all(const EdgeInsets.all(20)),
-                          backgroundColor: MaterialStateProperty.all(color), // <-- Button color
-                        ),
-                        child: const SizedBox.shrink(),
-                      ),
-                    ],
-                  ),
-                ),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(left: 24),
-                        child: Text(
-                          widget.buildTitle(currentEntry.id),
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                color: index.isEven
-                                    ? Theme.of(context).colorScheme.onSecondaryContainer
-                                    : Theme.of(context).colorScheme.onTertiaryContainer,
-                              ),
-                        ),
-                      ),
-                      Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Expanded(
-                            child: Slider(
-                              value: currentEntry.duration.inMinutes.toDouble(),
-                              onChangeEnd: (time) => widget.onEntryDurationChanged(
-                                currentEntry.id,
-                                time,
-                              ),
-                              onChanged: (time) => widget.onEntryDurationChanged(
-                                currentEntry.id,
-                                time,
-                              ),
-                              min: 1,
-                              max: 60,
+              ),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(left: 24),
+                      child: Text(widget.buildTitle(currentEntry.id)),
+                    ),
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Expanded(
+                          child: Slider(
+                            value: currentEntry.duration.inMinutes.toDouble(),
+                            onChangeEnd: (time) => widget.onEntryDurationChanged(
+                              currentEntry.id,
+                              time,
                             ),
+                            onChanged: (time) => widget.onEntryDurationChanged(
+                              currentEntry.id,
+                              time,
+                            ),
+                            min: 1,
+                            max: 60,
                           ),
-                        ],
-                      ),
-                    ],
-                  ),
+                        ),
+                      ],
+                    ),
+                    if (index != widget.entries.length - 1) const Divider(),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         );
       },
