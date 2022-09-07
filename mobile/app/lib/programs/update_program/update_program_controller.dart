@@ -1,12 +1,14 @@
 part of 'update_program.dart';
 
-class UpdateProgramController extends StateNotifier<AsyncValue<void>> {
+const success = Object();
+
+class UpdateProgramController extends StateNotifier<AsyncValue<Object?>> {
   UpdateProgramController({
     required UpdateProgram updateProgram,
     required Ref ref,
   })  : _updateProgram = updateProgram,
         _ref = ref,
-        super(const AsyncValue.data(null));
+        super(const AsyncData(null));
 
   final UpdateProgram _updateProgram;
   final Ref _ref;
@@ -18,7 +20,7 @@ class UpdateProgramController extends StateNotifier<AsyncValue<void>> {
     required List<RunCreation> runGroups,
   }) async {
     try {
-      state = const AsyncValue.loading();
+      state = const AsyncLoading();
 
       await _updateProgram(
         programId: programId,
@@ -28,16 +30,16 @@ class UpdateProgramController extends StateNotifier<AsyncValue<void>> {
       );
       // TODO(brandon): Is this the best way to do this?
       _ref.invalidate(programsProvider);
-    } on Exception catch (e) {
-      state = AsyncValue.error(e);
+      state = const AsyncData(success);
+    } on Exception catch (error) {
+      state = AsyncError(error);
     } finally {
-      state = const AsyncValue.data(null);
+      state = const AsyncData(null);
     }
   }
 }
 
-final updateProgramControllerProvider =
-    StateNotifierProvider<UpdateProgramController, AsyncValue<void>>((ref) {
+final updateProgramControllerProvider = StateNotifierProvider<UpdateProgramController, AsyncValue<Object?>>((ref) {
   return UpdateProgramController(
     updateProgram: ref.watch(
       updateProgramProvider,

@@ -21,6 +21,24 @@ final updateProgramProvider = Provider<UpdateProgram>((ref) {
   );
 });
 
+FutureProvider<Program?> existingProgramProvider(int? programId) {
+  return FutureProvider(
+    (ref) {
+      if (programId == null) {
+        return null;
+      }
+      final programs = ref.watch(programsProvider);
+      return programs.when(
+        data: (programs) {
+          return programs.singleWhere((p) => p.id == programId);
+        },
+        error: (_, __) => null,
+        loading: () => null,
+      );
+    },
+  );
+}
+
 final programsProvider = FutureProvider<List<Program>>((ref) async {
   final getPrograms = ref.watch(getProgramsProvider);
   return getPrograms();

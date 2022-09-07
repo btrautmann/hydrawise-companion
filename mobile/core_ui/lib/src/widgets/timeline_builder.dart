@@ -162,7 +162,7 @@ class _TimelineBuilderState extends State<TimelineBuilder> {
         final Color color;
         switch (nodeType) {
           case NodeType.overlap:
-            color = Colors.red.shade300;
+            color = Theme.of(context).errorColor;
             if (overlapsWithPrevious && overlapsWithNext) {
               location = DashLocation.all;
             } else if (overlapsWithPrevious) {
@@ -172,24 +172,26 @@ class _TimelineBuilderState extends State<TimelineBuilder> {
             }
             break;
           case NodeType.solo:
-            color = Colors.green.shade300;
+            color = Theme.of(context).colorScheme.primary;
             location = DashLocation.none;
             break;
           case NodeType.jointWithTop:
-            color = Colors.blue.shade300;
+            color = Theme.of(context).colorScheme.secondary;
             location = DashLocation.top;
             break;
           case NodeType.jointWithBottom:
-            color = Colors.green.shade300;
+            color = Theme.of(context).colorScheme.primary;
             location = DashLocation.bottom;
             break;
           case NodeType.surrounded:
-            color = Colors.blue.shade300;
+            color = Theme.of(context).colorScheme.secondary;
             location = DashLocation.all;
             break;
         }
         return ColoredBox(
-          color: index.isEven ? Colors.grey.shade100 : Colors.white,
+          color: index.isEven
+              ? Theme.of(context).colorScheme.secondaryContainer
+              : Theme.of(context).colorScheme.tertiaryContainer,
           child: Padding(
             padding: const EdgeInsets.only(left: 8, right: 8),
             child: Row(
@@ -198,6 +200,11 @@ class _TimelineBuilderState extends State<TimelineBuilder> {
                   quarterTurns: 3,
                   child: Text(
                     currentEntry.time.format(context),
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: index.isEven
+                              ? Theme.of(context).colorScheme.onSecondaryContainer
+                              : Theme.of(context).colorScheme.onTertiaryContainer,
+                        ),
                   ),
                 ),
                 SizedBox(
@@ -206,7 +213,7 @@ class _TimelineBuilderState extends State<TimelineBuilder> {
                     alignment: Alignment.center,
                     children: [
                       DashedVerticalLine(
-                        color: hasOverlap ? Colors.red.shade500 : Colors.grey.shade500,
+                        color: hasOverlap ? Theme.of(context).errorColor : Theme.of(context).dividerColor,
                         width: 1.5,
                         location: location,
                       ),
@@ -231,7 +238,14 @@ class _TimelineBuilderState extends State<TimelineBuilder> {
                     children: [
                       Padding(
                         padding: const EdgeInsets.only(left: 24),
-                        child: Text(widget.buildTitle(currentEntry.id)),
+                        child: Text(
+                          widget.buildTitle(currentEntry.id),
+                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                color: index.isEven
+                                    ? Theme.of(context).colorScheme.onSecondaryContainer
+                                    : Theme.of(context).colorScheme.onTertiaryContainer,
+                              ),
+                        ),
                       ),
                       Row(
                         mainAxisSize: MainAxisSize.min,

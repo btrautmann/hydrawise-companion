@@ -1,11 +1,71 @@
 import 'package:api_models/api_models.dart';
 import 'package:core_ui/core_ui.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart' hide ChangeNotifierProvider;
 import 'package:irri/programs/programs.dart';
 import 'package:irri/zones/providers.dart';
+import 'package:provider/provider.dart';
+import 'package:tab_indicator_styler/tab_indicator_styler.dart';
 
-class CreateProgramPage extends ConsumerWidget {
+class _ProgramCreation {
+  _ProgramCreation({
+    required this.name,
+    required this.frequency,
+    required this.runs,
+    required this.runsValid,
+  });
+
+  final String name;
+  final List<int> frequency;
+  final List<RunCreation> runs;
+  final bool runsValid;
+}
+
+class _ProgramNotifier extends ValueNotifier<_ProgramCreation> {
+  _ProgramNotifier(_ProgramCreation initialProgram) : super(initialProgram);
+
+  void updateFrequency(List<int> frequency) {
+    value = _ProgramCreation(
+      name: value.name,
+      frequency: frequency,
+      runs: value.runs,
+      runsValid: value.runsValid,
+    );
+  }
+
+  void updateRuns(List<RunCreation> runs) {
+    value = _ProgramCreation(
+      name: value.name,
+      frequency: value.frequency,
+      runs: runs,
+      runsValid: value.runsValid,
+    );
+  }
+
+  void updateName(String name) {
+    value = _ProgramCreation(
+      name: name,
+      frequency: value.frequency,
+      runs: value.runs,
+      runsValid: value.runsValid,
+    );
+  }
+
+  void updateRunValidity({required bool isValid}) {
+    value = _ProgramCreation(
+      name: value.name,
+      frequency: value.frequency,
+      runs: value.runs,
+      runsValid: isValid,
+    );
+  }
+
+  bool isValid() {
+    return value.name.isNotEmpty && value.frequency.isNotEmpty && value.runs.isNotEmpty && value.runsValid;
+  }
+}
+
+class CreateProgramPage extends ConsumerStatefulWidget {
   const CreateProgramPage({
     Key? key,
     this.existingProgramId,
@@ -16,347 +76,331 @@ class CreateProgramPage extends ConsumerWidget {
   final int? existingProgramId;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final programs = ref.watch(programsProvider);
-    final existingProgram = existingProgramId != null
-        ? programs.whenData(
-            (value) =>
-                value.singleWhere((element) => element.id == existingProgramId),
-          )
-        : null;
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          existingProgramId == null ? 'Create Program' : 'Edit Program',
-        ),
+  ConsumerState<ConsumerStatefulWidget> createState() {
+    return _CreateProgramPageState();
+  }
+}
+
+class _CreateProgramPageState extends ConsumerState<CreateProgramPage> {
+  late _ProgramNotifier notifier;
+
+  @override
+  void initState() {
+    final initial =
+        widget.existingProgramId != null ? ref.read(existingProgramProvider(widget.existingProgramId)) : null;
+    notifier = _ProgramNotifier(
+      _ProgramCreation(
+        name: initial == null ? '' : initial.asData!.value!.name,
+        frequency: initial == null ? [] : initial.asData!.value!.frequency,
+        runs: initial == null ? [] : initial.asData!.value!.runs.toRunCreations(),
+        runsValid: true,
       ),
-      body: CreateProgramView(
-        name: existingProgram?.asData?.value.name ?? '',
-        frequency: List.of(existingProgram?.asData?.value.frequency ?? []),
-        runGroups: existingProgram?.asData?.value.runs.toRunCreations() ?? [],
-        existingProgramId: existingProgramId,
+    );
+
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final existingProgram = ref.watch(
+      existingProgramProvider(
+        widget.existingProgramId,
+      ),
+    );
+    return ChangeNotifierProvider<_ProgramNotifier>.value(
+      value: notifier,
+      child: DefaultTabController(
+        length: 2,
+        child: Scaffold(
+          appBar: AppBar(
+            title: Text(
+              widget.existingProgramId == null ? 'Create Program' : 'Edit Program',
+            ),
+            actions: [
+              Builder(
+                builder: (context) {
+                  return ValueListenableBuilder<_ProgramCreation>(
+                    valueListenable: context.read<_ProgramNotifier>(),
+                    builder: (context, value, state) {
+                      if (value.runsValid) {
+                        return IconButton(
+                          onPressed: () {
+                            if (widget.existingProgramId != null) {
+                              ref.read(updateProgramControllerProvider.notifier).updateProgram(
+                                    programId: widget.existingProgramId!,
+                                    name: value.name,
+                                    frequency: value.frequency,
+                                    runGroups: value.runs,
+                                  );
+                            } else {
+                              ref.read(createProgramControllerProvider.notifier).createProgram(
+                                    name: value.name,
+                                    frequency: value.frequency,
+                                    runGroups: value.runs,
+                                  );
+                            }
+                          },
+                          icon: const Icon(Icons.done),
+                        );
+                      }
+                      return const SizedBox.shrink();
+                    },
+                  );
+                },
+              ),
+            ],
+            bottom: TabBar(
+              indicatorColor: Theme.of(context).colorScheme.primary,
+              tabs: const [
+                Tab(
+                  text: 'Data',
+                ),
+                Tab(
+                  text: 'Runs',
+                )
+              ],
+              indicator: DotIndicator(
+                color: Theme.of(context).colorScheme.secondary,
+                distanceFromCenter: 16,
+              ),
+            ),
+          ),
+          body: _RequestListeners(
+            child: TabBarView(
+              children: [
+                if (widget.existingProgramId == null) ...[
+                  const _DataTab(
+                    initialFrequency: [],
+                    initialName: '',
+                  ),
+                  const _RunsTab(
+                    initialrunGroups: [],
+                  ),
+                ],
+                if (widget.existingProgramId != null) ...[
+                  existingProgram.maybeWhen(
+                    data: (program) {
+                      return _DataTab(
+                        initialFrequency: program!.frequency,
+                        initialName: program.name,
+                      );
+                    },
+                    orElse: CircularProgressIndicator.new,
+                  ),
+                  existingProgram.maybeWhen(
+                    data: (program) {
+                      return _RunsTab(
+                        initialrunGroups: program!.runs.toRunCreations(),
+                      );
+                    },
+                    orElse: CircularProgressIndicator.new,
+                  ),
+                ],
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }
 }
 
-class CreateProgramView extends ConsumerStatefulWidget {
-  const CreateProgramView({
-    Key? key,
-    required this.name,
-    required this.frequency,
-    required this.runGroups,
-    required this.existingProgramId,
-  }) : super(key: key);
+class _RequestListeners extends ConsumerWidget {
+  const _RequestListeners({required this.child});
 
-  final String name;
-  final List<int> frequency;
-  final List<RunCreation> runGroups;
-  final int? existingProgramId;
-
+  final Widget child;
   @override
-  ConsumerState<CreateProgramView> createState() => _CreateProgramViewState();
+  Widget build(BuildContext context, WidgetRef ref) {
+    ref
+      ..listen<AsyncValue<Object?>>(
+        createProgramControllerProvider,
+        (_, state) => state.whenOrNull(
+          error: (error, stack) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(error.toString())),
+            );
+          },
+          data: (result) {
+            if (result == success) {
+              Navigator.pop(context);
+            }
+          },
+        ),
+      )
+      ..listen<AsyncValue<Object?>>(
+        updateProgramControllerProvider,
+        (_, state) {
+          state.whenOrNull(
+            error: (error, stack) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text(error.toString())),
+              );
+            },
+            data: (result) {
+              if (result == success) {
+                Navigator.pop(context);
+              }
+            },
+          );
+        },
+      );
+    return child;
+  }
 }
 
-class _CreateProgramViewState extends ConsumerState<CreateProgramView> {
-  late String _name;
+class _DataTab extends ConsumerStatefulWidget {
+  const _DataTab({
+    Key? key,
+    required this.initialFrequency,
+    required this.initialName,
+  }) : super(key: key);
+
+  final List<int> initialFrequency;
+  final String initialName;
+
+  @override
+  _DataTabState createState() {
+    return _DataTabState();
+  }
+}
+
+class _DataTabState extends ConsumerState<_DataTab> with AutomaticKeepAliveClientMixin {
   late List<int> _frequency;
-  late List<RunCreation> _runGroups;
   late TextEditingController _nameController;
 
   @override
   void initState() {
-    _name = widget.name;
-    _frequency = widget.frequency;
-    _runGroups = widget.runGroups;
-    _nameController = TextEditingController();
-    _nameController.text = _name;
+    _frequency = List.from(widget.initialFrequency);
+    _nameController = TextEditingController(text: widget.initialName);
     super.initState();
   }
 
-  @override
-  void dispose() {
-    _nameController.dispose();
-    super.dispose();
+  void _updateFrequency(int day, bool? selected) {
+    setState(() {
+      if (selected ?? false) {
+        _frequency.add(day);
+      } else {
+        _frequency.remove(day);
+      }
+      context.read<_ProgramNotifier>().updateFrequency(_frequency);
+    });
+  }
+
+  void _updateName(String name) {
+    setState(() {
+      context.read<_ProgramNotifier>().updateName(name);
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    ref.listen<AsyncValue<void>>(
-      createProgramControllerProvider,
-      (_, state) => state.whenOrNull(
-        error: (error, stack) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(error.toString())),
-          );
-        },
-      ),
-    );
-    final createProgramState = ref.watch(createProgramControllerProvider);
-    final isLoading = createProgramState is AsyncLoading<void>;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(16),
-          child: TextField(
-            controller: _nameController,
-            onChanged: (text) {
-              setState(() {
-                _name = text;
-              });
-            },
-            decoration: const InputDecoration(
-              hintText: 'Give your program a name',
-            ),
-          ),
-        ),
-        _FrequencySelection(
-          initialFrequency: _frequency,
-          onFrequencyChanged: (frequency) {
-            setState(() {
-              _frequency = frequency;
-            });
-          },
-        ),
-        Flexible(
-          child: _RunsConfiguration(
-            initialrunGroups: _runGroups,
-            onRunsChanged: (runs) {
-              setState(() {
-                _runGroups = runs;
-              });
-            },
-          ),
-        ),
-        Visibility(
-          visible: _name.isNotEmpty &&
-              _frequency.isNotEmpty &&
-              _runGroups.isNotEmpty,
-          child: Align(
-            child: isLoading
-                ? const CircularProgressIndicator()
-                : ElevatedButton(
-                    child: const Text('Done'),
-                    onPressed: () {
-                      if (widget.existingProgramId != null) {
-                        ref
-                            .read(updateProgramControllerProvider.notifier)
-                            .updateProgram(
-                              programId: widget.existingProgramId!,
-                              name: _name,
-                              frequency: _frequency,
-                              runGroups: _runGroups,
-                            );
-                      } else {
-                        ref
-                            .read(createProgramControllerProvider.notifier)
-                            .createProgram(
-                              name: _name,
-                              frequency: _frequency,
-                              runGroups: _runGroups,
-                            );
-                      }
-                      Navigator.of(context).pop();
-                    },
-                  ),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _FrequencySelection extends StatefulWidget {
-  const _FrequencySelection({
-    Key? key,
-    required this.initialFrequency,
-    required this.onFrequencyChanged,
-  }) : super(key: key);
-
-  final ValueSetter<List<int>> onFrequencyChanged;
-  final List<int> initialFrequency;
-
-  @override
-  _FrequencySelectionState createState() {
-    return _FrequencySelectionState();
-  }
-}
-
-class _FrequencySelectionState extends State<_FrequencySelection> {
-  late List<int> _frequency;
-
-  @override
-  void initState() {
-    _frequency = widget.initialFrequency;
-    super.initState();
-  }
-
-  void _updateFrequency(int day) {
-    if (_frequency.contains(day)) {
-      _frequency.remove(day);
-    } else {
-      _frequency.add(day);
-    }
-    widget.onFrequencyChanged(_frequency);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(left: 16, top: 8),
-          child: Text(
-            'Run on',
-            style: Theme.of(context).textTheme.headline6,
-          ),
-        ),
-        const Padding(
-          padding: EdgeInsets.only(left: 16, top: 8),
-          child: Text(
-            'Which days of the week should this program run?',
-          ),
-        ),
-        Align(
-          child: Padding(
+    super.build(context);
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Padding(
             padding: const EdgeInsets.all(16),
-            child: Wrap(
-              alignment: WrapAlignment.center,
-              children: [
-                _DayButton(
-                  onTapped: () {
-                    _updateFrequency(DateTime.monday);
-                  },
-                  text: 'M',
-                  colorResolver: (states) =>
-                      _frequency.contains(DateTime.monday)
-                          ? Theme.of(context).colorScheme.secondary
-                          : Colors.transparent,
-                ),
-                _DayButton(
-                  onTapped: () {
-                    _updateFrequency(DateTime.tuesday);
-                  },
-                  text: 'T',
-                  colorResolver: (states) =>
-                      _frequency.contains(DateTime.tuesday)
-                          ? Theme.of(context).colorScheme.secondary
-                          : Colors.transparent,
-                ),
-                _DayButton(
-                  onTapped: () {
-                    _updateFrequency(DateTime.wednesday);
-                  },
-                  text: 'W',
-                  colorResolver: (states) =>
-                      _frequency.contains(DateTime.wednesday)
-                          ? Theme.of(context).colorScheme.secondary
-                          : Colors.transparent,
-                ),
-                _DayButton(
-                  onTapped: () {
-                    _updateFrequency(DateTime.thursday);
-                  },
-                  text: 'R',
-                  colorResolver: (states) =>
-                      _frequency.contains(DateTime.thursday)
-                          ? Theme.of(context).colorScheme.secondary
-                          : Colors.transparent,
-                ),
-                _DayButton(
-                  onTapped: () {
-                    _updateFrequency(DateTime.friday);
-                  },
-                  text: 'F',
-                  colorResolver: (friday) =>
-                      _frequency.contains(DateTime.friday)
-                          ? Theme.of(context).colorScheme.secondary
-                          : Colors.transparent,
-                ),
-                _DayButton(
-                  onTapped: () {
-                    _updateFrequency(DateTime.saturday);
-                  },
-                  text: 'S',
-                  colorResolver: (states) =>
-                      _frequency.contains(DateTime.saturday)
-                          ? Theme.of(context).colorScheme.secondary
-                          : Colors.transparent,
-                ),
-                _DayButton(
-                  onTapped: () {
-                    _updateFrequency(DateTime.sunday);
-                  },
-                  text: 'Su',
-                  colorResolver: (states) =>
-                      _frequency.contains(DateTime.sunday)
-                          ? Theme.of(context).colorScheme.secondary
-                          : Colors.transparent,
-                ),
-              ],
+            child: TextField(
+              controller: _nameController,
+              onChanged: _updateName,
+              decoration: const InputDecoration(
+                hintText: 'Give your program a name',
+              ),
             ),
           ),
-        )
-      ],
+          Padding(
+            padding: const EdgeInsets.only(left: 16, top: 8),
+            child: Text(
+              'Run on:',
+              style: Theme.of(context).textTheme.headline6,
+            ),
+          ),
+          const Padding(
+            padding: EdgeInsets.all(16),
+            child: Text(
+              'Which days of the week should this program run?',
+            ),
+          ),
+          CheckboxListTile(
+            title: const Text('Monday'),
+            selected: _frequency.contains(DateTime.monday),
+            value: _frequency.contains(DateTime.monday),
+            onChanged: (selected) {
+              _updateFrequency(DateTime.monday, selected);
+            },
+          ),
+          CheckboxListTile(
+            title: const Text('Tuesday'),
+            selected: _frequency.contains(DateTime.tuesday),
+            value: _frequency.contains(DateTime.tuesday),
+            onChanged: (selected) {
+              _updateFrequency(DateTime.tuesday, selected);
+            },
+          ),
+          CheckboxListTile(
+            title: const Text('Wednesday'),
+            selected: _frequency.contains(DateTime.wednesday),
+            value: _frequency.contains(DateTime.wednesday),
+            onChanged: (selected) {
+              _updateFrequency(DateTime.wednesday, selected);
+            },
+          ),
+          CheckboxListTile(
+            title: const Text('Thursday'),
+            selected: _frequency.contains(DateTime.thursday),
+            value: _frequency.contains(DateTime.thursday),
+            onChanged: (selected) {
+              _updateFrequency(DateTime.thursday, selected);
+            },
+          ),
+          CheckboxListTile(
+            title: const Text('Friday'),
+            selected: _frequency.contains(DateTime.friday),
+            value: _frequency.contains(DateTime.friday),
+            onChanged: (selected) {
+              _updateFrequency(DateTime.friday, selected);
+            },
+          ),
+          CheckboxListTile(
+            title: const Text('Saturday'),
+            selected: _frequency.contains(DateTime.saturday),
+            value: _frequency.contains(DateTime.saturday),
+            onChanged: (selected) {
+              _updateFrequency(DateTime.saturday, selected);
+            },
+          ),
+          CheckboxListTile(
+            title: const Text('Sunday'),
+            selected: _frequency.contains(DateTime.sunday),
+            value: _frequency.contains(DateTime.sunday),
+            onChanged: (selected) {
+              _updateFrequency(DateTime.sunday, selected);
+            },
+          )
+        ],
+      ),
     );
   }
-}
-
-class _DayButton extends StatelessWidget {
-  const _DayButton({
-    Key? key,
-    required this.onTapped,
-    required this.text,
-    required this.colorResolver,
-  }) : super(key: key);
-
-  final VoidCallback onTapped;
-  final String text;
-  final MaterialPropertyResolver<Color> colorResolver;
 
   @override
-  Widget build(BuildContext context) {
-    return TextButton(
-      style: ButtonStyle(
-        backgroundColor: MaterialStateProperty.resolveWith(colorResolver),
-        shape: MaterialStateProperty.all<CircleBorder>(
-          CircleBorder(
-            side: BorderSide(
-              color: Theme.of(context).colorScheme.secondary,
-            ),
-          ),
-        ),
-      ),
-      onPressed: onTapped,
-      child: Padding(
-        padding: const EdgeInsets.all(4),
-        // TODO(brandon): Dynamically color text based on
-        // selection
-        child: Text(text),
-      ),
-    );
-  }
+  bool get wantKeepAlive => true;
 }
 
-class _RunsConfiguration extends ConsumerStatefulWidget {
-  const _RunsConfiguration({
+class _RunsTab extends ConsumerStatefulWidget {
+  const _RunsTab({
     Key? key,
     required this.initialrunGroups,
-    required this.onRunsChanged,
   }) : super(key: key);
 
   final List<RunCreation> initialrunGroups;
-  final ValueSetter<List<RunCreation>> onRunsChanged;
 
   @override
-  ConsumerState<_RunsConfiguration> createState() => _RunsConfigurationState();
+  ConsumerState<_RunsTab> createState() => _RunsTabState();
 }
 
-class _RunsConfigurationState extends ConsumerState<_RunsConfiguration> {
+class _RunsTabState extends ConsumerState<_RunsTab> with AutomaticKeepAliveClientMixin {
   final entries = <TimelineEntry>[];
   final mapping = <String, RunCreation>{};
   bool isValid = true;
@@ -386,7 +430,7 @@ class _RunsConfigurationState extends ConsumerState<_RunsConfiguration> {
         startMinute: entry.time.minute,
       );
       entries.add(entry);
-      widget.onRunsChanged(mapping.values.toList());
+      context.read<_ProgramNotifier>().updateRuns(mapping.values.toList());
     });
   }
 
@@ -408,7 +452,7 @@ class _RunsConfigurationState extends ConsumerState<_RunsConfiguration> {
         startHour: time.hour,
         startMinute: time.minute,
       );
-      widget.onRunsChanged(mapping.values.toList());
+      context.read<_ProgramNotifier>().updateRuns(mapping.values.toList());
     });
   }
 
@@ -430,12 +474,13 @@ class _RunsConfigurationState extends ConsumerState<_RunsConfiguration> {
       mapping[entryId] = runCreation.copyWith(
         durationSeconds: Duration(minutes: duration.toInt()).inSeconds,
       );
-      widget.onRunsChanged(mapping.values.toList());
+      context.read<_ProgramNotifier>().updateRuns(mapping.values.toList());
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     final zonesState = ref.watch(zonesProvider);
     return zonesState.maybeWhen(
       data: (zones) {
@@ -464,6 +509,7 @@ class _RunsConfigurationState extends ConsumerState<_RunsConfiguration> {
                     setState(() {
                       isValid = valid;
                     });
+                    context.read<_ProgramNotifier>().updateRunValidity(isValid: valid);
                   },
                   onNodeTapped: (node) {
                     showDialog(
@@ -522,57 +568,57 @@ class _RunsConfigurationState extends ConsumerState<_RunsConfiguration> {
                 visible: isValid,
                 child: Padding(
                   padding: const EdgeInsets.all(8),
-                  child: FloatingActionButton.extended(
-                    onPressed: () async {
-                      final zone = await showDialog<Zone>(
-                        context: context,
-                        builder: (_) {
-                          return Dialog(
-                            child: ListView.builder(
-                              shrinkWrap: true,
-                              itemCount: zones.length,
-                              itemBuilder: (context, index) {
-                                final zone = zones[index];
-                                return InkWell(
-                                  onTap: () {
-                                    Navigator.of(context).pop(zone);
-                                  },
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8),
-                                    child: Text(zone.name),
-                                  ),
-                                );
-                              },
-                            ),
-                          );
-                        },
-                      );
-                      if (zone != null) {
-                        entries.sortByTime();
-                        final lastEntry = entries.isEmpty ? null : entries.last;
-                        final newTime = await showTimePicker(
+                  child: Align(
+                    alignment: Alignment.bottomRight,
+                    child: FloatingActionButton(
+                      child: const Icon(Icons.add),
+                      onPressed: () async {
+                        final zone = await showDialog<Zone>(
                           context: context,
-                          initialTime: lastEntry == null
-                              ? TimeOfDay.now()
-                              : TimeOfDay.fromDateTime(
-                                  DateTime.now()
-                                      .apply(lastEntry.time)
-                                      .add(lastEntry.duration),
-                                ),
+                          builder: (_) {
+                            return Dialog(
+                              child: ListView.builder(
+                                shrinkWrap: true,
+                                itemCount: zones.length,
+                                itemBuilder: (context, index) {
+                                  final zone = zones[index];
+                                  return InkWell(
+                                    onTap: () {
+                                      Navigator.of(context).pop(zone);
+                                    },
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8),
+                                      child: Text(zone.name),
+                                    ),
+                                  );
+                                },
+                              ),
+                            );
+                          },
                         );
-                        if (newTime != null) {
-                          _addStartTime(
-                            TimelineEntry(
-                              time: newTime,
-                              duration: const Duration(minutes: 10),
-                            ),
-                            zone,
+                        if (zone != null) {
+                          entries.sortByTime();
+                          final lastEntry = entries.isEmpty ? null : entries.last;
+                          final newTime = await showTimePicker(
+                            context: context,
+                            initialTime: lastEntry == null
+                                ? TimeOfDay.now()
+                                : TimeOfDay.fromDateTime(
+                                    DateTime.now().apply(lastEntry.time).add(lastEntry.duration),
+                                  ),
                           );
+                          if (newTime != null) {
+                            _addStartTime(
+                              TimelineEntry(
+                                time: newTime,
+                                duration: const Duration(minutes: 10),
+                              ),
+                              zone,
+                            );
+                          }
                         }
-                      }
-                    },
-                    backgroundColor: Colors.green.shade300,
-                    label: const Text('Add Run'),
+                      },
+                    ),
                   ),
                 ),
               ),
@@ -585,4 +631,7 @@ class _RunsConfigurationState extends ConsumerState<_RunsConfiguration> {
       },
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
