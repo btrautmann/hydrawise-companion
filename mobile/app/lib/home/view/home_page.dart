@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:irri/configuration/configuration.dart';
 import 'package:irri/customer/customer.dart';
 import 'package:irri/home/home.dart';

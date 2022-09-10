@@ -1,7 +1,7 @@
 import 'package:api_models/api_models.dart';
 import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:irri/programs/extensions.dart';
 import 'package:irri/zones/zones.dart';
 

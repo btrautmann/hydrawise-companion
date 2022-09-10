@@ -1,6 +1,6 @@
 import 'package:api_models/api_models.dart';
 import 'package:core/core.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:irri/programs/providers.dart';
 import 'package:irri/programs/update_program/update_program.dart';
 

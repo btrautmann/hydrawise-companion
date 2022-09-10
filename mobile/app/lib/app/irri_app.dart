@@ -1,9 +1,9 @@
 // ignore_for_file: avoid_redundant_argument_values
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart' hide Provider;
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart' hide Provider;
 import 'package:irri/app/app.dart';
 import 'package:irri/auth/providers.dart';
 
