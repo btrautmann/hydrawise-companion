@@ -1,5 +1,6 @@
 // ignore_for_file: avoid_redundant_argument_values
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -7,7 +8,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart' hide Provider;
 import 'package:irri/app/app.dart';
 import 'package:irri/auth/providers.dart';
 
-class IrriApp extends ConsumerWidget {
+class IrriApp extends HookConsumerWidget {
   const IrriApp({
     Key? key,
     required GoRouter router,
@@ -19,6 +20,9 @@ class IrriApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final appState = ref.watch(appStateProvider);
+    useOnAppLifecycleStateChange((_, newState) {
+      ref.read(appLifecycleStateProvider.notifier).setLifecycleState(newState);
+    });
     return AuthListener(
       router: _router,
       child: MaterialApp.router(
