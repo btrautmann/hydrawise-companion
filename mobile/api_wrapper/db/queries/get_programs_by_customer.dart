@@ -32,6 +32,7 @@ class GetProgramsByCustomer {
               durationSec: runMap['duration_sec'],
               startHour: runMap['start_hour'],
               startMinute: runMap['start_minute'],
+              lastRunTime: runMap['last_run_time'],
             ),
           );
         }

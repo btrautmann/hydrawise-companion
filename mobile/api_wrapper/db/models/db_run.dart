@@ -6,6 +6,7 @@ class DbRun {
     required this.durationSec,
     required this.startHour,
     required this.startMinute,
+    required this.lastRunTime,
   });
 
   final int id;
@@ -14,4 +15,5 @@ class DbRun {
   final int durationSec;
   final int startHour;
   final int startMinute;
+  final DateTime lastRunTime;
 }

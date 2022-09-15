@@ -35,6 +35,7 @@ class GetPrograms {
                 durationSeconds: map['duration_sec'],
                 startHour: map['start_hour'],
                 startMinute: map['start_minute'],
+                lastRunTime: map['last_run_time'],
               ),
             );
           }

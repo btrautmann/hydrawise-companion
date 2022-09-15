@@ -30,7 +30,7 @@ final zoneRefreshIntervalProvider = Provider<Duration?>((ref) {
   final lifecycleState = ref.watch(appLifecycleStateProvider);
   if (lifecycleState == AppLifecycleState.resumed) {
     return const Duration(
-      seconds: 10,
+      seconds: 60,
     );
   }
   return null;

@@ -48,6 +48,7 @@ class UpdateProgram {
                 durationSeconds: map['duration_sec'],
                 startHour: map['start_hour'],
                 startMinute: map['start_minute'],
+                lastRunTime: map['last_run_time'],
               ),
             );
           }
@@ -55,6 +56,7 @@ class UpdateProgram {
           for (final run in originalRuns) {
             await connection.query(_deleteRunSql(run.id));
           }
+          final now = DateTime.now();
           for (final run in updateProgramRequest.runs) {
             final insertResult = await connection.query(
               _insertRunSql(run, updateProgramRequest.programId),
@@ -67,6 +69,7 @@ class UpdateProgram {
                 durationSeconds: run.durationSeconds,
                 startHour: run.startHour,
                 startMinute: run.startMinute,
+                lastRunTime: now,
               ),
             );
           }

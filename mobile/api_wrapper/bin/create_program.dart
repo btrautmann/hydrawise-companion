@@ -34,6 +34,7 @@ class CreateProgram {
         );
         final programId = insertProgramResult.single.toColumnMap()['program_id'] as int;
         final runs = <Run>[];
+        final now = DateTime.now();
         for (final run in createProgramRequest.runs) {
           final insertRunResult = await connection.query(
             _insertRunSql(
@@ -42,6 +43,7 @@ class CreateProgram {
             ),
           );
           final runId = insertRunResult.single.toColumnMap()['run_id'] as int;
+          final lastRunTime = run.lastRunTime ?? now;
           runs.add(
             Run(
               id: runId,
@@ -50,6 +52,7 @@ class CreateProgram {
               durationSeconds: run.durationSeconds,
               startHour: run.startHour,
               startMinute: run.startMinute,
+              lastRunTime: lastRunTime,
             ),
           );
         }
