@@ -51,7 +51,7 @@ class CheckRuns {
         final programs = await _getProgramsByCustomer(customer);
         final resultingRuns = <DbRun>[];
         for (final program in programs) {
-          bool shouldProgramRun(DbProgram program) {
+          Future<bool> shouldProgramRun(DbProgram program) async {
             print('Current customer time is $currentTime');
             final lastRunStartTime = TZDateTime.from(
               program.lastRunTime,
@@ -79,7 +79,8 @@ class CheckRuns {
               if (hasRemainingRuns) {
                 return true;
               }
-            } else if (currentTime.isAfter(calculatedLastRunEndTime)) {
+            } else if (currentTime.isAfter(calculatedLastRunEndTime) &&
+                calculatedLastRunEndTime.difference(currentTime).abs() > const Duration(days: 1)) {
               print('currentTime is after last run end time');
               if (frequency.contains(currentTime.weekday)) {
                 print('program ${program.name} should run today');
@@ -96,6 +97,13 @@ class CheckRuns {
                   },
                 );
                 print('program ${program.name} shouldRun? $shouldRun');
+                // TODO(brandon): Don't do this here
+                if (shouldRun) {
+                  print('Setting program last_run_time to ${DateTime.now().toString()}');
+                  await connection.query(
+                    'UPDATE program SET last_run_time=\'${DateTime.now().toString()}\' WHERE program_id=${program.id};',
+                  );
+                }
                 return shouldRun;
               }
             }
@@ -103,7 +111,7 @@ class CheckRuns {
             return false;
           }
 
-          if (shouldProgramRun(program)) {
+          if (await shouldProgramRun(program)) {
             final runs = program.runs
               ..sort(
                 (a, b) => a
@@ -124,14 +132,17 @@ class CheckRuns {
         final runs = await getRuns(customer);
         if (runs.isNotEmpty) {
           for (final run in runs) {
-            print('Running $run');
+            print('Running $run, setting last_run_time to ${DateTime.now().toString()}');
+            // TODO(brandon): Actually run the zone, which will do this itself
+            await connection.query(
+              'UPDATE run SET last_run_time=\'${DateTime.now().toString()}\' WHERE run_id=${run.id};',
+            );
             runsRun.add(run);
           }
         }
       }
       // ignore: do_not_use_environment
       final token = _env['SLACK_WEBHOOK_URL']!;
-      print(token);
       final notifier = SlackNotifier(token);
       final messages = runsRun
           .map(
