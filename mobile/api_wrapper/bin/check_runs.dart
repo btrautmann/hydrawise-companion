@@ -51,7 +51,7 @@ class CheckRuns {
         final programs = await _getProgramsByCustomer(customer);
         final resultingRuns = <DbRun>[];
         for (final program in programs) {
-          bool shouldProgramRun(DbProgram program) {
+          Future<bool> shouldProgramRun(DbProgram program) async {
             print('Current customer time is $currentTime');
             final lastRunStartTime = TZDateTime.from(
               program.lastRunTime,
@@ -96,6 +96,13 @@ class CheckRuns {
                   },
                 );
                 print('program ${program.name} shouldRun? $shouldRun');
+                // TODO(brandon): Don't do this here
+                if (shouldRun) {
+                  print('Setting program last_run_time to ${DateTime.now().toString()}');
+                  await connection.query(
+                    'UPDATE program SET last_run_time=\'${DateTime.now().toString()}\' WHERE program_id=${program.id};',
+                  );
+                }
                 return shouldRun;
               }
             }
@@ -103,7 +110,7 @@ class CheckRuns {
             return false;
           }
 
-          if (shouldProgramRun(program)) {
+          if (await shouldProgramRun(program)) {
             final runs = program.runs
               ..sort(
                 (a, b) => a
