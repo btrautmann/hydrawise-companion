@@ -124,7 +124,9 @@ class CheckRuns {
                     .millisecondsSinceEpoch
                     .compareTo(b.startTime(location, currentTime).millisecondsSinceEpoch),
               );
-            resultingRuns.add(runs.first);
+            resultingRuns.add(
+              runs.firstWhere((run) => run.lastRunTime.add(Duration(seconds: run.durationSec)).isAfter(DateTime.now())),
+            );
           }
         }
         return resultingRuns;
