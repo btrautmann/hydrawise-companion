@@ -76,7 +76,12 @@ class CheckRuns {
               final hasRemainingRuns = program.runs.any(
                 (run) => run.lastRunTime.isBefore(lastRunStartTime),
               );
-              if (hasRemainingRuns) {
+              final hasCurrentlyRunningRuns = program.runs.any(
+                (run) => run.lastRunTime.add(Duration(seconds: run.durationSec)).isAfter(
+                      DateTime.now(),
+                    ),
+              );
+              if (hasRemainingRuns && !hasCurrentlyRunningRuns) {
                 return true;
               }
             } else if (currentTime.isAfter(calculatedLastRunEndTime) &&
