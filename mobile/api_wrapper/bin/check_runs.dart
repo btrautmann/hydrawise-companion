@@ -124,14 +124,17 @@ class CheckRuns {
         final runs = await getRuns(customer);
         if (runs.isNotEmpty) {
           for (final run in runs) {
-            print('Running $run');
+            print('Running $run, setting last_run_time to ${DateTime.now().toString()}');
+            // TODO(brandon): Actually run the zone, which will do this itself
+            await connection.query(
+              'UPDATE run SET last_run_time=\'${DateTime.now().toString()}\' WHERE run_id=${run.id};',
+            );
             runsRun.add(run);
           }
         }
       }
       // ignore: do_not_use_environment
       final token = _env['SLACK_WEBHOOK_URL']!;
-      print(token);
       final notifier = SlackNotifier(token);
       final messages = runsRun
           .map(
