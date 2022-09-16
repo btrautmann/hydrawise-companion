@@ -79,7 +79,8 @@ class CheckRuns {
               if (hasRemainingRuns) {
                 return true;
               }
-            } else if (currentTime.isAfter(calculatedLastRunEndTime)) {
+            } else if (currentTime.isAfter(calculatedLastRunEndTime) &&
+                calculatedLastRunEndTime.difference(currentTime).abs() > const Duration(days: 1)) {
               print('currentTime is after last run end time');
               if (frequency.contains(currentTime.weekday)) {
                 print('program ${program.name} should run today');
