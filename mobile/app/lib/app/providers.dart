@@ -45,6 +45,19 @@ final httpClientProvider = Provider<HttpClient>((ref) {
   );
 });
 
+class AppLifecycleStateNotifier extends StateNotifier<AppLifecycleState> {
+  AppLifecycleStateNotifier(AppLifecycleState state) : super(state);
+
+  // ignore: use_setters_to_change_properties
+  void setLifecycleState(AppLifecycleState newState) {
+    state = newState;
+  }
+}
+
+final appLifecycleStateProvider = StateNotifierProvider<AppLifecycleStateNotifier, AppLifecycleState>((ref) {
+  return AppLifecycleStateNotifier(AppLifecycleState.resumed);
+});
+
 final setAppThemeProvider = Provider<SetAppThemeMode>((ref) {
   return SetAppThemeMode(ref.watch(storageProvider));
 });
@@ -77,8 +90,7 @@ class AppStateNotifier extends StateNotifier<AppState> {
   }
 }
 
-final appStateProvider =
-    StateNotifierProvider<AppStateNotifier, AppState>((ref) {
+final appStateProvider = StateNotifierProvider<AppStateNotifier, AppState>((ref) {
   return AppStateNotifier(
     setAppThemeMode: ref.watch(setAppThemeProvider),
     getAppThemeMode: ref.watch(getAppThemeProvider),

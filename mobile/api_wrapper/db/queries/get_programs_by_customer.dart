@@ -32,6 +32,7 @@ class GetProgramsByCustomer {
               durationSec: runMap['duration_sec'],
               startHour: runMap['start_hour'],
               startMinute: runMap['start_minute'],
+              lastRunTime: runMap['last_run_time'],
             ),
           );
         }
@@ -41,6 +42,7 @@ class GetProgramsByCustomer {
             customerId: programMap['customer_id'],
             name: programMap['name'],
             frequency: programMap['frequency'],
+            lastRunTime: programMap['last_run_time'],
             runs: runs,
           ),
         );

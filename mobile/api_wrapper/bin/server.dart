@@ -66,7 +66,7 @@ Future<void> main(List<String> args) async {
     ..put('/program', UpdateProgram(db))
     ..delete('/program', DeleteProgram(db))
     ..get('/customer', GetCustomer(db))
-    ..get('/check_runs', CheckRuns(db));
+    ..get('/check_runs', CheckRuns(db, dotEnv));
 
   final handler = const Pipeline()
       .addMiddleware(logPriorRequests())
