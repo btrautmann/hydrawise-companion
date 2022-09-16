@@ -35,7 +35,6 @@ class GetNextRunForZone {
       final runsToNextRunTime = <DbRun, DateTime>{};
       for (final run in runsForZone) {
         final now = TZDateTime.now(location);
-        print('Time in $location is $now');
         var nextRun = DateTime(
           now.year,
           now.month,

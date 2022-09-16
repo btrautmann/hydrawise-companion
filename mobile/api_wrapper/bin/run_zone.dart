@@ -72,7 +72,7 @@ class RunZone {
             number: dbZone.number,
             name: dbZone.name,
             isRunning: hZone.secondsUntilNextRun == 1,
-            timeRemainingSec: hZone.lengthOfNextRunTimeOrTimeRemaining,
+            timeRemainingSec: runZoneRequest.runLengthSeconds,
             nextRunStart: nextRun?.time.toString(),
             nextRunLengthSec: nextRun?.run.durationSec ?? 0,
           ),

@@ -304,6 +304,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.2"
+  slack_notifier:
+    dependency: "direct main"
+    description:
+      name: slack_notifier
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.2.0"
   source_map_stack_trace:
     dependency: transitive
     description:

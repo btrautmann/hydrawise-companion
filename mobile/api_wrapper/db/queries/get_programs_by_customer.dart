@@ -42,6 +42,7 @@ class GetProgramsByCustomer {
             customerId: programMap['customer_id'],
             name: programMap['name'],
             frequency: programMap['frequency'],
+            lastRunTime: programMap['last_run_time'],
             runs: runs,
           ),
         );

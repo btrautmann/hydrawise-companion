@@ -6,6 +6,7 @@ class DbProgram {
     required this.customerId,
     required this.name,
     required this.frequency,
+    required this.lastRunTime,
     required this.runs,
   });
 
@@ -13,5 +14,6 @@ class DbProgram {
   final int customerId;
   final String name;
   final List<int> frequency;
+  final DateTime lastRunTime;
   final List<DbRun> runs;
 }
