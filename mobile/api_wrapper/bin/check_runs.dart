@@ -110,6 +110,9 @@ class CheckRuns {
                 (run) {
                   final runStartTime = run.startTime(controllerLocation, controllerCurrentTime);
                   print('Run start for zone ${run.zoneId} is $runStartTime');
+                  // TODO(brandon): Refine this to ensure we are AFTER the first run start time so
+                  // program doesn't start early. I.e for 8:00am, anything between 8:00:00 and 8:00:30
+                  // is acceptable.
                   final isIn30Seconds = runStartTime.isWithin(
                     const Duration(seconds: 30),
                     controllerCurrentTime,
