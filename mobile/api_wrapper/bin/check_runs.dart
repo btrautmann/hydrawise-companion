@@ -6,171 +6,147 @@ import 'package:shelf/shelf.dart';
 import 'package:slack_notifier/slack_notifier.dart';
 import 'package:timezone/timezone.dart';
 
-import '../db/models/db_customer.dart';
-import '../db/models/db_program.dart';
 import '../db/models/db_run.dart';
+import '../db/queries/get_all_customers.dart';
+import '../db/queries/get_controllers_by_customer_id.dart';
 import '../db/queries/get_programs_by_customer.dart';
 import 'postgres_extensions.dart';
 
 class CheckRuns {
-  CheckRuns(this.db, this._env) : _getProgramsByCustomer = GetProgramsByCustomer(db);
+  CheckRuns(this.db, this._env)
+      : _getProgramsByCustomer = GetProgramsByCustomer(db),
+        _getControllersByCustomerId = GetControllersByCustomerId(db),
+        _getAllCustomers = GetAllCustomers(db);
 
   final PostgreSQLConnection Function() db;
+  final GetAllCustomers _getAllCustomers;
   final GetProgramsByCustomer _getProgramsByCustomer;
+  final GetControllersByCustomerId _getControllersByCustomerId;
   final DotEnv _env;
 
   Future<Response> call(Request request) async {
     return db().use((connection) async {
-      // Query all customers from the database
-      Future<List<DbCustomer>> getAllCustomers() async {
-        final customersResult = await connection.query(
-          'SELECT * FROM customer;',
-        );
-        final customers = <DbCustomer>[];
-        for (final row in customersResult) {
-          final map = row.toColumnMap();
-          final customer = DbCustomer(
-            id: map['customer_id'],
-            activeControllerId: map['active_controller_id'],
-          );
-          customers.add(customer);
-        }
-        return customers;
-      }
-
-      // Get programs eligible to run
-      Future<List<DbRun>> getRuns(DbCustomer customer) async {
-        // Get the timezone of the user's active controller id
-        // TODO(brandon): We should actually do this for all the customer's controllers
-        final timezoneResult = await connection.query(
-          'SELECT timezone FROM controller WHERE controller.controller_id=${customer.activeControllerId};',
-        );
-        final timezone = timezoneResult.single.toColumnMap()['timezone'];
-        final location = getLocation(timezone);
-        final currentTime = TZDateTime.now(location);
+      final currentServerTime = TZDateTime.now(UTC);
+      print('Running /check_runs at server time: $currentServerTime');
+      final notifier = SlackNotifier(_env['SLACK_WEBHOOK_URL']!);
+      final customers = await _getAllCustomers();
+      for (final customer in customers) {
+        final controllers = await _getControllersByCustomerId(customer.id);
+        // TODO(brandon): Add `controller_id` to `program` table so we can use correct
+        // timezone when determining programs that should run. For now, use the timezone
+        // of the activeControllerId
+        final activeController = controllers.singleWhere((c) => c.id == customer.activeControllerId);
+        final controllerTimezone = activeController.timezone;
+        final controllerLocation = getLocation(controllerTimezone);
+        final controllerCurrentTime = TZDateTime.now(controllerLocation);
         final programs = await _getProgramsByCustomer(customer);
-        final resultingRuns = <DbRun>[];
+        print('Checking customer: ${customer.id}');
+        print('Controller is in timezone: $controllerTimezone');
+        print('Controller current time is: $controllerCurrentTime');
+
         for (final program in programs) {
-          Future<bool> shouldProgramRun(DbProgram program) async {
-            print('Current customer time is $currentTime');
-            final lastRunStartTime = TZDateTime.from(
-              program.lastRunTime,
-              location,
-            );
-            print('lastRunTime of ${program.name} is $lastRunStartTime');
-            final programDuration = program.runs.fold<int>(
-              0,
-              (prev, curr) => prev + curr.durationSec,
-            );
-            print('duration of ${program.name} is $programDuration seconds');
-            final calculatedLastRunEndTime = lastRunStartTime.add(
-              Duration(seconds: programDuration),
-            );
-            print('Last run end time is $calculatedLastRunEndTime');
+          final programLastRunStartTime = TZDateTime.from(program.lastRunTime, controllerLocation);
+          final programDuration = program.runs.fold<int>(0, (prev, curr) => prev + curr.durationSec);
+          final programLastRunEndTime = programLastRunStartTime.add(Duration(seconds: programDuration));
+          final programFrequency = program.frequency;
 
-            final frequency = program.frequency;
+          print('Checking program: ${program.name}');
+          print('Program last run start time is: $programLastRunStartTime');
+          print('Program duration is: $programDuration');
+          print('Program calculated last run end time: $programLastRunEndTime');
+          print('Program frequency is: $programFrequency');
+          print('Today is day: ${controllerCurrentTime.weekday}');
 
-            if (currentTime.isAfter(lastRunStartTime) && currentTime.isBefore(calculatedLastRunEndTime)) {
-              print('currentTime is in middle of run');
-              // We're in the middle of a program run, check to see if any runs are left
-              final hasRemainingRuns = program.runs.any(
-                (run) => run.lastRunTime.isBefore(lastRunStartTime),
-              );
-              final hasCurrentlyRunningRuns = program.runs.any(
-                (run) => run.lastRunTime.add(Duration(seconds: run.durationSec)).isAfter(
-                      DateTime.now(),
-                    ),
-              );
-              if (hasRemainingRuns && !hasCurrentlyRunningRuns) {
-                return true;
-              }
-            } else if (currentTime.isAfter(calculatedLastRunEndTime) &&
-                calculatedLastRunEndTime.difference(currentTime).abs() > const Duration(days: 1)) {
-              print('currentTime is after last run end time');
-              if (frequency.contains(currentTime.weekday)) {
-                print('program ${program.name} should run today');
-                final shouldRun = program.runs.any(
-                  (run) {
-                    final runStart = run.startTime(location, currentTime);
-                    print('runStart for zone ${run.zoneId} is $runStart');
-                    final isInMinute = runStart.isWithin(
-                      const Duration(minutes: 1),
-                      currentTime,
-                    );
-                    print('runStart within a minute of current time: $isInMinute');
-                    return isInMinute;
-                  },
+          final isAfterLastStartTime = controllerCurrentTime.isAfter(programLastRunStartTime);
+          final isBeforeLastEndTime = controllerCurrentTime.isBefore(programLastRunEndTime);
+          print('isAfterLastStartTime: $isAfterLastStartTime');
+          print('isBeforeLastEndTime: $isBeforeLastEndTime');
+
+          if (isAfterLastStartTime && isBeforeLastEndTime) {
+            print(
+              'Controller current time is between last run start time '
+              'and calculated last run end time; i.e we are currently running...',
+            );
+            final remainingRuns = program.runs.where((r) => r.lastRunTime.isBefore(programLastRunStartTime));
+            final hasRemainingRuns = remainingRuns.isNotEmpty;
+            // TODO(brandon): We should be able to check if any zones associated with runs in this
+            // program are running.
+            final currentlyRunningRuns = program.runs.where((r) {
+              return r.lastRunTime.add(Duration(seconds: r.durationSec)).isAfter(currentServerTime);
+            });
+            final hasCurrentlyRunningRuns = currentlyRunningRuns.isNotEmpty;
+            if (hasRemainingRuns) {
+              print('Program has remaining runs: ${remainingRuns.map((e) => e.id).toList()}');
+              if (hasCurrentlyRunningRuns) {
+                print('Not running another run, program has currently running runs');
+              } else {
+                // TODO(brandon): Create _runNextRun(DbProgram program)
+                final runs = remainingRuns.toList()
+                  ..sort((a, b) {
+                    final aStartTime = a.startTime(controllerLocation, controllerCurrentTime).millisecondsSinceEpoch;
+                    final bStartTime = b.startTime(controllerLocation, controllerCurrentTime).millisecondsSinceEpoch;
+                    return aStartTime.compareTo(bStartTime);
+                  });
+                final nextRun = runs.first;
+                await notifier.send('Running ${nextRun.id} for ${nextRun.durationSec / 60} minutes');
+                print('Setting run last_run_time to $currentServerTime');
+                await connection.query(
+                  'UPDATE run SET last_run_time=\'$currentServerTime\' WHERE run_id=${nextRun.id}',
                 );
-                print('program ${program.name} shouldRun? $shouldRun');
-                // TODO(brandon): Don't do this here
-                if (shouldRun) {
-                  print('Setting program last_run_time to ${DateTime.now().toString()}');
-                  await connection.query(
-                    'UPDATE program SET last_run_time=\'${DateTime.now().toString()}\' WHERE program_id=${program.id};',
-                  );
-                }
-                return shouldRun;
               }
             }
-            print('program ${program.name} should not run');
-            return false;
-          }
-
-          if (await shouldProgramRun(program)) {
-            final runs = program.runs
-              ..sort(
-                (a, b) => a
-                    .startTime(location, currentTime)
-                    .millisecondsSinceEpoch
-                    .compareTo(b.startTime(location, currentTime).millisecondsSinceEpoch),
+          } else if (controllerCurrentTime.isAfter(programLastRunEndTime) &&
+              // TODO(brandon): This check should really be checking whether it's a different *day*, not
+              // that it's been an entire day. This will resolve an edge case where you change a program
+              // to start at an earlier time for the next day.
+              programLastRunEndTime.difference(controllerCurrentTime).abs() > const Duration(days: 1)) {
+            print(
+              'Controller current time is is after '
+              'calculated last run end time; i.e we are not running...',
+            );
+            if (programFrequency.contains(controllerCurrentTime.weekday)) {
+              print('Program should run today');
+              final shouldProgramStart = program.runs.any(
+                (run) {
+                  final runStartTime = run.startTime(controllerLocation, controllerCurrentTime);
+                  print('Run start for zone ${run.zoneId} is $runStartTime');
+                  final isIn30Seconds = runStartTime.isWithin(
+                    const Duration(seconds: 30),
+                    controllerCurrentTime,
+                  );
+                  print('Run start for zone ${run.zoneId} within a minute of current time: $isIn30Seconds');
+                  return isIn30Seconds;
+                },
               );
-            resultingRuns.add(
-              runs.firstWhere((run) => run.lastRunTime.add(Duration(seconds: run.durationSec)).isAfter(DateTime.now())),
-            );
+              print('Program should start: $shouldProgramStart');
+              if (shouldProgramStart) {
+                print('Setting program last_run_time to $currentServerTime');
+                await notifier.send('Starting program ${program.name} at $currentServerTime');
+                await connection.query(
+                  'UPDATE program SET last_run_time=\'$currentServerTime\' WHERE program_id=${program.id};',
+                );
+                // TODO(brandon): Create _runNextRun(DbProgram program)
+                final runs = program.runs
+                  ..sort((a, b) {
+                    final aStartTime = a.startTime(controllerLocation, controllerCurrentTime).millisecondsSinceEpoch;
+                    final bStartTime = b.startTime(controllerLocation, controllerCurrentTime).millisecondsSinceEpoch;
+                    return aStartTime.compareTo(bStartTime);
+                  });
+                final nextRun = runs.first;
+                print('Setting run last_run_time to $currentServerTime');
+                await notifier.send('Running ${nextRun.id} for ${nextRun.durationSec / 60} minutes');
+                await connection.query(
+                  'UPDATE run SET last_run_time=\'$currentServerTime\' WHERE run_id=${nextRun.id}',
+                );
+              }
+            }
+          } else {
+            print('Program ${program.name} should not run');
           }
         }
-        return resultingRuns;
       }
 
-      final allCustomers = await getAllCustomers();
-
-      final runsRun = <DbRun>[];
-      for (final customer in allCustomers) {
-        final runs = await getRuns(customer);
-        if (runs.isNotEmpty) {
-          for (final run in runs) {
-            print('Running $run, setting last_run_time to ${DateTime.now().toString()}');
-            // TODO(brandon): Actually run the zone, which will do this itself
-            await connection.query(
-              'UPDATE run SET last_run_time=\'${DateTime.now().toString()}\' WHERE run_id=${run.id};',
-            );
-            runsRun.add(run);
-          }
-        }
-      }
-      // ignore: do_not_use_environment
-      final token = _env['SLACK_WEBHOOK_URL']!;
-      final notifier = SlackNotifier(token);
-      final messages = runsRun
-          .map(
-            (e) => 'Running zone with id ${e.zoneId} '
-                'for ${e.durationSec} seconds',
-          )
-          .toList();
-
-      if (messages.isNotEmpty) {
-        for (final message in messages) {
-          await notifier.send(message);
-        }
-      }
-
-      return Response.ok(
-        jsonEncode(
-          {
-            'zones': runsRun.map((e) => e.zoneId).toList(),
-          },
-        ),
-      );
+      return Response.ok(jsonEncode({'status': 'healthy'}));
     });
   }
 }
