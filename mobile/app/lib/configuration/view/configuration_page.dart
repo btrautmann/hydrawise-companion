@@ -31,8 +31,12 @@ class ConfigurationView extends StatelessWidget {
             style: Theme.of(context).textTheme.headline5,
           ),
         ),
+        const VSpace(spacing: 16),
         _AppThemeRow(),
-        const Divider(),
+        const Padding(
+          padding: EdgeInsets.only(top: 8, bottom: 8),
+          child: Divider(),
+        ),
         _LogOutRow(),
       ],
     );
@@ -85,9 +89,7 @@ class ChooseThemeModeDialog extends ConsumerWidget {
               ),
               title: const Text('Light mode'),
               onTapped: () {
-                ref
-                    .read(appStateProvider.notifier)
-                    .setThemeMode(ThemeMode.light);
+                ref.read(appStateProvider.notifier).setThemeMode(ThemeMode.light);
                 Navigator.pop(context);
               },
             ),
@@ -98,9 +100,7 @@ class ChooseThemeModeDialog extends ConsumerWidget {
               ),
               title: const Text('Dark mode'),
               onTapped: () {
-                ref
-                    .read(appStateProvider.notifier)
-                    .setThemeMode(ThemeMode.dark);
+                ref.read(appStateProvider.notifier).setThemeMode(ThemeMode.dark);
                 Navigator.pop(context);
               },
             ),
@@ -111,9 +111,7 @@ class ChooseThemeModeDialog extends ConsumerWidget {
               ),
               title: const Text('Follow system'),
               onTapped: () {
-                ref
-                    .read(appStateProvider.notifier)
-                    .setThemeMode(ThemeMode.system);
+                ref.read(appStateProvider.notifier).setThemeMode(ThemeMode.system);
                 Navigator.pop(context);
               },
             ),

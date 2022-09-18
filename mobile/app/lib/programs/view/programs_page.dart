@@ -43,11 +43,8 @@ class ProgramsPageView extends ConsumerWidget {
           const VSpace(spacing: 16),
           zonesState.maybeWhen(
             data: (zones) {
-              return Padding(
-                padding: const EdgeInsets.only(left: 16, right: 16),
-                child: _ZonesAndPrograms(
-                  zones: zones,
-                ),
+              return _ZonesAndPrograms(
+                zones: zones,
               );
             },
             orElse: () => const Center(
