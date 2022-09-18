@@ -1,5 +1,4 @@
 import 'package:api_models/api_models.dart';
-import 'package:clock/clock.dart';
 import 'package:core_ui/core_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -9,15 +8,6 @@ import 'package:irri/zones/providers.dart';
 
 class CustomerDashboardPage extends StatelessWidget {
   const CustomerDashboardPage({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return const CustomerDashboardView();
-  }
-}
-
-class CustomerDashboardView extends StatelessWidget {
-  const CustomerDashboardView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +33,9 @@ class _CustomerDashboardStateView extends ConsumerWidget {
         );
       },
       orElse: () {
-        return const CircularProgressIndicator();
+        return const Center(
+          child: CircularProgressIndicator(),
+        );
       },
     );
   }
@@ -59,27 +51,25 @@ class _AllCustomerContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(bottom: 16),
-            child: Row(
-              children: const [
-                _Greeting(),
-              ],
-            ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(16),
+          child: Row(
+            children: const [
+              _Greeting(),
+            ],
           ),
-          _RunsList(
-            programs: programs,
-            onRunTapped: (run) {
-              GoRouter.of(context).push('/zone/${run.zoneId}');
-            },
-          ),
-        ],
-      ),
+        ),
+        const VSpace(spacing: 16),
+        _RunsList(
+          programs: programs,
+          onRunTapped: (run) {
+            GoRouter.of(context).push('/zone/${run.zoneId}');
+          },
+        ),
+      ],
     );
   }
 }
@@ -90,17 +80,8 @@ class _Greeting extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final dateTime = clock.now();
-    String text;
-    if (dateTime.hour < 12) {
-      text = 'Good morning';
-    } else if (dateTime.hour < 18) {
-      text = 'Good afternoon';
-    } else {
-      text = 'Good evening';
-    }
     return Text(
-      text,
+      'Dashboard',
       style: theme.textTheme.headline5,
     );
   }
@@ -121,76 +102,54 @@ class _RunsList extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final zonesState = ref.watch(zonesProvider);
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
-      child: Card(
-        clipBehavior: Clip.hardEdge,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            HStretch(
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.secondary,
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Text(
-                    'Watering Schedule',
-                    style: Theme.of(context).textTheme.headline6?.copyWith(
-                          color: Theme.of(context).colorScheme.onSecondary,
-                        ),
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(top: 8, bottom: 8),
+          child: zonesState.maybeWhen(
+            data: (zones) {
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Visibility(
+                    visible: todayRuns.isEmpty,
+                    child: const Padding(
+                      padding: EdgeInsets.all(16),
+                      child: Center(child: Text('No more runs today')),
+                    ),
                   ),
-                ),
-              ),
+                  Visibility(
+                    visible: todayRuns.isNotEmpty,
+                    child: ListView.builder(
+                      primary: false,
+                      physics: const NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      itemCount: todayRuns.length,
+                      itemBuilder: (_, index) {
+                        return _RunCell(
+                          zone: zones.singleWhere(
+                            (z) => z.id == todayRuns[index].zoneId,
+                          ),
+                          program: programs.singleWhere(
+                            (p) => p.id == todayRuns[index].programId,
+                          ),
+                          run: todayRuns[index],
+                          shouldShowDivider: index != todayRuns.length - 1,
+                          onRunTapped: onRunTapped,
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              );
+            },
+            orElse: () => const Center(
+              child: CircularProgressIndicator(),
             ),
-            Padding(
-              padding: const EdgeInsets.only(top: 8, bottom: 8),
-              child: zonesState.maybeWhen(
-                data: (zones) {
-                  return Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Visibility(
-                        visible: todayRuns.isEmpty,
-                        child: const Padding(
-                          padding: EdgeInsets.all(16),
-                          child: Text('No more runs today'),
-                        ),
-                      ),
-                      Visibility(
-                        visible: todayRuns.isNotEmpty,
-                        child: ListView.builder(
-                          primary: false,
-                          physics: const NeverScrollableScrollPhysics(),
-                          shrinkWrap: true,
-                          itemCount: todayRuns.length,
-                          itemBuilder: (_, index) {
-                            return _RunCell(
-                              zone: zones.singleWhere(
-                                (z) => z.id == todayRuns[index].zoneId,
-                              ),
-                              program: programs.singleWhere(
-                                (p) => p.id == todayRuns[index].programId,
-                              ),
-                              run: todayRuns[index],
-                              shouldShowDivider: index != todayRuns.length - 1,
-                              onRunTapped: onRunTapped,
-                            );
-                          },
-                        ),
-                      ),
-                    ],
-                  );
-                },
-                orElse: () => const Center(
-                  child: CircularProgressIndicator(),
-                ),
-              ),
-            ),
-          ],
+          ),
         ),
-      ),
+      ],
     );
   }
 }
@@ -211,12 +170,14 @@ class _RunCell extends StatelessWidget {
   final bool shouldShowDivider;
   final ValueSetter<Run> onRunTapped;
 
-  String formattedTimeOfNextRun(BuildContext context) {
+  String formattedTimeOfNextRun(BuildContext context, Zone zone) {
     if (zone.isRunning) {
       return 'Running now';
     }
-    return TimeOfDay(hour: run.startHour, minute: run.startMinute)
-        .format(context);
+    return '${zone.name} at ${TimeOfDay(
+      hour: run.startHour,
+      minute: run.startMinute,
+    ).format(context)}';
   }
 
   @override
@@ -226,7 +187,7 @@ class _RunCell extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         ListTile(
-          title: Text('${zone.name} at ${formattedTimeOfNextRun(context)}'),
+          title: Text(formattedTimeOfNextRun(context, zone)),
           subtitle: Text(program.name),
           onTap: () => onRunTapped(run),
         ),
