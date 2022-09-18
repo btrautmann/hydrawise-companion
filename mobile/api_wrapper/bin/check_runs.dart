@@ -96,12 +96,9 @@ class CheckRuns {
               }
             }
           } else if (controllerCurrentTime.isAfter(programLastRunEndTime) &&
-              // TODO(brandon): This check should really be checking whether it's a different *day*, not
-              // that it's been an entire day. This will resolve an edge case where you change a program
-              // to start at an earlier time for the next day.
-              programLastRunEndTime.difference(controllerCurrentTime).abs() > const Duration(days: 1)) {
+              programLastRunStartTime.isDifferentDayThan(controllerCurrentTime)) {
             print(
-              'Controller current time is is after '
+              'Controller current time is after '
               'calculated last run end time; i.e we are not running...',
             );
             if (programFrequency.contains(controllerCurrentTime.weekday)) {
@@ -157,6 +154,14 @@ class CheckRuns {
 extension on DateTime {
   bool isWithin(Duration duration, DateTime other) {
     return isAtSameMomentAs(other) || difference(other).inMilliseconds.abs() < duration.inMilliseconds;
+  }
+
+  bool isSameDayAs(DateTime other) {
+    return year == other.year && month == other.month && day == other.day;
+  }
+
+  bool isDifferentDayThan(DateTime other) {
+    return !isSameDayAs(other);
   }
 }
 
