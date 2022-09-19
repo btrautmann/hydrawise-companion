@@ -33,8 +33,8 @@ class GetNextRunForZone {
       final location = getLocation(timezone);
       // Collect the next run time for each run of this zone
       final runsToNextRunTime = <DbRun, DateTime>{};
+      final now = TZDateTime.now(location);
       for (final run in runsForZone) {
-        final now = TZDateTime.now(location);
         var nextRun = DateTime(
           now.year,
           now.month,
