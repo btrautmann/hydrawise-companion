@@ -66,6 +66,10 @@ ThemeData _buildLightTheme(BuildContext context) {
   final base = ThemeData.light();
   return base.copyWith(
     colorScheme: _lightColorScheme,
+    textTheme: GoogleFonts.firaSansCondensedTextTheme(base.textTheme).copyWith(
+      headline5: GoogleFonts.pacifico(textStyle: base.textTheme.headline5),
+      headline4: GoogleFonts.pacifico(textStyle: base.textTheme.headline4),
+    ),
   );
 }
 
@@ -73,115 +77,9 @@ ThemeData _buildDarkTheme(BuildContext context) {
   final base = ThemeData.dark();
   return base.copyWith(
     colorScheme: _darkColorScheme,
-  );
-}
-
-// ignore: unused_element
-TextTheme _buildLightTextTheme(TextTheme base) {
-  return base.copyWith(
-    button: GoogleFonts.workSans(
-      fontWeight: FontWeight.normal,
-      fontSize: 18,
-      letterSpacing: 0.2,
-      color: AppColors.black900,
-    ),
-    headline4: GoogleFonts.workSans(
-      fontWeight: FontWeight.w600,
-      fontSize: 34,
-      letterSpacing: 0.4,
-      height: 0.9,
-      color: AppColors.black900,
-    ),
-    headline5: GoogleFonts.workSans(
-      fontWeight: FontWeight.bold,
-      fontSize: 24,
-      letterSpacing: 0.2,
-      color: AppColors.black900,
-    ),
-    headline6: GoogleFonts.workSans(
-      fontWeight: FontWeight.w600,
-      fontSize: 20,
-      letterSpacing: 0.1,
-      color: AppColors.black900,
-    ),
-    subtitle2: GoogleFonts.workSans(
-      fontWeight: FontWeight.w600,
-      fontSize: 14,
-      letterSpacing: -0.4,
-      color: AppColors.black900,
-    ),
-    bodyText1: GoogleFonts.workSans(
-      fontWeight: FontWeight.normal,
-      fontSize: 18,
-      letterSpacing: 0.2,
-      color: AppColors.black900,
-    ),
-    bodyText2: GoogleFonts.workSans(
-      fontWeight: FontWeight.normal,
-      fontSize: 14,
-      letterSpacing: -0.5,
-      color: AppColors.black900,
-    ),
-    caption: GoogleFonts.workSans(
-      fontWeight: FontWeight.normal,
-      fontSize: 12,
-      letterSpacing: 0.2,
-      color: AppColors.black900,
-    ),
-  );
-}
-
-// ignore: unused_element
-TextTheme _buildDarkTextTheme(TextTheme base) {
-  return base.copyWith(
-    button: GoogleFonts.workSans(
-      fontWeight: FontWeight.normal,
-      fontSize: 18,
-      letterSpacing: 0.2,
-      color: AppColors.white50,
-    ),
-    headline4: GoogleFonts.workSans(
-      fontWeight: FontWeight.w600,
-      fontSize: 34,
-      letterSpacing: 0.4,
-      height: 0.9,
-      color: AppColors.white50,
-    ),
-    headline5: GoogleFonts.workSans(
-      fontWeight: FontWeight.bold,
-      fontSize: 24,
-      letterSpacing: 0.2,
-      color: AppColors.white50,
-    ),
-    headline6: GoogleFonts.workSans(
-      fontWeight: FontWeight.w600,
-      fontSize: 20,
-      letterSpacing: 0.1,
-      color: AppColors.white50,
-    ),
-    subtitle2: GoogleFonts.workSans(
-      fontWeight: FontWeight.w600,
-      fontSize: 14,
-      letterSpacing: -0.4,
-      color: AppColors.white50,
-    ),
-    bodyText1: GoogleFonts.workSans(
-      fontWeight: FontWeight.normal,
-      fontSize: 18,
-      letterSpacing: 0.2,
-      color: AppColors.white50,
-    ),
-    bodyText2: GoogleFonts.workSans(
-      fontWeight: FontWeight.normal,
-      fontSize: 14,
-      letterSpacing: -0.5,
-      color: AppColors.white50,
-    ),
-    caption: GoogleFonts.workSans(
-      fontWeight: FontWeight.normal,
-      fontSize: 12,
-      letterSpacing: 0.2,
-      color: AppColors.white50,
+    textTheme: GoogleFonts.firaSansCondensedTextTheme(base.textTheme).copyWith(
+      headline5: GoogleFonts.pacifico(textStyle: base.textTheme.headline5),
+      headline4: GoogleFonts.pacifico(textStyle: base.textTheme.headline4),
     ),
   );
 }
