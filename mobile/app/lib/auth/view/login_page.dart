@@ -61,6 +61,7 @@ class _ApiKeyInput extends HookConsumerWidget {
         },
       ),
     );
+    final isLoading = ref.watch(logInControllerProvider).isLoading;
     return Padding(
       padding: const EdgeInsets.all(16),
       child: Column(
@@ -94,9 +95,11 @@ class _ApiKeyInput extends HookConsumerWidget {
           const VSpace(spacing: 16),
           HStretch(
             child: OutlinedButton(
-              onPressed: () {
-                ref.read(logInControllerProvider.notifier).logIn(apiKey: controller.text);
-              },
+              onPressed: isLoading
+                  ? null
+                  : () {
+                      ref.read(logInControllerProvider.notifier).logIn(apiKey: controller.text);
+                    },
               style: ButtonStyle(
                 shape: MaterialStateProperty.all(
                   const RoundedRectangleBorder(
