@@ -17,14 +17,14 @@ class LogInController extends StateNotifier<AsyncValue<Object?>> {
     try {
       state = const AsyncLoading();
 
-      final success = await _logIn(
+      final isSuccessful = await _logIn(
         apiKey: apiKey,
       );
-      if (success) {
+      if (isSuccessful) {
         // TODO(brandon): Is this the best way to do this?
         _ref.invalidate(authProvider);
       }
-      state = AsyncData(success);
+      state = AsyncData(isSuccessful);
     } on Exception catch (e) {
       state = AsyncError(e);
     } finally {
