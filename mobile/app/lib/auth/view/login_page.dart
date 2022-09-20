@@ -14,8 +14,27 @@ class LoginPage extends StatelessWidget {
     return Scaffold(
       body: AnimatedBackground(
         child: Center(
-          child: _ApiKeyInput(),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _IrriName(),
+              _ApiKeyInput(),
+            ],
+          ),
         ),
+      ),
+    );
+  }
+}
+
+class _IrriName extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(32),
+      child: Text(
+        'Irri',
+        style: Theme.of(context).textTheme.headline4,
       ),
     );
   }
@@ -33,8 +52,8 @@ class _ApiKeyInput extends HookConsumerWidget {
             SnackBar(content: Text(error.toString())),
           );
         },
-        data: (success) {
-          if (success != null && success == false) {
+        data: (isSuccessful) {
+          if (isSuccessful != null && isSuccessful == false) {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(content: Text('Invalid API key')),
             );
@@ -54,7 +73,18 @@ class _ApiKeyInput extends HookConsumerWidget {
             decoration: InputDecoration(
               filled: true,
               fillColor: Colors.white.withOpacity(.1),
-              suffixIcon: const Icon(Icons.question_mark),
+              suffixIcon: IconButton(
+                onPressed: () {
+                  showDialog<void>(
+                    context: context,
+                    builder: (context) {
+                      return const AboutApiKeyDialog();
+                    },
+                  );
+                },
+                icon: const Icon(Icons.question_mark),
+                iconSize: 18,
+              ),
               hintText: 'Hydrawise API key',
               border: const OutlineInputBorder(
                 borderRadius: BorderRadius.zero,
@@ -84,6 +114,47 @@ class _ApiKeyInput extends HookConsumerWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class AboutApiKeyDialog extends StatelessWidget {
+  const AboutApiKeyDialog({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Icon(
+            Icons.info,
+            size: 24,
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Text(
+              'About API keys',
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+          ),
+        ],
+      ),
+      content: Text(
+        'API keys are codes used to identify and authenticate a user. '
+        'We use your API key to talk to the Hydrawise application on your behalf. '
+        'We never use it for any other reason. You can find yours by logging '
+        'into your Hydrawise account and navigating to Account Details.',
+        style: Theme.of(context).textTheme.bodyMedium,
+      ),
+      actions: [
+        TextButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          child: const Text('OK'),
+        ),
+      ],
     );
   }
 }
