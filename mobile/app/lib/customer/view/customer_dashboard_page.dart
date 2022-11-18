@@ -51,22 +51,22 @@ class _Runs extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const _Greeting(),
-          const VSpace(spacing: 16),
-          _RunsList(
-            programs: programs,
-            onRunTapped: (run) {
-              GoRouter.of(context).push('/zone/${run.zoneId}');
-            },
-          ),
-        ],
-      ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        const Padding(
+          padding: EdgeInsets.all(16),
+          child: _Greeting(),
+        ),
+        const VSpace(spacing: 16),
+        _RunsList(
+          programs: programs,
+          onRunTapped: (run) {
+            GoRouter.of(context).push('/zone/${run.zoneId}');
+          },
+        ),
+      ],
     );
   }
 }
@@ -116,28 +116,16 @@ class _RunsList extends ConsumerWidget {
         child: Text('Something went wrong.'),
       ),
       data: (zones) {
-        return Stack(
-          children: [
-            ...zones
-                .map(
-                  (z) => Positioned(
-                    top: zones.indexOf(z) + 8,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8),
-                      child: Card(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(1),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                          child: Text(z.name),
-                        ),
-                      ),
-                    ),
-                  ),
-                )
-                .toList()
-          ],
+        return ListView.builder(
+          shrinkWrap: true,
+          primary: false,
+          itemCount: zones.length,
+          itemBuilder: (_, index) {
+            final item = zones[index];
+            return ListTile(
+              title: Text(item.name),
+            );
+          },
         );
       },
     );

@@ -40,12 +40,12 @@ final zoneRefreshIntervalProvider = Provider<Duration?>((ref) {
   return null;
 });
 
-final zonesStoreProvider = Provider<Store<void, List<Zone>>>((ref) {
+final zonesStoreProvider = Provider<Store<String, List<Zone>>>((ref) {
   final prefs = ref.watch(sharedPreferencesProvider);
   return Store.from(
     fetch: (_) => Stream.fromFuture(ref.watch(getZonesProvider).call()),
     sourceOfTruth: SourceOfTruth.of(
-      read: (key) => prefs.getStringStream(key.toString()).map(
+      read: (key) => prefs.getStringStream(key).map(
         (event) {
           if (event == null) {
             return List<Zone>.empty();
@@ -56,10 +56,10 @@ final zonesStoreProvider = Provider<Store<void, List<Zone>>>((ref) {
         },
       ),
       write: (key, value) async => prefs.setString(
-        key.toString(),
+        key,
         jsonEncode(value.map((e) => e.toJson()).toList()),
       ),
-      delete: (key) async => prefs.remove(key.toString()),
+      delete: (key) async => prefs.remove(key),
       deleteAll: () async => prefs.clear(),
     ),
   );
@@ -67,7 +67,7 @@ final zonesStoreProvider = Provider<Store<void, List<Zone>>>((ref) {
 
 class ZonesNotifier extends StateNotifier<AsyncValue<List<Zone>>> {
   ZonesNotifier({
-    required Store<void, List<Zone>> getCustomer,
+    required Store<String, List<Zone>> getCustomer,
     required AuthState authState,
     required Duration? refreshInterval,
   })  : _zonesStore = getCustomer,
@@ -77,7 +77,7 @@ class ZonesNotifier extends StateNotifier<AsyncValue<List<Zone>>> {
     _init();
   }
 
-  final Store<void, List<Zone>> _zonesStore;
+  final Store<String, List<Zone>> _zonesStore;
   final AuthState _authState;
   final Duration? _refreshInterval;
   Timer? _timer;
@@ -94,7 +94,7 @@ class ZonesNotifier extends StateNotifier<AsyncValue<List<Zone>>> {
   Future<void> _loadZones() async {
     state = const AsyncValue.loading();
     try {
-      final response = _zonesStore.fresh(null);
+      final response = await _zonesStore.fresh('zones');
       state = AsyncValue.data((response as Data<List<Zone>>).value);
     } on Exception catch (e) {
       state = AsyncValue.error(e);
