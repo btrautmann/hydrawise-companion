@@ -1,7 +1,6 @@
 // ignore_for_file: avoid_redundant_argument_values
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart' hide Provider;
@@ -29,9 +28,6 @@ class IrriApp extends HookConsumerWidget {
       child: MaterialApp.router(
         theme: _buildLightTheme(context),
         darkTheme: _buildDarkTheme(context),
-        localizationsDelegates: const [
-          GlobalMaterialLocalizations.delegate,
-        ],
         themeMode: appState.themeMode,
         routeInformationParser: _router.routeInformationParser,
         routerDelegate: _router.routerDelegate,
@@ -53,7 +49,7 @@ class AuthListener extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     ref.listen<AuthState>(authProvider, (a, b) {
-      if (b.isLoggedIn()) {
+      if (b.isAuthenticated) {
         router.go('/home');
       } else {
         router.go('/login');

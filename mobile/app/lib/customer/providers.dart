@@ -24,7 +24,7 @@ class CustomerNotifier extends StateNotifier<AsyncValue<Customer>> {
   final AuthState _authState;
 
   Future<void> _init() async {
-    if (_authState.isLoggedIn()) {
+    if (_authState.isAuthenticated) {
       await _loadCustomer();
     }
   }

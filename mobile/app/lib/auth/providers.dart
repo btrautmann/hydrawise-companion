@@ -1,4 +1,3 @@
-import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:irri/app/providers.dart';
 import 'package:irri/auth/domain/get_api_key.dart';
@@ -6,8 +5,6 @@ import 'package:irri/auth/domain/is_logged_in.dart';
 import 'package:irri/auth/domain/set_api_key.dart';
 import 'package:irri/auth/log_in/log_in.dart';
 import 'package:irri/auth/log_out/log_out.dart';
-
-part 'providers.freezed.dart';
 
 final getApiKeyProvider = Provider<GetApiKey>((ref) {
   return GetApiKey(ref.watch(storageProvider));
@@ -36,16 +33,10 @@ final logOutProvider = Provider<LogOut>((ref) {
   );
 });
 
-@freezed
-class AuthState with _$AuthState {
-  factory AuthState.loggedIn() = _LoggedIn;
-  factory AuthState.loggedOut() = _LoggedOut;
-}
+class AuthState {
+  AuthState({required this.isAuthenticated});
 
-extension AuthStateX on AuthState {
-  bool isLoggedIn() {
-    return map(loggedIn: (_) => true, loggedOut: (_) => false);
-  }
+  final bool isAuthenticated;
 }
 
 class AuthNotifier extends StateNotifier<AuthState> {
@@ -54,7 +45,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
     required LogOut logOut,
   })  : _isLoggedIn = isLoggedIn,
         _logOut = logOut,
-        super(AuthState.loggedOut()) {
+        super(AuthState(isAuthenticated: false)) {
     _checkAuthenticationStatus();
   }
 
@@ -62,11 +53,8 @@ class AuthNotifier extends StateNotifier<AuthState> {
   final LogOut _logOut;
 
   Future<void> _checkAuthenticationStatus() async {
-    if (await _isLoggedIn()) {
-      state = AuthState.loggedIn();
-    } else {
-      state = AuthState.loggedOut();
-    }
+    final isLoggedIn = await _isLoggedIn();
+    state = AuthState(isAuthenticated: isLoggedIn);
   }
 
   Future<void> logOut() async {

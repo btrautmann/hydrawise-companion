@@ -2,20 +2,17 @@ import 'dart:async';
 
 import 'package:core/core.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:irri/app_theme_mode/domain/get_app_theme_mode.dart';
 import 'package:irri/app_theme_mode/domain/set_app_theme_mode.dart';
 import 'package:irri/auth/providers.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-part 'providers.freezed.dart';
+class AppState {
+  const AppState({required this.themeMode});
 
-@freezed
-class AppState with _$AppState {
-  factory AppState({required ThemeMode themeMode}) = _AppState;
+  final ThemeMode themeMode;
 }
 
 final storageProvider = Provider<DataStorage>((ref) {
@@ -73,7 +70,7 @@ class AppStateNotifier extends StateNotifier<AppState> {
     required GetAppThemeMode getAppThemeMode,
   })  : _setAppThemeMode = setAppThemeMode,
         _getAppThemeMode = getAppThemeMode,
-        super(AppState(themeMode: ThemeMode.system)) {
+        super(const AppState(themeMode: ThemeMode.system)) {
     _initAppThemeMode();
   }
 
@@ -87,7 +84,7 @@ class AppStateNotifier extends StateNotifier<AppState> {
 
   Future<void> setThemeMode(ThemeMode mode) async {
     await _setAppThemeMode(mode);
-    state = state.copyWith(themeMode: mode);
+    state = AppState(themeMode: mode);
   }
 }
 

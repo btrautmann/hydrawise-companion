@@ -55,7 +55,7 @@ class ZonesNotifier extends StateNotifier<AsyncValue<List<Zone>>> {
   Timer? _timer;
 
   Future<void> _init() async {
-    if (_authState.isLoggedIn() && _refreshInterval != null) {
+    if (_authState.isAuthenticated && _refreshInterval != null) {
       await _loadZones();
       _timer = Timer.periodic(_refreshInterval!, (timer) {
         _loadZones();
