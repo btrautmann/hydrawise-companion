@@ -3,7 +3,7 @@ import 'package:core_ui/core_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:irri/programs/programs.dart';
+import 'package:irri/programs/providers.dart';
 import 'package:irri/zones/providers.dart';
 
 class ProgramsPage extends StatelessWidget {

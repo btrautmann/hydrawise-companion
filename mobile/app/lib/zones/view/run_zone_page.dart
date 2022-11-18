@@ -3,7 +3,9 @@ import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:irri/programs/extensions.dart';
-import 'package:irri/zones/zones.dart';
+import 'package:irri/zones/providers.dart';
+import 'package:irri/zones/run_zone/run_zone.dart';
+import 'package:irri/zones/stop_zone/stop_zone.dart';
 
 class RunZonesPage extends ConsumerWidget {
   const RunZonesPage({

@@ -5,7 +5,8 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart' hide Provider;
-import 'package:irri/app/app.dart';
+import 'package:irri/app/app_colors.dart';
+import 'package:irri/app/providers.dart';
 import 'package:irri/auth/providers.dart';
 
 class IrriApp extends HookConsumerWidget {

@@ -1,8 +1,8 @@
 import 'package:core_ui/core_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:irri/app/app.dart';
-import 'package:irri/auth/auth.dart';
+import 'package:irri/app/providers.dart';
+import 'package:irri/auth/log_out/log_out.dart';
 
 class ConfigurationPage extends StatelessWidget {
   const ConfigurationPage({Key? key}) : super(key: key);

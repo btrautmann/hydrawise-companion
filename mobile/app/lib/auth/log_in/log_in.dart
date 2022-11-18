@@ -2,7 +2,7 @@ import 'package:api_models/api_models.dart';
 import 'package:core/core.dart';
 import 'package:dio/dio.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:irri/auth/auth.dart';
+import 'package:irri/auth/domain/set_api_key.dart';
 import 'package:irri/auth/providers.dart';
 
 part 'log_in_controller.dart';

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:irri/configuration/configuration.dart';
-import 'package:irri/customer/customer.dart';
-import 'package:irri/home/home.dart';
-import 'package:irri/programs/programs.dart';
+import 'package:irri/configuration/view/configuration_page.dart';
+import 'package:irri/customer/view/customer_dashboard_page.dart';
+import 'package:irri/home/providers.dart';
+import 'package:irri/programs/view/programs_page.dart';
 
 class HomePage extends ConsumerWidget {
   const HomePage({Key? key, required int selectedTabIndex})

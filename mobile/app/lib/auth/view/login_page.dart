@@ -2,7 +2,7 @@ import 'package:core_ui/core_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:irri/auth/auth.dart';
+import 'package:irri/auth/log_in/log_in.dart';
 import 'package:simple_animations/simple_animations.dart';
 
 /// Page for the user to enter their API key

@@ -1,7 +1,11 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:irri/app/app.dart';
-import 'package:irri/auth/auth.dart';
+import 'package:irri/app/providers.dart';
+import 'package:irri/auth/domain/get_api_key.dart';
+import 'package:irri/auth/domain/is_logged_in.dart';
+import 'package:irri/auth/domain/set_api_key.dart';
+import 'package:irri/auth/log_in/log_in.dart';
+import 'package:irri/auth/log_out/log_out.dart';
 
 part 'providers.freezed.dart';
 

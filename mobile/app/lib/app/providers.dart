@@ -6,7 +6,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:irri/app_theme_mode/domain/domain.dart';
+import 'package:irri/app_theme_mode/domain/get_app_theme_mode.dart';
+import 'package:irri/app_theme_mode/domain/set_app_theme_mode.dart';
 import 'package:irri/auth/providers.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

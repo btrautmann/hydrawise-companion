@@ -9,7 +9,7 @@ extension ListProgramX on List<Program> {
     final now = clock.now();
     final dayOfWeek = now.weekday;
     final todayPrograms =
-        where((element) => element.frequency.contains(dayOfWeek));
+        where((p) => p.frequency.contains(dayOfWeek));
     return todayPrograms
         .expand(
           (program) => program.runs.where(
