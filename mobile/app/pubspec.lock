@@ -59,6 +59,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.0"
+  built_collection:
+    dependency: transitive
+    description:
+      name: built_collection
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "5.1.1"
   characters:
     dependency: transitive
     description:
@@ -122,6 +129,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.0.1"
+  dart_either:
+    dependency: transitive
+    description:
+      name: dart_either
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.0"
   dart_style:
     dependency: transitive
     description:
@@ -136,6 +150,20 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.0.6"
+  disposebag:
+    dependency: transitive
+    description:
+      name: disposebag
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.5.1"
+  equatable:
+    dependency: transitive
+    description:
+      name: equatable
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.5"
   fake_async:
     dependency: transitive
     description:
@@ -214,6 +242,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.0.7"
+  gooder_store:
+    dependency: "direct main"
+    description:
+      name: gooder_store
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.1-dev.2"
   google_fonts:
     dependency: "direct main"
     description:
@@ -424,13 +459,41 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.0-dev.9"
+  rx_shared_preferences:
+    dependency: "direct main"
+    description:
+      name: rx_shared_preferences
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.0.0"
+  rx_storage:
+    dependency: transitive
+    description:
+      name: rx_storage
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.0"
+  rxdart:
+    dependency: transitive
+    description:
+      name: rxdart
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.27.7"
+  rxdart_ext:
+    dependency: transitive
+    description:
+      name: rxdart_ext
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.2.6"
   shared_preferences:
     dependency: "direct main"
     description:
       name: shared_preferences
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.13"
+    version: "2.0.15"
   shared_preferences_android:
     dependency: transitive
     description:
@@ -520,6 +583,20 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.10.0"
+  stash:
+    dependency: transitive
+    description:
+      name: stash
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "4.3.4"
+  stash_memory:
+    dependency: transitive
+    description:
+      name: stash_memory
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "4.3.4"
   state_notifier:
     dependency: transitive
     description:
@@ -612,5 +689,5 @@ packages:
     source: hosted
     version: "3.1.0"
 sdks:
-  dart: ">=2.17.0 <3.0.0"
+  dart: ">=2.17.6 <3.0.0"
   flutter: ">=3.0.0"

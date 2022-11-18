@@ -7,7 +7,7 @@ import 'package:irri/app/domain/build_router.dart';
 import 'package:irri/app/irri_app.dart';
 import 'package:irri/app/provider_logging.dart';
 import 'package:irri/app/providers.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:rx_shared_preferences/rx_shared_preferences.dart';
 
 Future<void> main() async {
   FlutterError.onError = (details) {
@@ -18,7 +18,7 @@ Future<void> main() async {
     () async {
       WidgetsFlutterBinding.ensureInitialized();
 
-      final sharedPreferences = await SharedPreferences.getInstance();
+      final sharedPreferences = (await SharedPreferences.getInstance()).rx;
 
       runApp(
         ProviderScope(

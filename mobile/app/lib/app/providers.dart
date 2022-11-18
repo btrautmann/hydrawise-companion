@@ -7,7 +7,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:irri/app_theme_mode/domain/get_app_theme_mode.dart';
 import 'package:irri/app_theme_mode/domain/set_app_theme_mode.dart';
 import 'package:irri/auth/providers.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:rx_shared_preferences/rx_shared_preferences.dart';
 
 class AppState {
   const AppState({required this.themeMode});
@@ -22,7 +22,7 @@ final storageProvider = Provider<DataStorage>((ref) {
 // TODO(brandon): This throws `UnimplementedError` because it will always
 // be overridden in `main.dart`. This is a workaround to avoid having to make
 // all DataStorage-dependent providers FutureProviders.
-final sharedPreferencesProvider = Provider<SharedPreferences>((ref) {
+final sharedPreferencesProvider = Provider<RxSharedPreferences>((ref) {
   throw UnimplementedError();
 });
 

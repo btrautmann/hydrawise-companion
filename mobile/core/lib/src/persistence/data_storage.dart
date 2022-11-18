@@ -1,4 +1,4 @@
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:rx_shared_preferences/rx_shared_preferences.dart';
 
 abstract class DataStorage {
   Future<String?> getString(String key);
@@ -6,13 +6,13 @@ abstract class DataStorage {
   Future<void> setInt(String key, int value);
   Future<int?> getInt(String key);
   Future<Map<String, dynamic>> getAll();
-  Future<bool> clearAll();
+  Future<void> clearAll();
 }
 
 class SharedPreferencesStorage implements DataStorage {
   SharedPreferencesStorage(this._sharedPreferences);
 
-  final SharedPreferences _sharedPreferences;
+  final RxSharedPreferences _sharedPreferences;
 
   @override
   Future<void> setString(String key, String value) {
@@ -36,16 +36,16 @@ class SharedPreferencesStorage implements DataStorage {
 
   @override
   Future<Map<String, dynamic>> getAll() async {
-    final keys = _sharedPreferences.getKeys();
+    final keys = await _sharedPreferences.getKeys();
     final map = <String, dynamic>{};
     for (final k in keys) {
-      map[k] = _sharedPreferences.get(k);
+      map[k] = _sharedPreferences.getObject(k);
     }
     return map;
   }
 
   @override
-  Future<bool> clearAll() async {
+  Future<void> clearAll() async {
     return _sharedPreferences.clear();
   }
 }
