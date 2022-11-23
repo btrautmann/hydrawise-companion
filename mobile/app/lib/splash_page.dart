@@ -15,10 +15,7 @@ class SplashPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     ref.listen<AuthState>(authProvider, (previous, next) {
-      next.when(
-        loggedIn: () => GoRouter.of(context).go('/home'),
-        loggedOut: () => GoRouter.of(context).go('/login'),
-      );
+      GoRouter.of(context).go(next.isAuthenticated ? '/home' : '/login');
     });
     return const CircularProgressIndicator();
   }

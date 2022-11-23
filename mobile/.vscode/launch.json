@@ -12,8 +12,6 @@
             "flutterMode": "debug",
             "args": [
                 "--dart-define",
-                "OPEN_WEATHER_MAP_API_KEY=${env:OPEN_WEATHER_MAP_API_KEY}",
-                "--dart-define",
                 "BASE_URL=https://apiwrapper-5rvb357uza-uc.a.run.app/",
             ]
         },
@@ -24,8 +22,6 @@
             "program": "app/lib/main.dart",
             "flutterMode": "debug",
             "args": [
-                "--dart-define",
-                "OPEN_WEATHER_MAP_API_KEY=${env:OPEN_WEATHER_MAP_API_KEY}",
                 "--dart-define",
                 "BASE_URL=http://10.0.2.2:8080/",
             ]
@@ -43,10 +39,6 @@
             "type": "dart",
             "flutterMode": "profile",
             "program": "app/lib/main.dart",
-            "args": [
-                "--dart-define",
-                "OPEN_WEATHER_MAP_API_KEY=${env:OPEN_WEATHER_MAP_API_KEY}",
-            ]
         },
         {
             "name": "app tests",

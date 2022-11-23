@@ -20,7 +20,7 @@ packages:
     description:
       path: "."
       ref: main
-      resolved-ref: a71b06ef78af971228230c10cee595d874940ae4
+      resolved-ref: da9c506e573636335d81c016ebff4a2cbd513512
       url: "https://github.com/btrautmann/irri-models.git"
     source: git
     version: "1.0.0"
@@ -445,4 +445,4 @@ packages:
     source: hosted
     version: "3.1.1"
 sdks:
-  dart: ">=2.17.5 <3.0.0"
+  dart: ">=2.17.6 <3.0.0"

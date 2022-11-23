@@ -7,36 +7,21 @@ on:
     paths:
       - mobile/**
 
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
-
 jobs:
   verify:
     defaults:
       run:
         working-directory: mobile
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: webfactory/ssh-agent@v0.5.3
         with:
           ssh-private-key: ${{secrets.SSH_PRIVATE_KEY}}
-      - uses: subosito/flutter-action@v1
+      - uses: subosito/flutter-action@v2.4.0
         with:
-          flutter-version: '3.0.4'
+          flutter-version: '3.0.5'
           channel: stable
-          
-      - name: activate melos
-        run: dart pub global activate melos && melos bs
-            
-      - name: run flutter tests
-        run: melos exec --dir-exists="test" --flutter -- flutter test --test-randomize-ordering-seed random
-
-      - name: run dart tests
-        run: melos exec --dir-exists="test" --ignore="api_wrapper" --no-flutter -- dart test --test-randomize-ordering-seed random
-        
-      - name: analyze flutter
-        run: melos exec --flutter -- flutter analyze
-
-      - name: analyze dart
-        run: melos exec --no-flutter -- dart analyze
+      - run: dart pub global activate melos && melos bs
+      - run: melos exec --flutter -- flutter analyze
+      - run: melos exec --no-flutter -- dart analyze

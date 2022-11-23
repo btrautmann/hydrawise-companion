@@ -1,8 +1,8 @@
 import 'package:api_models/api_models.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:irri/app/app.dart';
+import 'package:irri/app/providers.dart';
 import 'package:irri/auth/providers.dart';
-import 'package:irri/customer/customer.dart';
+import 'package:irri/customer/get_customer.dart';
 
 final getCustomerProvider = Provider<GetCustomer>((ref) {
   return GetCustomer(
@@ -24,7 +24,7 @@ class CustomerNotifier extends StateNotifier<AsyncValue<Customer>> {
   final AuthState _authState;
 
   Future<void> _init() async {
-    if (_authState.isLoggedIn()) {
+    if (_authState.isAuthenticated) {
       await _loadCustomer();
     }
   }

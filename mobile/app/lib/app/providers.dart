@@ -2,19 +2,17 @@ import 'dart:async';
 
 import 'package:core/core.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:irri/app_theme_mode/domain/domain.dart';
+import 'package:irri/app_theme_mode/get_app_theme_mode.dart';
+import 'package:irri/app_theme_mode/set_app_theme_mode.dart';
 import 'package:irri/auth/providers.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:rx_shared_preferences/rx_shared_preferences.dart';
 
-part 'providers.freezed.dart';
+class AppState {
+  const AppState({required this.themeMode});
 
-@freezed
-class AppState with _$AppState {
-  factory AppState({required ThemeMode themeMode}) = _AppState;
+  final ThemeMode themeMode;
 }
 
 final storageProvider = Provider<DataStorage>((ref) {
@@ -24,7 +22,7 @@ final storageProvider = Provider<DataStorage>((ref) {
 // TODO(brandon): This throws `UnimplementedError` because it will always
 // be overridden in `main.dart`. This is a workaround to avoid having to make
 // all DataStorage-dependent providers FutureProviders.
-final sharedPreferencesProvider = Provider<SharedPreferences>((ref) {
+final sharedPreferencesProvider = Provider<RxSharedPreferences>((ref) {
   throw UnimplementedError();
 });
 
@@ -72,7 +70,7 @@ class AppStateNotifier extends StateNotifier<AppState> {
     required GetAppThemeMode getAppThemeMode,
   })  : _setAppThemeMode = setAppThemeMode,
         _getAppThemeMode = getAppThemeMode,
-        super(AppState(themeMode: ThemeMode.system)) {
+        super(const AppState(themeMode: ThemeMode.system)) {
     _initAppThemeMode();
   }
 
@@ -86,7 +84,7 @@ class AppStateNotifier extends StateNotifier<AppState> {
 
   Future<void> setThemeMode(ThemeMode mode) async {
     await _setAppThemeMode(mode);
-    state = state.copyWith(themeMode: mode);
+    state = AppState(themeMode: mode);
   }
 }
 

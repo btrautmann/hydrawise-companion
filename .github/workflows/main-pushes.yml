@@ -10,40 +10,34 @@ on:
       - mobile/core_ui/**
       - mobile/weather/**
 
-  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
 jobs:
   deploy-ios:
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 0
       - uses: webfactory/ssh-agent@v0.5.3
         with:
           ssh-private-key: ${{secrets.SSH_PRIVATE_KEY}}
-      - uses: subosito/flutter-action@v1
+      - uses: subosito/flutter-action@v2.4.0
         with:
-          flutter-version: '3.0.4'
+          flutter-version: '3.0.5'
           channel: stable
       - uses: maxim-lobanov/setup-xcode@v1
         with:
           xcode-version: latest-stable
-      
-      - name: Bundle install
-        run: cd mobile/app && bundle install
-
-      - name: Calculate version name
+      - run: cd mobile/app && bundle install
+      - uses: paulhatch/semantic-version@v5.0.0-alpha2
         id: calculate_version_name
-        uses: paulhatch/semantic-version@v5.0.0-alpha2
         with:
           tag_prefix: "v"
           major_pattern: "(MAJOR)"
           minor_pattern: "(MINOR)"
           version_format: "${major}.${minor}.${patch}"
-    
-      - name: Deploy iOS to TestFlight
+      - run: cd mobile/app/ios && bundle exec fastlane deploy
         env:
           MATCH_PASSWORD: ${{secrets.MATCH_PASSWORD}}
           MATCH_KEYCHAIN_PASSWORD: ${{secrets.MATCH_PASSWORD}}
@@ -54,11 +48,7 @@ jobs:
           APP_STORE_CONNECT_API_KEY_ISSUER_ID: ${{secrets.APP_STORE_CONNECT_API_KEY_ISSUER}}
           VERSION_NAME: ${{ steps.calculate_version_name.outputs.version }}
           BUILD_NUMBER: ${{ steps.calculate_version_name.outputs.increment }}
-        run: cd mobile/app/ios && bundle exec fastlane deploy
-
-      - name: Tag release
-        shell: bash
-        run: |
+      - run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
       - run: "git tag v${{ steps.calculate_version_name.outputs.version }} -a -m \"Updated to ${{ steps.calculate_version_name.outputs.version }}\""

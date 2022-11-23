@@ -2,7 +2,7 @@ import 'package:core_ui/core_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:irri/auth/auth.dart';
+import 'package:irri/auth/log_in/log_in.dart';
 import 'package:simple_animations/simple_animations.dart';
 
 /// Page for the user to enter their API key
@@ -44,6 +44,7 @@ class _ApiKeyInput extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final controller = useTextEditingController();
+    final controllerUpdates = useValueListenable(controller);
     ref.listen<AsyncValue<Object?>>(
       logInControllerProvider,
       (_, state) => state.whenOrNull(
@@ -95,7 +96,7 @@ class _ApiKeyInput extends HookConsumerWidget {
           const VSpace(spacing: 16),
           HStretch(
             child: OutlinedButton(
-              onPressed: isLoading
+              onPressed: isLoading || controllerUpdates.text.isEmpty
                   ? null
                   : () {
                       ref.read(logInControllerProvider.notifier).logIn(apiKey: controller.text);
