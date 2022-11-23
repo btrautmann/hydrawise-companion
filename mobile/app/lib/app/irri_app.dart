@@ -5,32 +5,30 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart' hide Provider;
 import 'package:irri/app/app_colors.dart';
+import 'package:irri/app/app_router.dart';
 import 'package:irri/app/providers.dart';
 import 'package:irri/auth/providers.dart';
 
 class IrriApp extends HookConsumerWidget {
   const IrriApp({
     Key? key,
-    required GoRouter router,
-  })  : _router = router,
-        super(key: key);
-
-  final GoRouter _router;
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final appState = ref.watch(appStateProvider);
+    final router = appRouter;
     useOnAppLifecycleStateChange((_, newState) {
       ref.read(appLifecycleStateProvider.notifier).setLifecycleState(newState);
     });
     return AuthListener(
-      router: _router,
+      router: router,
       child: MaterialApp.router(
         theme: _buildLightTheme(context),
         darkTheme: _buildDarkTheme(context),
         themeMode: appState.themeMode,
-        routeInformationParser: _router.routeInformationParser,
-        routerDelegate: _router.routerDelegate,
+        routeInformationParser: router.routeInformationParser,
+        routerDelegate: router.routerDelegate,
       ),
     );
   }

@@ -3,7 +3,6 @@ import 'dart:developer';
 
 import 'package:flutter/widgets.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:irri/app/domain/build_router.dart';
 import 'package:irri/app/irri_app.dart';
 import 'package:irri/app/provider_logging.dart';
 import 'package:irri/app/providers.dart';
@@ -28,9 +27,7 @@ Future<void> main() async {
           overrides: [
             sharedPreferencesProvider.overrideWithValue(sharedPreferences),
           ],
-          child: IrriApp(
-            router: BuildAppRouter().call(),
-          ),
+          child: const IrriApp(),
         ),
       );
     },
