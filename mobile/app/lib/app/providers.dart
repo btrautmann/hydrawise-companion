@@ -4,8 +4,8 @@ import 'package:core/core.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:irri/app_theme_mode/domain/get_app_theme_mode.dart';
-import 'package:irri/app_theme_mode/domain/set_app_theme_mode.dart';
+import 'package:irri/app_theme_mode/get_app_theme_mode.dart';
+import 'package:irri/app_theme_mode/set_app_theme_mode.dart';
 import 'package:irri/auth/providers.dart';
 import 'package:rx_shared_preferences/rx_shared_preferences.dart';
 

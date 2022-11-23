@@ -11,6 +11,7 @@ import 'check_runs.dart';
 import 'get_programs.dart';
 import 'middleware.dart';
 import 'routes.dart';
+import 'update_zone.dart';
 
 Future<void> main(List<String> args) async {
   // Use any available host or container IP (usually `0.0.0.0`).
@@ -61,6 +62,7 @@ Future<void> main(List<String> args) async {
     ..post('/login', Login(db))
     ..post('/run_zone', RunZone(db))
     ..post('/stop_zone', StopZone(db))
+    ..put('/zone', UpdateZone(db))
     ..post('/program', CreateProgram(db))
     ..get('/program', GetPrograms(db))
     ..put('/program', UpdateProgram(db))

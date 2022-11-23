@@ -44,6 +44,7 @@ class _ApiKeyInput extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final controller = useTextEditingController();
+    final controllerUpdates = useValueListenable(controller);
     ref.listen<AsyncValue<Object?>>(
       logInControllerProvider,
       (_, state) => state.whenOrNull(
@@ -95,7 +96,7 @@ class _ApiKeyInput extends HookConsumerWidget {
           const VSpace(spacing: 16),
           HStretch(
             child: OutlinedButton(
-              onPressed: isLoading
+              onPressed: isLoading || controllerUpdates.text.isEmpty
                   ? null
                   : () {
                       ref.read(logInControllerProvider.notifier).logIn(apiKey: controller.text);

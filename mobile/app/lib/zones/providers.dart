@@ -7,9 +7,10 @@ import 'package:gooder_store/gooder_store.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:irri/app/providers.dart';
 import 'package:irri/auth/providers.dart';
-import 'package:irri/zones/domain/get_zones.dart';
+import 'package:irri/zones/get_zones.dart';
 import 'package:irri/zones/run_zone/run_zone.dart';
 import 'package:irri/zones/stop_zone/stop_zone.dart';
+import 'package:irri/zones/update_zone/update_zone.dart';
 import 'package:rx_shared_preferences/rx_shared_preferences.dart';
 
 final runZoneProvider = Provider<RunZone>((ref) {
@@ -20,6 +21,12 @@ final runZoneProvider = Provider<RunZone>((ref) {
 
 final stopZoneProvider = Provider<StopZone>((ref) {
   return StopZone(
+    httpClient: ref.watch(httpClientProvider),
+  );
+});
+
+final updateZoneProvider = Provider<UpdateZone>((ref) {
+  return UpdateZone(
     httpClient: ref.watch(httpClientProvider),
   );
 });

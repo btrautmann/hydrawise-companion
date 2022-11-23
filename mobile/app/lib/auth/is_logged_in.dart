@@ -1,4 +1,4 @@
-import 'package:irri/auth/domain/get_api_key.dart';
+import 'package:irri/auth/get_api_key.dart';
 
 /// {@template is_logged_in}
 /// Checks the stored API key

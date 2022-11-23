@@ -23,15 +23,31 @@ class ConfigurationView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
       children: [
         Padding(
-          padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
+          padding: const EdgeInsets.all(16),
           child: Text(
             'Configuration',
             style: Theme.of(context).textTheme.headline5,
           ),
         ),
         const VSpace(spacing: 16),
+        Padding(
+          padding: const EdgeInsets.all(16),
+          child: HStretch(
+            child: ColoredBox(
+              color: Colors.yellow.withAlpha(50),
+              child: const Padding(
+                padding: EdgeInsets.all(16),
+                child: Text(
+                  '// TODO: \n'
+                  '- Allow for updating user time zone',
+                ),
+              ),
+            ),
+          ),
+        ),
         _AppThemeRow(),
         const Padding(
           padding: EdgeInsets.only(top: 8, bottom: 8),

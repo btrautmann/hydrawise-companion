@@ -1,10 +1,10 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:irri/app/providers.dart';
-import 'package:irri/auth/domain/get_api_key.dart';
-import 'package:irri/auth/domain/is_logged_in.dart';
-import 'package:irri/auth/domain/set_api_key.dart';
+import 'package:irri/auth/get_api_key.dart';
+import 'package:irri/auth/is_logged_in.dart';
 import 'package:irri/auth/log_in/log_in.dart';
 import 'package:irri/auth/log_out/log_out.dart';
+import 'package:irri/auth/set_api_key.dart';
 
 final getApiKeyProvider = Provider<GetApiKey>((ref) {
   return GetApiKey(ref.watch(storageProvider));

@@ -3,9 +3,7 @@ import 'package:clock/clock.dart';
 import 'package:core_ui/core_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:irri/programs/extensions.dart';
 import 'package:irri/programs/providers.dart';
-import 'package:irri/zones/providers.dart';
 
 class CustomerDashboardPage extends StatelessWidget {
   const CustomerDashboardPage({Key? key}) : super(key: key);
@@ -27,7 +25,7 @@ class _CustomerDashboardView extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return ref.watch(programsProvider).maybeWhen(
       data: (programs) {
-        return _Runs(
+        return _TodayRuns(
           programs: programs,
         );
       },
@@ -40,8 +38,8 @@ class _CustomerDashboardView extends ConsumerWidget {
   }
 }
 
-class _Runs extends StatelessWidget {
-  const _Runs({
+class _TodayRuns extends StatelessWidget {
+  const _TodayRuns({
     Key? key,
     required this.programs,
   }) : super(key: key);
@@ -59,8 +57,20 @@ class _Runs extends StatelessWidget {
           child: _Greeting(),
         ),
         const VSpace(spacing: 16),
-        _RunsList(
-          programs: programs,
+        Padding(
+          padding: const EdgeInsets.all(16),
+          child: HStretch(
+            child: ColoredBox(
+              color: Colors.yellow.withAlpha(50),
+              child: const Padding(
+                padding: EdgeInsets.all(16),
+                child: Text(
+                  '// TODO: \n'
+                  '- Show zones scheduled for today as a stacked deck',
+                ),
+              ),
+            ),
+          ),
         ),
       ],
     );
@@ -85,43 +95,6 @@ class _Greeting extends StatelessWidget {
     return Text(
       text,
       style: theme.textTheme.headline5,
-    );
-  }
-}
-
-class _RunsList extends ConsumerWidget {
-  _RunsList({
-    Key? key,
-    required this.programs,
-  })  : todayRuns = programs.todayRuns(),
-        super(key: key);
-
-  final List<Program> programs;
-  final List<Run> todayRuns;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final zonesState = ref.watch(zonesProvider);
-    return zonesState.when(
-      loading: () => const Center(
-        child: CircularProgressIndicator(),
-      ),
-      error: (_, __) => const Center(
-        child: Text('Something went wrong.'),
-      ),
-      data: (zones) {
-        return ListView.builder(
-          shrinkWrap: true,
-          primary: false,
-          itemCount: zones.length,
-          itemBuilder: (_, index) {
-            final item = zones[index];
-            return ListTile(
-              title: Text(item.name),
-            );
-          },
-        );
-      },
     );
   }
 }
