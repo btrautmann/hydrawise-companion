@@ -74,8 +74,6 @@ class CreateProgramPage extends ConsumerStatefulWidget {
     this.existingProgramId,
   }) : super(key: key);
 
-  /// If present, represents the ID of the
-  /// program being modified
   final int? existingProgramId;
 
   @override

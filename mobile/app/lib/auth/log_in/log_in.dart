@@ -7,12 +7,6 @@ import 'package:irri/auth/set_api_key.dart';
 
 part 'log_in_controller.dart';
 
-/// {@template log_in}
-/// Validates the provided API key and if valid,
-/// stores it using [SetApiKey] and returns true.
-///
-/// If the API key is *not* valid, returns false.
-/// {@endtemplate}
 class LogIn {
   LogIn({
     required HttpClient httpClient,
@@ -23,7 +17,6 @@ class LogIn {
   final HttpClient _httpClient;
   final SetApiKey _setApiKey;
 
-  /// {@macro log_in}
   Future<bool> call({
     required String apiKey,
   }) async {

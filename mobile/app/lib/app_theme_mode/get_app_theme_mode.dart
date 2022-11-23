@@ -1,9 +1,6 @@
 import 'package:core/core.dart';
 import 'package:flutter/material.dart';
 
-/// Obtains the current app [ThemeMode] from the provided
-/// [DataStorage]. If no mode has been set previously,
-/// defaults to [ThemeMode.system].
 class GetAppThemeMode {
   GetAppThemeMode(this._dataStorage);
 

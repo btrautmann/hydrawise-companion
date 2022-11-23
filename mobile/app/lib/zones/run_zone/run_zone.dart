@@ -5,7 +5,6 @@ import 'package:irri/zones/providers.dart';
 
 part 'run_zone_controller.dart';
 
-// ignore: one_member_abstracts
 class RunZone {
   RunZone({
     required HttpClient httpClient,
