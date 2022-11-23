@@ -2,7 +2,6 @@ import 'package:api_models/api_models.dart';
 import 'package:clock/clock.dart';
 import 'package:core_ui/core_ui.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:irri/programs/extensions.dart';
 import 'package:irri/programs/providers.dart';
@@ -62,9 +61,6 @@ class _Runs extends StatelessWidget {
         const VSpace(spacing: 16),
         _RunsList(
           programs: programs,
-          onRunTapped: (run) {
-            GoRouter.of(context).push('/zone/${run.zoneId}');
-          },
         ),
       ],
     );
@@ -97,13 +93,11 @@ class _RunsList extends ConsumerWidget {
   _RunsList({
     Key? key,
     required this.programs,
-    required this.onRunTapped,
   })  : todayRuns = programs.todayRuns(),
         super(key: key);
 
   final List<Program> programs;
   final List<Run> todayRuns;
-  final ValueSetter<Run> onRunTapped;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

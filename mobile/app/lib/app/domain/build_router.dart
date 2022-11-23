@@ -19,58 +19,62 @@ class BuildAppRouter {
             key: state.pageKey,
             child: const SplashPage(),
           ),
-        ),
-        GoRoute(
-          path: '/login',
-          pageBuilder: (context, state) => CustomTransitionPage<void>(
-            key: state.pageKey,
-            child: const LoginPage(),
-            transitionsBuilder: (_, __, ___, child) => child,
-          ),
-        ),
-        // Allow for `/home` to be invoked by itself so
-        // we can decide the "default" tab in one place
-        GoRoute(
-          path: '/home',
-          redirect: (state) => '/home/0',
-        ),
-        GoRoute(
-          path: '/home/:tid',
-          pageBuilder: (context, state) {
-            final tabIndex = state.params['tid'] ?? '0';
-            return CustomTransitionPage<void>(
-              key: state.pageKey,
-              child: HomePage(
-                selectedTabIndex: int.parse(tabIndex),
+          routes: [
+            GoRoute(
+              path: 'login',
+              pageBuilder: (context, state) => NoTransitionPage<void>(
+                key: state.pageKey,
+                child: const LoginPage(),
               ),
-              transitionsBuilder: (_, __, ___, child) => child,
-            );
-          },
-        ),
-        GoRoute(
-          path: '/zone/:zid',
-          pageBuilder: (context, state) => MaterialPage<void>(
-            key: state.pageKey,
-            child: RunZonesPage(
-              zoneId: int.parse(state.params['zid']!),
             ),
-          ),
-        ),
-        GoRoute(
-          path: '/create_program',
-          pageBuilder: (context, state) => MaterialPage<void>(
-            key: state.pageKey,
-            child: const CreateProgramPage(),
-          ),
-        ),
-        GoRoute(
-          path: '/update_program/:pid',
-          pageBuilder: (context, state) => MaterialPage<void>(
-            key: state.pageKey,
-            child: CreateProgramPage(
-              existingProgramId: int.parse(state.params['pid']!),
+            // Allow for `home` to be invoked by itself so
+            // we can decide the "default" tab in one place
+            GoRoute(
+              path: 'home',
+              redirect: (state) => '/home/0',
+              routes: [
+                GoRoute(
+                  path: ':tid',
+                  pageBuilder: (context, state) {
+                    final tabIndex = state.params['tid'] ?? '0';
+                    return NoTransitionPage<void>(
+                      key: state.pageKey,
+                      child: HomePage(
+                        selectedTabIndex: int.parse(tabIndex),
+                      ),
+                    );
+                  },
+                  routes: [
+                    GoRoute(
+                      path: 'zone/:zid',
+                      pageBuilder: (context, state) => MaterialPage<void>(
+                        key: state.pageKey,
+                        child: RunZonesPage(
+                          zoneId: int.parse(state.params['zid']!),
+                        ),
+                      ),
+                    ),
+                    GoRoute(
+                      path: 'create_program',
+                      pageBuilder: (context, state) => MaterialPage<void>(
+                        key: state.pageKey,
+                        child: const CreateProgramPage(),
+                      ),
+                    ),
+                    GoRoute(
+                      path: 'update_program/:pid',
+                      pageBuilder: (context, state) => MaterialPage<void>(
+                        key: state.pageKey,
+                        child: CreateProgramPage(
+                          existingProgramId: int.parse(state.params['pid']!),
+                        ),
+                      ),
+                    ),
+                  ],
+                )
+              ],
             ),
-          ),
+          ],
         ),
       ],
       errorPageBuilder: (context, state) => MaterialPage<void>(

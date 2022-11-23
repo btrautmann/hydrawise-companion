@@ -33,44 +33,43 @@ final getZonesProvider = Provider<GetZones>((ref) {
 final zoneRefreshIntervalProvider = Provider<Duration?>((ref) {
   final lifecycleState = ref.watch(appLifecycleStateProvider);
   if (lifecycleState == AppLifecycleState.resumed) {
-    return const Duration(
-      seconds: 60,
-    );
+    return const Duration(minutes: 1);
   }
   return null;
 });
+
+const _zonesKey = 'zones';
 
 final zonesStoreProvider = Provider<Store<String, List<Zone>>>((ref) {
   final prefs = ref.watch(sharedPreferencesProvider);
   return Store.from(
     fetch: (_) => Stream.fromFuture(ref.watch(getZonesProvider).call()),
     sourceOfTruth: SourceOfTruth.of(
-      read: (key) => prefs.getStringStream(key).map(
-        (event) {
-          if (event == null) {
-            return List<Zone>.empty();
-          }
-          final list = jsonDecode(event) as List<dynamic>;
-          final zones = list.map((e) => Zone.fromJson(e as Map<String, dynamic>));
-          return zones.toList();
-        },
-      ),
-      write: (key, value) async => prefs.setString(
-        key,
-        jsonEncode(value.map((e) => e.toJson()).toList()),
-      ),
+      read: (key) => prefs.getStringStream(key).map((json) => json.toZones()),
+      write: (key, value) async => prefs.setString(key, jsonEncode(value.map((e) => e.toJson()).toList())),
       delete: (key) async => prefs.remove(key),
       deleteAll: () async => prefs.clear(),
     ),
   );
 });
 
+extension on String? {
+  List<Zone> toZones() {
+    if (this == null) {
+      return List<Zone>.empty();
+    }
+    final list = jsonDecode(this!) as List<dynamic>;
+    final zones = list.map((e) => Zone.fromJson(e as Map<String, dynamic>));
+    return zones.toList();
+  }
+}
+
 class ZonesNotifier extends StateNotifier<AsyncValue<List<Zone>>> {
   ZonesNotifier({
-    required Store<String, List<Zone>> getCustomer,
+    required Store<String, List<Zone>> zonesStore,
     required AuthState authState,
     required Duration? refreshInterval,
-  })  : _zonesStore = getCustomer,
+  })  : _zonesStore = zonesStore,
         _authState = authState,
         _refreshInterval = refreshInterval,
         super(const AsyncValue.loading()) {
@@ -84,18 +83,23 @@ class ZonesNotifier extends StateNotifier<AsyncValue<List<Zone>>> {
 
   Future<void> _init() async {
     if (_authState.isAuthenticated && _refreshInterval != null) {
-      await _loadZones();
+      unawaited(_streamZones());
       _timer = Timer.periodic(_refreshInterval!, (timer) {
-        _loadZones();
+        _zonesStore.fresh(_zonesKey);
       });
     }
   }
 
-  Future<void> _loadZones() async {
+  Future<void> _streamZones() async {
     state = const AsyncValue.loading();
     try {
-      final response = await _zonesStore.fresh('zones');
-      state = AsyncValue.data((response as Data<List<Zone>>).value);
+      _zonesStore.stream(request: StoreRequest.cached(key: _zonesKey, refresh: true)).listen((event) {
+        if (event is Data<List<Zone>>) {
+          state = AsyncValue.data(event.value);
+        } else if (event is Error<List<Zone>>) {
+          state = AsyncValue.error(event.error.toString());
+        }
+      });
     } on Exception catch (e) {
       state = AsyncValue.error(e);
     }
@@ -110,7 +114,7 @@ class ZonesNotifier extends StateNotifier<AsyncValue<List<Zone>>> {
 
 final zonesProvider = StateNotifierProvider<ZonesNotifier, AsyncValue<List<Zone>>>((ref) {
   return ZonesNotifier(
-    getCustomer: ref.watch(zonesStoreProvider),
+    zonesStore: ref.watch(zonesStoreProvider),
     authState: ref.watch(authProvider),
     refreshInterval: ref.watch(zoneRefreshIntervalProvider),
   );

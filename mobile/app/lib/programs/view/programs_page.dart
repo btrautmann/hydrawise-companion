@@ -3,20 +3,22 @@ import 'package:core_ui/core_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:irri/home/providers.dart';
 import 'package:irri/programs/providers.dart';
 import 'package:irri/zones/providers.dart';
 
-class ProgramsPage extends StatelessWidget {
+class ProgramsPage extends ConsumerWidget {
   const ProgramsPage({Key? key}) : super(key: key);
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       body: const SafeArea(
         child: ProgramsPageView(),
       ),
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),
-        onPressed: () => GoRouter.of(context).push('/create_program'),
+        onPressed: () =>
+            GoRouter.of(context).go('/home/${ref.read(homeStateProvider).selectedTabIndex}/create_program'),
       ),
     );
   }
@@ -110,13 +112,15 @@ class _ZonesAndPrograms extends ConsumerWidget {
         if (item is Zone) {
           return ListTile(
             title: Text(item.name),
-            onTap: () => GoRouter.of(context).push('/zone/${item.id}'),
+            onTap: () => GoRouter.of(context).go(
+              '/home/${ref.read(homeStateProvider).selectedTabIndex}/zone/${item.id}',
+            ),
           );
         } else if (item is Program) {
           return ListTile(
             title: Text(item.name),
-            onTap: () => GoRouter.of(context).push(
-              '/update_program/${item.id}',
+            onTap: () => GoRouter.of(context).go(
+              '/home/${ref.read(homeStateProvider).selectedTabIndex}/update_program/${item.id}',
             ),
           );
         }
