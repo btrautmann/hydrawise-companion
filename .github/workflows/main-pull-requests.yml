@@ -23,18 +23,12 @@ jobs:
           ssh-private-key: ${{secrets.SSH_PRIVATE_KEY}}
       - uses: subosito/flutter-action@v1
         with:
-          flutter-version: '3.0.4'
+          flutter-version: '3.0.5'
           channel: stable
           
       - name: activate melos
         run: dart pub global activate melos && melos bs
             
-      - name: run flutter tests
-        run: melos exec --dir-exists="test" --flutter -- flutter test --test-randomize-ordering-seed random
-
-      - name: run dart tests
-        run: melos exec --dir-exists="test" --ignore="api_wrapper" --no-flutter -- dart test --test-randomize-ordering-seed random
-        
       - name: analyze flutter
         run: melos exec --flutter -- flutter analyze
 
