@@ -47,9 +47,6 @@ final zoneRefreshIntervalProvider = Provider<Duration?>((ref) {
 
 const _zonesKey = 'zones';
 
-// TODO(brandon): Consider a Store that can return a single Zone, which would allow
-// more granular invalidation. It could be backed by prefs, since no true endpoint
-// exists for a single zone.
 final zonesStoreProvider = Provider<Store<String, List<Zone>>>((ref) {
   final prefs = ref.watch(sharedPreferencesProvider);
   return Store.from(
