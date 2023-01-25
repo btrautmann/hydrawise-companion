@@ -6,7 +6,6 @@ import 'package:irri/programs/update_program/update_program.dart';
 
 part 'create_program_controller.dart';
 
-/// Creates a [Program] with the given name, frequency, and runs.
 class CreateProgram {
   CreateProgram({
     required HttpClient httpClient,

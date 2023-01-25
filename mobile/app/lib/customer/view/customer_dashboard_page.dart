@@ -94,7 +94,7 @@ class _Greeting extends StatelessWidget {
     }
     return Text(
       text,
-      style: theme.textTheme.headline5,
+      style: theme.textTheme.headlineSmall,
     );
   }
 }

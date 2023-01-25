@@ -5,8 +5,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:irri/auth/log_in/log_in.dart';
 import 'package:simple_animations/simple_animations.dart';
 
-/// Page for the user to enter their API key
-/// and gain access to the rest of the application
 class LoginPage extends StatelessWidget {
   const LoginPage({Key? key}) : super(key: key);
   @override
@@ -34,7 +32,7 @@ class _IrriName extends StatelessWidget {
       padding: const EdgeInsets.all(32),
       child: Text(
         'Irri',
-        style: Theme.of(context).textTheme.headline4,
+        style: Theme.of(context).textTheme.headlineMedium,
       ),
     );
   }

@@ -74,8 +74,6 @@ class CreateProgramPage extends ConsumerStatefulWidget {
     this.existingProgramId,
   }) : super(key: key);
 
-  /// If present, represents the ID of the
-  /// program being modified
   final int? existingProgramId;
 
   @override
@@ -317,7 +315,7 @@ class _DataTabState extends ConsumerState<_DataTab> with AutomaticKeepAliveClien
             padding: const EdgeInsets.only(left: 16, top: 8),
             child: Text(
               'Run on:',
-              style: Theme.of(context).textTheme.headline6,
+              style: Theme.of(context).textTheme.titleLarge,
             ),
           ),
           const Padding(
@@ -602,7 +600,7 @@ class _RunsTabState extends ConsumerState<_RunsTab> with AutomaticKeepAliveClien
                             );
                           },
                         );
-                        if (zone != null) {
+                        if (zone != null && mounted) {
                           entries.sortByTime();
                           final lastEntry = entries.isEmpty ? null : entries.last;
                           final newTime = await showTimePicker(

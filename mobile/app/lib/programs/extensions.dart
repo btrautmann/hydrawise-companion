@@ -3,8 +3,6 @@ import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
 
 extension ListProgramX on List<Program> {
-  /// Returns the runs that will run today,
-  /// if any
   List<Run> todayRuns() {
     final now = clock.now();
     final dayOfWeek = now.weekday;

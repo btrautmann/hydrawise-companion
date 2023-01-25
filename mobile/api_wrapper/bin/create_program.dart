@@ -81,7 +81,7 @@ String _insertProgramSql(
   int controllerId,
 ) =>
     'INSERT INTO program (customer_id, name, frequency, controller_id) '
-    'VALUES ($customerId, \'${request.programName}\', ARRAY${request.frequency.toString()}, $controllerId) '
+    'VALUES ($customerId, \'${request.programName}\', ARRAY${request.frequency}, $controllerId) '
     'RETURNING program_id;';
 
 String _insertRunSql(RunCreation runCreation, int programId) =>

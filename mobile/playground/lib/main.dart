@@ -122,7 +122,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 );
               },
             );
-            if (zone != null) {
+            if (zone != null && mounted) {
               entries.sortByTime();
               final lastEntry = entries.isEmpty ? null : entries.last;
               final TimeOfDay? newTime = await showTimePicker(

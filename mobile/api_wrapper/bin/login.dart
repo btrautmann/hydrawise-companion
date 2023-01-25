@@ -9,9 +9,6 @@ import 'package:shelf/shelf.dart';
 import '../db/queries/insert_customer.dart';
 import 'extensions.dart';
 
-/// Calls the customer details and customer states endpoints
-/// and if successful, inserts the customer and their zones
-/// into the database
 class Login {
   Login(this.db) : _insertCustomer = InsertCustomer(db);
 

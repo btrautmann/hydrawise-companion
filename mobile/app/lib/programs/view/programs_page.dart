@@ -41,7 +41,7 @@ class ProgramsPageView extends ConsumerWidget {
             padding: const EdgeInsets.all(16),
             child: Text(
               'Irrigation',
-              style: Theme.of(context).textTheme.headline5,
+              style: Theme.of(context).textTheme.headlineSmall,
             ),
           ),
           const VSpace(spacing: 16),

@@ -26,7 +26,7 @@ class LogInController extends StateNotifier<AsyncValue<Object?>> {
       }
       state = AsyncData(isSuccessful);
     } on Exception catch (e) {
-      state = AsyncError(e);
+      state = AsyncError(e, StackTrace.current);
     } finally {
       state = const AsyncData(null);
     }

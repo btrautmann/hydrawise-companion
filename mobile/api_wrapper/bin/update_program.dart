@@ -100,7 +100,7 @@ String _updateProgramSql(
   int customerId,
 ) =>
     'UPDATE program '
-    'SET name = \'${request.programName}\', frequency=ARRAY${request.frequency.toString()} '
+    'SET name = \'${request.programName}\', frequency=ARRAY${request.frequency} '
     'WHERE program_id = \'${request.programId}\';';
 
 String _getRunsSql(int programId) => 'SELECT * FROM run WHERE program_id=$programId;';

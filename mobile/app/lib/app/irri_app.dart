@@ -62,8 +62,8 @@ ThemeData _buildLightTheme(BuildContext context) {
   return base.copyWith(
     colorScheme: _lightColorScheme,
     textTheme: GoogleFonts.firaSansCondensedTextTheme(base.textTheme).copyWith(
-      headline5: GoogleFonts.pacifico(textStyle: base.textTheme.headline5),
-      headline4: GoogleFonts.pacifico(textStyle: base.textTheme.headline4),
+      headlineSmall: GoogleFonts.pacifico(textStyle: base.textTheme.headlineSmall),
+      headlineMedium: GoogleFonts.pacifico(textStyle: base.textTheme.headlineMedium),
     ),
   );
 }
@@ -73,8 +73,8 @@ ThemeData _buildDarkTheme(BuildContext context) {
   return base.copyWith(
     colorScheme: _darkColorScheme,
     textTheme: GoogleFonts.firaSansCondensedTextTheme(base.textTheme).copyWith(
-      headline5: GoogleFonts.pacifico(textStyle: base.textTheme.headline5),
-      headline4: GoogleFonts.pacifico(textStyle: base.textTheme.headline4),
+      headlineSmall: GoogleFonts.pacifico(textStyle: base.textTheme.headlineSmall),
+      headlineMedium: GoogleFonts.pacifico(textStyle: base.textTheme.headlineMedium),
     ),
   );
 }
