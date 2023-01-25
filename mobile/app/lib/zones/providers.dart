@@ -101,10 +101,12 @@ class ZonesNotifier extends StateNotifier<AsyncValue<List<Zone>>> {
     state = const AsyncValue.loading();
     try {
       _zonesStore.stream(request: StoreRequest.cached(key: _zonesKey, refresh: true)).listen((event) {
-        if (event is Data<List<Zone>>) {
-          state = AsyncValue.data(event.value);
-        } else if (event is Error<List<Zone>>) {
-          state = AsyncValue.error(event.error.toString(), StackTrace.current);
+        if (mounted) {
+          if (event is Data<List<Zone>>) {
+            state = AsyncValue.data(event.value);
+          } else if (event is Error<List<Zone>>) {
+            state = AsyncValue.error(event.error.toString(), StackTrace.current);
+          }
         }
       });
     } on Exception catch (e) {
