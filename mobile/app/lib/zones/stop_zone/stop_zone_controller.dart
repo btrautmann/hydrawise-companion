@@ -21,7 +21,7 @@ class StopZoneController extends StateNotifier<AsyncValue<void>> {
       // TODO(brandon): Is this the best way to do this?
       _ref.invalidate(zonesProvider);
     } on Exception catch (e) {
-      state = AsyncValue.error(e);
+      state = AsyncValue.error(e, StackTrace.current);
     } finally {
       state = const AsyncValue.data(null);
     }

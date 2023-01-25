@@ -32,7 +32,7 @@ class _IrriName extends StatelessWidget {
       padding: const EdgeInsets.all(32),
       child: Text(
         'Irri',
-        style: Theme.of(context).textTheme.headline4,
+        style: Theme.of(context).textTheme.headlineMedium,
       ),
     );
   }

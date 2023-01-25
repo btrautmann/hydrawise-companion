@@ -35,7 +35,7 @@ class CustomerNotifier extends StateNotifier<AsyncValue<Customer>> {
       final customer = await _getCustomer();
       state = AsyncValue.data(customer);
     } on Exception catch (e) {
-      state = AsyncValue.error(e);
+      state = AsyncValue.error(e, StackTrace.current);
     }
   }
 }

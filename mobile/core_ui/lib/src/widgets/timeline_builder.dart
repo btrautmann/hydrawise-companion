@@ -162,7 +162,7 @@ class _TimelineBuilderState extends State<TimelineBuilder> {
         final Color color;
         switch (nodeType) {
           case NodeType.overlap:
-            color = Theme.of(context).errorColor;
+            color = Theme.of(context).colorScheme.error;
             if (overlapsWithPrevious && overlapsWithNext) {
               location = DashLocation.all;
             } else if (overlapsWithPrevious) {
@@ -202,7 +202,7 @@ class _TimelineBuilderState extends State<TimelineBuilder> {
                   alignment: Alignment.center,
                   children: [
                     DashedVerticalLine(
-                      color: hasOverlap ? Theme.of(context).errorColor : Theme.of(context).dividerColor,
+                      color: hasOverlap ? Theme.of(context).colorScheme.error : Theme.of(context).dividerColor,
                       width: 1.5,
                       location: location,
                     ),

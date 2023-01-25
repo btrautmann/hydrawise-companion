@@ -28,7 +28,7 @@ class CreateProgramController extends StateNotifier<AsyncValue<Object?>> {
       _ref.invalidate(programsProvider);
       state = const AsyncData(success);
     } on Exception catch (e) {
-      state = AsyncError(e);
+      state = AsyncError(e, StackTrace.current);
     } finally {
       state = const AsyncData(null);
     }

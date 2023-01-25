@@ -32,7 +32,7 @@ class UpdateProgramController extends StateNotifier<AsyncValue<Object?>> {
       _ref.invalidate(programsProvider);
       state = const AsyncData(success);
     } on Exception catch (error) {
-      state = AsyncError(error);
+      state = AsyncError(error, StackTrace.current);
     } finally {
       state = const AsyncData(null);
     }

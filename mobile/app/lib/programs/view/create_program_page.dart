@@ -315,7 +315,7 @@ class _DataTabState extends ConsumerState<_DataTab> with AutomaticKeepAliveClien
             padding: const EdgeInsets.only(left: 16, top: 8),
             child: Text(
               'Run on:',
-              style: Theme.of(context).textTheme.headline6,
+              style: Theme.of(context).textTheme.titleLarge,
             ),
           ),
           const Padding(

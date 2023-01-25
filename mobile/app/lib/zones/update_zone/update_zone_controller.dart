@@ -23,7 +23,7 @@ class UpdateZoneController extends StateNotifier<AsyncValue<Object?>> {
       unawaited(_ref.read(zonesStoreProvider).fresh('zones'));
       state = AsyncData(isSuccessful);
     } on Exception catch (e) {
-      state = AsyncValue.error(e);
+      state = AsyncValue.error(e, StackTrace.current);
     } finally {
       state = const AsyncValue.data(null);
     }

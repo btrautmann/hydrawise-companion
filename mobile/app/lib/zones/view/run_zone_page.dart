@@ -276,7 +276,7 @@ class _ZoneHeader extends StatelessWidget {
                   padding: const EdgeInsets.all(16),
                   child: Text(
                     zone.number.toString(),
-                    style: Theme.of(context).textTheme.headline3?.copyWith(
+                    style: Theme.of(context).textTheme.displaySmall?.copyWith(
                           color: Theme.of(context).colorScheme.onSecondary,
                         ),
                   ),

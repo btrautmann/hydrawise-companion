@@ -104,11 +104,11 @@ class ZonesNotifier extends StateNotifier<AsyncValue<List<Zone>>> {
         if (event is Data<List<Zone>>) {
           state = AsyncValue.data(event.value);
         } else if (event is Error<List<Zone>>) {
-          state = AsyncValue.error(event.error.toString());
+          state = AsyncValue.error(event.error.toString(), StackTrace.current);
         }
       });
     } on Exception catch (e) {
-      state = AsyncValue.error(e);
+      state = AsyncValue.error(e, StackTrace.current);
     }
   }
 
