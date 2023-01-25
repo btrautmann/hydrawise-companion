@@ -600,7 +600,7 @@ class _RunsTabState extends ConsumerState<_RunsTab> with AutomaticKeepAliveClien
                             );
                           },
                         );
-                        if (zone != null) {
+                        if (zone != null && mounted) {
                           entries.sortByTime();
                           final lastEntry = entries.isEmpty ? null : entries.last;
                           final newTime = await showTimePicker(

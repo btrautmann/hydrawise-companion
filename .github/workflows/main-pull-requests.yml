@@ -20,7 +20,7 @@ jobs:
           ssh-private-key: ${{secrets.SSH_PRIVATE_KEY}}
       - uses: subosito/flutter-action@v2.4.0
         with:
-          flutter-version: '3.0.5'
+          flutter-version: '3.7.0'
           channel: stable
       - run: dart pub global activate melos && melos bs
       - run: melos exec --flutter -- flutter analyze
