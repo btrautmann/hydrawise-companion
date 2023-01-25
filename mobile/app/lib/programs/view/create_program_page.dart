@@ -155,13 +155,13 @@ class _CreateProgramPageState extends ConsumerState<CreateProgramPage> {
                 Tab(
                   child: Text(
                     'Data',
-                    style: Theme.of(context).textTheme.button?.copyWith(color: Theme.of(context).colorScheme.onSurface),
+                    style: Theme.of(context).textTheme.labelLarge?.copyWith(color: Theme.of(context).colorScheme.onSurface),
                   ),
                 ),
                 Tab(
                   child: Text(
                     'Runs',
-                    style: Theme.of(context).textTheme.button?.copyWith(color: Theme.of(context).colorScheme.onSurface),
+                    style: Theme.of(context).textTheme.labelLarge?.copyWith(color: Theme.of(context).colorScheme.onSurface),
                   ),
                 )
               ],
