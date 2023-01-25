@@ -58,7 +58,7 @@ class AuthListener extends ConsumerWidget {
 }
 
 ThemeData _buildLightTheme(BuildContext context) {
-  final base = ThemeData.light();
+  final base = ThemeData.light(useMaterial3: true);
   return base.copyWith(
     colorScheme: _lightColorScheme,
     textTheme: GoogleFonts.firaSansCondensedTextTheme(base.textTheme).copyWith(
@@ -69,7 +69,7 @@ ThemeData _buildLightTheme(BuildContext context) {
 }
 
 ThemeData _buildDarkTheme(BuildContext context) {
-  final base = ThemeData.dark();
+  final base = ThemeData.dark(useMaterial3: true);
   return base.copyWith(
     colorScheme: _darkColorScheme,
     textTheme: GoogleFonts.firaSansCondensedTextTheme(base.textTheme).copyWith(

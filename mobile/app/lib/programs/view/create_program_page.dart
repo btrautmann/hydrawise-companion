@@ -151,13 +151,18 @@ class _CreateProgramPageState extends ConsumerState<CreateProgramPage> {
               ),
             ],
             bottom: TabBar(
-              indicatorColor: Theme.of(context).colorScheme.primary,
-              tabs: const [
+              tabs: [
                 Tab(
-                  text: 'Data',
+                  child: Text(
+                    'Data',
+                    style: Theme.of(context).textTheme.button?.copyWith(color: Theme.of(context).colorScheme.onSurface),
+                  ),
                 ),
                 Tab(
-                  text: 'Runs',
+                  child: Text(
+                    'Runs',
+                    style: Theme.of(context).textTheme.button?.copyWith(color: Theme.of(context).colorScheme.onSurface),
+                  ),
                 )
               ],
               indicator: DotIndicator(
@@ -574,54 +579,59 @@ class _RunsTabState extends ConsumerState<_RunsTab> with AutomaticKeepAliveClien
                   padding: const EdgeInsets.all(8),
                   child: Align(
                     alignment: Alignment.bottomRight,
-                    child: FloatingActionButton(
-                      child: const Icon(Icons.add),
-                      onPressed: () async {
-                        final zone = await showDialog<Zone>(
-                          context: context,
-                          builder: (_) {
-                            return Dialog(
-                              child: ListView.builder(
-                                shrinkWrap: true,
-                                itemCount: zones.length,
-                                itemBuilder: (context, index) {
-                                  final zone = zones[index];
-                                  return InkWell(
-                                    onTap: () {
-                                      Navigator.of(context).pop(zone);
+                    child: SafeArea(
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 16),
+                        child: FloatingActionButton(
+                          child: const Icon(Icons.add),
+                          onPressed: () async {
+                            final zone = await showDialog<Zone>(
+                              context: context,
+                              builder: (_) {
+                                return Dialog(
+                                  child: ListView.builder(
+                                    shrinkWrap: true,
+                                    itemCount: zones.length,
+                                    itemBuilder: (context, index) {
+                                      final zone = zones[index];
+                                      return InkWell(
+                                        onTap: () {
+                                          Navigator.of(context).pop(zone);
+                                        },
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(8),
+                                          child: Text(zone.name),
+                                        ),
+                                      );
                                     },
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8),
-                                      child: Text(zone.name),
-                                    ),
-                                  );
-                                },
-                              ),
-                            );
-                          },
-                        );
-                        if (zone != null && mounted) {
-                          entries.sortByTime();
-                          final lastEntry = entries.isEmpty ? null : entries.last;
-                          final newTime = await showTimePicker(
-                            context: context,
-                            initialTime: lastEntry == null
-                                ? TimeOfDay.now()
-                                : TimeOfDay.fromDateTime(
-                                    DateTime.now().apply(lastEntry.time).add(lastEntry.duration),
                                   ),
-                          );
-                          if (newTime != null) {
-                            _addStartTime(
-                              TimelineEntry(
-                                time: newTime,
-                                duration: const Duration(minutes: 10),
-                              ),
-                              zone,
+                                );
+                              },
                             );
-                          }
-                        }
-                      },
+                            if (zone != null && mounted) {
+                              entries.sortByTime();
+                              final lastEntry = entries.isEmpty ? null : entries.last;
+                              final newTime = await showTimePicker(
+                                context: context,
+                                initialTime: lastEntry == null
+                                    ? TimeOfDay.now()
+                                    : TimeOfDay.fromDateTime(
+                                        DateTime.now().apply(lastEntry.time).add(lastEntry.duration),
+                                      ),
+                              );
+                              if (newTime != null) {
+                                _addStartTime(
+                                  TimelineEntry(
+                                    time: newTime,
+                                    duration: const Duration(minutes: 10),
+                                  ),
+                                  zone,
+                                );
+                              }
+                            }
+                          },
+                        ),
+                      ),
                     ),
                   ),
                 ),
