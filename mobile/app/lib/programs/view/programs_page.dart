@@ -1,4 +1,5 @@
 import 'package:api_models/api_models.dart';
+import 'package:collection/collection.dart';
 import 'package:core_ui/core_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -164,8 +165,16 @@ class _ZonesAndPrograms extends ConsumerWidget {
       return const CircularProgressIndicator();
     }
 
-    final zones = zonesState.asData!.value;
-    final programs = programsState.asData!.value;
+    final zones = zonesState.asData!.value.toList()
+      ..sortByCompare(
+        (z) => z.number,
+        (a, b) => a.compareTo(b),
+      );
+    final programs = programsState.asData!.value.toList()
+      ..sortByCompare(
+        (p) => p.name,
+        (a, b) => a.compareTo(b),
+      );
 
     final zonesAndPrograms = [...zones, ...programs];
 
@@ -178,6 +187,10 @@ class _ZonesAndPrograms extends ConsumerWidget {
         if (item is Zone) {
           return ListTile(
             title: Text(item.name),
+            leading: CircleBackground(
+              color: Theme.of(context).colorScheme.secondary,
+              child: Text(item.number.toString()),
+            ),
             trailing: PopupMenuButton(
               onSelected: (_) {
                 showDialog(
@@ -197,6 +210,10 @@ class _ZonesAndPrograms extends ConsumerWidget {
           );
         } else if (item is Program) {
           return ListTile(
+            leading: CircleBackground(
+              color: Theme.of(context).colorScheme.tertiary,
+              child: Text(item.name.characters.first),
+            ),
             title: Text(item.name),
             onTap: () => GoRouter.of(context).go(
               '/home/update_program/${item.id}',
