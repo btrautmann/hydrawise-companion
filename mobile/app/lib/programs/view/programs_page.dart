@@ -13,13 +13,10 @@ class ProgramsPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
-      body: const SafeArea(
-        child: ProgramsPageView(),
-      ),
+      body: const SafeArea(child: ProgramsPageView()),
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),
-        onPressed: () =>
-            GoRouter.of(context).go('/home/create_program'),
+        onPressed: () => GoRouter.of(context).go('/home/create_program'),
       ),
     );
   }
@@ -29,49 +26,45 @@ class ProgramsPageView extends ConsumerWidget {
   const ProgramsPageView({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final zonesState = ref.watch(
-      zonesProvider,
-    );
-    return Center(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: Text(
-              'Irri',
-              style: Theme.of(context).textTheme.headlineSmall,
-            ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(16),
+          child: Row(
+            children: [
+              Expanded(
+                child: Text(
+                  'Irri',
+                  style: Theme.of(context).textTheme.headlineSmall,
+                ),
+              ),
+              IconButton(
+                onPressed: () => GoRouter.of(context).go('/home/configuration'),
+                icon: const Icon(Icons.settings),
+              ),
+            ],
           ),
-          const VSpace(spacing: 16),
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: HStretch(
-              child: ColoredBox(
-                color: Colors.yellow.withAlpha(50),
-                child: const Padding(
-                  padding: EdgeInsets.all(16),
-                  child: Text(
-                    '// TODO: \n'
-                    '- Tapping a Zone should bring up Run Zone, and allow for updates via a menu\n '
-                    '- Show menu on right of each cell allowing for updates ',
-                  ),
+        ),
+        const VSpace(spacing: 16),
+        Padding(
+          padding: const EdgeInsets.all(16),
+          child: HStretch(
+            child: ColoredBox(
+              color: Colors.yellow.withAlpha(50),
+              child: const Padding(
+                padding: EdgeInsets.all(16),
+                child: Text(
+                  '// TODO: \n'
+                  '- Tapping a Zone should bring up Run Zone, and allow for updates via a menu\n '
+                  '- Show menu on right of each cell allowing for updates ',
                 ),
               ),
             ),
           ),
-          zonesState.maybeWhen(
-            data: (zones) {
-              return _ZonesAndPrograms(
-                zones: zones,
-              );
-            },
-            orElse: () => const Center(
-              child: CircularProgressIndicator(),
-            ),
-          )
-        ],
-      ),
+        ),
+        const _ZonesAndPrograms(),
+      ],
     );
   }
 }
@@ -147,34 +140,60 @@ class RenameZoneDialog extends HookConsumerWidget {
 }
 
 class _ZonesAndPrograms extends ConsumerWidget {
-  const _ZonesAndPrograms({
-    Key? key,
-    required this.zones,
-  }) : super(key: key);
-
-  final List<Zone> zones;
+  const _ZonesAndPrograms({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final programsState = ref.watch(programsProvider);
-    final programs = programsState.asData?.value;
+    final zonesState = ref.watch(zonesProvider);
 
-    final zonesAndPrograms = [
-      ...zones,
-      ...?programs,
-    ];
+    final zonesError = zonesState.error;
+    final programsError = programsState.error;
+
+    if (zonesError != null || programsError != null) {
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(zonesError.toString()),
+          Text(programsError.toString()),
+        ],
+      );
+    }
+
+    if (zonesState.isLoading || programsState.isLoading) {
+      return const CircularProgressIndicator();
+    }
+
+    final zones = zonesState.asData!.value;
+    final programs = programsState.asData!.value;
+
+    final zonesAndPrograms = [...zones, ...programs];
+
     return ListView.builder(
       shrinkWrap: true,
       primary: false,
       itemCount: zonesAndPrograms.length,
-      itemBuilder: (_, index) {
+      itemBuilder: (context, index) {
         final item = zonesAndPrograms[index];
         if (item is Zone) {
           return ListTile(
             title: Text(item.name),
-            onTap: () {
-              showDialog(context: context, builder: (_) => RenameZoneDialog(zone: item));
-            },
+            trailing: PopupMenuButton(
+              onSelected: (_) {
+                showDialog(
+                  context: context,
+                  builder: (_) => RenameZoneDialog(zone: item),
+                );
+              },
+              icon: const Icon(Icons.more_vert),
+              itemBuilder: (context) => [
+                const PopupMenuItem(
+                  value: 'Rename',
+                  child: Text('Rename'),
+                ),
+              ],
+            ),
+            onTap: () => GoRouter.of(context).go('/home/zone/${item.id}'),
           );
         } else if (item is Program) {
           return ListTile(

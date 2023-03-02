@@ -19,7 +19,6 @@ class StopZone {
         _getZoneById = GetZoneById(db),
         _getCustomerById = GetCustomerById(db);
 
-
   final GetCustomerById _getCustomerById;
   final GetZoneById _getZoneById;
   final GetProgramsByCustomer _getProgramsByCustomerId;
@@ -78,10 +77,15 @@ class StopZone {
         );
         return Response.ok(
           jsonEncode(runZoneResponse),
+          headers: {'Content-Type': 'application/json'},
         );
       }
     }
-
-    return Response(stopResponse.statusCode, body: stopResponse.body);
+    print(stopResponse.body);
+    return Response(
+      stopResponse.statusCode,
+      body: jsonEncode(stopResponse.body),
+      headers: {'Content-Type': 'application/json'},
+    );
   }
 }
