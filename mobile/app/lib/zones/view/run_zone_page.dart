@@ -293,14 +293,13 @@ class _NextWaterText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (zone.isRunning) {
-      final endOfRun = clock.now().add(
-            Duration(seconds: zone.nextRunLengthSec),
-          );
+      final endOfRun = clock.now().add(Duration(seconds: zone.timeRemainingSec));
       final difference = clock.now().difference(endOfRun).abs();
       if (difference.inHours > 1) {
         return Text('Running for ${difference.inHours} more hours');
       } else if (difference.inMinutes >= 1) {
-        return Text('Running for ${difference.inMinutes} more minutes');
+        final pluralized = difference.inMinutes == 1 ? 'minute' : 'minutes';
+        return Text('Running for ${difference.inMinutes} more $pluralized');
       } else {
         return Text('Running for ${difference.inSeconds} more seconds');
       }

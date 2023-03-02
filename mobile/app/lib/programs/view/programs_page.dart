@@ -8,13 +8,13 @@ import 'package:irri/programs/providers.dart';
 import 'package:irri/zones/providers.dart';
 import 'package:irri/zones/update_zone/update_zone.dart';
 
-class ProgramsPage extends ConsumerWidget {
-  const ProgramsPage({Key? key}) : super(key: key);
+class HomePage extends ConsumerWidget {
+  const HomePage({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       body: const SafeArea(
-        child: ProgramsPageView(),
+        child: HomePageView(),
       ),
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),
@@ -24,8 +24,8 @@ class ProgramsPage extends ConsumerWidget {
   }
 }
 
-class ProgramsPageView extends ConsumerWidget {
-  const ProgramsPageView({Key? key}) : super(key: key);
+class HomePageView extends ConsumerWidget {
+  const HomePageView({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Center(
@@ -172,9 +172,22 @@ class _ZonesAndPrograms extends ConsumerWidget {
         if (item is Zone) {
           return ListTile(
             title: Text(item.name),
-            onTap: () {
-              GoRouter.of(context).go('/home/zone/${item.id}');
-            },
+            trailing: PopupMenuButton(
+              onSelected: (_) {
+                showDialog(
+                  context: context,
+                  builder: (_) => RenameZoneDialog(zone: item),
+                );
+              },
+              icon: const Icon(Icons.more_vert),
+              itemBuilder: (context) => [
+                const PopupMenuItem(
+                  value: 'Rename',
+                  child: Text('Rename'),
+                ),
+              ],
+            ),
+            onTap: () => GoRouter.of(context).go('/home/zone/${item.id}'),
           );
         } else if (item is Program) {
           return ListTile(

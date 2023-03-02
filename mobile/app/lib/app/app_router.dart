@@ -29,7 +29,7 @@ GoRouter appRouter = GoRouter(
           path: 'home',
           pageBuilder: (context, state) {
             return const NoTransitionPage<void>(
-              child: ProgramsPage(),
+              child: HomePage(),
             );
           },
           routes: [
