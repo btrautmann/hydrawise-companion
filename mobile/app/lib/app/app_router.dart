@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:irri/auth/view/login_page.dart';
+import 'package:irri/configuration/view/configuration_page.dart';
 import 'package:irri/error_page.dart';
 import 'package:irri/programs/view/create_program_page.dart';
 import 'package:irri/programs/view/programs_page.dart';
@@ -29,7 +30,7 @@ GoRouter appRouter = GoRouter(
           path: 'home',
           pageBuilder: (context, state) {
             return const NoTransitionPage<void>(
-              child: HomePage(),
+              child: ProgramsPage(),
             );
           },
           routes: [
@@ -56,6 +57,13 @@ GoRouter appRouter = GoRouter(
                 child: CreateProgramPage(
                   existingProgramId: int.parse(state.params['pid']!),
                 ),
+              ),
+            ),
+            GoRoute(
+              path: 'configuration',
+              pageBuilder: (context, state) => MaterialPage<void>(
+                key: state.pageKey,
+                child: const ConfigurationPage(),
               ),
             ),
           ],

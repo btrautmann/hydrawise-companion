@@ -8,14 +8,12 @@ import 'package:irri/programs/providers.dart';
 import 'package:irri/zones/providers.dart';
 import 'package:irri/zones/update_zone/update_zone.dart';
 
-class HomePage extends ConsumerWidget {
-  const HomePage({Key? key}) : super(key: key);
+class ProgramsPage extends ConsumerWidget {
+  const ProgramsPage({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
-      body: const SafeArea(
-        child: HomePageView(),
-      ),
+      body: const SafeArea(child: ProgramsPageView()),
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),
         onPressed: () => GoRouter.of(context).go('/home/create_program'),
@@ -24,41 +22,49 @@ class HomePage extends ConsumerWidget {
   }
 }
 
-class HomePageView extends ConsumerWidget {
-  const HomePageView({Key? key}) : super(key: key);
+class ProgramsPageView extends ConsumerWidget {
+  const ProgramsPageView({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Center(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: Text(
-              'Irri',
-              style: Theme.of(context).textTheme.headlineSmall,
-            ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(16),
+          child: Row(
+            children: [
+              Expanded(
+                child: Text(
+                  'Irri',
+                  style: Theme.of(context).textTheme.headlineSmall,
+                ),
+              ),
+              IconButton(
+                onPressed: () => GoRouter.of(context).go('/home/configuration'),
+                icon: const Icon(Icons.settings),
+              ),
+            ],
           ),
-          const VSpace(spacing: 16),
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: HStretch(
-              child: ColoredBox(
-                color: Colors.yellow.withAlpha(50),
-                child: const Padding(
-                  padding: EdgeInsets.all(16),
-                  child: Text(
-                    '// TODO: \n'
-                    '- Tapping a Zone should bring up Run Zone, and allow for updates via a menu\n '
-                    '- Show menu on right of each cell allowing for updates ',
-                  ),
+        ),
+        const VSpace(spacing: 16),
+        Padding(
+          padding: const EdgeInsets.all(16),
+          child: HStretch(
+            child: ColoredBox(
+              color: Colors.yellow.withAlpha(50),
+              child: const Padding(
+                padding: EdgeInsets.all(16),
+                child: Text(
+                  '// TODO: \n'
+                  '- Tapping a Zone should bring up Run Zone, and allow for updates via a menu\n '
+                  '- Show menu on right of each cell allowing for updates ',
                 ),
               ),
             ),
           ),
-          const _ZonesAndPrograms(),
-        ],
-      ),
+        ),
+        const _ZonesAndPrograms(),
+      ],
     );
   }
 }

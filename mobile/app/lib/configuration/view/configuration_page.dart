@@ -8,10 +8,9 @@ class ConfigurationPage extends StatelessWidget {
   const ConfigurationPage({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: SafeArea(
-        child: ConfigurationView(),
-      ),
+    return Scaffold(
+      appBar: AppBar(title: const Text('Settings')),
+      body: const SafeArea(child: ConfigurationView()),
     );
   }
 }
@@ -23,16 +22,7 @@ class ConfigurationView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
       children: [
-        Padding(
-          padding: const EdgeInsets.all(16),
-          child: Text(
-            'Configuration',
-            style: Theme.of(context).textTheme.headlineSmall,
-          ),
-        ),
-        const VSpace(spacing: 16),
         Padding(
           padding: const EdgeInsets.all(16),
           child: HStretch(
@@ -51,7 +41,7 @@ class ConfigurationView extends StatelessWidget {
         _AppThemeRow(),
         const Padding(
           padding: EdgeInsets.only(top: 8, bottom: 8),
-          child: Divider(),
+          child: Divider(height: 1),
         ),
         _LogOutRow(),
       ],
