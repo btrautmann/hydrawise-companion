@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:irri/home/providers.dart';
 import 'package:irri/programs/providers.dart';
 import 'package:irri/zones/providers.dart';
 import 'package:irri/zones/update_zone/update_zone.dart';
@@ -20,7 +19,7 @@ class ProgramsPage extends ConsumerWidget {
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),
         onPressed: () =>
-            GoRouter.of(context).go('/home/${ref.read(homeStateProvider).selectedTabIndex}/create_program'),
+            GoRouter.of(context).go('/home/create_program'),
       ),
     );
   }
@@ -40,7 +39,7 @@ class ProgramsPageView extends ConsumerWidget {
           Padding(
             padding: const EdgeInsets.all(16),
             child: Text(
-              'Irrigation',
+              'Irri',
               style: Theme.of(context).textTheme.headlineSmall,
             ),
           ),
@@ -181,7 +180,7 @@ class _ZonesAndPrograms extends ConsumerWidget {
           return ListTile(
             title: Text(item.name),
             onTap: () => GoRouter.of(context).go(
-              '/home/${ref.read(homeStateProvider).selectedTabIndex}/update_program/${item.id}',
+              '/home/update_program/${item.id}',
             ),
           );
         }

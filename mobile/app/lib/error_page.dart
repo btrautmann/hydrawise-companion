@@ -10,8 +10,14 @@ class ErrorPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Text('Error: $_exception'),
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Center(
+          child: Text(
+            'Error: $_exception',
+            textAlign: TextAlign.center,
+          ),
+        ),
       ),
     );
   }
