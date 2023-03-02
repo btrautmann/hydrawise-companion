@@ -11,6 +11,7 @@
             "program": "app/lib/main.dart",
             "flutterMode": "debug",
             "args": [
+                "--enable-impeller",
                 "--dart-define",
                 "BASE_URL=https://apiwrapper-5rvb357uza-uc.a.run.app/",
             ]
