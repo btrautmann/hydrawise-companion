@@ -79,9 +79,15 @@ class RunZone {
         );
         return Response.ok(
           jsonEncode(runZoneResponse),
+          headers: {'Content-Type': 'application/json'},
         );
       }
     }
-    return Response(runResponse.statusCode, body: runResponse.body);
+    print(runResponse.body);
+    return Response(
+      runResponse.statusCode,
+      body: jsonEncode(runResponse.body),
+      headers: {'Content-Type': 'application/json'},
+    );
   }
 }

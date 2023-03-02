@@ -37,7 +37,7 @@ GoRouter appRouter = GoRouter(
               path: 'zone/:zid',
               pageBuilder: (context, state) => MaterialPage<void>(
                 key: state.pageKey,
-                child: RunZonesPage(
+                child: RunZonePage(
                   zoneId: int.parse(state.params['zid']!),
                 ),
               ),

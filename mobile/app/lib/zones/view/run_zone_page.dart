@@ -7,8 +7,8 @@ import 'package:irri/zones/providers.dart';
 import 'package:irri/zones/run_zone/run_zone.dart';
 import 'package:irri/zones/stop_zone/stop_zone.dart';
 
-class RunZonesPage extends ConsumerWidget {
-  const RunZonesPage({
+class RunZonePage extends ConsumerWidget {
+  const RunZonePage({
     Key? key,
     required this.zoneId,
   }) : super(key: key);
@@ -22,10 +22,8 @@ class RunZonesPage extends ConsumerWidget {
       data: (zones) {
         final zone = zones.singleWhere((element) => element.id == zoneId);
         return Scaffold(
-          appBar: AppBar(
-            title: Text(zone.name),
-          ),
-          body: _RunZonesView(zone: zone),
+          appBar: AppBar(title: Text(zone.name)),
+          body: _RunZoneView(zone: zone),
         );
       },
       orElse: () {
@@ -37,8 +35,8 @@ class RunZonesPage extends ConsumerWidget {
   }
 }
 
-class _RunZonesView extends ConsumerStatefulWidget {
-  const _RunZonesView({
+class _RunZoneView extends ConsumerStatefulWidget {
+  const _RunZoneView({
     Key? key,
     required this.zone,
   }) : super(key: key);
@@ -46,63 +44,53 @@ class _RunZonesView extends ConsumerStatefulWidget {
   final Zone zone;
 
   @override
-  ConsumerState<_RunZonesView> createState() => _RunZonesViewState();
+  ConsumerState<_RunZoneView> createState() => _RunZonesViewState();
 }
 
-class _RunZonesViewState extends ConsumerState<_RunZonesView> {
+class _RunZonesViewState extends ConsumerState<_RunZoneView> {
   double selectedRunLengthInMinutes = 0;
 
   @override
   Widget build(BuildContext context) {
-    final zonesState = ref.watch(zonesProvider);
-    return zonesState.maybeWhen(
-      data: (zones) {
-        final selectedZone =
-            zones.singleWhere((element) => element.id == widget.zone.id);
-        return Center(
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              children: [
-                _ZoneHeader(zone: selectedZone),
-                Padding(
-                  padding: const EdgeInsets.only(top: 16),
-                  child: _NextWaterText(zone: selectedZone),
-                ),
-                if (!selectedZone.isRunning)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 16),
-                    child: _RunLengthSlider(
-                      zone: selectedZone,
-                      onChanged: (value) {
-                        selectedRunLengthInMinutes = value;
-                      },
-                    ),
-                  ),
-                _ZoneButtons(
-                  zone: selectedZone,
-                  onRunPressed: () {
-                    // TODO(brandon): Figure out correct way to get time from
-                    // slider
-                    ref.read(runZoneControllerProvider.notifier).runZone(
-                          zone: widget.zone,
-                          runLengthMinutes: selectedRunLengthInMinutes.toInt(),
-                        );
-                  },
-                  onStopPressed: () {
-                    ref.read(stopZoneControllerProvider.notifier).stopZone(
-                          zone: widget.zone,
-                        );
-                  },
-                ),
-              ],
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          children: [
+            _ZoneHeader(zone: widget.zone),
+            Padding(
+              padding: const EdgeInsets.only(top: 16),
+              child: _NextWaterText(zone: widget.zone),
             ),
-          ),
-        );
-      },
-      orElse: () {
-        return const Center(child: CircularProgressIndicator());
-      },
+            if (!widget.zone.isRunning)
+              Padding(
+                padding: const EdgeInsets.only(top: 16),
+                child: _RunLengthSlider(
+                  zone: widget.zone,
+                  onChanged: (value) {
+                    selectedRunLengthInMinutes = value;
+                  },
+                ),
+              ),
+            _ZoneButtons(
+              zone: widget.zone,
+              onRunPressed: () {
+                // TODO(brandon): Figure out correct way to get time from
+                // slider
+                ref.read(runZoneControllerProvider.notifier).runZone(
+                      zone: widget.zone,
+                      runLengthMinutes: selectedRunLengthInMinutes.toInt(),
+                    );
+              },
+              onStopPressed: () {
+                ref.read(stopZoneControllerProvider.notifier).stopZone(
+                      zone: widget.zone,
+                    );
+              },
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
@@ -127,9 +115,7 @@ class __RunLengthSliderState extends State<_RunLengthSlider> {
   @override
   void initState() {
     // TODO(brandon): Fix this hack
-    final maxValue = widget.zone.nextRunLengthSec == 0
-        ? 90
-        : widget.zone.nextRunLengthSec / 60;
+    final maxValue = widget.zone.nextRunLengthSec == 0 ? 90 : widget.zone.nextRunLengthSec / 60;
     _setCurrentValue(maxValue.toDouble());
     super.initState();
   }
