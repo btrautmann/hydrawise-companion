@@ -9,7 +9,7 @@ Middleware authentication(PostgreSQLConnection Function() db) {
       final headers = originalRequest.headers;
       final apiKey = headers['api_key'];
       print(originalRequest.url.path);
-      if (originalRequest.url.path == 'check_runs' || originalRequest.url.path == 'test_tasks') {
+      if (originalRequest.url.path == 'ping' || originalRequest.url.path == 'test_tasks') {
         print('Returning innerHandler');
         return innerHandler(originalRequest);
       }
