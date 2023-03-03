@@ -42,15 +42,6 @@
             "program": "app/lib/main.dart",
         },
         {
-            "name": "app tests",
-            "request": "launch",
-            "type": "dart",
-            "program": "app/test/",
-            "args": [
-                "--test-randomize-ordering-seed=random"
-            ]
-        },
-        {
             "name": "api wrapper",
             "request": "launch",
             "type": "dart",
