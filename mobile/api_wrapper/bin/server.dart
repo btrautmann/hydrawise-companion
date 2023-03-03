@@ -69,7 +69,7 @@ Future<void> main(List<String> args) async {
     ..put('/program', UpdateProgram(db))
     ..delete('/program', DeleteProgram(db))
     ..get('/customer', GetCustomer(db))
-    ..get('/test_tasks', TestTasks())
+    ..get('/test_tasks', TestTasks(dotEnv))
     ..get('/ping', Ping());
 
   final handler = const Pipeline()
