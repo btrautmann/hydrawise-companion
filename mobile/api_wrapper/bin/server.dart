@@ -7,7 +7,6 @@ import 'package:shelf/shelf_io.dart';
 import 'package:shelf_router/shelf_router.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 
-import 'check_runs.dart';
 import 'get_programs.dart';
 import 'middleware.dart';
 import 'ping.dart';
@@ -70,7 +69,6 @@ Future<void> main(List<String> args) async {
     ..put('/program', UpdateProgram(db))
     ..delete('/program', DeleteProgram(db))
     ..get('/customer', GetCustomer(db))
-    ..get('/check_runs', CheckRuns(db, dotEnv))
     ..get('/test_tasks', TestTasks())
     ..get('/ping', Ping());
 
