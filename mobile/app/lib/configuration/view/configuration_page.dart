@@ -39,10 +39,7 @@ class ConfigurationView extends StatelessWidget {
           ),
         ),
         _AppThemeRow(),
-        const Padding(
-          padding: EdgeInsets.only(top: 8, bottom: 8),
-          child: Divider(height: 1),
-        ),
+        const VSpace(spacing: 16),
         _LogOutRow(),
       ],
     );
@@ -65,10 +62,10 @@ class _AppThemeRow extends ConsumerWidget {
         icon = const Icon(Icons.dark_mode);
         break;
     }
-    return ListRow(
-      leadingIcon: CircleBackground(child: icon),
+    return ListTile(
+      leading: CircleBackground(child: icon),
       title: const Text('App theme'),
-      onTapped: () => showDialog<void>(
+      onTap: () => showDialog<void>(
         context: context,
         builder: (_) => const ChooseThemeModeDialog(),
       ),
@@ -89,34 +86,34 @@ class ChooseThemeModeDialog extends ConsumerWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            ListRow(
-              leadingIcon: const CircleBackground(
+            ListTile(
+              leading: const CircleBackground(
                 child: Icon(Icons.light_mode),
               ),
               title: const Text('Light mode'),
-              onTapped: () {
+              onTap: () {
                 ref.read(appStateProvider.notifier).setThemeMode(ThemeMode.light);
                 Navigator.pop(context);
               },
             ),
             const Divider(),
-            ListRow(
-              leadingIcon: const CircleBackground(
+            ListTile(
+              leading: const CircleBackground(
                 child: Icon(Icons.dark_mode),
               ),
               title: const Text('Dark mode'),
-              onTapped: () {
+              onTap: () {
                 ref.read(appStateProvider.notifier).setThemeMode(ThemeMode.dark);
                 Navigator.pop(context);
               },
             ),
             const Divider(),
-            ListRow(
-              leadingIcon: const CircleBackground(
+            ListTile(
+              leading: const CircleBackground(
                 child: Icon(Icons.settings),
               ),
               title: const Text('Follow system'),
-              onTapped: () {
+              onTap: () {
                 ref.read(appStateProvider.notifier).setThemeMode(ThemeMode.system);
                 Navigator.pop(context);
               },
@@ -131,14 +128,14 @@ class ChooseThemeModeDialog extends ConsumerWidget {
 class _LogOutRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return ListRow(
-      leadingIcon: const CircleBackground(
+    return ListTile(
+      leading: const CircleBackground(
         child: Icon(
           Icons.logout,
         ),
       ),
       title: const Text('Log out'),
-      onTapped: () => showDialog<void>(
+      onTap: () => showDialog<void>(
         context: context,
         builder: (_) => const LogOutDialog(),
       ),

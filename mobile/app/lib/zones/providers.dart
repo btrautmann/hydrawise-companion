@@ -89,16 +89,17 @@ class ZonesNotifier extends StateNotifier<AsyncValue<List<Zone>>> {
   Timer? _timer;
 
   Future<void> _init() async {
-    if (_authState.isAuthenticated && _refreshInterval != null) {
+    if (_authState.isAuthenticated) {
       unawaited(_streamZones());
-      _timer = Timer.periodic(_refreshInterval!, (timer) {
-        _zonesStore.fresh(_zonesKey);
-      });
+      if (_refreshInterval != null) {
+        _timer = Timer.periodic(_refreshInterval!, (timer) {
+          _zonesStore.fresh(_zonesKey);
+        });
+      }
     }
   }
 
   Future<void> _streamZones() async {
-    state = const AsyncValue.loading();
     try {
       _zonesStore.stream(request: StoreRequest.cached(key: _zonesKey, refresh: true)).listen((event) {
         if (mounted) {

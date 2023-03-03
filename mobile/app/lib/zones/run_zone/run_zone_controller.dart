@@ -13,14 +13,14 @@ class RunZoneController extends StateNotifier<AsyncValue<void>> {
 
   Future<void> runZone({
     required Zone zone,
-    required int runLengthMinutes,
+    required Duration runLength,
   }) async {
     try {
       state = const AsyncValue.loading();
 
       await _runZone(
         zone: zone,
-        runLengthSeconds: runLengthMinutes * 60,
+        runLengthSeconds: runLength.inSeconds,
       );
       // TODO(brandon): Is this the best way to do this?
       _ref.invalidate(zonesProvider);
