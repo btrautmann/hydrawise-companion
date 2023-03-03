@@ -205,6 +205,7 @@ class _ZonesAndPrograms extends ConsumerWidget {
               child: const Icon(Icons.add),
             ),
             title: const Text('Add Program'),
+            subtitle: const Text('Create a new irrigation program'),
             onTap: () => GoRouter.of(context).go('/home/create_program'),
           );
         }
