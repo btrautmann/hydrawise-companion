@@ -21,7 +21,7 @@ post '/create' do
   task = {
     app_engine_http_request: {
       http_method: 'POST',
-      absolute_uri: 'https://apiwrapper-5rvb357uza-uc.a.run.app/check_runs'
+      absolute_uri: 'https://apiwrapper-5rvb357uza-uc.a.run.app/ping'
     }
   }
 
