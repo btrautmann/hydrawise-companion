@@ -201,7 +201,7 @@ class _ZonesAndPrograms extends ConsumerWidget {
         } else {
           return ListTile(
             leading: CircleBackground(
-              color: Theme.of(context).colorScheme.tertiary,
+              color: Theme.of(context).colorScheme.primary,
               child: const Icon(Icons.add),
             ),
             title: const Text('Add Program'),

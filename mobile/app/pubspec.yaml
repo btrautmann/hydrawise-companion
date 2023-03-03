@@ -31,6 +31,7 @@ dependencies:
   shared_preferences: ^2.0.13
   simple_animations: ^5.0.0+2
   tab_indicator_styler: ^2.0.0
+  uuid: ^3.0.7
 
 dev_dependencies:
   flutter_lints: ^1.0.4
