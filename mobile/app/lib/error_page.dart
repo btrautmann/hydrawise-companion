@@ -24,7 +24,7 @@ class ErrorPage extends StatelessWidget {
                 ),
               ),
               TextButton(
-                onPressed: () => GoRouter.of(context).pop(),
+                onPressed: () => GoRouter.of(context).go('/home'),
                 child: const Text('Dismiss'),
               ),
             ],

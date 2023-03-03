@@ -13,12 +13,8 @@ class ProgramsPage extends ConsumerWidget {
   const ProgramsPage({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Scaffold(
-      body: const SafeArea(child: ProgramsPageView()),
-      floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.add),
-        onPressed: () => GoRouter.of(context).go('/home/create_program'),
-      ),
+    return const Scaffold(
+      body: SafeArea(child: ProgramsPageView()),
     );
   }
 }
@@ -47,24 +43,7 @@ class ProgramsPageView extends ConsumerWidget {
             ],
           ),
         ),
-        const VSpace(spacing: 16),
-        Padding(
-          padding: const EdgeInsets.all(16),
-          child: HStretch(
-            child: ColoredBox(
-              color: Colors.yellow.withAlpha(50),
-              child: const Padding(
-                padding: EdgeInsets.all(16),
-                child: Text(
-                  '// TODO: \n'
-                  '- Tapping a Zone should bring up Run Zone, and allow for updates via a menu\n '
-                  '- Show menu on right of each cell allowing for updates ',
-                ),
-              ),
-            ),
-          ),
-        ),
-        const _ZonesAndPrograms(),
+        const Align(child: _ZonesAndPrograms()),
       ],
     );
   }
@@ -176,7 +155,7 @@ class _ZonesAndPrograms extends ConsumerWidget {
         (a, b) => a.compareTo(b),
       );
 
-    final zonesAndPrograms = [...zones, ...programs];
+    final zonesAndPrograms = [...zones, ...programs, 1];
 
     return ListView.builder(
       shrinkWrap: true,
@@ -215,12 +194,22 @@ class _ZonesAndPrograms extends ConsumerWidget {
               child: Text(item.name.characters.first),
             ),
             title: Text(item.name),
-            onTap: () => GoRouter.of(context).go(
-              '/home/update_program/${item.id}',
+            onTap: () => ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('TODO: Update Program')),
+            ),
+          );
+        } else {
+          return ListTile(
+            leading: CircleBackground(
+              color: Theme.of(context).colorScheme.tertiary,
+              child: const Icon(Icons.add),
+            ),
+            title: const Text('Add Program'),
+            onTap: () => ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('TODO: Create Program')),
             ),
           );
         }
-        throw Exception('Item not a zone or program');
       },
     );
   }
