@@ -15,18 +15,18 @@ post '/create' do
   client = Google::Cloud::Tasks.cloud_tasks
 
   # Construct the fully qualified queue name.
-  parent = client.queue_path project: 'irri-356401', location: 'us-east1', queue: 'runs-queue'
+  parent = client.queue_path project: ENV['CLOUD_PROJECT_NAME'], location: ENV['QUEUE_LOCATION'], queue: ENV['QUEUE_ID']
 
   # Construct task.
   task = {
-    app_engine_http_request: {
-      http_method: 'POST',
-      absolute_uri: 'https://apiwrapper-5rvb357uza-uc.a.run.app/ping'
+    http_request: {
+      http_method: 'GET',
+      url: ENV['IRRI_API_ENDPOINT']
     }
   }
 
   # Add payload to task body.
-#   task[:app_engine_http_request][:body] = payload if payload
+  #   task[:app_engine_http_request][:body] = payload if payload
 
   # Add scheduled time to task.
   #   if seconds
