@@ -201,13 +201,12 @@ class _ZonesAndPrograms extends ConsumerWidget {
         } else {
           return ListTile(
             leading: CircleBackground(
-              color: Theme.of(context).colorScheme.tertiary,
+              color: Theme.of(context).colorScheme.primary,
               child: const Icon(Icons.add),
             ),
             title: const Text('Add Program'),
-            onTap: () => ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('TODO: Create Program')),
-            ),
+            subtitle: const Text('Create a new irrigation program'),
+            onTap: () => GoRouter.of(context).go('/home/create_program'),
           );
         }
       },
