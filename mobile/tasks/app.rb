@@ -26,7 +26,7 @@ post '/create' do
   }
 
   # Add payload to task body.
-  task[:app_engine_http_request][:body] = payload if payload
+#   task[:app_engine_http_request][:body] = payload if payload
 
   # Add scheduled time to task.
   #   if seconds
