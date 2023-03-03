@@ -205,9 +205,7 @@ class _ZonesAndPrograms extends ConsumerWidget {
               child: const Icon(Icons.add),
             ),
             title: const Text('Add Program'),
-            onTap: () => ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('TODO: Create Program')),
-            ),
+            onTap: () => GoRouter.of(context).go('/home/create_program'),
           );
         }
       },
