@@ -27,7 +27,9 @@ class CreateProgramController extends StateNotifier<AsyncValue<Object?>> {
         runGroups: runGroups,
       );
       // TODO(brandon): Is this the best way to do this?
-      _ref.invalidate(programsProvider);
+      _ref
+        ..invalidate(programsProvider)
+        ..invalidate(zonesProvider);
       state = const AsyncData(createProgramSuccess);
     } on Exception catch (e) {
       state = AsyncError(e, StackTrace.current);

@@ -2,6 +2,7 @@ import 'package:api_models/api_models.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:irri/app/providers.dart';
 import 'package:irri/programs/create_program/create_program.dart';
+import 'package:irri/programs/delete_program/delete_program.dart';
 import 'package:irri/programs/get_programs.dart';
 import 'package:irri/programs/update_program/update_program.dart';
 
@@ -19,6 +20,12 @@ final createProgramProvider = Provider<CreateProgram>((ref) {
 
 final updateProgramProvider = Provider<UpdateProgram>((ref) {
   return UpdateProgram(
+    client: ref.watch(httpClientProvider),
+  );
+});
+
+final deleteProgramProvider = Provider<DeleteProgram>((ref) {
+  return DeleteProgram(
     client: ref.watch(httpClientProvider),
   );
 });

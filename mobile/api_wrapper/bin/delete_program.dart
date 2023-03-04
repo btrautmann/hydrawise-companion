@@ -26,11 +26,12 @@ class DeleteProgram {
       );
 
       return Response.ok(
-        json.encode(
+        jsonEncode(
           <String, String>{
             'message': 'program deleted',
           },
         ),
+        headers: {'Content-Type': 'application/json'},
       );
     });
   }

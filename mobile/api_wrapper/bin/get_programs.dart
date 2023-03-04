@@ -25,7 +25,7 @@ class GetPrograms {
         for (final row in programsResult) {
           final map = row.toColumnMap();
           final programId = map['program_id'] as int;
-          final runGroupResult = await connection.query(_getRunsSql(programId));
+          final runGroupResult = await connection.query(_getRunGroupsSql(programId));
           final runs = <RunGroup>[];
           for (final row in runGroupResult) {
             final map = row.toColumnMap();
@@ -63,4 +63,4 @@ class GetPrograms {
 
 String _getProgramsSql(int customerId) => 'SELECT * FROM program WHERE customer_id=$customerId;';
 
-String _getRunsSql(int programId) => 'SELECT * FROM run_group WHERE program_id=\'$programId\';';
+String _getRunGroupsSql(int programId) => 'SELECT * FROM run_group WHERE program_id=\'$programId\';';
