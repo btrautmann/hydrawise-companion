@@ -3,7 +3,7 @@ import 'package:postgres/postgres.dart';
 import '../../bin/postgres_extensions.dart';
 import '../models/db_customer.dart';
 import '../models/db_program.dart';
-import '../models/db_run.dart';
+import '../models/db_run_group.dart';
 
 class GetProgramsByCustomer {
   GetProgramsByCustomer(this.db);
@@ -20,16 +20,15 @@ class GetProgramsByCustomer {
       for (final programRow in programsResult) {
         final programMap = programRow.toColumnMap();
         final programId = programMap['program_id'] as int;
-        final runsResult = await connection.query('SELECT * FROM run WHERE program_id=$programId;');
-        final runs = <DbRun>[];
+        final runsResult = await connection.query('SELECT * FROM run_group WHERE program_id=$programId;');
+        final runs = <DbRunGroup>[];
         for (final runRow in runsResult) {
           final runMap = runRow.toColumnMap();
           runs.add(
-            DbRun(
-              id: runMap['run_id'],
+            DbRunGroup(
+              id: runMap['run_group_id'],
               programId: runMap['program_id'],
-              zoneId: runMap['zone_id'],
-              durationSec: runMap['duration_sec'],
+              durationSeconds: runMap['duration_sec'],
               startHour: runMap['start_hour'],
               startMinute: runMap['start_minute'],
               lastRunTime: runMap['last_run_time'],
@@ -42,7 +41,6 @@ class GetProgramsByCustomer {
             customerId: programMap['customer_id'],
             name: programMap['name'],
             frequency: programMap['frequency'],
-            lastRunTime: programMap['last_run_time'],
             runs: runs,
           ),
         );

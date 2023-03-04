@@ -61,7 +61,7 @@ class GetCustomer {
           isRunning: status.zones.singleWhere((e) => e.id == z.id).secondsUntilNextRun == 1,
           timeRemainingSec: status.zones.singleWhere((e) => e.id == z.id).lengthOfNextRunTimeOrTimeRemaining,
           nextRunStart: nextRun?.time.toString(),
-          nextRunLengthSec: nextRun?.run.durationSec ?? 0,
+          nextRunLengthSec: nextRun?.duration.inSeconds ?? 0,
         );
       },
     ).toList();

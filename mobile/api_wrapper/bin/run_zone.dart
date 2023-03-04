@@ -74,7 +74,7 @@ class RunZone {
             isRunning: hZone.secondsUntilNextRun == 1,
             timeRemainingSec: runZoneRequest.runLengthSeconds,
             nextRunStart: nextRun?.time.toString(),
-            nextRunLengthSec: nextRun?.run.durationSec ?? 0,
+            nextRunLengthSec: nextRun?.duration.inSeconds ?? 0,
           ),
         );
         return Response.ok(

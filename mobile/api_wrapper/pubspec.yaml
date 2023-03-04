@@ -9,10 +9,9 @@ environment:
 
 dependencies:
   api_models:
-    git:
-      url: https://github.com/btrautmann/irri-models.git
-      ref: main
+    path: /Users/brandontrautmann/Development/irri-models
   args: ^2.0.0
+  collection: ^1.17.1
   dotenv: ^4.0.1
   http: ^0.13.4
   hydrawise: ^0.0.1

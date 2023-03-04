@@ -17,7 +17,7 @@ class UpdateProgram {
     required int programId,
     required String name,
     required List<int> frequency,
-    required List<RunCreation> runGroups,
+    required List<RunGroupCreation> runGroups,
   }) async {
     final response = await _client.put<Map<String, dynamic>>(
       'program',

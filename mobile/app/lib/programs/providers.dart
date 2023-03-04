@@ -29,13 +29,12 @@ FutureProvider<Program?> existingProgramProvider(int? programId) {
       if (programId == null) {
         return null;
       }
-      final programs = ref.watch(programsProvider);
-      return programs.when(
+      final programs = ref.read(programsProvider);
+      return programs.maybeWhen(
         data: (programs) {
           return programs.singleWhere((p) => p.id == programId);
         },
-        error: (_, __) => null,
-        loading: () => null,
+        orElse: () => null,
       );
     },
   );

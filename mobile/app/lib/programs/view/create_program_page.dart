@@ -1,33 +1,113 @@
+import 'dart:async';
+
 import 'package:api_models/api_models.dart';
 import 'package:collection/collection.dart';
 import 'package:core_ui/core_ui.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:irri/programs/create_program/create_program.dart';
+import 'package:irri/programs/providers.dart';
+import 'package:irri/programs/update_program/update_program.dart';
 import 'package:irri/zones/providers.dart';
 import 'package:uuid/uuid.dart';
 
-class CreateProgramPage extends StatelessWidget {
-  const CreateProgramPage({super.key});
+class CreateProgramPage extends StatefulWidget {
+  const CreateProgramPage({super.key, this.programId});
+
+  final int? programId;
+
+  @override
+  State<CreateProgramPage> createState() => _CreateProgramPageState();
+}
+
+class _CreateProgramPageState extends State<CreateProgramPage> {
+  Program? _program;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Create Program'),
       ),
-      body: SafeArea(child: _CreateProgramView()),
+      body: SafeArea(
+        child: Builder(
+          builder: (context) {
+            final shouldFetch = widget.programId != null && _program == null;
+            if (shouldFetch) {
+              return _LoadProgramView(
+                programId: widget.programId!,
+                onProgramLoaded: (program) {
+                  setState(() {
+                    _program = program;
+                  });
+                },
+              );
+            }
+            return _CreateProgramView(program: _program);
+          },
+        ),
+      ),
     );
   }
 }
 
+class _LoadProgramView extends ConsumerWidget {
+  const _LoadProgramView({
+    required this.programId,
+    required this.onProgramLoaded,
+  });
+
+  final int programId;
+  final ValueSetter<Program> onProgramLoaded;
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final program = ref.read(existingProgramProvider(programId));
+    // ignore: cascade_invocations
+    program.maybeWhen(
+      orElse: () {},
+      data: (program) {
+        if (program != null) {
+          SchedulerBinding.instance.addPostFrameCallback((_) {
+            onProgramLoaded(program);
+          });
+        }
+      },
+    );
+    return const Center(child: CircularProgressIndicator());
+  }
+}
+
 class _CreateProgramView extends StatefulHookConsumerWidget {
+  const _CreateProgramView({required this.program});
+
+  final Program? program;
   @override
   ConsumerState<_CreateProgramView> createState() => _CreateProgramViewState();
 }
 
 class _CreateProgramViewState extends ConsumerState<_CreateProgramView> {
   var _frequency = List.generate(7, (index) => false);
-  var _runGroups = List.of(<_RunGroup>[]);
+  var _runGroups = <_RunGroup>[];
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.program != null) {
+      _frequency = List.generate(7, (index) => widget.program!.frequency.contains(index + 1));
+      _runGroups = widget.program!.runs
+          .map(
+            (r) => _RunGroup(
+              startTime: TimeOfDay(hour: r.startHour, minute: r.startMinute),
+              duration: Duration(seconds: r.durationSeconds),
+              zoneIds: r.zoneIds,
+            ),
+          )
+          .toList();
+    }
+  }
 
   String? error() {
     for (final g in _runGroups) {
@@ -49,7 +129,7 @@ class _CreateProgramViewState extends ConsumerState<_CreateProgramView> {
 
   @override
   Widget build(BuildContext context) {
-    final controller = useTextEditingController();
+    final controller = useTextEditingController(text: widget.program?.name);
     final controllerUpdates = useValueListenable(controller);
     final zonesState = ref.read(zonesProvider);
     if (zonesState.hasError) {
@@ -59,6 +139,38 @@ class _CreateProgramViewState extends ConsumerState<_CreateProgramView> {
       return const CircularProgressIndicator();
     }
     final zones = zonesState.asData!.value;
+    ref
+      ..listen<AsyncValue<Object?>>(
+        createProgramControllerProvider,
+        (_, state) => state.whenOrNull(
+          error: (error, stack) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(error.toString())),
+            );
+          },
+          data: (data) {
+            if (data == createProgramSuccess) {
+              GoRouter.of(context).pop();
+            }
+          },
+        ),
+      )
+      ..listen<AsyncValue<Object?>>(
+        updateProgramControllerProvider,
+        (_, state) => state.whenOrNull(
+          error: (error, stack) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(error.toString())),
+            );
+          },
+          data: (data) {
+            if (data == updateProgramSuccess) {
+              GoRouter.of(context).pop();
+            }
+          },
+        ),
+      );
+    final isLoading = ref.watch(createProgramControllerProvider).isLoading;
     return Padding(
       padding: const EdgeInsets.all(16),
       child: Column(
@@ -188,7 +300,7 @@ class _CreateProgramViewState extends ConsumerState<_CreateProgramView> {
                   _runGroups.isNotEmpty &&
                   possibleError == null;
               return Visibility(
-                visible: possibleError != null || canSubmit,
+                visible: (possibleError != null || canSubmit) && !isLoading,
                 child: const Divider(height: 0.5),
               );
             },
@@ -201,7 +313,7 @@ class _CreateProgramViewState extends ConsumerState<_CreateProgramView> {
                   _runGroups.isNotEmpty &&
                   possibleError == null;
               return Visibility(
-                visible: canSubmit,
+                visible: canSubmit && !isLoading,
                 child: ListTile(
                   contentPadding: EdgeInsets.zero,
                   leading: CircleBackground(
@@ -211,12 +323,52 @@ class _CreateProgramViewState extends ConsumerState<_CreateProgramView> {
                       color: Theme.of(context).colorScheme.onSurface,
                     ),
                   ),
-                  title: const Text('Done'),
-                  subtitle: Text('Create ${controllerUpdates.text}'),
+                  title: const Text('Tap to submit'),
+                  subtitle: Builder(
+                    builder: (context) {
+                      final verb = widget.program != null ? 'Update' : 'Create';
+                      return Text('$verb ${controllerUpdates.text}');
+                    },
+                  ),
                   onTap: () async {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Call create program')),
-                    );
+                    if (widget.program != null) {
+                      unawaited(
+                        ref.read(updateProgramControllerProvider.notifier).updateProgram(
+                              programId: widget.program!.id,
+                              name: controllerUpdates.text,
+                              frequency:
+                                  _frequency.mapIndexed((index, f) => f ? index + 1 : null).whereNotNull().toList(),
+                              runGroups: _runGroups
+                                  .map(
+                                    (e) => RunGroupCreation(
+                                      zoneIds: e.zoneIds,
+                                      durationSeconds: e.duration.inSeconds,
+                                      startHour: e.startTime.hour,
+                                      startMinute: e.startTime.minute,
+                                    ),
+                                  )
+                                  .toList(),
+                            ),
+                      );
+                    } else {
+                      unawaited(
+                        ref.read(createProgramControllerProvider.notifier).createProgram(
+                              name: controllerUpdates.text,
+                              frequency:
+                                  _frequency.mapIndexed((index, f) => f ? index + 1 : null).whereNotNull().toList(),
+                              runGroups: _runGroups
+                                  .map(
+                                    (e) => RunGroupCreation(
+                                      zoneIds: e.zoneIds,
+                                      durationSeconds: e.duration.inSeconds,
+                                      startHour: e.startTime.hour,
+                                      startMinute: e.startTime.minute,
+                                    ),
+                                  )
+                                  .toList(),
+                            ),
+                      );
+                    }
                   },
                 ),
               );

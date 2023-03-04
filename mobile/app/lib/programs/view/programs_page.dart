@@ -194,9 +194,7 @@ class _ZonesAndPrograms extends ConsumerWidget {
               child: Text(item.name.characters.first),
             ),
             title: Text(item.name),
-            onTap: () => ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('TODO: Update Program')),
-            ),
+            onTap: () => GoRouter.of(context).go('/home/update_program/${item.id}'),
           );
         } else {
           return ListTile(
