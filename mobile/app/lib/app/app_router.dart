@@ -51,6 +51,15 @@ GoRouter appRouter = GoRouter(
               ),
             ),
             GoRoute(
+              path: 'update_program/:pid',
+              pageBuilder: (context, state) => MaterialPage<void>(
+                key: state.pageKey,
+                child: CreateProgramPage(
+                  programId: int.parse(state.params['pid']!),
+                ),
+              ),
+            ),
+            GoRoute(
               path: 'configuration',
               pageBuilder: (context, state) => MaterialPage<void>(
                 key: state.pageKey,

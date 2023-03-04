@@ -3,6 +3,7 @@ import 'package:api_models/api_models.dart';
 import 'package:core/core.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:irri/programs/providers.dart';
+import 'package:irri/zones/providers.dart';
 
 part 'update_program_controller.dart';
 
@@ -17,7 +18,7 @@ class UpdateProgram {
     required int programId,
     required String name,
     required List<int> frequency,
-    required List<RunCreation> runGroups,
+    required List<RunGroupCreation> runGroups,
   }) async {
     final response = await _client.put<Map<String, dynamic>>(
       'program',

@@ -72,7 +72,7 @@ class StopZone {
             isRunning: hZone.secondsUntilNextRun == 1,
             timeRemainingSec: hZone.lengthOfNextRunTimeOrTimeRemaining,
             nextRunStart: nextRun?.time.toString(),
-            nextRunLengthSec: nextRun?.run.durationSec ?? 0,
+            nextRunLengthSec: nextRun?.duration.inSeconds ?? 0,
           ),
         );
         return Response.ok(

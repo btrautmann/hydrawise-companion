@@ -20,11 +20,9 @@ packages:
   api_models:
     dependency: "direct main"
     description:
-      path: "."
-      ref: main
-      resolved-ref: da9c506e573636335d81c016ebff4a2cbd513512
-      url: "https://github.com/btrautmann/irri-models.git"
-    source: git
+      path: "/Users/brandontrautmann/Development/irri-models"
+      relative: false
+    source: path
     version: "1.0.0"
   args:
     dependency: transitive

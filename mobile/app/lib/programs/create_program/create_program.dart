@@ -2,7 +2,7 @@ import 'package:api_models/api_models.dart';
 import 'package:core/core.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:irri/programs/providers.dart';
-import 'package:irri/programs/update_program/update_program.dart';
+import 'package:irri/zones/providers.dart';
 
 part 'create_program_controller.dart';
 
@@ -16,7 +16,7 @@ class CreateProgram {
   Future<Program> call({
     required String name,
     required List<int> frequency,
-    required List<RunCreation> runGroups,
+    required List<RunGroupCreation> runGroups,
   }) async {
     final response = await _httpClient.post<Map<String, dynamic>>(
       'program',
@@ -28,9 +28,7 @@ class CreateProgram {
     );
 
     if (response.isSuccess) {
-      final createProgramResponse = CreateProgramResponse.fromJson(
-        response.success!,
-      );
+      final createProgramResponse = CreateProgramResponse.fromJson(response.success!);
       return createProgramResponse.program;
     } else {
       throw Exception(response.failure);

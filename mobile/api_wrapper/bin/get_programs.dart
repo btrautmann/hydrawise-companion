@@ -4,13 +4,15 @@ import 'package:api_models/api_models.dart';
 import 'package:postgres/postgres.dart';
 import 'package:shelf/shelf.dart';
 
+import '../db/queries/get_runs_by_run_group_id.dart';
 import 'extensions.dart';
 import 'postgres_extensions.dart';
 
 class GetPrograms {
-  GetPrograms(this.db);
+  GetPrograms(this.db) : _getRunsByRunGroupId = GetRunsByRunGroupId(db);
 
   final PostgreSQLConnection Function() db;
+  final GetRunsByRunGroupId _getRunsByRunGroupId;
 
   Future<Response> call(Request request) async {
     final customerId = request.customerId;
@@ -23,18 +25,20 @@ class GetPrograms {
         for (final row in programsResult) {
           final map = row.toColumnMap();
           final programId = map['program_id'] as int;
-          final runsResult = await connection.query(_getRunsSql(programId));
-          final runs = <Run>[];
-          for (final row in runsResult) {
+          final runGroupResult = await connection.query(_getRunGroupsSql(programId));
+          final runs = <RunGroup>[];
+          for (final row in runGroupResult) {
             final map = row.toColumnMap();
+            final runGroupId = map['run_group_id'];
+            final runsForRunGroup = await _getRunsByRunGroupId(runGroupId);
             runs.add(
-              Run(
-                id: map['run_id'],
-                programId: map['program_id'],
-                zoneId: map['zone_id'],
-                durationSeconds: map['duration_sec'],
+              RunGroup(
+                id: runGroupId,
+                programId: programId,
+                zoneIds: runsForRunGroup.map((r) => r.zoneId).toList(),
                 startHour: map['start_hour'],
                 startMinute: map['start_minute'],
+                durationSeconds: map['duration_sec'],
                 lastRunTime: map['last_run_time'],
               ),
             );
@@ -59,4 +63,4 @@ class GetPrograms {
 
 String _getProgramsSql(int customerId) => 'SELECT * FROM program WHERE customer_id=$customerId;';
 
-String _getRunsSql(int programId) => 'SELECT * FROM run WHERE program_id=\'$programId\';';
+String _getRunGroupsSql(int programId) => 'SELECT * FROM run_group WHERE program_id=\'$programId\';';

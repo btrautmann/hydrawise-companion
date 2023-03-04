@@ -1,4 +1,4 @@
-import 'db_run.dart';
+import 'db_run_group.dart';
 
 class DbProgram {
   DbProgram({
@@ -6,7 +6,6 @@ class DbProgram {
     required this.customerId,
     required this.name,
     required this.frequency,
-    required this.lastRunTime,
     required this.runs,
   });
 
@@ -14,6 +13,5 @@ class DbProgram {
   final int customerId;
   final String name;
   final List<int> frequency;
-  final DateTime lastRunTime;
-  final List<DbRun> runs;
+  final List<DbRunGroup> runs;
 }

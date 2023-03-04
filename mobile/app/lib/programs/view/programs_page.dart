@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:irri/programs/delete_program/delete_program.dart';
 import 'package:irri/programs/providers.dart';
 import 'package:irri/zones/providers.dart';
 import 'package:irri/zones/update_zone/update_zone.dart';
@@ -194,9 +195,41 @@ class _ZonesAndPrograms extends ConsumerWidget {
               child: Text(item.name.characters.first),
             ),
             title: Text(item.name),
-            onTap: () => ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('TODO: Update Program')),
+            trailing: PopupMenuButton(
+              onSelected: (_) {
+                showDialog(
+                  context: context,
+                  builder: (context) {
+                    return AlertDialog(
+                      content: const Text('Are you sure?'),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                            ref.read(deleteProgramControllerProvider.notifier).deleteProgram(programId: item.id);
+                          },
+                          child: const Text('Yes'),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: const Text('No'),
+                        )
+                      ],
+                    );
+                  },
+                );
+              },
+              icon: const Icon(Icons.more_vert),
+              itemBuilder: (context) => [
+                const PopupMenuItem(
+                  value: 'Delete',
+                  child: Text('Delete'),
+                ),
+              ],
             ),
+            onTap: () => GoRouter.of(context).go('/home/update_program/${item.id}'),
           );
         } else {
           return ListTile(
