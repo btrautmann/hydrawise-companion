@@ -1,6 +1,8 @@
 import 'dart:convert';
 
 import 'package:api_models/api_models.dart';
+import 'package:dotenv/dotenv.dart';
+import 'package:http/http.dart' as http;
 import 'package:postgres/postgres.dart';
 import 'package:shelf/shelf.dart';
 
@@ -9,10 +11,11 @@ import 'extensions.dart';
 import 'postgres_extensions.dart';
 
 class CreateProgram {
-  CreateProgram(this.db) : _getCustomerById = GetCustomerById(db);
+  CreateProgram(this.db, this.env) : _getCustomerById = GetCustomerById(db);
 
   final PostgreSQLConnection Function() db;
   final GetCustomerById _getCustomerById;
+    final DotEnv env;
 
   Future<Response> call(Request request) async {
     final body = await request.readAsString();
@@ -63,6 +66,14 @@ class CreateProgram {
           runs: outputRuns,
         );
       });
+
+      Future<void> createTasks() async {
+        for (final run in program.runs) {
+final response = await http.post(
+      Uri.https(env['TASKS_API_END_POINT']!, 'create'),
+    );
+        }
+      }
       return Response.ok(
         jsonEncode(
           CreateProgramResponse(
