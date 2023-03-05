@@ -132,12 +132,15 @@ class _ZonesAndPrograms extends ConsumerWidget {
     final programsError = programsState.error;
 
     if (zonesError != null || programsError != null) {
-      return Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(zonesError.toString()),
-          Text(programsError.toString()),
-        ],
+      return Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            if (zonesError != null) Text(zonesError.toString()),
+            if (programsError != null) Text(programsError.toString()),
+          ],
+        ),
       );
     }
 
