@@ -20,9 +20,11 @@ packages:
   api_models:
     dependency: "direct main"
     description:
-      path: "/Users/brandontrautmann/Development/irri-models"
-      relative: false
-    source: path
+      path: "."
+      ref: main
+      resolved-ref: bc3e219f16eb78f82e28caeb776ef8918653c4be
+      url: "https://github.com/btrautmann/irri-models.git"
+    source: git
     version: "1.0.0"
   args:
     dependency: transitive
@@ -755,5 +757,5 @@ packages:
     source: hosted
     version: "3.1.1"
 sdks:
-  dart: ">=2.19.0 <4.0.0"
+  dart: ">=2.19.0 <3.0.0"
   flutter: ">=3.7.0"
