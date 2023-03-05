@@ -28,13 +28,6 @@
             ]
         },
         {
-            "name": "playground",
-            "request": "launch",
-            "type": "dart",
-            "program": "playground/lib/main.dart",
-            "flutterMode": "debug",
-        },
-        {
             "name": "irri (profile mode)",
             "request": "launch",
             "type": "dart",
