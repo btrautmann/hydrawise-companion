@@ -115,6 +115,6 @@ String _insertRunGroupSql(RunGroupCreation run, int programId) =>
     'VALUES ($programId, ${run.durationSeconds}, ${run.startHour}, ${run.startMinute}) '
     'RETURNING run_group_id;';
 
-String _insertRunSql(int runGroupId, int zoneId, DateTime now) => 'INSERT INTO run (run_group_id, zone_id) '
+String _insertRunSql(int runGroupId, int zoneId) => 'INSERT INTO run (run_group_id, zone_id) '
     'VALUES ($runGroupId, $zoneId) '
     'RETURNING run_id;';
