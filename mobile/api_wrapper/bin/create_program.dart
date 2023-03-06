@@ -15,7 +15,7 @@ class CreateProgram {
 
   final PostgreSQLConnection Function() db;
   final GetCustomerById _getCustomerById;
-    final DotEnv env;
+  final DotEnv env;
 
   Future<Response> call(Request request) async {
     final body = await request.readAsString();
@@ -69,11 +69,18 @@ class CreateProgram {
 
       Future<void> createTasks() async {
         for (final run in program.runs) {
-final response = await http.post(
-      Uri.https(env['TASKS_API_END_POINT']!, 'create'),
-    );
+          await http.post(
+            Uri.https(env['TASKS_API_END_POINT']!, 'create'),
+            body: <String, dynamic>{
+              'run_group_id': run.id,
+              'delay': 10, // TODO(brandon): Use time between now and real group start time
+            },
+          );
         }
       }
+
+      await createTasks();
+
       return Response.ok(
         jsonEncode(
           CreateProgramResponse(

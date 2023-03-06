@@ -11,6 +11,7 @@ import 'get_programs.dart';
 import 'middleware.dart';
 import 'ping.dart';
 import 'routes.dart';
+import 'run_group.dart';
 import 'test_tasks.dart';
 import 'update_zone.dart';
 
@@ -61,10 +62,11 @@ Future<void> main(List<String> args) async {
   final router = Router()
     ..get('/', Index())
     ..post('/login', Login(db))
+    ..post('/run_group', RunGroup())
     ..post('/run_zone', RunZone(db))
     ..post('/stop_zone', StopZone(db))
     ..put('/zone', UpdateZone(db))
-    ..post('/program', CreateProgram(db))
+    ..post('/program', CreateProgram(db, dotEnv))
     ..get('/program', GetPrograms(db))
     ..put('/program', UpdateProgram(db))
     ..delete('/program', DeleteProgram(db))
