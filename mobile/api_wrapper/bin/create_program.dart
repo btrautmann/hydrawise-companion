@@ -38,14 +38,13 @@ class CreateProgram {
         final programId = insertProgramResult.single.toColumnMap()['program_id'] as int;
         final outputRuns = <RunGroup>[];
 
-        final now = DateTime.now();
         for (final runCreation in createProgramRequest.runs) {
           final insertRunGroupResult = await connection.query(
-            _insertRunGroupSql(runCreation, programId, now),
+            _insertRunGroupSql(runCreation, programId),
           );
           final runGroupId = insertRunGroupResult.single.toColumnMap()['run_group_id'] as int;
           for (final zoneId in runCreation.zoneIds) {
-            await connection.query(_insertRunSql(runGroupId, zoneId, now));
+            await connection.query(_insertRunSql(runGroupId, zoneId));
           }
 
           outputRuns.add(
@@ -67,6 +66,11 @@ class CreateProgram {
         );
       });
 
+      // TODO(brandon): If creating the task fails, we should either consider rolling back
+      // the transaction (not sure how) or adding retry logic. Otherwise the runs won't
+      // actually trigger.
+      // TODO(brandon): We'll need to delete/re-create tasks when updating a program, so
+      // this should probably be pulled out into a callable function/use-case
       Future<void> createTasks() async {
         for (final run in program.runs) {
           await http.post(
@@ -74,7 +78,9 @@ class CreateProgram {
             body: jsonEncode(
               <String, dynamic>{
                 'run_group_id': run.id,
-                'delay': 10, // TODO(brandon): Use time between now and real group start time
+                // TODO(brandon): Use the correct delay which will be time of next run
+                // minus current time (in seconds)
+                'delay': 10,
               },
             ),
           );
@@ -104,11 +110,11 @@ String _insertProgramSql(
     'VALUES ($customerId, \'${request.programName}\', ARRAY${request.frequency}, $controllerId) '
     'RETURNING program_id;';
 
-String _insertRunGroupSql(RunGroupCreation run, int programId, DateTime now) =>
+String _insertRunGroupSql(RunGroupCreation run, int programId) =>
     'INSERT INTO run_group (program_id, duration_sec, start_hour, start_minute) '
     'VALUES ($programId, ${run.durationSeconds}, ${run.startHour}, ${run.startMinute}) '
     'RETURNING run_group_id;';
 
-String _insertRunSql(int runGroupId, int zoneId, DateTime now) => 'INSERT INTO run (run_group_id, zone_id) '
+String _insertRunSql(int runGroupId, int zoneId) => 'INSERT INTO run (run_group_id, zone_id) '
     'VALUES ($runGroupId, $zoneId) '
     'RETURNING run_id;';
