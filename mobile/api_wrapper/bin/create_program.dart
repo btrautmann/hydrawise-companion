@@ -70,6 +70,8 @@ class CreateProgram {
       // TODO(brandon): If creating the task fails, we should either consider rolling back
       // the transaction (not sure how) or adding retry logic. Otherwise the runs won't
       // actually trigger.
+      // TODO(brandon): We'll need to delete/re-create tasks when updating a program, so
+      // this should probably be pulled out into a callable function/use-case
       Future<void> createTasks() async {
         for (final run in program.runs) {
           await http.post(
@@ -77,7 +79,9 @@ class CreateProgram {
             body: jsonEncode(
               <String, dynamic>{
                 'run_group_id': run.id,
-                'delay': 10, // TODO(brandon): Use time between now and real group start time
+                // TODO(brandon): Use the correct delay which will be time of next run
+                // minus current time (in seconds)
+                'delay': 10,
               },
             ),
           );
