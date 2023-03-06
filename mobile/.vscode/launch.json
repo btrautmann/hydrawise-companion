@@ -24,15 +24,8 @@
             "flutterMode": "debug",
             "args": [
                 "--dart-define",
-                "BASE_URL=http://localhost:8080/",
+                "BASE_URL=http://10.0.2.2:8080/",
             ]
-        },
-        {
-            "name": "playground",
-            "request": "launch",
-            "type": "dart",
-            "program": "playground/lib/main.dart",
-            "flutterMode": "debug",
         },
         {
             "name": "irri (profile mode)",
