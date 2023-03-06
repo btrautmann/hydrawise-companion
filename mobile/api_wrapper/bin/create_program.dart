@@ -67,6 +67,9 @@ class CreateProgram {
         );
       });
 
+      // TODO(brandon): If creating the task fails, we should either consider rolling back
+      // the transaction (not sure how) or adding retry logic. Otherwise the runs won't
+      // actually trigger.
       Future<void> createTasks() async {
         for (final run in program.runs) {
           await http.post(
