@@ -577,7 +577,7 @@ class _RunGroupCreationDialogState extends State<_RunGroupCreationDialog> {
               (index, element) => CheckboxListTile(
                 value: group.zoneIds.contains(widget.zones[index].id),
                 onChanged: (value) {
-                  final currZoneIds = group.zoneIds;
+                  final currZoneIds = List.of(group.zoneIds);
                   final currId = widget.zones[index].id;
                   final newZoneIds = currZoneIds..removeWhere((i) => i == currId);
                   if (value ?? false) {
