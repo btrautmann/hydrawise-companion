@@ -37,6 +37,7 @@ Future<void> main(List<String> args) async {
         dotEnv['ENV_FILE'] != null ? List<String>.from([dotEnv['ENV_FILE']]) : List<String>.from(['.env.dev']);
     print('Using .env file(s) $envFiles');
     dotEnv.load(envFiles);
+    print(dotEnv.map);
     databaseHost = dotEnv['DB_HOST']!;
   }
 

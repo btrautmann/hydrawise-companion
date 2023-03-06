@@ -70,11 +70,13 @@ class CreateProgram {
       Future<void> createTasks() async {
         for (final run in program.runs) {
           await http.post(
-            Uri.https(env['TASKS_API_END_POINT']!, 'create'),
-            body: <String, dynamic>{
-              'run_group_id': run.id,
-              'delay': 10, // TODO(brandon): Use time between now and real group start time
-            },
+            Uri.https(env['TASKS_API_END_POINT']!, '/api/v1/create'),
+            body: jsonEncode(
+              <String, dynamic>{
+                'run_group_id': run.id,
+                'delay': 10, // TODO(brandon): Use time between now and real group start time
+              },
+            ),
           );
         }
       }

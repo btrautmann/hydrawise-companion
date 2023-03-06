@@ -1,15 +1,11 @@
+# frozen_string_literal: true
+
 source 'https://rubygems.org'
 
 gem 'google-cloud-tasks', '~>2.1'
 gem 'sinatra', '~>3.0'
 # Required to use some advanced features of# Sinatra, like namespaces
 gem 'sinatra-contrib'
-# https://stackoverflow.com/questions/67615800/ruby-sinatra-compile-error-server-handler-thin-puma-reel-http-webrick-not-fo
-gem 'thin'
-gem 'puma'
-gem 'reel'
-gem 'http'
-gem 'webrick'
 
 group :test do
   gem 'rack-test'

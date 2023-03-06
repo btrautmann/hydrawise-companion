@@ -8,7 +8,10 @@ Middleware authentication(PostgreSQLConnection Function() db) {
     return (originalRequest) async {
       final headers = originalRequest.headers;
       final apiKey = headers['api_key'];
-      if (originalRequest.url.path == 'ping' || originalRequest.url.path == 'test_tasks') {
+      // TODO(brandon): Find a better way to annotate/list un-authenticated end-points
+      // TODO(brandon): `run_group` should probably be authentictated, but I'm not sure
+      // whether we should pass API key to `tasks` api or find a different way to authenticate
+      if (originalRequest.url.path == 'ping' || originalRequest.url.path == 'run_group') {
         return innerHandler(originalRequest);
       }
       if (apiKey == null) {
@@ -18,11 +21,7 @@ Middleware authentication(PostgreSQLConnection Function() db) {
           return innerHandler(originalRequest);
         }
         return db().use((connection) async {
-          final customerResult = await connection.query(
-            _findCustomerSql(
-              apiKey,
-            ),
-          );
+          final customerResult = await connection.query(_findCustomerSql(apiKey));
           if (customerResult.isEmpty) {
             return Response(401);
           }
