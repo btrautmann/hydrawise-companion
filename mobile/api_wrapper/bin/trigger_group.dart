@@ -42,7 +42,7 @@ class TriggerGroup {
             <String, dynamic>{
               'run_group_id': runGroupId,
               'run_id': runs[i].id,
-              'endpoint': '/trigger_run',
+              'endpoint': 'trigger_run',
               'delay': delay,
             },
           ),
