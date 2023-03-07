@@ -19,6 +19,7 @@ class GetAllCustomers {
         customers.add(
           DbCustomer(
             id: map['customer_id'],
+            apiKey: map['api_key'],
             activeControllerId: map['active_controller_id'],
           ),
         );

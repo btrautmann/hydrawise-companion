@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:api_models/api_models.dart';
-import 'package:http/http.dart' as http;
+import 'package:http/http.dart' as client;
 import 'package:hydrawise/hydrawise.dart';
 import 'package:postgres/postgres.dart';
 import 'package:shelf/shelf.dart';
@@ -36,7 +36,7 @@ class StopZone {
       'relay_id': stopZoneRequest.zoneId.toString(),
     };
 
-    final stopResponse = await http.get(
+    final stopResponse = await client.get(
       Uri.http(
         'api.hydrawise.com',
         '/api/v1/setzone.php',
@@ -45,7 +45,7 @@ class StopZone {
     );
 
     if (stopResponse.statusCode == 200) {
-      final statusResponse = await http.get(
+      final statusResponse = await client.get(
         Uri.http(
           'api.hydrawise.com',
           '/api/v1/statusschedule.php',

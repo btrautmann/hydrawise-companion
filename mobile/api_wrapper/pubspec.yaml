@@ -17,6 +17,7 @@ dependencies:
   dotenv: ^4.0.1
   http: ^0.13.4
   hydrawise: ^0.0.1
+  intl: ^0.18.0
   postgres: ^2.4.5
   shelf: ^1.1.0
   shelf_router: ^1.0.0

@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:api_models/api_models.dart';
 import 'package:dotenv/dotenv.dart';
-import 'package:http/http.dart' as http;
+import 'package:http/http.dart' as client;
 import 'package:postgres/postgres.dart';
 import 'package:shelf/shelf.dart';
 
@@ -73,11 +73,12 @@ class CreateProgram {
       // this should probably be pulled out into a callable function/use-case
       Future<void> createTasks() async {
         for (final run in program.runs) {
-          await http.post(
-            Uri.https(env['TASKS_API_END_POINT']!, '/api/v1/create'),
+          await client.post(
+            Uri.http(env['TASKS_API_END_POINT']!, '/api/v1/create'),
             body: jsonEncode(
               <String, dynamic>{
                 'run_group_id': run.id,
+                'endpoint': 'trigger_group',
                 // TODO(brandon): Use the correct delay which will be time of next run
                 // minus current time (in seconds)
                 'delay': 10,

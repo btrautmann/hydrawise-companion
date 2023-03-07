@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:api_models/api_models.dart';
-import 'package:http/http.dart' as http;
+import 'package:http/http.dart' as client;
 import 'package:hydrawise/hydrawise.dart';
 import 'package:postgres/postgres.dart';
 import 'package:shelf/shelf.dart';
@@ -39,7 +39,7 @@ class RunZone {
       'relay_id': runZoneRequest.zoneId.toString(),
     };
 
-    final runResponse = await http.get(
+    final runResponse = await client.get(
       Uri.http(
         'api.hydrawise.com',
         '/api/v1/setzone.php',
@@ -48,7 +48,7 @@ class RunZone {
     );
 
     if (runResponse.statusCode == 200) {
-      final statusResponse = await http.get(
+      final statusResponse = await client.get(
         Uri.http(
           'api.hydrawise.com',
           '/api/v1/statusschedule.php',
