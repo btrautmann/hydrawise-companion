@@ -9,9 +9,9 @@ Middleware authentication(PostgreSQLConnection Function() db) {
       final headers = originalRequest.headers;
       final apiKey = headers['api_key'];
       // TODO(brandon): Find a better way to annotate/list un-authenticated end-points
-      // TODO(brandon): `run_group` should probably be authentictated, but I'm not sure
-      // whether we should pass API key to `tasks` api or find a different way to authenticate
-      if (originalRequest.url.path == 'ping' || originalRequest.url.path == 'run_group') {
+      // TODO(brandon): Add static token for authentication on trigger end-points
+      final unauthenticatedEndpoints = ['ping', 'trigger_group', 'trigger_run'];
+      if (unauthenticatedEndpoints.contains(originalRequest.url.path)) {
         return innerHandler(originalRequest);
       }
       if (apiKey == null) {
