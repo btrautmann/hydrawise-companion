@@ -3,6 +3,7 @@
 require 'sinatra'
 require 'sinatra/namespace'
 require 'google/cloud/tasks'
+require 'json'
 
 set :bind, '0.0.0.0'
 port = ENV['PORT'] || '8080'
@@ -50,7 +51,7 @@ namespace '/api/v1' do
     }
 
     # Add payload to task body.
-    task[:http_request][:body] = payload.to_s
+    task[:http_request][:body] = payload.to_json
 
     # Add scheduled time to task.
     delay = payload['delay']
