@@ -41,15 +41,16 @@ namespace '/api/v1' do
                                location: ENV['QUEUE_LOCATION'], queue: ENV['QUEUE_ID']
 
     # Construct task.
+    end_point = payload['endpoint']
     task = {
       http_request: {
         http_method: 'POST',
-        url: 'https://apiwrapper-5rvb357uza-uc.a.run.app/run_group'
+        url: "https://#{ENV['IRRI_API_ENDPOINT']}/#{end_point}"
       }
     }
 
     # Add payload to task body.
-    task[:http_request][:body] = payload.to_s if payload
+    task[:http_request][:body] = payload.to_s
 
     # Add scheduled time to task.
     delay = payload['delay']

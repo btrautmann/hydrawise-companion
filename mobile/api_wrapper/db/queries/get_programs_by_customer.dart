@@ -41,7 +41,6 @@ class GetProgramsByCustomer {
             customerId: programMap['customer_id'],
             name: programMap['name'],
             frequency: programMap['frequency'],
-            runs: runs,
           ),
         );
       }

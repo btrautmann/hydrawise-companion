@@ -11,8 +11,7 @@ import 'get_programs.dart';
 import 'middleware.dart';
 import 'ping.dart';
 import 'routes.dart';
-import 'run_group.dart';
-import 'test_tasks.dart';
+import 'trigger_group.dart';
 import 'update_zone.dart';
 
 Future<void> main(List<String> args) async {
@@ -37,7 +36,6 @@ Future<void> main(List<String> args) async {
         dotEnv['ENV_FILE'] != null ? List<String>.from([dotEnv['ENV_FILE']]) : List<String>.from(['.env.dev']);
     print('Using .env file(s) $envFiles');
     dotEnv.load(envFiles);
-    print(dotEnv.map);
     databaseHost = dotEnv['DB_HOST']!;
   }
 
@@ -63,7 +61,7 @@ Future<void> main(List<String> args) async {
   final router = Router()
     ..get('/', Index())
     ..post('/login', Login(db))
-    ..post('/run_group', RunGroup())
+    ..post('/trigger_group', TriggerGroup(db, dotEnv))
     ..post('/run_zone', RunZone(db))
     ..post('/stop_zone', StopZone(db))
     ..put('/zone', UpdateZone(db))
@@ -72,7 +70,6 @@ Future<void> main(List<String> args) async {
     ..put('/program', UpdateProgram(db))
     ..delete('/program', DeleteProgram(db))
     ..get('/customer', GetCustomer(db))
-    ..get('/test_tasks', TestTasks(dotEnv))
     ..get('/ping', Ping());
 
   final handler = const Pipeline()

@@ -9,16 +9,19 @@ import '../models/db_run_group.dart';
 import '../models/db_zone.dart';
 import '../models/next_run_for_zone.dart';
 import 'get_controller_by_id.dart';
+import 'get_run_groups_by_program_id.dart';
 import 'get_runs_by_run_group_id.dart';
 
 class GetNextRunForZone {
   GetNextRunForZone(
     PostgreSQLConnection Function() db,
   )   : _getControllerById = GetControllerById(db),
-        _getRunsByRunGroupId = GetRunsByRunGroupId(db);
+        _getRunsByRunGroupId = GetRunsByRunGroupId(db),
+        _getRunGroupsByProgramId = GetRunGroupsByProgramId(db);
 
   final GetControllerById _getControllerById;
   final GetRunsByRunGroupId _getRunsByRunGroupId;
+  final GetRunGroupsByProgramId _getRunGroupsByProgramId;
 
   Future<NextRunForZone?> call({
     required List<DbProgram> programs,
@@ -31,7 +34,8 @@ class GetNextRunForZone {
       required String timezone,
     }) async {
       final runsForGroup = <DbRunGroup, List<DbRun>>{};
-      for (final runGroup in program.runs) {
+      final programRunGroups = await _getRunGroupsByProgramId(program.id);
+      for (final runGroup in programRunGroups) {
         runsForGroup[runGroup] = await _getRunsByRunGroupId(runGroup.id);
       }
       // For simplicity, use the RunGroup with the earliest lastRunTime

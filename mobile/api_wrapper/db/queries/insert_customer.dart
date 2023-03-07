@@ -40,6 +40,7 @@ class InsertCustomer {
       });
       return DbCustomer(
         id: details.activeControllerId,
+        apiKey: apiKey,
         activeControllerId: details.activeControllerId,
       );
     });

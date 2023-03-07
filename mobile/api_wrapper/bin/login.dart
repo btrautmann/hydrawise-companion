@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:api_models/api_models.dart';
-import 'package:http/http.dart' as http;
+import 'package:http/http.dart' as client;
 import 'package:hydrawise/hydrawise.dart';
 import 'package:postgres/postgres.dart';
 import 'package:shelf/shelf.dart';
@@ -25,7 +25,7 @@ class Login {
       'type': loginRequest.type,
     };
 
-    final detailsResponse = await http.get(
+    final detailsResponse = await client.get(
       Uri.http(
         'api.hydrawise.com',
         '/api/v1/customerdetails.php',
@@ -35,7 +35,7 @@ class Login {
 
     if (detailsResponse.statusCode == 200) {
       final details = HCustomerDetails.fromJson(json.decode(detailsResponse.body));
-      final statusResponse = await http.get(
+      final statusResponse = await client.get(
         Uri.http(
           'api.hydrawise.com',
           '/api/v1/statusschedule.php',

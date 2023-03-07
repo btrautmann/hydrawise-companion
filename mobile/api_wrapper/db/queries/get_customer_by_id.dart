@@ -17,6 +17,7 @@ class GetCustomerById {
 
       return DbCustomer(
         id: customerId,
+        apiKey: map['api_key'],
         activeControllerId: map['active_controller_id'],
       );
     });
