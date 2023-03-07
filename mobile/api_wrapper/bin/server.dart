@@ -12,6 +12,7 @@ import 'middleware.dart';
 import 'ping.dart';
 import 'routes.dart';
 import 'trigger_group.dart';
+import 'trigger_run.dart';
 import 'update_zone.dart';
 
 Future<void> main(List<String> args) async {
@@ -62,6 +63,7 @@ Future<void> main(List<String> args) async {
     ..get('/', Index())
     ..post('/login', Login(db))
     ..post('/trigger_group', TriggerGroup(db, dotEnv))
+    ..post('/trigger_run', TriggerRun(db, dotEnv))
     ..post('/run_zone', RunZone(db))
     ..post('/stop_zone', StopZone(db))
     ..put('/zone', UpdateZone(db))
