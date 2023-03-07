@@ -74,7 +74,7 @@ class CreateProgram {
       Future<void> createTasks() async {
         for (final run in program.runs) {
           await client.post(
-            Uri.http(env['TASKS_API_END_POINT']!, '/api/v1/create'),
+            Uri.https(env['TASKS_API_END_POINT']!, '/api/v1/create'),
             body: jsonEncode(
               <String, dynamic>{
                 'run_group_id': run.id,
