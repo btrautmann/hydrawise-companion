@@ -75,7 +75,7 @@ class CreateProgram {
       // actually trigger.
       // TODO(brandon): We'll need to delete/re-create tasks when updating a program, so
       // this should probably be pulled out into a callable function/use-case
-      Future<void> createTasks() async {
+      Future<void> createRunGroupTasks() async {
         final now = DateTime.now();
         for (final run in program.runs) {
           final nextRunDateTime = _getNextRunForRunGroup(
@@ -96,7 +96,7 @@ class CreateProgram {
         }
       }
 
-      await createTasks();
+      await createRunGroupTasks();
 
       return Response.ok(
         jsonEncode(
