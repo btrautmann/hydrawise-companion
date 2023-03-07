@@ -92,6 +92,6 @@ String _setRunGroupLastRunTimeSql(int runGroupId, DateTime runTime) {
   final dateFormat = DateFormat('yyyy-MM-dd HH:mm:ss.SSS');
   final stringified = dateFormat.format(runTime);
   print('Updating run_group $runGroupId to last_run_time $stringified');
-  return 'UPDATE run_group SET last_run_time = $stringified '
+  return 'UPDATE run_group SET last_run_time = \'$stringified\' '
       'WHERE run_group_id=$runGroupId ';
 }
