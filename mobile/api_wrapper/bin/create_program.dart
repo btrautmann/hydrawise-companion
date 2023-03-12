@@ -7,14 +7,24 @@ import 'package:postgres/postgres.dart';
 import 'package:shelf/shelf.dart';
 
 import '../db/queries/get_customer_by_id.dart';
+import '../db/queries/get_next_run_for_run_group.dart';
+import '../db/queries/get_program_by_id.dart';
+import '../db/queries/get_run_group_by_id.dart';
 import 'extensions.dart';
 import 'postgres_extensions.dart';
 
 class CreateProgram {
-  CreateProgram(this.db, this.env) : _getCustomerById = GetCustomerById(db);
+  CreateProgram(this.db, this.env)
+      : _getProgramById = GetProgramById(db),
+        _getRunGroupById = GetRunGroupById(db),
+        _getCustomerById = GetCustomerById(db),
+        _getNextRunForRunGroup = GetNextRunForRunGroup(db);
 
   final PostgreSQLConnection Function() db;
+  final GetProgramById _getProgramById;
+  final GetRunGroupById _getRunGroupById;
   final GetCustomerById _getCustomerById;
+  final GetNextRunForRunGroup _getNextRunForRunGroup;
   final DotEnv env;
 
   Future<Response> call(Request request) async {
@@ -71,24 +81,30 @@ class CreateProgram {
       // actually trigger.
       // TODO(brandon): We'll need to delete/re-create tasks when updating a program, so
       // this should probably be pulled out into a callable function/use-case
-      Future<void> createTasks() async {
+      Future<void> createRunGroupTasks() async {
+        final now = DateTime.now();
+        final dbProgram = await _getProgramById(program.id);
         for (final run in program.runs) {
+          final dbRunGroup = await _getRunGroupById(run.id);
+          final nextRunDateTime = _getNextRunForRunGroup(
+            group: dbRunGroup,
+            program: dbProgram,
+          );
+          final delay = nextRunDateTime.difference(now).inSeconds;
           await client.post(
             Uri.https(env['TASKS_API_END_POINT']!, '/api/v1/create'),
             body: jsonEncode(
               <String, dynamic>{
                 'run_group_id': run.id,
                 'endpoint': 'trigger_group',
-                // TODO(brandon): Use the correct delay which will be time of next run
-                // minus current time (in seconds)
-                'delay': 10,
+                'delay': delay,
               },
             ),
           );
         }
       }
 
-      await createTasks();
+      await createRunGroupTasks();
 
       return Response.ok(
         jsonEncode(

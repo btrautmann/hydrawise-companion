@@ -32,7 +32,7 @@ class TriggerGroup {
     // actually trigger.
     // TODO(brandon): We'll need to delete/re-create tasks when updating a program, so
     // this should probably be pulled out into a callable function/use-case
-    Future<List<client.Response>> createTasks() async {
+    Future<List<client.Response>> createRunTasks() async {
       final responses = <client.Response>[];
       for (var i = 0; i < runs.length; i++) {
         final delay = i * runGroup.durationSeconds;
@@ -52,7 +52,7 @@ class TriggerGroup {
       return responses;
     }
 
-    final responses = await createTasks();
+    final responses = await createRunTasks();
     final failures = responses.where((r) => r.statusCode != 200);
     if (failures.isNotEmpty) {
       final firstFailure = failures.first;

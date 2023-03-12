@@ -6,7 +6,7 @@ import 'package:hydrawise/hydrawise.dart';
 import 'package:postgres/postgres.dart';
 import 'package:shelf/shelf.dart';
 
-import '../db/mappings/db_customer.dart';
+import '../db/models/db_customer.dart';
 import '../db/queries/get_customer_by_id.dart';
 import '../db/queries/get_next_run_for_zone.dart';
 import '../db/queries/get_programs_by_customer.dart';
