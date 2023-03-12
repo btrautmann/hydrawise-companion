@@ -15,9 +15,12 @@ class GetNextRunForRunGroup {
     // TODO(brandon): When suspension ability is added, start at the suspension
     // time rather than lastRunTime.
     final groupLastRunTime = group.lastRunTime;
+    print('group lastRunTime is $groupLastRunTime');
     final programFrequency = program.frequency;
+    print('program frequency is $programFrequency');
     const oneDay = Duration(days: 1);
     final nextWeek = List.generate(7, (_) => groupLastRunTime.add(oneDay));
+    print('nextWeek is $nextWeek');
     final nextRun = nextWeek.firstWhere((day) {
       // Run groups run at most once a day, so next run must be
       // 24 hours after the previous
