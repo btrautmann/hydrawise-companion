@@ -1,6 +1,5 @@
 import 'package:collection/collection.dart';
 import 'package:postgres/postgres.dart';
-import 'package:timezone/timezone.dart';
 
 import '../models/db_customer.dart';
 import '../models/db_program.dart';
@@ -18,6 +17,7 @@ class GetNextRunForZone {
     PostgreSQLConnection Function() db,
   )   : _getControllerById = GetControllerById(db),
         _getRunsByRunGroupId = GetRunsByRunGroupId(db),
+        _getNextRunForRunGroup = GetNextRunForRunGroup(db),
         _getRunGroupsByProgramId = GetRunGroupsByProgramId(db);
 
   final GetControllerById _getControllerById;
