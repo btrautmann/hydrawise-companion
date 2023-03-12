@@ -17,7 +17,9 @@ class GetNextRunForRunGroup {
     final groupLastRunTime = group.lastRunTime;
     final programFrequency = program.frequency;
     const oneDay = Duration(days: 1);
-    final nextWeek = List.generate(7, (_) => groupLastRunTime.add(oneDay));
+    final nextWeek = List.generate(7, (i) {
+      return groupLastRunTime.add(Duration(days: i + 1));
+    });
     final nextRun = nextWeek.firstWhere((day) {
       // Run groups run at most once a day, so next run must be
       // 24 hours after the previous
