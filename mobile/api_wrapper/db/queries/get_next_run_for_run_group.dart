@@ -19,7 +19,9 @@ class GetNextRunForRunGroup {
     final programFrequency = program.frequency;
     print('program frequency is $programFrequency');
     const oneDay = Duration(days: 1);
-    final nextWeek = List.generate(7, (_) => groupLastRunTime.add(oneDay));
+    final nextWeek = List.generate(7, (i) {
+      return groupLastRunTime.add(Duration(days: i + 1));
+    });
     print('nextWeek is $nextWeek');
     final nextRun = nextWeek.firstWhere((day) {
       // Run groups run at most once a day, so next run must be
