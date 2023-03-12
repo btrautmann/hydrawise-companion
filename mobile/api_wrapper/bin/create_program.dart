@@ -8,15 +8,21 @@ import 'package:shelf/shelf.dart';
 
 import '../db/queries/get_customer_by_id.dart';
 import '../db/queries/get_next_run_for_run_group.dart';
+import '../db/queries/get_program_by_id.dart';
+import '../db/queries/get_run_group_by_id.dart';
 import 'extensions.dart';
 import 'postgres_extensions.dart';
 
 class CreateProgram {
   CreateProgram(this.db, this.env)
-      : _getCustomerById = GetCustomerById(db),
+      : _getProgramById = GetProgramById(db),
+        _getRunGroupById = GetRunGroupById(db),
+        _getCustomerById = GetCustomerById(db),
         _getNextRunForRunGroup = GetNextRunForRunGroup(db);
 
   final PostgreSQLConnection Function() db;
+  final GetProgramById _getProgramById;
+  final GetRunGroupById _getRunGroupById;
   final GetCustomerById _getCustomerById;
   final GetNextRunForRunGroup _getNextRunForRunGroup;
   final DotEnv env;
@@ -77,10 +83,12 @@ class CreateProgram {
       // this should probably be pulled out into a callable function/use-case
       Future<void> createRunGroupTasks() async {
         final now = DateTime.now();
+        final dbProgram = await _getProgramById(program.id);
         for (final run in program.runs) {
+          final dbRunGroup = await _getRunGroupById(run.id);
           final nextRunDateTime = _getNextRunForRunGroup(
-            group: run,
-            program: program,
+            group: dbRunGroup,
+            program: dbProgram,
           );
           final delay = nextRunDateTime.difference(now).inSeconds;
           await client.post(
