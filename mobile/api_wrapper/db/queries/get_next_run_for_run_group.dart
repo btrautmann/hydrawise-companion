@@ -32,6 +32,7 @@ class GetNextRunForRunGroup {
     final seedTime = tz.TZDateTime.from(nowUtc(), location).copyWith(
       hour: group.startHour,
       minute: group.startMinute,
+      second: 0,
       millisecond: 0,
       microsecond: 0,
     );
