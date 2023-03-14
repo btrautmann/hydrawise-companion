@@ -29,7 +29,11 @@ class GetNextRunForRunGroup {
     final location = tz.getLocation(timezone);
     // Seed time is the current time adjusted to adopt the hour
     // and minute of the group's intended run time
-    final seedTime = tz.TZDateTime.from(nowUtc(), location).copyWith(
+    final localTime = tz.TZDateTime.from(nowUtc(), location);
+    print(
+      'localTime is $localTime in timezone ${localTime.timeZoneName} with offset ${localTime.timeZoneOffset}',
+    );
+    final seedTime = localTime.copyWith(
       hour: group.startHour,
       minute: group.startMinute,
       second: 0,
@@ -37,7 +41,7 @@ class GetNextRunForRunGroup {
       microsecond: 0,
     );
     print(
-      'Seed time is $seedTime in timezone ${seedTime.timeZoneName} with offset ${seedTime.timeZoneOffset}',
+      'seedTime is $seedTime in timezone ${seedTime.timeZoneName} with offset ${seedTime.timeZoneOffset}',
     );
     final eligibleNextRunDays = List.generate(8, (index) {
       return seedTime.add(Duration(days: index));
