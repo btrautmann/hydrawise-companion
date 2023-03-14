@@ -26,16 +26,12 @@ class GetNextRunForRunGroup {
     final location = tz.getLocation(timezone);
     // Get user local time to figure out next run time, then convert
     // that to UTC and return
-    final localTime = nowUtc()
-        .copyWith(
+    final localTime = nowUtc().add(Duration(milliseconds: location.currentTimeZone.offset)).copyWith(
           hour: group.startHour,
           minute: group.startMinute,
           second: 0,
           millisecond: 0,
           microsecond: 0,
-        )
-        .add(
-          Duration(milliseconds: location.currentTimeZone.offset),
         );
     print('localTime is $localTime with timezone ${localTime.timeZoneName}');
 
