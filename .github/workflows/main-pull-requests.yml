@@ -22,6 +22,6 @@ jobs:
         with:
           flutter-version: '3.7.0'
           channel: stable
-      - run: dart pub global activate melos && melos bs
+      - run: dart pub global activate melos 2.9.0 && melos bs
       - run: melos exec --flutter -- flutter analyze
       - run: melos exec --no-flutter -- dart analyze
