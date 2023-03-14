@@ -46,6 +46,8 @@ class TriggerRun {
       print('Request failed: ${response.body}');
     }
 
+    // TODO(brandon): Store last_run_time for this run
+
     return Response(
       response.statusCode,
       headers: {'Content-Type': 'application/json'},
