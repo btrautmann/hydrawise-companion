@@ -21,5 +21,5 @@ class DbRun {
   final int id;
   final int runGroupId;
   final int zoneId;
-  final DateTime lastRunTime;
+  final DateTime? lastRunTime;
 }
