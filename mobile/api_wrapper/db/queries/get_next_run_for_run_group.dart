@@ -15,14 +15,17 @@ class GetNextRunForRunGroup {
     final groupLastRunTime = group.lastRunTime ?? epochUtc();
     print('Group lastRunTime is $groupLastRunTime');
     final programFrequency = program.frequency;
+    print('Program frequency is $programFrequency');
     final now = nowUtc().copyWith(
       hour: group.startHour,
       minute: group.startMinute,
       second: 0,
     );
+    print('Current time is $now');
     final nextWeek = List.generate(8, (index) {
       return now.add(Duration(days: index));
     });
+    print('Days considered for run are $nextWeek');
     const oneDay = Duration(days: 1);
     final nextRun = nextWeek.firstWhere((day) {
       // Run groups run at most once a day, so next run must be
