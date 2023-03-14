@@ -63,7 +63,7 @@ Future<void> main(List<String> args) async {
     ..get('/', Index())
     ..post('/login', Login(db))
     ..post('/trigger_group', TriggerGroup(db, dotEnv))
-    ..post('/trigger_run', TriggerRun(db, dotEnv))
+    ..post('/trigger_run', TriggerRun(db))
     ..post('/run_zone', RunZone(db))
     ..post('/stop_zone', StopZone(db))
     ..put('/zone', UpdateZone(db))
