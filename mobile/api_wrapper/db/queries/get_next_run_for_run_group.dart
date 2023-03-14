@@ -14,11 +14,14 @@ class GetNextRunForRunGroup {
   }) {
     // TODO(brandon): When suspension ability is added, start at the suspension
     // time rather than lastRunTime.
-    final groupLastRunTime = group.lastRunTime;
+    final groupLastRunTime = group.lastRunTime ?? //
+        // Default to epoch if group has never run
+        DateTime.fromMillisecondsSinceEpoch(0);
     final programFrequency = program.frequency;
     const oneDay = Duration(days: 1);
+    final now = DateTime.now();
     final nextWeek = List.generate(7, (i) {
-      return groupLastRunTime.add(Duration(days: i + 1));
+      return now.add(Duration(days: i + 1));
     });
     final nextRun = nextWeek.firstWhere((day) {
       // Run groups run at most once a day, so next run must be

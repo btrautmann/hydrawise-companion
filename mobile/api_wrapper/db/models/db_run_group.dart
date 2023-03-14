@@ -13,5 +13,5 @@ class DbRunGroup {
   final int durationSeconds;
   final int startHour;
   final int startMinute;
-  final DateTime lastRunTime;
+  final DateTime? lastRunTime;
 }
