@@ -17,7 +17,7 @@ class GetNextRunForZone {
     PostgreSQLConnection Function() db,
   )   : _getControllerById = GetControllerById(db),
         _getRunsByRunGroupId = GetRunsByRunGroupId(db),
-        _getNextRunForRunGroup = GetNextRunForRunGroup(db),
+        _getNextRunForRunGroup = GetNextRunForRunGroup(),
         _getRunGroupsByProgramId = GetRunGroupsByProgramId(db);
 
   final GetControllerById _getControllerById;

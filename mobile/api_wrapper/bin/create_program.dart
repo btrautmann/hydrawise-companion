@@ -18,7 +18,7 @@ class CreateProgram {
       : _getProgramById = GetProgramById(db),
         _getRunGroupById = GetRunGroupById(db),
         _getCustomerById = GetCustomerById(db),
-        _getNextRunForRunGroup = GetNextRunForRunGroup(db);
+        _getNextRunForRunGroup = GetNextRunForRunGroup();
 
   final PostgreSQLConnection Function() db;
   final GetProgramById _getProgramById;
