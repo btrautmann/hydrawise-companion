@@ -17,7 +17,7 @@ class GetNextRunForZone {
     PostgreSQLConnection Function() db,
   )   : _getControllerById = GetControllerById(db),
         _getRunsByRunGroupId = GetRunsByRunGroupId(db),
-        _getNextRunForRunGroup = GetNextRunForRunGroup(),
+        _getNextRunForRunGroup = GetNextRunForRunGroup(db),
         _getRunGroupsByProgramId = GetRunGroupsByProgramId(db);
 
   final GetControllerById _getControllerById;
@@ -36,14 +36,22 @@ class GetNextRunForZone {
       required String timezone,
     }) async {
       final groupsToRuns = <DbRunGroup, List<DbRun>>{};
+      final groupsToNextRunTime = <DbRunGroup, DateTime>{};
       final programRunGroups = await _getRunGroupsByProgramId(program.id);
       for (final runGroup in programRunGroups) {
         groupsToRuns[runGroup] = await _getRunsByRunGroupId(runGroup.id);
       }
+      for (final runGroup in programRunGroups) {
+        groupsToNextRunTime[runGroup] = await _getNextRunForRunGroup(
+          group: runGroup,
+          program: program,
+        );
+      }
+
       final sortedRunGroups = List.of(groupsToRuns.keys)
         ..sort((a, b) {
-          final nextRunA = _getNextRunForRunGroup(group: a, program: program);
-          final nextRunB = _getNextRunForRunGroup(group: b, program: program);
+          final nextRunA = groupsToNextRunTime[a]!;
+          final nextRunB = groupsToNextRunTime[b]!;
           return nextRunA.millisecondsSinceEpoch.compareTo(nextRunB.millisecondsSinceEpoch);
         });
       final groupWithNextRun = sortedRunGroups.firstWhereOrNull((g) {
@@ -53,7 +61,7 @@ class GetNextRunForZone {
         return null;
       }
 
-      final nextRun = _getNextRunForRunGroup(
+      final nextRun = await _getNextRunForRunGroup(
         group: groupWithNextRun,
         program: program,
       );

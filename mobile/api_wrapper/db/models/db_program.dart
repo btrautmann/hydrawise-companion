@@ -4,6 +4,7 @@ class DbProgram {
   DbProgram({
     required this.id,
     required this.customerId,
+    required this.controllerId,
     required this.name,
     required this.frequency,
   });
@@ -13,6 +14,7 @@ class DbProgram {
     return DbProgram(
       id: map['program_id'],
       customerId: map['customer_id'],
+      controllerId: map['controller_id'],
       name: map['name'],
       frequency: map['frequency'],
     );
@@ -20,6 +22,7 @@ class DbProgram {
 
   final int id;
   final int customerId;
+  final int controllerId;
   final String name;
   final List<int> frequency;
 }

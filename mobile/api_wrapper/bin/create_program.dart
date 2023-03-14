@@ -19,7 +19,7 @@ class CreateProgram {
       : _getProgramById = GetProgramById(db),
         _getRunGroupById = GetRunGroupById(db),
         _getCustomerById = GetCustomerById(db),
-        _getNextRunForRunGroup = GetNextRunForRunGroup();
+        _getNextRunForRunGroup = GetNextRunForRunGroup(db);
 
   final PostgreSQLConnection Function() db;
   final GetProgramById _getProgramById;
@@ -88,7 +88,7 @@ class CreateProgram {
         final dbProgram = await _getProgramById(program.id);
         for (final run in program.runs) {
           final dbRunGroup = await _getRunGroupById(run.id);
-          final nextRunDateTime = _getNextRunForRunGroup(
+          final nextRunDateTime = await _getNextRunForRunGroup(
             group: dbRunGroup,
             program: dbProgram,
           );

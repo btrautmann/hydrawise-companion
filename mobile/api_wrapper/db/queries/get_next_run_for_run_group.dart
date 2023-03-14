@@ -1,14 +1,21 @@
+import 'package:postgres/postgres.dart';
+import 'package:timezone/standalone.dart' as tz;
+
 import '../../bin/utils/_date_time.dart';
 import '../models/db_program.dart';
 import '../models/db_run_group.dart';
+import 'get_controller_by_id.dart';
 
 class GetNextRunForRunGroup {
-  GetNextRunForRunGroup();
+  GetNextRunForRunGroup(this.db) : _getControllerById = GetControllerById(db);
 
-  DateTime call({
+  final PostgreSQLConnection Function() db;
+  final GetControllerById _getControllerById;
+
+  Future<DateTime> call({
     required DbRunGroup group,
     required DbProgram program,
-  }) {
+  }) async {
     // TODO(brandon): When suspension ability is added, start at the suspension
     // time rather than lastRunTime if suspended.
     // If the group has never run, consider last run time as epoch
@@ -16,13 +23,17 @@ class GetNextRunForRunGroup {
     print('Group lastRunTime is $groupLastRunTime');
     final programFrequency = program.frequency;
     print('Program frequency is $programFrequency');
-    final utc = nowUtc();
+    final controller = await _getControllerById(program.controllerId);
+    final timezone = controller.timezone;
+    print('Controller ${controller.id} is in timezone $timezone');
+    final location = tz.getLocation(timezone);
     // Seed time is the current time adjusted to adopt the hour
     // and minute of the group's intended run time
+    final now = tz.TZDateTime.now(location);
     final seedTime = DateTime(
-      utc.year,
-      utc.month,
-      utc.day,
+      now.year,
+      now.month,
+      now.day,
       group.startHour,
       group.startMinute,
     );
