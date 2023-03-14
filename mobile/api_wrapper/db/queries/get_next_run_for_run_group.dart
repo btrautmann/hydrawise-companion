@@ -16,26 +16,30 @@ class GetNextRunForRunGroup {
     print('Group lastRunTime is $groupLastRunTime');
     final programFrequency = program.frequency;
     print('Program frequency is $programFrequency');
-    final now = nowUtc().copyWith(
-      hour: group.startHour,
-      minute: group.startMinute,
-      second: 0,
-      microsecond: 0,
-      millisecond: 0,
+    final utc = nowUtc();
+    // Seed time is the current time adjusted to adopt the hour
+    // and minute of the group's lastRunTime
+    final seedTime = DateTime(
+      utc.year,
+      utc.month,
+      utc.day,
+      groupLastRunTime.hour,
+      groupLastRunTime.minute,
     );
-    print('Current time is $now');
-    final nextWeek = List.generate(8, (index) {
-      return now.add(Duration(days: index));
+    print('Seed time is $seedTime');
+    final eligibleNextRunDays = List.generate(8, (index) {
+      return seedTime.add(Duration(days: index));
     });
-    print('Days considered for run are $nextWeek');
+    print('Eligible days for next run are $eligibleNextRunDays');
     const oneDay = Duration(days: 1);
-    final nextRun = nextWeek.firstWhere((day) {
+    final nextRun = eligibleNextRunDays.firstWhere((day) {
       // Run groups run at most once a day, so next run must be
       // 24 hours after the previous
       return day.isAfter(groupLastRunTime.add(oneDay)) && //
           programFrequency.contains(day.weekday);
     });
-    print('Next run should occur at $nextRun');
-    return nextRun.toUtc();
+    final nextRunUtc = nextRun.toUtc();
+    print('Next run should occur at $nextRunUtc');
+    return nextRunUtc;
   }
 }
