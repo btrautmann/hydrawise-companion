@@ -13,13 +13,8 @@ class GetControllerById {
       final result = await connection.query(
         'SELECT * FROM controller WHERE controller_id=$controllerId LIMIT 1;',
       );
-      final map = result.single.toColumnMap();
 
-      return DbController(
-        id: map['controller_id'],
-        customerId: map['customer_id'],
-        timezone: map['timezone'],
-      );
+      return DbController.fromPostGreSQLResultRow(result.single);
     });
   }
 }

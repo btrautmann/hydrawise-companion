@@ -16,12 +16,7 @@ class GetZoneById {
       if (result.isEmpty) {
         return null;
       }
-      final map = result.single.toColumnMap();
-      return DbZone(
-        id: map['zone_id'],
-        number: map['zone_num'],
-        name: map['zone_name'],
-      );
+      return DbZone.fromPostGreSQLResultRow(result.single);
     });
   }
 }

@@ -13,14 +13,7 @@ class GetProgramById {
       final result = await connection.query(
         'SELECT * FROM program WHERE program_id=$programId LIMIT 1;',
       );
-      final map = result.single.toColumnMap();
-
-      return DbProgram(
-        id: map['program_id'],
-        customerId: map['customer_id'],
-        name: map['name'],
-        frequency: map['frequency'],
-      );
+      return DbProgram.fromPostGreSQLResultRow(result.single);
     });
   }
 }

@@ -13,18 +13,7 @@ class GetControllersByCustomerId {
       final result = await connection.query(
         'SELECT * from controller WHERE customer_id=$customerId;',
       );
-      final controllers = <DbController>[];
-      for (final row in result) {
-        final map = row.toColumnMap();
-        controllers.add(
-          DbController(
-            id: map['controller_id'],
-            customerId: customerId,
-            timezone: map['timezone'],
-          ),
-        );
-      }
-      return controllers;
+      return result.map(DbController.fromPostGreSQLResultRow).toList();
     });
   }
 }

@@ -13,18 +13,7 @@ class GetAllCustomers {
       final result = await connection.query(
         'SELECT * FROM customer;',
       );
-      final customers = <DbCustomer>[];
-      for (final row in result) {
-        final map = row.toColumnMap();
-        customers.add(
-          DbCustomer(
-            id: map['customer_id'],
-            apiKey: map['api_key'],
-            activeControllerId: map['active_controller_id'],
-          ),
-        );
-      }
-      return customers;
+      return result.map(DbCustomer.fromPostGreSQLResultRow).toList();
     });
   }
 }
