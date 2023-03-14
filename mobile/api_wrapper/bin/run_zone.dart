@@ -11,6 +11,7 @@ import '../db/queries/get_next_run_for_zone.dart';
 import '../db/queries/get_programs_by_customer.dart';
 import '../db/queries/get_zone_by_id.dart';
 import 'extensions.dart';
+import 'run_zone_internal.dart';
 
 class RunZone {
   RunZone(PostgreSQLConnection Function() db)
@@ -31,29 +32,12 @@ class RunZone {
     final customerId = request.customerId;
     final apiKey = request.apiKey;
 
-    final queryParameters = <String, String>{
-      'api_key': apiKey,
-      'action': 'run',
-      'period_id': '999',
-      'custom': runZoneRequest.runLengthSeconds.toString(),
-      'relay_id': runZoneRequest.zoneId.toString(),
-    };
-
-    final runResponse = await client.get(
-      Uri.http(
-        'api.hydrawise.com',
-        '/api/v1/setzone.php',
-        queryParameters,
-      ),
-    );
+    final runResponse = await runZone(request: runZoneRequest, apiKey: apiKey);
 
     if (runResponse.statusCode == 200) {
+      final queryParameters = <String, String>{'api_key': apiKey};
       final statusResponse = await client.get(
-        Uri.http(
-          'api.hydrawise.com',
-          '/api/v1/statusschedule.php',
-          Map.of(queryParameters)..removeWhere((key, value) => key != 'api_key'),
-        ),
+        Uri.http('api.hydrawise.com', '/api/v1/statusschedule.php', queryParameters),
       );
       if (statusResponse.statusCode == 200) {
         final status = HCustomerStatus.fromJson(json.decode(statusResponse.body));
