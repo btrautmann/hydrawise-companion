@@ -61,7 +61,7 @@ class StopZone {
         final programs = await _getProgramsByCustomerId(customer);
         final nextRun = await _getNextRunForZone(
           customer: customer,
-          zone: dbZone!,
+          zone: dbZone,
           programs: programs,
         );
         final runZoneResponse = RunZoneResponse(

@@ -83,7 +83,7 @@ class CreateProgram {
       // TODO(brandon): We'll need to delete/re-create tasks when updating a program, so
       // this should probably be pulled out into a callable function/use-case
       Future<void> createRunGroupTasks() async {
-        final now = nowUtc();
+        final now = nowUtc().copyWith(second: 0, millisecond: 0, microsecond: 0);
         print('Current time (during task creation) is $now');
         final dbProgram = await _getProgramById(program.id);
         for (final run in program.runs) {

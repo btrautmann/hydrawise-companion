@@ -5,20 +5,24 @@ import 'package:http/http.dart' as client;
 import 'package:postgres/postgres.dart';
 import 'package:shelf/shelf.dart';
 
+import '../db/models/db_zone.dart';
 import '../db/queries/get_run_group_by_id.dart';
 import '../db/queries/get_runs_by_run_group_id.dart';
+import '../db/queries/get_zone_by_id.dart';
 import 'utils/_date_time.dart';
 import 'utils/_postgresql_connection.dart';
 
 class TriggerGroup {
   TriggerGroup(this.db, this.env)
       : _getRunGroupById = GetRunGroupById(db),
-        _getRunsByRunGroupId = GetRunsByRunGroupId(db);
+        _getRunsByRunGroupId = GetRunsByRunGroupId(db),
+        _getZoneById = GetZoneById(db);
 
   final PostgreSQLConnection Function() db;
   final DotEnv env;
   final GetRunGroupById _getRunGroupById;
   final GetRunsByRunGroupId _getRunsByRunGroupId;
+  final GetZoneById _getZoneById;
 
   Future<Response> call(Request request) async {
     final body = await request.readAsString();
@@ -32,6 +36,18 @@ class TriggerGroup {
     // actually trigger.
     // TODO(brandon): We'll need to delete/re-create tasks when updating a program, so
     // this should probably be pulled out into a callable function/use-case
+    final zones = <DbZone>[];
+    for (final run in runs) {
+      final zone = await _getZoneById(run.zoneId);
+      zones.add(zone);
+    }
+    // Sort run priority by zone number for now
+    runs.sort(
+      (a, b) => zones
+          .singleWhere((z) => a.zoneId == z.id)
+          .number
+          .compareTo(zones.singleWhere((z) => b.zoneId == z.id).number),
+    );
     Future<List<client.Response>> createRunTasks() async {
       final responses = <client.Response>[];
       for (var i = 0; i < runs.length; i++) {
@@ -53,6 +69,8 @@ class TriggerGroup {
     }
 
     final responses = await createRunTasks();
+    // TODO(brandon): Create task for the next *group* run.
+
     final failures = responses.where((r) => r.statusCode != 200);
     if (failures.isNotEmpty) {
       final firstFailure = failures.first;
