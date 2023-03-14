@@ -4,7 +4,7 @@ import 'package:api_models/api_models.dart';
 import 'package:postgres/postgres.dart';
 import 'package:shelf/shelf.dart';
 
-import 'postgres_extensions.dart';
+import 'utils/_postgresql_connection.dart';
 
 class UpdateZone {
   UpdateZone(this.db);

@@ -11,7 +11,7 @@ import '../db/queries/get_customer_by_id.dart';
 import '../db/queries/get_next_run_for_zone.dart';
 import '../db/queries/get_programs_by_customer.dart';
 import '../db/queries/get_zones_by_customer.dart';
-import 'extensions.dart';
+import 'utils/_request.dart';
 
 class GetCustomer {
   GetCustomer(PostgreSQLConnection Function() db)

@@ -1,7 +1,7 @@
 import 'package:postgres/postgres.dart';
 import 'package:shelf/shelf.dart';
 
-import 'postgres_extensions.dart';
+import 'utils/_postgresql_connection.dart';
 
 Middleware authentication(PostgreSQLConnection Function() db) {
   return (innerHandler) {

@@ -10,8 +10,9 @@ import '../db/queries/get_customer_by_id.dart';
 import '../db/queries/get_next_run_for_run_group.dart';
 import '../db/queries/get_program_by_id.dart';
 import '../db/queries/get_run_group_by_id.dart';
-import 'extensions.dart';
-import 'postgres_extensions.dart';
+import 'utils/_date_time.dart';
+import 'utils/_postgresql_connection.dart';
+import 'utils/_request.dart';
 
 class CreateProgram {
   CreateProgram(this.db, this.env)
@@ -82,7 +83,7 @@ class CreateProgram {
       // TODO(brandon): We'll need to delete/re-create tasks when updating a program, so
       // this should probably be pulled out into a callable function/use-case
       Future<void> createRunGroupTasks() async {
-        final now = DateTime.now();
+        final now = nowUtc();
         final dbProgram = await _getProgramById(program.id);
         for (final run in program.runs) {
           final dbRunGroup = await _getRunGroupById(run.id);

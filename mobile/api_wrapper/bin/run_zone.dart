@@ -10,8 +10,8 @@ import '../db/queries/get_customer_by_id.dart';
 import '../db/queries/get_next_run_for_zone.dart';
 import '../db/queries/get_programs_by_customer.dart';
 import '../db/queries/get_zone_by_id.dart';
-import 'extensions.dart';
 import 'run_zone_internal.dart';
+import 'utils/_request.dart';
 
 class RunZone {
   RunZone(PostgreSQLConnection Function() db)
