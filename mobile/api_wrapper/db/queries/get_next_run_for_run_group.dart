@@ -21,7 +21,7 @@ class GetNextRunForRunGroup {
     const oneDay = Duration(days: 1);
     final now = DateTime.now();
     final nextWeek = List.generate(7, (i) {
-      return now.add(Duration(days: i + 1));
+      return now.add(Duration(days: i));
     });
     final nextRun = nextWeek.firstWhere((day) {
       // Run groups run at most once a day, so next run must be
