@@ -1,8 +1,13 @@
 export 'create_program.dart';
 export 'delete_program.dart';
 export 'get_customer.dart';
+export 'get_programs.dart';
 export 'index.dart';
 export 'login.dart';
+export 'ping.dart';
 export 'run_zone.dart';
 export 'stop_zone.dart';
+export 'trigger_group.dart';
+export 'trigger_run.dart';
 export 'update_program.dart';
+export 'update_zone.dart';
