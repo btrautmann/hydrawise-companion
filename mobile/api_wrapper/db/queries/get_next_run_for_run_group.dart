@@ -20,6 +20,8 @@ class GetNextRunForRunGroup {
       hour: group.startHour,
       minute: group.startMinute,
       second: 0,
+      microsecond: 0,
+      millisecond: 0,
     );
     print('Current time is $now');
     final nextWeek = List.generate(8, (index) {

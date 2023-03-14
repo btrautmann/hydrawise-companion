@@ -84,6 +84,7 @@ class CreateProgram {
       // this should probably be pulled out into a callable function/use-case
       Future<void> createRunGroupTasks() async {
         final now = nowUtc();
+        print('Current time (during task creation) is $now');
         final dbProgram = await _getProgramById(program.id);
         for (final run in program.runs) {
           final dbRunGroup = await _getRunGroupById(run.id);
@@ -91,15 +92,16 @@ class CreateProgram {
             group: dbRunGroup,
             program: dbProgram,
           );
-          final delay = nextRunDateTime.difference(now).abs().inSeconds;
-          print('Delaying group task for ${run.id} by $delay');
+          final delay = nextRunDateTime.difference(now).inMilliseconds;
+          final secondsDelay = (delay / 1000).round();
+          print('Delaying group task for ${run.id} by $secondsDelay seconds');
           await client.post(
             Uri.https(env['TASKS_API_END_POINT']!, '/api/v1/create'),
             body: jsonEncode(
               <String, dynamic>{
                 'run_group_id': run.id,
                 'endpoint': 'trigger_group',
-                'delay': delay,
+                'delay': secondsDelay,
               },
             ),
           );
