@@ -15,7 +15,11 @@ class GetNextRunForRunGroup {
         DateTime.fromMillisecondsSinceEpoch(0);
     final programFrequency = program.frequency;
     const oneDay = Duration(days: 1);
-    final now = DateTime.now();
+    final now = DateTime.now().copyWith(
+      hour: group.startHour,
+      minute: group.startMinute,
+      second: 0,
+    );
     final nextWeek = List.generate(8, (i) {
       return now.add(Duration(days: i));
     });
