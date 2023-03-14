@@ -13,13 +13,7 @@ class GetCustomerById {
       final result = await connection.query(
         'SELECT * FROM customer WHERE customer_id=$customerId LIMIT 1;',
       );
-      final map = result.single.toColumnMap();
-
-      return DbCustomer(
-        id: customerId,
-        apiKey: map['api_key'],
-        activeControllerId: map['active_controller_id'],
-      );
+      return DbCustomer.fromPostGreSQLResultRow(result.single);
     });
   }
 }

@@ -16,21 +16,7 @@ class GetRunGroupsByProgramId {
       if (result.isEmpty) {
         return List.empty();
       }
-      final runGroups = <DbRunGroup>[];
-      for (final row in result) {
-        final map = row.toColumnMap();
-        runGroups.add(
-          DbRunGroup(
-            id: map['run_group_id'],
-            programId: map['program_id'],
-            durationSeconds: map['duration_sec'],
-            startHour: map['start_hour'],
-            startMinute: map['start_minute'],
-            lastRunTime: map['last_run_time'],
-          ),
-        );
-      }
-      return runGroups;
+      return result.map(DbRunGroup.fromPostGreSQLResultRow).toList();
     });
   }
 }

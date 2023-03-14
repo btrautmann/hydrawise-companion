@@ -16,19 +16,7 @@ class GetRunsByRunGroupId {
       if (result.isEmpty) {
         return List.empty();
       }
-      final runs = <DbRun>[];
-      for (final row in result) {
-        final map = row.toColumnMap();
-        runs.add(
-          DbRun(
-            id: map['run_group_id'],
-            lastRunTime: map['last_run_time'],
-            runGroupId: runGroupId,
-            zoneId: map['zone_id'],
-          ),
-        );
-      }
-      return runs;
+      return result.map(DbRun.fromPostGreSQLResultRow).toList();
     });
   }
 }

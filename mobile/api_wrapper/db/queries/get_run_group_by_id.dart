@@ -13,15 +13,7 @@ class GetRunGroupById {
       final result = await connection.query(
         'SELECT * from run_group WHERE run_group_id=$runGroupId LIMIT 1;',
       );
-      final map = result.single.toColumnMap();
-      return DbRunGroup(
-        id: map['run_group_id'],
-        programId: map['program_id'],
-        durationSeconds: map['duration_sec'],
-        startHour: map['start_hour'],
-        startMinute: map['start_minute'],
-        lastRunTime: map['last_run_time'],
-      );
+      return DbRunGroup.fromPostGreSQLResultRow(result.single);
     });
   }
 }

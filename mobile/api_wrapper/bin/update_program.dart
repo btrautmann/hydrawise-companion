@@ -32,17 +32,7 @@ class UpdateProgram {
           _getRunGroupsSql(updateProgramRequest.programId),
         );
         for (final row in runGroupsResult) {
-          final map = row.toColumnMap();
-          originalRunGroups.add(
-            DbRunGroup(
-              id: map['run_group_id'],
-              programId: map['program_id'],
-              durationSeconds: map['duration_sec'],
-              startHour: map['start_hour'],
-              startMinute: map['start_minute'],
-              lastRunTime: map['last_run_time'],
-            ),
-          );
+          originalRunGroups.add(DbRunGroup.fromPostGreSQLResultRow(row));
         }
 
         final now = DateTime.now();
@@ -109,7 +99,6 @@ String _insertRunGroupSql(RunGroupCreation run, int programId, DateTime now) =>
     'VALUES ($programId, ${run.durationSeconds}, ${run.startHour}, ${run.startMinute}) '
     'RETURNING run_group_id;';
 
-String _insertRunSql(int runGroupId, int zoneId, DateTime now) =>
-    'INSERT INTO run (run_group_id, zone_id) '
+String _insertRunSql(int runGroupId, int zoneId, DateTime now) => 'INSERT INTO run (run_group_id, zone_id) '
     'VALUES ($runGroupId, $zoneId) '
     'RETURNING run_id;';
