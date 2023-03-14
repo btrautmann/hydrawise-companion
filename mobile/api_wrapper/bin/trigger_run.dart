@@ -33,6 +33,7 @@ class TriggerRun {
     final runDuration = runGroup.durationSeconds;
     final customer = await _getCustomerByProgramId(runGroup.programId);
 
+    print('Requesting Hydrawise to run $zoneId for $runDuration seconds');
     final response = await runZone(
       request: RunZoneRequest(
         zoneId: zoneId,
@@ -40,6 +41,10 @@ class TriggerRun {
       ),
       apiKey: customer.apiKey,
     );
+
+    if (response.statusCode != 200) {
+      print('Request failed: ${response.body}');
+    }
 
     return Response(
       response.statusCode,

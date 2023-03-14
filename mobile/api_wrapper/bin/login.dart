@@ -10,9 +10,8 @@ import '../db/queries/insert_customer.dart';
 import 'extensions.dart';
 
 class Login {
-  Login(this.db) : _insertCustomer = InsertCustomer(db);
+  Login(PostgreSQLConnection Function() db) : _insertCustomer = InsertCustomer(db);
 
-  final PostgreSQLConnection Function() db;
   final InsertCustomer _insertCustomer;
 
   Future<Response> call(Request request) async {

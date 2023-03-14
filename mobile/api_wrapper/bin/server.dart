@@ -7,13 +7,8 @@ import 'package:shelf/shelf_io.dart';
 import 'package:shelf_router/shelf_router.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 
-import 'get_programs.dart';
 import 'middleware.dart';
-import 'ping.dart';
 import 'routes.dart';
-import 'trigger_group.dart';
-import 'trigger_run.dart';
-import 'update_zone.dart';
 
 Future<void> main(List<String> args) async {
   // Use any available host or container IP (usually `0.0.0.0`).
