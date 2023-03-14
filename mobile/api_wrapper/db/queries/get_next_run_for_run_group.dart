@@ -18,15 +18,17 @@ class GetNextRunForRunGroup {
     print('Program frequency is $programFrequency');
     final utc = nowUtc();
     // Seed time is the current time adjusted to adopt the hour
-    // and minute of the group's lastRunTime
+    // and minute of the group's intended run time
     final seedTime = DateTime(
       utc.year,
       utc.month,
       utc.day,
-      groupLastRunTime.hour,
-      groupLastRunTime.minute,
+      group.startHour,
+      group.startMinute,
     );
-    print('Seed time is $seedTime');
+    print(
+      'Seed time is $seedTime in timezone ${seedTime.timeZoneName} with offset ${seedTime.timeZoneOffset}',
+    );
     final eligibleNextRunDays = List.generate(8, (index) {
       return seedTime.add(Duration(days: index));
     });
