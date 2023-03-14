@@ -2,13 +2,13 @@ import 'dart:convert';
 
 import 'package:dotenv/dotenv.dart';
 import 'package:http/http.dart' as client;
-import 'package:intl/intl.dart';
 import 'package:postgres/postgres.dart';
 import 'package:shelf/shelf.dart';
 
 import '../db/queries/get_run_group_by_id.dart';
 import '../db/queries/get_runs_by_run_group_id.dart';
-import 'postgres_extensions.dart';
+import 'utils/_date_time.dart';
+import 'utils/_postgresql_connection.dart';
 
 class TriggerGroup {
   TriggerGroup(this.db, this.env)
@@ -73,10 +73,7 @@ class TriggerGroup {
       // each
       await db().use((connection) async {
         await connection.query(
-          _setRunGroupLastRunTimeSql(
-            runGroupId,
-            DateTime.now(),
-          ),
+          _setRunGroupLastRunTimeSql(runGroupId, nowUtc()),
         );
       });
     }
@@ -89,9 +86,6 @@ class TriggerGroup {
 }
 
 String _setRunGroupLastRunTimeSql(int runGroupId, DateTime runTime) {
-  final dateFormat = DateFormat('yyyy-MM-dd HH:mm:ss.SSS');
-  final stringified = dateFormat.format(runTime);
-  print('Updating run_group $runGroupId to last_run_time $stringified');
-  return 'UPDATE run_group SET last_run_time = \'$stringified\' '
+  return 'UPDATE run_group SET last_run_time = \'${runTime.toPostgreSQLTimestampFormat()}\' '
       'WHERE run_group_id=$runGroupId ';
 }

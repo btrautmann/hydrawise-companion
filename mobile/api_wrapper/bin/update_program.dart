@@ -5,8 +5,9 @@ import 'package:postgres/postgres.dart';
 import 'package:shelf/shelf.dart';
 
 import '../db/models/db_run_group.dart';
-import 'extensions.dart';
-import 'postgres_extensions.dart';
+import 'utils/_date_time.dart';
+import 'utils/_postgresql_connection.dart';
+import 'utils/_request.dart';
 
 class UpdateProgram {
   UpdateProgram(this.db);
@@ -35,7 +36,7 @@ class UpdateProgram {
           originalRunGroups.add(DbRunGroup.fromPostGreSQLResultRow(row));
         }
 
-        final now = DateTime.now();
+        final now = nowUtc();
 
         // For ease, delete all existing run groups (and associated runs)
         for (final run in originalRunGroups) {

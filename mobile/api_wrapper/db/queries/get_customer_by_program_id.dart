@@ -1,6 +1,6 @@
 import 'package:postgres/postgres.dart';
 
-import '../../bin/postgres_extensions.dart';
+import '../../bin/utils/_postgresql_connection.dart';
 import '../models/db_customer.dart';
 import 'get_customer_by_id.dart';
 import 'get_program_by_id.dart';

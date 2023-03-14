@@ -1,7 +1,7 @@
 import 'package:hydrawise/hydrawise.dart';
 import 'package:postgres/postgres.dart';
 
-import '../../bin/postgres_extensions.dart';
+import '../../bin/utils/_postgresql_connection.dart';
 import '../models/db_customer.dart';
 
 class InsertCustomer {

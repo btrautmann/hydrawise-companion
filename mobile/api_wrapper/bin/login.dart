@@ -7,7 +7,7 @@ import 'package:postgres/postgres.dart';
 import 'package:shelf/shelf.dart';
 
 import '../db/queries/insert_customer.dart';
-import 'extensions.dart';
+import 'utils/_request.dart';
 
 class Login {
   Login(PostgreSQLConnection Function() db) : _insertCustomer = InsertCustomer(db);

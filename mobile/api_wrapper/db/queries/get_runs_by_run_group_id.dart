@@ -1,6 +1,6 @@
 import 'package:postgres/postgres.dart';
 
-import '../../bin/postgres_extensions.dart';
+import '../../bin/utils/_postgresql_connection.dart';
 import '../models/db_run.dart';
 
 class GetRunsByRunGroupId {
