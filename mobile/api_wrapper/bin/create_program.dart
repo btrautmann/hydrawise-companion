@@ -91,7 +91,8 @@ class CreateProgram {
             group: dbRunGroup,
             program: dbProgram,
           );
-          final delay = nextRunDateTime.difference(now).inSeconds;
+          final delay = nextRunDateTime.difference(now).abs().inSeconds;
+          print('Delaying group task for ${run.id} by $delay');
           await client.post(
             Uri.https(env['TASKS_API_END_POINT']!, '/api/v1/create'),
             body: jsonEncode(
