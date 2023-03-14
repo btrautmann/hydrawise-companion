@@ -26,20 +26,17 @@ class GetNextRunForRunGroup {
     final location = tz.getLocation(timezone);
     // Get user local time to figure out next run time, then convert
     // that to UTC and return
-    final localTime = tz.TZDateTime.from(
-      nowUtc()
-          .copyWith(
-            hour: group.startHour,
-            minute: group.startMinute,
-            second: 0,
-            millisecond: 0,
-            microsecond: 0,
-          )
-          .add(
-            Duration(milliseconds: location.currentTimeZone.offset),
-          ),
-      location,
-    );
+    final localTime = nowUtc()
+        .copyWith(
+          hour: group.startHour,
+          minute: group.startMinute,
+          second: 0,
+          millisecond: 0,
+          microsecond: 0,
+        )
+        .add(
+          Duration(milliseconds: location.currentTimeZone.offset),
+        );
     print('localTime is $localTime with timezone ${localTime.timeZoneName}');
 
     final eligibleNextRunDays = List.generate(8, (index) {
@@ -52,7 +49,7 @@ class GetNextRunForRunGroup {
       return day.isAfter(groupLastRunTime.add(oneDay)) && //
           programFrequency.contains(day.weekday);
     });
-    final nextRunUtc = nextRun.toUtc();
+    final nextRunUtc = nextRun.subtract(Duration(milliseconds: location.currentTimeZone.offset));
     print('Next run should occur at $nextRunUtc');
     return nextRunUtc;
   }
