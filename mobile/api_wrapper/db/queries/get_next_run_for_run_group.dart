@@ -33,16 +33,19 @@ class GetNextRunForRunGroup {
     print(
       'localTime is $localTime in timezone ${localTime.timeZoneName} with offset ${localTime.timeZoneOffset}',
     );
+    print('localTime isUtc? ${localTime.isUtc}');
     final seedTime = localTime.copyWith(
       hour: group.startHour,
       minute: group.startMinute,
       second: 0,
       millisecond: 0,
       microsecond: 0,
+      isUtc: false,
     );
     print(
       'seedTime is $seedTime in timezone ${seedTime.timeZoneName} with offset ${seedTime.timeZoneOffset}',
     );
+    print('seedTime isUtc? ${seedTime.isUtc}');
     final eligibleNextRunDays = List.generate(8, (index) {
       return seedTime.add(Duration(days: index));
     });
