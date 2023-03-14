@@ -24,19 +24,26 @@ class GetNextRunForRunGroup {
     final controller = await _getControllerById(program.controllerId);
     final timezone = controller.timezone;
     final location = tz.getLocation(timezone);
-    // Get user local time to figure out next run time, then convert
-    // that to UTC and return
-    final localTime = nowUtc().add(Duration(milliseconds: location.currentTimeZone.offset)).copyWith(
+    final adjustedTime = nowUtc()
+        // TODO(brandon): I don't think this will work when task is created
+        // in, say, EDT but the next run is during EST (or vice versa).
+        // However, attempting to use timezones is difficult because when
+        // copying a DateTime (to set hour/minute/second/etc.) the time
+        // is incorrectly converted *back* to UTC
+        .add(
+          Duration(
+            milliseconds: location.currentTimeZone.offset,
+          ),
+        )
+        .copyWith(
           hour: group.startHour,
           minute: group.startMinute,
           second: 0,
           millisecond: 0,
           microsecond: 0,
         );
-    print('localTime is $localTime with timezone ${localTime.timeZoneName}');
-
     final eligibleNextRunDays = List.generate(8, (index) {
-      return localTime.add(Duration(days: index));
+      return adjustedTime.add(Duration(days: index));
     });
     const oneDay = Duration(days: 1);
     final nextRun = eligibleNextRunDays.firstWhere((day) {
@@ -45,8 +52,12 @@ class GetNextRunForRunGroup {
       return day.isAfter(groupLastRunTime.add(oneDay)) && //
           programFrequency.contains(day.weekday);
     });
-    final nextRunUtc = nextRun.subtract(Duration(milliseconds: location.currentTimeZone.offset));
-    print('Next run should occur at $nextRunUtc');
+    // TODO(brandon): See note above RE: timezones
+    final nextRunUtc = nextRun.subtract(
+      Duration(
+        milliseconds: location.currentTimeZone.offset,
+      ),
+    );
     return nextRunUtc;
   }
 }
