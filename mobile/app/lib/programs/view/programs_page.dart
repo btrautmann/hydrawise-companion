@@ -170,6 +170,7 @@ class _ZonesAndPrograms extends ConsumerWidget {
         if (item is Zone) {
           return ListTile(
             title: Text(item.name),
+            subtitle: item.isRunning ? const Text('Currently running') : null,
             leading: CircleBackground(
               color: Theme.of(context).colorScheme.secondary,
               child: Text(item.number.toString()),
