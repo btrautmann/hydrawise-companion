@@ -29,10 +29,9 @@ class GetNextRunForRunGroup {
     final location = tz.getLocation(timezone);
     // Seed time is the current time adjusted to adopt the hour
     // and minute of the group's intended run time
-    final seedTime = tz.TZDateTime.now(location).copyWith(
+    final seedTime = tz.TZDateTime.from(nowUtc(), location).copyWith(
       hour: group.startHour,
       minute: group.startMinute,
-      second: 0,
       millisecond: 0,
       microsecond: 0,
     );
