@@ -36,6 +36,6 @@ class GetNextRunForRunGroup {
           programFrequency.contains(day.weekday);
     });
     print('Next run should occur at $nextRun');
-    return nextRun;
+    return nextRun.toUtc();
   }
 }
