@@ -6,6 +6,7 @@ import 'package:postgres/postgres.dart';
 import 'package:shelf/shelf.dart';
 
 import '../db/models/db_zone.dart';
+import '../db/queries/get_next_run_for_run_group.dart';
 import '../db/queries/get_run_group_by_id.dart';
 import '../db/queries/get_runs_by_run_group_id.dart';
 import '../db/queries/get_zone_by_id.dart';
@@ -16,6 +17,7 @@ class TriggerGroup {
   TriggerGroup(this.db, this.env)
       : _getRunGroupById = GetRunGroupById(db),
         _getRunsByRunGroupId = GetRunsByRunGroupId(db),
+        _getNextRunForRunGroup = GetNextRunForRunGroup(db),
         _getZoneById = GetZoneById(db);
 
   final PostgreSQLConnection Function() db;
@@ -23,6 +25,7 @@ class TriggerGroup {
   final GetRunGroupById _getRunGroupById;
   final GetRunsByRunGroupId _getRunsByRunGroupId;
   final GetZoneById _getZoneById;
+  final GetNextRunForRunGroup _getNextRunForRunGroup;
 
   Future<Response> call(Request request) async {
     final body = await request.readAsString();
@@ -48,6 +51,7 @@ class TriggerGroup {
           .number
           .compareTo(zones.singleWhere((z) => b.zoneId == z.id).number),
     );
+
     Future<List<client.Response>> createRunTasks() async {
       final responses = <client.Response>[];
       for (var i = 0; i < runs.length; i++) {
@@ -68,33 +72,42 @@ class TriggerGroup {
       return responses;
     }
 
-    final responses = await createRunTasks();
-    // TODO(brandon): Create task for the next *group* run.
-
-    final failures = responses.where((r) => r.statusCode != 200);
-    if (failures.isNotEmpty) {
-      final firstFailure = failures.first;
-      return Response(
-        400,
+    Future<client.Response> createNextGroupTask() async {
+      final now = nowUtc().copyWith(second: 0, millisecond: 0, microsecond: 0);
+      final nextRunDateTime = await _getNextRunForRunGroup(group: runGroup);
+      final delay = nextRunDateTime.difference(now).inMilliseconds;
+      final secondsDelay = (delay / 1000).round();
+      print('Delaying group task for ${runGroup.id} by $secondsDelay seconds');
+      return client.post(
+        Uri.https(env['TASKS_API_END_POINT']!, '/api/v1/create'),
         body: jsonEncode(
           <String, dynamic>{
-            'message': 'Failed to create all tasks for $runGroupId',
-            'statusCode': firstFailure.statusCode,
-            'reason': firstFailure.reasonPhrase,
+            'run_group_id': runGroup.id,
+            'endpoint': 'trigger_group',
+            'delay': secondsDelay,
           },
         ),
-        headers: {'Content-Type': 'application/json'},
       );
-    } else {
-      // TODO(brandon): To allow cancelation of runs once a run
-      // group has started, we'll need to store the task id for
-      // each
-      await db().use((connection) async {
-        await connection.query(
-          _setRunGroupLastRunTimeSql(runGroupId, nowUtc()),
-        );
-      });
     }
+
+    // TODO(brandon): To allow cancelation of runs once a run
+    // group has started, we'll need to store the task id for
+    // each
+    // Create tasks that will trigger each run in this group
+    final responses = await createRunTasks();
+    responses.forEach(print);
+
+    // TODO(brandon): To allow cancelation/skipping of a group, we'll
+    // need to store the task id of the task we just created
+    // Create the next task that will trigger this group to run again
+    final response = await createNextGroupTask();
+    print(response);
+
+    await db().use((connection) async {
+      await connection.query(
+        _setRunGroupLastRunTimeSql(runGroupId, nowUtc()),
+      );
+    });
 
     return Response.ok(
       jsonEncode(<String, dynamic>{'request_handled': true}),
@@ -105,5 +118,5 @@ class TriggerGroup {
 
 String _setRunGroupLastRunTimeSql(int runGroupId, DateTime runTime) {
   return 'UPDATE run_group SET last_run_time = \'${runTime.toPostgreSQLTimestampFormat()}\' '
-      'WHERE run_group_id=$runGroupId ';
+      'WHERE run_group_id=$runGroupId;';
 }

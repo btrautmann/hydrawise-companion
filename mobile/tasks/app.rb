@@ -66,5 +66,7 @@ namespace '/api/v1' do
     response = client.create_task parent: parent, task: task
 
     puts "Created task #{response.name}" if response.name
+    status 200
+    body response
   end
 end

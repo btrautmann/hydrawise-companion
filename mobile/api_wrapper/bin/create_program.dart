@@ -8,7 +8,6 @@ import 'package:shelf/shelf.dart';
 
 import '../db/queries/get_customer_by_id.dart';
 import '../db/queries/get_next_run_for_run_group.dart';
-import '../db/queries/get_program_by_id.dart';
 import '../db/queries/get_run_group_by_id.dart';
 import 'utils/_date_time.dart';
 import 'utils/_postgresql_connection.dart';
@@ -16,13 +15,11 @@ import 'utils/_request.dart';
 
 class CreateProgram {
   CreateProgram(this.db, this.env)
-      : _getProgramById = GetProgramById(db),
-        _getRunGroupById = GetRunGroupById(db),
+      : _getRunGroupById = GetRunGroupById(db),
         _getCustomerById = GetCustomerById(db),
         _getNextRunForRunGroup = GetNextRunForRunGroup(db);
 
   final PostgreSQLConnection Function() db;
-  final GetProgramById _getProgramById;
   final GetRunGroupById _getRunGroupById;
   final GetCustomerById _getCustomerById;
   final GetNextRunForRunGroup _getNextRunForRunGroup;
@@ -85,13 +82,9 @@ class CreateProgram {
       Future<void> createRunGroupTasks() async {
         final now = nowUtc().copyWith(second: 0, millisecond: 0, microsecond: 0);
         print('Current time (during task creation) is $now');
-        final dbProgram = await _getProgramById(program.id);
         for (final run in program.runs) {
           final dbRunGroup = await _getRunGroupById(run.id);
-          final nextRunDateTime = await _getNextRunForRunGroup(
-            group: dbRunGroup,
-            program: dbProgram,
-          );
+          final nextRunDateTime = await _getNextRunForRunGroup(group: dbRunGroup);
           final delay = nextRunDateTime.difference(now).inMilliseconds;
           final secondsDelay = (delay / 1000).round();
           print('Delaying group task for ${run.id} by $secondsDelay seconds');
