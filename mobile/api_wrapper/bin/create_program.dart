@@ -79,16 +79,17 @@ class CreateProgram {
       // actually trigger.
       // TODO(brandon): We'll need to delete/re-create tasks when updating a program, so
       // this should probably be pulled out into a callable function/use-case
-      Future<void> createRunGroupTasks() async {
+      Future<Map<RunGroup, client.Response>> createRunGroupTasks() async {
         final now = nowUtc().copyWith(second: 0, millisecond: 0, microsecond: 0);
         print('Current time (during task creation) is $now');
+        final responses = <RunGroup, client.Response>{};
         for (final run in program.runs) {
           final dbRunGroup = await _getRunGroupById(run.id);
           final nextRunDateTime = await _getNextRunForRunGroup(group: dbRunGroup);
           final delay = nextRunDateTime.difference(now).inMilliseconds;
           final secondsDelay = (delay / 1000).round();
           print('Delaying group task for ${run.id} by $secondsDelay seconds');
-          await client.post(
+          final response = await client.post(
             Uri.https(env['TASKS_API_END_POINT']!, '/api/v1/create'),
             body: jsonEncode(
               <String, dynamic>{
@@ -98,10 +99,16 @@ class CreateProgram {
               },
             ),
           );
+          responses[run] = response;
         }
+        return responses;
       }
 
-      await createRunGroupTasks();
+      final responses = await createRunGroupTasks();
+      for (final r in responses.values) {
+        final body = r.body;
+        print(body);
+      }
 
       return Response.ok(
         jsonEncode(
