@@ -2,24 +2,25 @@ import 'package:postgres/postgres.dart';
 import 'package:timezone/standalone.dart' as tz;
 
 import '../../bin/utils/_date_time.dart';
-import '../models/db_program.dart';
 import '../models/db_run_group.dart';
 import 'get_controller_by_id.dart';
+import 'get_program_by_id.dart';
 
 class GetNextRunForRunGroup {
-  GetNextRunForRunGroup(this.db) : _getControllerById = GetControllerById(db);
+  GetNextRunForRunGroup(this.db)
+      : _getControllerById = GetControllerById(db),
+        _getProgramById = GetProgramById(db);
 
   final PostgreSQLConnection Function() db;
   final GetControllerById _getControllerById;
+  final GetProgramById _getProgramById;
 
-  Future<DateTime> call({
-    required DbRunGroup group,
-    required DbProgram program,
-  }) async {
+  Future<DateTime> call({required DbRunGroup group}) async {
     // TODO(brandon): When suspension ability is added, start at the suspension
     // time rather than lastRunTime if suspended.
     // If the group has never run, consider last run time as epoch
     final groupLastRunTime = group.lastRunTime ?? epochUtc();
+    final program = await _getProgramById(group.programId);
     final programFrequency = program.frequency;
     final controller = await _getControllerById(program.controllerId);
     final timezone = controller.timezone;

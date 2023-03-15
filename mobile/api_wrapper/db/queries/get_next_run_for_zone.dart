@@ -42,10 +42,7 @@ class GetNextRunForZone {
         groupsToRuns[runGroup] = await _getRunsByRunGroupId(runGroup.id);
       }
       for (final runGroup in programRunGroups) {
-        groupsToNextRunTime[runGroup] = await _getNextRunForRunGroup(
-          group: runGroup,
-          program: program,
-        );
+        groupsToNextRunTime[runGroup] = await _getNextRunForRunGroup(group: runGroup);
       }
 
       final sortedRunGroups = List.of(groupsToRuns.keys)
@@ -61,10 +58,7 @@ class GetNextRunForZone {
         return null;
       }
 
-      final nextRun = await _getNextRunForRunGroup(
-        group: groupWithNextRun,
-        program: program,
-      );
+      final nextRun = await _getNextRunForRunGroup(group: groupWithNextRun);
 
       final runs = groupsToRuns[groupWithNextRun]!;
 

@@ -8,6 +8,8 @@ import '../db/queries/get_customer_by_program_id.dart';
 import '../db/queries/get_run_group_by_id.dart';
 import '../db/queries/get_runs_by_run_group_id.dart';
 import 'run_zone_internal.dart';
+import 'utils/_date_time.dart';
+import 'utils/_postgresql_connection.dart';
 
 class TriggerRun {
   TriggerRun(this.db)
@@ -46,11 +48,21 @@ class TriggerRun {
       print('Request failed: ${response.body}');
     }
 
-    // TODO(brandon): Store last_run_time for this run
+
+    await db().use((connection) async {
+      await connection.query(
+        _setRunLastRunTimeSql(runId, nowUtc()),
+      );
+    });
 
     return Response(
       response.statusCode,
       headers: {'Content-Type': 'application/json'},
     );
   }
+}
+
+String _setRunLastRunTimeSql(int runId, DateTime runTime) {
+  return 'UPDATE run SET last_run_time = \'${runTime.toPostgreSQLTimestampFormat()}\' '
+      'WHERE run_id=$runId;';
 }
