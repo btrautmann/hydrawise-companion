@@ -68,6 +68,7 @@ namespace '/api/v1' do
 
     puts "Created task #{response.name}" if response.name
     status 200
-    body {'name' => "#{response.name}"}.to_json
+    hash = {'name' => "#{response.name}"}
+    body hash.to_json
   end
 end
