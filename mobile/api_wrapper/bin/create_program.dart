@@ -34,6 +34,7 @@ class CreateProgram {
     late final Program program;
 
     final customer = await _getCustomerById(customerId);
+    var success = true;
     return db().use((connection) async {
       await connection.transaction((connection) async {
         final insertProgramResult = await connection.query(
@@ -65,6 +66,52 @@ class CreateProgram {
               startMinute: runCreation.startMinute,
             ),
           );
+
+          // TODO(brandon): If creating the task fails, we should either consider rolling back
+          // the transaction (not sure how) or adding retry logic. Otherwise the runs won't
+          // actually trigger.
+          // TODO(brandon): We'll need to delete/re-create tasks when updating a program, so
+          // this should probably be pulled out into a callable function/use-case
+          Future<Map<RunGroup, client.Response>> createRunGroupTasks() async {
+            final now = nowUtc().copyWith(second: 0, millisecond: 0, microsecond: 0);
+            print('Current time (during task creation) is $now');
+            final responses = <RunGroup, client.Response>{};
+            for (final run in program.runs) {
+              final dbRunGroup = await _getRunGroupById(run.id);
+              final nextRunDateTime = await _getNextRunForRunGroup(group: dbRunGroup);
+              final delay = nextRunDateTime.difference(now).inMilliseconds;
+              final secondsDelay = (delay / 1000).round();
+              print('Delaying group task for ${run.id} by $secondsDelay seconds');
+              final response = await client.post(
+                Uri(
+                  scheme: env['TASKS_API_SCHEME'],
+                  host: env['TASKS_API_HOST'],
+                  port: env['TASKS_API_PORT'] as int?,
+                ),
+                body: jsonEncode(
+                  <String, dynamic>{
+                    'run_group_id': run.id,
+                    'endpoint': 'trigger_group',
+                    'delay': secondsDelay,
+                  },
+                ),
+              );
+              responses[run] = response;
+            }
+            return responses;
+          }
+
+          final responses = await createRunGroupTasks();
+          for (final r in responses.values) {
+            final body = r.body;
+            print(body);
+          }
+          if (responses.values.any((r) => r.statusCode != 200)) {
+            success = false;
+            connection.cancelTransaction(
+              reason: 'Failed to create one or more tasks, so cannot save program.',
+            );
+          }
         }
         program = Program(
           id: programId,
@@ -74,48 +121,9 @@ class CreateProgram {
         );
       });
 
-      // TODO(brandon): If creating the task fails, we should either consider rolling back
-      // the transaction (not sure how) or adding retry logic. Otherwise the runs won't
-      // actually trigger.
-      // TODO(brandon): We'll need to delete/re-create tasks when updating a program, so
-      // this should probably be pulled out into a callable function/use-case
-      Future<Map<RunGroup, client.Response>> createRunGroupTasks() async {
-        final now = nowUtc().copyWith(second: 0, millisecond: 0, microsecond: 0);
-        print('Current time (during task creation) is $now');
-        final responses = <RunGroup, client.Response>{};
-        for (final run in program.runs) {
-          final dbRunGroup = await _getRunGroupById(run.id);
-          final nextRunDateTime = await _getNextRunForRunGroup(group: dbRunGroup);
-          final delay = nextRunDateTime.difference(now).inMilliseconds;
-          final secondsDelay = (delay / 1000).round();
-          print('Delaying group task for ${run.id} by $secondsDelay seconds');
-          final response = await client.post(
-            Uri(
-              scheme: env['TASKS_API_SCHEME'],
-              host: env['TASKS_API_HOST'],
-              port: env['TASKS_API_PORT'] as int?,
-            ),
-            body: jsonEncode(
-              <String, dynamic>{
-                'run_group_id': run.id,
-                'endpoint': 'trigger_group',
-                'delay': secondsDelay,
-              },
-            ),
-          );
-          responses[run] = response;
-        }
-        return responses;
-      }
-
-      final responses = await createRunGroupTasks();
-      for (final r in responses.values) {
-        final body = r.body;
-        print(body);
-      }
-
-      return Response.ok(
-        jsonEncode(
+      return Response(
+        success ? 200 : 400,
+        body: jsonEncode(
           CreateProgramResponse(
             program: program,
           ),
