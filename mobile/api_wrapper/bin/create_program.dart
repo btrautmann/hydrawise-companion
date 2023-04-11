@@ -90,7 +90,11 @@ class CreateProgram {
           final secondsDelay = (delay / 1000).round();
           print('Delaying group task for ${run.id} by $secondsDelay seconds');
           final response = await client.post(
-            Uri.https(env['TASKS_API_END_POINT']!, '/api/v1/create'),
+            Uri(
+              scheme: env['TASKS_API_SCHEME'],
+              host: env['TASKS_API_HOST'],
+              port: env['TASKS_API_PORT'] as int?,
+            ),
             body: jsonEncode(
               <String, dynamic>{
                 'run_group_id': run.id,

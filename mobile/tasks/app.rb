@@ -30,8 +30,43 @@ namespace '/api/v1' do
     'Welcome to BookList!'
   end
 
+  delete '/delete' do
+    payload = json_params
+    env = ENV['APP_ENV']
+    puts "Env is #{env}"
+    if env == 'development'
+      status 200
+      response = { 'name' => 'fake_task' }
+      body response
+      return
+    end
+    puts payload
+
+    # Instantiates a client.
+    client = Google::Cloud::Tasks.cloud_tasks
+
+    # Send delete task request.
+    name = payload['name']
+    puts "Deleting task #{name}"
+    response = client.delete_task name: name
+    puts response
+
+    puts "Deleted task #{name}"
+    status 200
+    hash = { 'name' => response.to_s }
+    body hash.to_json
+  end
+
   post '/create' do
     payload = json_params
+    env = ENV['APP_ENV']
+    puts "Env is #{env}"
+    if env == 'development'
+      status 200
+      response = { 'name' => 'fake_task' }
+      body response
+      return
+    end
     puts payload
 
     # Instantiates a client.
@@ -68,7 +103,7 @@ namespace '/api/v1' do
 
     puts "Created task #{response.name}" if response.name
     status 200
-    hash = {'name' => "#{response.name}"}
+    hash = { 'name' => response.to_s }
     body hash.to_json
   end
 end

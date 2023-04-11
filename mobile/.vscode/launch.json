@@ -24,7 +24,7 @@
             "flutterMode": "debug",
             "args": [
                 "--dart-define",
-                "BASE_URL=http://localhost:8080/",
+                "BASE_URL=http://localhost:8008/",
             ]
         },
         {
@@ -42,6 +42,17 @@
             "env": {
                 "ENV": "development"
             }
+        },
+        {
+            "name": "tasks api",
+            "request": "launch",
+            "type": "Ruby",
+            "cwd": "${workspaceRoot}/tasks",
+            "program": "${workspaceRoot}/tasks/app.rb",
+            "env": {
+                "APP_ENV": "development",
+                "PATH": "/Users/brandontrautmann/Development/google-cloud-sdk/bin:/opt/homebrew/bin:/Users/brandontrautmann/.bootstrap/resources/bin:/opt/homebrew/opt/postgresql@13/bin:/Users/brandontrautmann/.pyenv/shims:/Users/brandontrautmann/.pyenv/bin:/Users/brandontrautmann/.nodenv/shims:/Users/brandontrautmann/.nodenv/bin:/Users/brandontrautmann/.jenv/shims:/Users/brandontrautmann/.jenv/bin:/Users/brandontrautmann/.rbenv/shims:/Users/brandontrautmann/.rbenv/bin:/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/go/bin:/Library/Apple/usr/bin:/Users/brandontrautmann/fvm/versions/3.7.0/bin/:/Users/brandontrautmann/Development/google-cloud-sdk/bin:/opt/homebrew/bin:/Users/brandontrautmann/.bootstrap/resources/bin:/opt/homebrew/opt/postgresql@13/bin:/Users/brandontrautmann/.pyenv/bin:/Users/brandontrautmann/.nodenv/shims:/Users/brandontrautmann/.nodenv/bin:/Users/brandontrautmann/.jenv/shims:/Users/brandontrautmann/.jenv/bin:/Users/brandontrautmann/.rbenv/shims:/Users/brandontrautmann/.rbenv/bin:/opt/homebrew/sbin:/Users/brandontrautmann/fvm/versions/3.3.9/bin/:/Users/brandontrautmann/Library/Android/sdk/platform-tools:/Users/brandontrautmann/Library/Android/sdk:/Users/brandontrautmann/fvm/default/bin:/Users/brandontrautmann/fvm/default/bin/cache/dart-sdk/bin:/Users/brandontrautmann/.pub-cache/bin:/Users/brandontrautmann/Library/Android/sdk/platform-tools:/Users/brandontrautmann/Library/Android/sdk:/Users/brandontrautmann/fvm/default/bin:/Users/brandontrautmann/fvm/default/bin/cache/dart-sdk/bin:/Users/brandontrautmann/.pub-cache/bin",
+              }
         }
     ]
 }

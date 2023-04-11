@@ -32,7 +32,11 @@ final httpClientProvider = Provider<HttpClient>((ref) {
   // ignore: close_sinks
   final interceptors = [
     // Always place LogInterceptor at the end
-    LogInterceptor(logPrint: (o) => debugPrint.call(o.toString())),
+    LogInterceptor(
+      responseBody: true,
+      requestBody: true,
+      logPrint: (o) => debugPrint.call(o.toString()),
+    ),
   ];
   final getApiKey = ref.watch(getApiKeyProvider);
   return HttpClient(
